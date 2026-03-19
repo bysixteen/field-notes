@@ -1,0 +1,49 @@
+---
+title: Accessibility
+description: Touch targets, focus rings, contrast, and reduced motion requirements.
+---
+
+## Touch Targets
+
+Minimum interactive touch target: **44×44px**
+
+Use size tokens of 44px or larger for all interactive elements. The `sm` size variant must still meet this minimum.
+
+## Focus Rings
+
+All interactive elements must have a **visible focus indicator**. Define focus ring tokens as part of the semantic layer:
+
+```css
+--border-focus-rest
+--border-focus-active
+```
+
+Ensure focus styles are explicitly set on all interactive components.
+
+## Contrast
+
+Semantic token pairings are designed to meet **WCAG AA** contrast requirements (4.5:1 for normal text, 3:1 for large text).
+
+To maintain this guarantee:
+- Always pair foreground and background from the **same family**
+- Do not mix emphasis levels between foreground and background
+- Do not override semantic tokens with arbitrary colour values
+
+## Reduced Motion
+
+Respect `prefers-reduced-motion`:
+
+```css
+@media (prefers-reduced-motion: reduce) {
+  /* Disable transitions and animations */
+}
+```
+
+Motion tokens (duration, easing) should automatically respect this media query. See the [Concepts Manifest](/design-system/concepts-manifest) for motion token guidance.
+
+## Colour Independence
+
+Never rely on colour alone to convey information. Complement colour signals with:
+- Text labels
+- Icons or shapes
+- Pattern or texture differences

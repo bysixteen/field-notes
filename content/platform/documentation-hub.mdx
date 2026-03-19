@@ -1,0 +1,114 @@
+---
+title: Documentation Hub Pattern
+description: "Multi-collection knowledge base with llms.txt generation for AI-consumable documentation."
+---
+
+A documentation hub organizes knowledge into independent, domain-specific collections — each with its own navigation, content, and routing — while providing AI-consumable output via the llms.txt standard. The result is a single site that serves both human readers and LLM agents.
+
+Field Notes itself is a working implementation of this pattern.
+
+## Multi-Collection Architecture
+
+Each knowledge domain gets its own Fumadocs collection. Collections are defined in `source.config.ts` and loaded independently:
+
+```ts
+// source.config.ts
+export const designSystem = defineDocs({ dir: 'content/design-system' });
+export const principles = defineDocs({ dir: 'content/principles' });
+export const claude = defineDocs({ dir: 'content/claude' });
+export const platform = defineDocs({ dir: 'content/platform' });
+```
+
+Each collection maps to its own loader with an independent base URL:
+
+```ts
+// lib/source.ts
+export const designSystemSource = loader({
+  baseUrl: '/design-system',
+  source: designSystem.toFumadocsSource(),
+});
+```
+
+This produces independent sidebars, page trees, and search indexes per domain. Domains share a common navbar but are otherwise self-contained.
+
+## Navigation via meta.json
+
+Each content directory uses a `meta.json` file to control sidebar ordering and grouping:
+
+```json
+{
+  "title": "Domain Name",
+  "pages": [
+    "index",
+    "---Group Label---",
+    "page-one",
+    "page-two"
+  ]
+}
+```
+
+- Filenames are without extension (`"my-page"` not `"my-page.mdx"`)
+- Separator syntax: `"---Label---"` creates visual section dividers
+- Pages appear in the order listed
+
+## Content Conventions
+
+All content files are MDX with two required frontmatter fields:
+
+```yaml
+---
+title: Page Title
+description: One-line summary that powers search and llms.txt.
+---
+```
+
+- Lowercase kebab-case filenames
+- Each domain has an `index.mdx` as its landing page
+- Cross-reference within a domain using relative links
+- Cross-reference across domains using absolute paths (e.g., `/principles/answer-first`)
+
+## llms.txt Generation
+
+The [llms.txt standard](https://llmstxt.org) makes documentation sites AI-consumable. A build-time script reads all MDX files, strips JSX, and outputs two files:
+
+| File | Purpose | Size |
+|---|---|---|
+| `llms.txt` | Structured index — titles, descriptions, URLs | ~3KB |
+| `llms-full.txt` | Full content of every page, concatenated | ~190KB |
+
+The generation script runs automatically on `npm run build`. It parses frontmatter for titles and descriptions, strips import statements and JSX components from the body, and outputs clean markdown.
+
+An LLM agent can fetch `llms.txt` to understand what's available, then fetch specific pages — or fetch `llms-full.txt` for one-shot ingest of all documented patterns.
+
+## Using as AI Context
+
+To give another project's AI agent access to all documented patterns, add to that project's `CLAUDE.md`:
+
+```markdown
+## Reference
+
+See https://your-site.com/llms-full.txt for design engineering patterns
+covering token systems, sprint frameworks, platform architecture, and AI workflows.
+```
+
+The agent reads the URL and has instant context on every pattern — no manual copy-pasting, no stale documentation.
+
+## CLAUDE.md as Self-Documentation
+
+The hub's own `CLAUDE.md` follows the [CLAUDE.md Playbook](/claude/claude-md-playbook):
+
+- **Tier 1**: What the project is, how to build it, key commands
+- **Tier 2**: Compounding knowledge earned from real mistakes (frontmatter requirements, meta.json syntax, static export constraints)
+- **Git conventions**: Branch prefixes, commit format
+- **Deployment**: How and where the site deploys
+
+This makes the `CLAUDE.md` both a practical reference for contributors and a demonstration of the playbook in action.
+
+## Why This Matters
+
+The documentation hub pattern embodies several [core principles](/principles):
+
+- **[Distill, Don't Repeat](/principles/distill-dont-repeat)** — Knowledge is synthesized from project repos into concise pages, not raw notes
+- **[Answer First](/principles/answer-first)** — Frontmatter descriptions ensure the key point is always visible before reading the full page
+- **[Compounding Engineering](/principles/compounding-engineering)** — Content grows from real project needs, not speculative documentation
+- **[Verification Over Instruction](/principles/verification-over-instruction)** — The build process verifies all pages compile, all links resolve, and search indexes generate correctly

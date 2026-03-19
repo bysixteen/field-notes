@@ -1,0 +1,80 @@
+# Field Notes
+
+> Design engineering knowledge, distilled.
+
+This is a personal knowledge hub covering design systems, engineering principles, AI workflows, and platform architecture patterns.
+
+## Design System
+
+Multi-dimensional token model, composition rules, naming conventions, and constraints.
+
+- [Flat Architecture](/design-system/approaches/flat): Single-layer CSS custom properties for LLM-mediated workflows.
+- [Approaches](/design-system/approaches): When to use the full layered architecture vs flat tokens.
+- [Layered Architecture](/design-system/approaches/layered): The full four-layer token chain for enterprise and multi-brand systems.
+- [Density vs Size](/design-system/composition/density-vs-size): Why these dimensions must stay separate — and the common mistake of collapsing them.
+- [Composition](/design-system/composition): The checklist and rules for composing components with the dimensional model.
+- [Sentiment + Emphasis](/design-system/composition/sentiment-emphasis): The relationship between what a component says and how loudly it says it.
+- [Spacing & Gestalt](/design-system/composition/spacing-gestalt): Spatial distance encodes semantic distance — the three spacing tiers.
+- [Worked Examples](/design-system/composition/worked-examples): Real-world scenarios showing how to apply the dimensional model.
+- [Concepts Manifest](/design-system/concepts-manifest): The single source of truth for valid dimension values across the design system.
+- [Accessibility](/design-system/constraints/accessibility): Touch targets, focus rings, contrast, and reduced motion requirements.
+- [Dos and Don'ts](/design-system/constraints/dos-and-donts): Practical rules for using tokens correctly in components and layouts.
+- [Constraints & Rules](/design-system/constraints): Guardrails for working with the token system.
+- [Token Approach Guide](/design-system): A living methodology for multi-dimensional design token systems.
+- [Density](/design-system/model/density): Internal breathing room — how tightly content is packed inside a component.
+- [Emphasis](/design-system/model/emphasis): How loudly a component communicates — the visual weight and intensity of its signal.
+- [The Dimensional Model](/design-system/model): Every component is the product of up to six independent, orthogonal dimensions.
+- [Sentiment](/design-system/model/sentiment): What a component communicates — its semantic intent, not its visual appearance.
+- [Size](/design-system/model/size): The physical footprint of a component — height, touch target, and padding scale.
+- [State](/design-system/model/state): The interactive condition of a component — always runtime, never a composition decision.
+- [Structure](/design-system/model/structure): The fixed anatomical skeleton of a component — internal padding, gap, fixed heights.
+- [Theme](/design-system/model/theme): The colour scheme dimension — light and dark modes.
+- [Emphasis Scale](/design-system/naming/emphasis-scale): The weaker → weak → standard → strong naming convention for visual weight.
+- [Naming Conventions](/design-system/naming): How tokens are named across the primitive and semantic layers.
+- [Primitive Naming](/design-system/naming/primitives): The --{category}-{name} pattern for raw token values.
+- [Semantic Naming](/design-system/naming/semantics): The --{element}-{variant}-{state} pattern for purpose-driven tokens.
+- [Component Slots](/design-system/token-chain/component-slots): Layer 3 — named openings inside a component's variable collections.
+- [The Token Chain](/design-system/token-chain): All visual values flow through a strict four-layer resolution chain.
+- [Primitives](/design-system/token-chain/primitives): Layer 1 — raw values that are theme-aware but never used directly in components.
+- [Resolver](/design-system/token-chain/resolver): Layer 4 — runtime engine that resolves multi-dimensional token combinations.
+- [Semantics](/design-system/token-chain/semantics): Layer 2 — purpose-driven aliases that describe what a value means, not its raw appearance.
+
+## Principles & Frameworks
+
+Core principles, the Pioneer framework, synthesis and validation methodology.
+
+- [Answer First](/principles/answer-first): Every document must have the conclusion in the first body section. Never bury the lead.
+- [Clarity, Attribution, Reversibility, Consistency](/principles/clarity-attribution-reversibility-consistency): The four pillars of validation for any prototype or feature. Every piece of work must pass all four checks.
+- [Compounding Engineering](/principles/compounding-engineering): Build guidance from real mistakes, not upfront speculation. Let documentation grow organically from actual needs.
+- [Dissent is a Feature](/principles/dissent-as-feature): Structurally encourage and document dissent to prevent groupthink and preserve overruled concerns for future reference.
+- [Distill, Don't Repeat](/principles/distill-dont-repeat): The output of a sprint is synthesized knowledge, not raw artifacts. Create living documents that serve as the single source of truth.
+- [Principles & Frameworks](/principles): Core principles and operating frameworks distilled from real project work, designed to compound across every engagement.
+- [Journey Mapping Template](/principles/journey-template): Reusable structure for mapping any part of a system from user need to validated outcome.
+- [New Project Checklist](/principles/new-project-checklist): Bootstrap sequence using Field Notes, Project Squad, and llms.txt.
+- [The Pioneer Framework](/principles/pioneer-framework): A project-agnostic operating system for design and delivery.
+- [Project Squad](/principles/project-squad): The portable CLI toolkit that implements the Pioneer Framework — personas, sprints, workshops, and living documents.
+- [Synthesis & Validation Framework](/principles/synthesis-validation): Three-artifact model and four-pillar validation for preventing context burn.
+- [Verification Over Instruction](/principles/verification-over-instruction): Give AI a way to verify its work rather than a long list of instructions. Success conditions beat specifications.
+
+## Claude & AI Workflows
+
+CLAUDE.md playbook, agent efficiency research, skill-based automation patterns.
+
+- [Agent Efficiency Research](/claude/agent-efficiency): Reconciled findings from studies on AGENTS.md file impact.
+- [The CLAUDE.md Playbook](/claude/claude-md-playbook): How to write effective CLAUDE.md files — minimal, human-curated, and evolving.
+- [Claude & AI Workflows](/claude): Patterns for working effectively with AI coding agents.
+- [Research to Validation Pathway](/claude/research-to-validation): A five-step pathway connecting prototypes to source research.
+- [Skill-Based Automation](/claude/skills-patterns): Patterns for creating reusable Claude skills to automate repetitive workflows.
+
+## Platform Patterns
+
+Monorepo architecture, data patterns, auth and RLS, scaffolding-first approach.
+
+- [Audit-First Architecture](/platform/audit-first): Append-only event tables for complete state transition history.
+- [Auth & Row-Level Security](/platform/auth-rls): JWT custom claims, RLS policies, and middleware route protection.
+- [Data Architecture Patterns](/platform/data-architecture): Splitting transactional and editorial data across purpose-built services.
+- [Documentation Hub Pattern](/platform/documentation-hub): Multi-collection knowledge base with llms.txt generation for AI-consumable documentation.
+- [Platform Patterns](/platform): Transferable architectural patterns for building platforms.
+- [Monorepo Architecture](/platform/monorepo): pnpm workspaces + Turborepo for shared-code platform builds.
+- [Scaffolding-First Approach](/platform/scaffolding-first): External services and AI context before any feature code.
+- [Three-Application Model](/platform/three-app-model): Admin, public site, and wiki from a shared codebase — one platform, three faces.

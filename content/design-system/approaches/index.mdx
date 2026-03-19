@@ -1,0 +1,36 @@
+---
+title: Approaches
+description: When to use the full layered architecture vs flat tokens.
+---
+
+## Two Approaches
+
+The token system can be implemented in two distinct ways:
+
+| Approach | Layers | Token count | Best for |
+|----------|--------|-------------|----------|
+| **Layered** | 4 (Primitive → Semantic → Slot → Resolver) | 300+ | Enterprise, multi-brand, large teams |
+| **Flat** | 1 (CSS custom properties) | ~50 | LLM-mediated, small teams, prototypes |
+
+## Decision Guide
+
+| Factor | Layered | Flat |
+|--------|---------|------|
+| Team size | Large, multiple contributors | Small, or solo with AI |
+| Theme switching | Automatic via alias cascade | Manual or AI-managed |
+| Debugging | Follow alias chains | Direct value inspection |
+| Build pipeline | Required (design tool → transform → CSS) | None |
+| Multi-brand | Swap primitive layer | Duplicate or runtime switch |
+| LLM understanding | Needs context about layers | Reads values directly |
+
+## The LLM Context Argument
+
+Traditional design token layers evolved to encode relationships that machines couldn't understand. Each layer provides context about *how* a value should be used.
+
+With LLM-mediated workflows, the LLM provides this context from naming and usage patterns. The intermediate layers become less necessary because:
+
+- "Change the brand colour" → LLM knows which variables are brand-related
+- "Make buttons darker on hover" → LLM understands state relationships
+- The alias chain that encoded these relationships is now redundant
+
+This doesn't make layered architecture wrong — it makes flat architecture **viable in contexts where it wasn't before**.

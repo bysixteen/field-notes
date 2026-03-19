@@ -1,0 +1,53 @@
+---
+title: Theme
+description: The colour scheme dimension — light and dark modes.
+---
+
+## Definition
+
+Theme controls the overall **colour scheme** — light or dark mode. It is an environmental dimension that affects the entire application or a scoped section.
+
+## Values
+
+| Value | Meaning |
+|-------|---------|
+| `light` | Light colour scheme |
+| `dark` | Dark colour scheme |
+
+**Default:** project-dependent
+
+## Implementation
+
+Themes are typically applied via a data attribute on a container element:
+
+```css
+[data-theme="dark"]  { /* dark mode tokens */ }
+[data-theme="light"] { /* light mode overrides */ }
+```
+
+## How It Works
+
+Primitive tokens define different values per theme. Semantic tokens reference primitives via `var()` — when the primitive value changes with the theme, the semantic token automatically resolves to the new value. No component code changes needed.
+
+## Scoped Theming
+
+Because themes are applied via data attributes, they can be scoped to sections of the page:
+
+```html
+<body data-theme="light">
+  <!-- Light theme content -->
+  <aside data-theme="dark">
+    <!-- Dark sidebar -->
+  </aside>
+</body>
+```
+
+## Relationship with Other Dimensions
+
+Theme is independent of all other dimensions. A component can be:
+
+```
+Button[state=hover, emphasis=high, sentiment=warning, theme=dark]
+```
+
+The theme dimension only affects which primitive values the semantic tokens resolve to.

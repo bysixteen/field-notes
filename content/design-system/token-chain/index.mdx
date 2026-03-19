@@ -1,0 +1,59 @@
+---
+title: The Token Chain
+description: All visual values flow through a strict four-layer resolution chain.
+---
+
+## Four Layers
+
+All visual values flow through a strict four-layer resolution chain. Never skip layers or reference a lower layer from a higher one.
+
+```
+Primitive → Semantic → Component Slot → Resolver → Rendered Value
+```
+
+## Layer Overview
+
+| Layer | What it contains |
+|-------|-----------------|
+| **Primitives** | Raw values (colours, spacing, typography) |
+| **Semantics** | Theme-aware, purpose-driven references to primitives |
+| **Component Slots** | Component-specific tokens defining which semantic fills each role |
+| **Resolver** | Runtime engine for multi-dimensional resolution |
+
+## Dependency Chain
+
+```
+Primitives             Raw values (colours, spacing, typography)
+       ↓
+Semantics              Theme-aware references to primitives
+       ↓
+Component Slots        Component-specific tokens (per dimension)
+       ↓
+Resolver               Runtime resolution for multi-dimensional theming
+```
+
+## When to Use Each Layer
+
+| Scenario | Use |
+|----------|-----|
+| Building a new component | Semantic tokens (`--background-*`, `--foreground-*`) |
+| One-off prototype or experiment | Primitives directly |
+| Component needs dimensional variation | Slots + Resolver |
+| Page-level layout (backgrounds, text) | Semantics only |
+| Defining a new semantic token | Reference a primitive via `var()` |
+
+## Do / Don't
+
+```css
+/* DO — use semantic tokens in components */
+.card { background: var(--background-neutral-weaker-rest); }
+
+/* DON'T — hardcode primitives in components */
+.card { background: var(--colors-neutral-100); }
+
+/* DO — reference primitives when defining semantics */
+--background-neutral-weaker-rest: var(--colors-neutral-100);
+
+/* DON'T — use raw values anywhere */
+.card { background: #f5f5f5; }
+```

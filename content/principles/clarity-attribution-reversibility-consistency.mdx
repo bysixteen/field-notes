@@ -1,0 +1,65 @@
+---
+title: "Clarity, Attribution, Reversibility, Consistency"
+description: "The four pillars of validation for any prototype or feature. Every piece of work must pass all four checks."
+---
+
+## The Principle
+
+Every prototype, feature, or piece of delivered work must be validated against four pillars. These are not aspirational qualities — they are concrete, testable requirements. If a piece of work fails any one of these checks, it is not ready for review.
+
+## The Four Pillars
+
+### Clarity
+
+**Is the UI's purpose and state immediately obvious?**
+
+A user should never have to guess what the system is doing or what they should do next. This applies to every state of the interface: loading, empty, error, partial, and success.
+
+Clarity failures are the most common and the most expensive. They manifest as support tickets, user confusion, and abandoned workflows. The fix is almost always simpler than expected — a better label, a progress indicator, an explicit empty state message.
+
+**Test**: Show the screen to someone with no context for five seconds. Can they tell you what it does and what they should do next?
+
+### Attribution
+
+**Can every piece of data be traced to its source?**
+
+AI-generated content is untrustworthy without clear provenance. Every number, recommendation, summary, or insight displayed to the user must be traceable back to its origin. This is not just a trust issue — it is a regulatory and legal requirement in many domains.
+
+Attribution applies to all data, not just AI outputs. If a dashboard shows a metric, the user must be able to understand where that number came from, when it was last updated, and what methodology produced it.
+
+**Test**: Point to any piece of data on screen. Can you trace it back to its source in under 30 seconds?
+
+### Reversibility
+
+**Can the user easily undo any action?**
+
+Users need a safety net. The fear of making an irreversible mistake stifles exploration and slows adoption. Every destructive action should either be reversible (undo, soft delete, draft states) or gated behind explicit confirmation with clear consequences stated.
+
+Reversibility is especially critical during onboarding and first-use experiences. New users need the confidence to explore without risk.
+
+**Test**: Perform every action available on a screen. Can each one be undone? If not, was the user warned clearly before proceeding?
+
+### Consistency
+
+**Does the work adhere to established patterns?**
+
+Similar elements should look and behave the same way throughout the entire application. Consistency reduces cognitive load, accelerates learning, and prevents the accumulation of one-off implementations that become maintenance burdens.
+
+Consistency operates at multiple levels:
+- **Visual**: Colors, spacing, typography, iconography
+- **Behavioral**: How similar interactions work (selection, filtering, navigation)
+- **Structural**: How pages are laid out, how data is organized
+- **Linguistic**: Terminology, tone, error message format
+
+**Test**: Find two features that serve a similar purpose. Do they look and behave the same way? If not, is the difference justified?
+
+## Applying the Pillars
+
+These four pillars form a validation checklist that should be applied at multiple stages:
+
+1. **During design review** — before any code is written
+2. **During PR review** — before code is merged
+3. **During QA** — before features are released
+4. **During retrospectives** — to identify systemic gaps
+
+When a piece of work fails a pillar, the failure should be documented with the specific pillar, the nature of the gap, and the remediation. Over time, this creates a pattern library of common failures and their solutions.

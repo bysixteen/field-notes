@@ -1,0 +1,65 @@
+---
+title: "Dissent is a Feature"
+description: "Structurally encourage and document dissent to prevent groupthink and preserve overruled concerns for future reference."
+---
+
+## The Principle
+
+Structurally encourage and document dissent. The "Mandatory Challenger" role in the Tiger Team model ensures that assumptions are always tested. All significant dissenting opinions are recorded in a **dissent register**, preventing groupthink and preserving overruled concerns for future reference.
+
+## Why This Matters
+
+Teams naturally converge on consensus. This is efficient for execution but dangerous for decision-making. Without structural mechanisms to surface disagreement, teams fall into predictable failure modes:
+
+- **Groupthink**: Everyone agrees because disagreement feels socially costly
+- **Authority bias**: Junior team members defer to senior ones even when they see problems
+- **Momentum bias**: Once a direction is chosen, the cost of changing course feels too high, so concerns are suppressed
+- **Survivorship bias**: Only the decisions that worked are remembered; the warnings that were ignored are forgotten
+
+## The Practice
+
+### The Mandatory Challenger
+
+In any structured review or decision-making session, one team member is assigned the role of **Mandatory Challenger**. Their job is to:
+
+- Argue against the proposed direction, even if they personally agree with it
+- Identify the weakest assumptions in the current plan
+- Propose at least one credible alternative
+- Articulate the scenario in which the current plan fails
+
+This role rotates. It is not a personality trait — it is a structural function. By making challenge a formal responsibility, it removes the social cost of disagreement.
+
+### The Dissent Register
+
+Every significant dissenting opinion is recorded in the project's decision log with the following structure:
+
+| Field | Description |
+|---|---|
+| **Decision ID** | Reference to the decision being challenged |
+| **Dissenting View** | The alternative position or concern |
+| **Raised By** | Who raised the concern (role, not necessarily name) |
+| **Rationale** | Why this concern has merit |
+| **Resolution** | How the concern was addressed — accepted, mitigated, or overruled |
+| **Overrule Rationale** | If overruled, why the team chose to proceed anyway |
+| **Review Trigger** | Conditions under which this dissent should be revisited |
+
+### Why Record Overruled Concerns?
+
+Overruled concerns are not dead. They are **dormant**. Recording them serves three purposes:
+
+1. **Future validation**: If the overruled concern proves correct later, the team can trace back to the original warning and learn from the pattern
+2. **Accountability**: The rationale for overruling is preserved, preventing revisionist history
+3. **Onboarding**: New team members can understand not just what was decided, but what was considered and rejected, and why
+
+## Integration with Sprint Workflow
+
+- **Sprint planning**: Review the dissent register from the previous sprint. Have any review triggers been activated?
+- **Sprint review**: The Mandatory Challenger presents the strongest counterargument to the sprint's key decisions
+- **Retrospective**: Identify any dissent that was suppressed or not captured, and add it to the register
+
+## Anti-Patterns
+
+- **Performative Challenge**: The Mandatory Challenger raises trivial objections to fulfill the role without engaging substantively. The role requires genuine intellectual effort.
+- **Dissent Without Documentation**: Concerns are raised in meetings but not recorded. They are effectively lost.
+- **Punishment for Dissent**: Team members who raise uncomfortable concerns are sidelined or labeled as "negative." This kills the mechanism entirely.
+- **Permanent Overrule**: A concern is overruled once and never revisited, even when circumstances change.

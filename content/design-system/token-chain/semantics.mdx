@@ -1,0 +1,56 @@
+---
+title: Semantics
+description: Layer 2 — purpose-driven aliases that describe what a value means, not its raw appearance.
+---
+
+## Definition
+
+Semantic tokens are **purpose-driven aliases**. They describe *what* a value means, not its raw appearance. Always prefer semantic over primitive.
+
+## Naming Pattern
+
+`--{element}-{variant}-{state}`
+
+**Elements:** `page`, `foreground`, `background`, `border`, `overlay`, `space`, `radii`, `sizes`
+
+**States:** `rest`, `hover`, `active`, `inverted`, `disabled`
+
+## Emphasis Scale in Naming
+
+The emphasis scale is applied within the variant segment:
+
+```
+weaker → weak → (standard/omitted) → strong
+```
+
+Examples:
+
+```css
+--background-neutral-weaker-rest    /* weakest neutral background at rest */
+--foreground-brand-rest             /* standard brand foreground */
+--border-neutral-strong-hover       /* strong neutral border on hover */
+```
+
+## Foreground / Background Pairing
+
+Always pair foreground and background tokens from the **same family and emphasis level** to ensure contrast:
+
+```css
+/* DO — matched family and emphasis */
+.card {
+  background: var(--background-neutral-weaker-rest);
+  color: var(--foreground-neutral-rest);
+}
+
+/* DON'T — mismatched families */
+.card {
+  background: var(--background-brand-rest);
+  color: var(--foreground-neutral-strong-rest);
+}
+```
+
+## Rules
+
+- Use semantic tokens in components, not primitives
+- Reference primitives via `var()` when defining new semantics
+- Paired semantic tokens should meet accessibility contrast requirements — do not mix families

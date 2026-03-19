@@ -1,0 +1,62 @@
+---
+title: State
+description: The interactive condition of a component — always runtime, never a composition decision.
+---
+
+## Definition
+
+State represents the **interactive condition** of a component at any given moment. It is the only dimension that is **never set at composition time** — it is always determined by runtime user interaction.
+
+## Values
+
+| Value | Trigger |
+|-------|---------|
+| `rest` | Default. No interaction occurring. |
+| `hover` | Pointer over the element. |
+| `active` | Element is being pressed / clicked. |
+| `selected` | Element is in a chosen / on state. |
+| `disabled` | Element is not interactive. |
+| `resolving` | Async operation in progress. |
+| `pending` | Awaiting confirmation or external state. |
+
+**Default:** `rest`
+
+## Key Rule
+
+> State is **never** a composition decision. Never pass a static state prop. State is always determined by user interaction at runtime.
+
+```html
+<!-- Wrong — state is hardcoded -->
+<Button state="hover" sentiment="warning" emphasis="high">Submit</Button>
+
+<!-- Correct — state is absent; the component manages it -->
+<Button sentiment="warning" emphasis="high">Submit</Button>
+```
+
+In the design decision order (Sentiment → Emphasis → Size → Density → Structure → State), state comes last because it is never chosen — it happens.
+
+## Implementation
+
+State maps to CSS pseudo-classes and ARIA states:
+
+```css
+[data-state="rest"]      { /* default styles */ }
+[data-state="hover"],
+:hover                   { /* hover styles */ }
+[data-state="active"],
+:active                  { /* active styles */ }
+[data-state="disabled"],
+:disabled                { /* disabled styles */ }
+[aria-selected="true"]   { /* selected styles */ }
+```
+
+## In Token Naming
+
+State appears as the final segment in semantic token names:
+
+```css
+--background-neutral-weaker-rest
+--background-neutral-weaker-hover
+--border-neutral-strong-active
+--foreground-brand-disabled
+```

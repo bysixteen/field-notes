@@ -1,0 +1,105 @@
+---
+title: The CLAUDE.md Playbook
+description: How to write effective CLAUDE.md files — minimal, human-curated, and evolving.
+---
+
+A `CLAUDE.md` file is the primary way you communicate project context to an AI coding agent. It sits at the root of your repository and provides the agent with information it cannot discover on its own — architectural decisions, naming conventions, common pitfalls, and workflow expectations.
+
+Getting this file right is one of the highest-leverage activities in AI-assisted development. Getting it wrong — bloating it with redundant or generated content — actively hurts performance.
+
+## Core Principle: Minimal, Human-Curated, and Evolving
+
+The most effective `CLAUDE.md` files share three qualities: they are small, they are written by humans who work in the codebase, and they change over time as the team learns.
+
+| Do | Don't |
+|---|---|
+| Keep the file under 60 lines | Write a comprehensive project wiki |
+| Add entries only when correcting real observed mistakes | Add speculative "might be useful" entries |
+| Write entries yourself, by hand | Ask an LLM to generate the file |
+| Review and prune quarterly | Let the file grow without bounds |
+| Point to existing documentation | Duplicate information that lives elsewhere |
+| Focus on what is not discoverable from code | Restate what the code already makes obvious |
+
+## The Science
+
+Two studies provide the empirical foundation for these recommendations.
+
+### Study 1: AGENTS.md Improves Efficiency
+
+A study published as [arXiv:2601.20404](https://arxiv.org/abs/2601.20404) found that including an `AGENTS.md` file led to **28.64% faster task completion** and **16.58% lower token consumption**. The conclusion was clear: giving agents structured context about a project makes them more efficient.
+
+### Study 2: Authorship Matters
+
+A study referenced by Theo found a more nuanced result. When the context file was **LLM-generated**, agent performance dropped by **3%** while token costs increased by **20%**. When the file was **human-written**, performance improved by **4%**.
+
+### The Reconciled Truth
+
+Both studies are correct. Having a context file is beneficial — but only if it is human-written. LLM-generated context files introduce noise, redundancy, and information the agent can already discover on its own. This noise increases token consumption without improving (and sometimes degrading) task performance.
+
+The takeaway: write your `CLAUDE.md` by hand, keep it tight, and treat every line as something that must earn its place.
+
+## What to Include: The Tier Hierarchy
+
+Not all context is created equal. Use this tier system to decide what belongs in your file.
+
+### Tier 1: Essentials
+
+These are the entries that belong in every `CLAUDE.md` file. They answer the most basic questions an agent needs answered before it can do useful work.
+
+- **The What**: What is this project? One or two sentences describing the system's purpose.
+- **The Why**: What problem does it solve? What users does it serve? This prevents the agent from making changes that conflict with the project's intent.
+- **The How**: How to build, test, and run the project. The specific commands, in the specific order, with any non-obvious flags.
+- **Pointers to Deeper Context**: Links or file paths to architecture docs, ADRs, or design system documentation. Do not duplicate this content — just point to it.
+
+### Tier 2: Compounding Knowledge
+
+These entries accumulate over time as the team observes real mistakes made by the agent. Each one represents a correction that prevents a recurring error.
+
+- "Always use `pnpm`, not `npm` — the lockfile is pnpm-specific."
+- "Date formatting uses `dd/MM/yyyy` throughout the app. Do not use `MM/dd/yyyy`."
+- "The `utils/` directory is legacy. New utilities go in `lib/`."
+
+The key: every Tier 2 entry should trace back to a real incident. If you cannot point to a time the agent got it wrong, the entry probably does not need to exist.
+
+### Tier 3: Project-Specific Rules
+
+Use this tier sparingly. These are entries that encode design decisions or constraints that are genuinely non-discoverable and not covered by Tiers 1 or 2.
+
+- "We intentionally do not use Server Components for the dashboard module because of a downstream caching incompatibility with the analytics provider."
+- "The `legacy-api/` service must remain on Node 16 until the migration in Q3."
+
+If you find yourself adding many Tier 3 entries, consider whether the information would be better served as inline code comments or ADRs.
+
+## The Litmus Test
+
+Before adding any new entry to your `CLAUDE.md`, ask three questions:
+
+1. **Is it discoverable?** Could the agent figure this out by reading the code, the `package.json`, the `tsconfig.json`, or existing documentation? If yes, do not add it.
+2. **Is it universally applicable?** Does this apply to virtually every task the agent might perform in this repo? If it only applies to one module, consider a module-level `CLAUDE.md` or an inline comment instead.
+3. **Is it correcting a real mistake?** Did the agent actually get this wrong, or are you anticipating a problem that has not occurred? Add corrections, not predictions.
+
+If the answer to all three is "no, yes, yes" — add it. Otherwise, leave it out.
+
+## Practical Implementation
+
+### Start Minimal
+
+Begin with five to ten lines covering Tier 1 essentials. Resist the urge to front-load the file with everything you know about the project. A blank `CLAUDE.md` is better than a bloated one — the agent already has access to your code.
+
+### Empower the Team
+
+Make it a team norm that anyone can propose additions to `CLAUDE.md`, but every addition must pass the litmus test. Treat the file like production code: it gets reviewed in pull requests, and unnecessary additions get pushed back.
+
+### Review Quarterly
+
+Set a calendar reminder to review the file every quarter. Ask:
+
+- Is every entry still accurate?
+- Has the codebase changed in ways that make entries obsolete?
+- Are there entries that the agent now handles correctly without guidance?
+
+Delete aggressively. The file should get shorter over time as the agent improves and as your codebase becomes more self-documenting.
+
+### Use Compounding Engineering
+
+The most valuable additions come from the workflow itself. When the agent makes a mistake, fix the mistake and then add a one-line correction to `CLAUDE.md`. Over weeks and months, these corrections compound into a highly effective context file — one that reflects the actual failure modes of your specific codebase, not generic best practices.

@@ -1,0 +1,54 @@
+---
+title: Semantic Naming
+description: The --{element}-{variant}-{state} pattern for purpose-driven tokens.
+---
+
+## Pattern
+
+`--{element}-{variant}-{state}`
+
+## Elements
+
+The first segment identifies the **type of surface or property**:
+
+| Element | Purpose |
+|---------|---------|
+| `page` | Full page backgrounds |
+| `foreground` | Text and icon colours |
+| `background` | Component and surface backgrounds |
+| `border` | Border and divider colours |
+| `overlay` | Modal and overlay backgrounds |
+| `space` | Spacing values |
+| `radii` | Border radius values |
+| `sizes` | Dimension values |
+
+## Variant
+
+The middle segment combines the **colour family** and **emphasis level**:
+
+```css
+--background-neutral-weaker-rest    /* neutral family, weaker emphasis */
+--background-brand-rest             /* brand family, standard emphasis */
+--border-neutral-strong-hover       /* neutral family, strong emphasis */
+```
+
+## State
+
+The final segment is always the **interactive state**:
+
+| State | Meaning |
+|-------|---------|
+| `rest` | Default idle |
+| `hover` | Pointer over |
+| `active` | Being clicked |
+| `inverted` | Inverted context |
+| `disabled` | Non-interactive |
+
+## Full Examples
+
+```css
+--background-neutral-weaker-rest     /* lightest neutral bg, idle */
+--foreground-brand-rest              /* brand-coloured text, idle */
+--border-neutral-strong-hover        /* strong neutral border, hovered */
+--background-warning-rest            /* warning background, idle */
+```

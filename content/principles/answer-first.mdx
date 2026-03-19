@@ -1,0 +1,86 @@
+---
+title: "Answer First"
+description: "Every document must have the conclusion in the first body section. Never bury the lead."
+---
+
+## The Principle
+
+Every document must have the conclusion in the **first body section**. Never bury the lead.
+
+This applies to sprint outputs, decision logs, status reports, technical analyses, and all other forms of documentation. The reader should know the answer, recommendation, or conclusion before they encounter any supporting detail.
+
+## Why This Matters
+
+Most documents are structured as narratives: background, analysis, discussion, and finally the conclusion. This structure optimizes for the writer's thought process, not the reader's needs.
+
+The cost is significant:
+
+- **Executives and stakeholders** do not have time to read to the end. If the conclusion is on page 5, they will make decisions based on incomplete information from page 1.
+- **AI assistants** processing documents for synthesis perform dramatically better when the key information is at the top. Context windows are finite, and the most important content should occupy the most privileged position.
+- **Future team members** searching through decision logs need to quickly determine whether a document is relevant. A clear answer at the top enables rapid scanning.
+- **The author themselves**, returning to a document weeks later, benefits from immediate re-orientation.
+
+## The Structure
+
+Every document should follow this pattern:
+
+```
+# Title
+
+## Answer / Recommendation / Decision
+[The conclusion, stated clearly and completely]
+
+## Context
+[Why this question arose, what prompted the analysis]
+
+## Analysis
+[The detailed supporting work]
+
+## Alternatives Considered
+[What else was evaluated and why it was rejected]
+
+## Appendix
+[Raw data, extended analysis, supplementary material]
+```
+
+The reader who stops after the first section has the answer. The reader who continues gets the supporting rationale. The reader who reaches the appendix gets the full depth.
+
+## Application Examples
+
+### Decision Log Entry
+
+Instead of:
+
+> We evaluated three state management approaches for the dashboard feature. Redux offers a mature ecosystem but adds significant boilerplate. Zustand provides a simpler API but has a smaller community. Jotai uses an atomic model that...
+> [three paragraphs later]
+> ...therefore we chose Zustand.
+
+Write:
+
+> **Decision**: Use Zustand for dashboard state management.
+>
+> **Rationale**: Simpler API than Redux with sufficient capability for our use case. Atomic state management (Jotai) was considered but rejected due to team unfamiliarity.
+
+### Sprint Output
+
+Instead of:
+
+> During Sprint 4, the team focused on the onboarding flow. We conducted user testing with 8 participants and found that...
+> [two pages later]
+> ...the key finding is that users cannot complete onboarding without help.
+
+Write:
+
+> **Key Finding**: Users cannot complete onboarding without assistance. 6 of 8 test participants required intervention to finish the flow.
+>
+> **Sprint 4 focused on the onboarding flow.** User testing with 8 participants revealed critical usability gaps...
+
+## The Test
+
+Open any document produced by the team. Read only the first section. Do you know:
+
+1. What the document is about?
+2. What the conclusion or recommendation is?
+3. Whether you need to read further?
+
+If any answer is no, the document needs restructuring.

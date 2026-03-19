@@ -1,0 +1,55 @@
+---
+title: Emphasis
+description: How loudly a component communicates — the visual weight and intensity of its signal.
+---
+
+## Definition
+
+Emphasis controls the **surface area and intensity** of a sentiment's expression. It answers: *how urgently must the user receive this signal?*
+
+## Values
+
+| Value | Meaning | Visual expression |
+|-------|---------|-------------------|
+| `high` | Maximum presence | Solid backgrounds, strong colour, full visibility |
+| `medium` | Moderate presence | Tinted or bordered surfaces |
+| `low` | Minimal presence | Reduced saturation, no background, reduced border |
+
+## In Semantic Token Naming
+
+The emphasis scale maps to token naming as:
+
+```
+weaker → weak → (standard/omitted) → strong
+```
+
+For example:
+- `--background-neutral-weaker-rest` — weakest neutral background at rest
+- `--background-neutral-rest` — standard neutral background
+- `--border-neutral-strong-hover` — strong neutral border on hover
+
+## The Emphasis-Sentiment Relationship
+
+Emphasis and Sentiment are independent axes, but their combination carries semantic weight. Low emphasis degrades a sentiment's signal across multiple properties simultaneously — reducing colour intensity, saturation, and the presence of background or border surfaces.
+
+This is intentional: it enables advisory communication without alarming the user.
+
+However, this degradation creates a **legibility floor**. A warning at low emphasis may visually approach neutral. This is only appropriate when the warning is **genuinely advisory rather than critical.**
+
+### Hard Rule
+
+> The combination of `sentiment + emphasis` must reflect the actual urgency of the content. Reducing emphasis to lower visual weight when the situation is genuinely critical is a **semantic error** — not an aesthetic choice.
+
+## Decision Guide
+
+For **action elements** (buttons, links, interactive controls):
+
+| Content criticality | Correct combination |
+|--------------------|---------------------|
+| User's action is blocked or irreversible | `warning` + `high` |
+| User should be aware but can proceed | `warning` + `medium` |
+| User may want to know, not blocking | `warning` + `low` |
+| Positive distinction, prominent | `highlight` + `high` |
+| Positive distinction, ambient | `highlight` + `low` |
+
+For **container elements** (banners, cards, panels) — containers default to `neutral` with appropriate emphasis for visibility, escalating to a specific sentiment only when the situation is imminent or blocking. See [Sentiment](/design-system/model/sentiment) for the container vs action pattern.

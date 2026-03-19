@@ -1,0 +1,31 @@
+---
+title: Claude & AI Workflows
+description: Patterns for working effectively with AI coding agents.
+---
+
+This section documents patterns, research findings, and practical frameworks for working effectively with AI coding agents. The goal is to move beyond ad-hoc prompting toward systematic, repeatable workflows that compound in value over time.
+
+## What You'll Find Here
+
+### CLAUDE.md Best Practices
+
+The `CLAUDE.md` file (or `AGENTS.md`) is the primary interface between your codebase and an AI agent. Research shows that having one improves agent efficiency — but only if it is human-written, minimal, and actively maintained. The [CLAUDE.md Playbook](/claude/claude-md-playbook) covers what to include, what to leave out, and how to evolve the file over time.
+
+### Agent Efficiency Research
+
+Two prominent studies reached seemingly contradictory conclusions about the value of agent context files. The [Agent Efficiency Research](/claude/agent-efficiency) page reconciles these findings into a single, actionable truth: context files work, but authorship and size matter enormously.
+
+### Research to Validation Pathway
+
+Prototypes that drift from their source research create waste. The [Research to Validation Pathway](/claude/research-to-validation) defines a five-step process — Research, Synthesis, Prototype Creation, Validation, Outcome — that keeps agent-generated work traceable back to the decisions that motivated it.
+
+### Skill-Based Automation
+
+When you find yourself giving the same instructions to an agent repeatedly, it is time to encode that workflow as a skill. The [Skill-Based Automation](/claude/skills-patterns) page catalogs common skill categories observed across projects and provides best practices for writing skills that remain useful as your codebase evolves.
+
+## Guiding Principles
+
+- **Minimal over maximal.** Less context, delivered precisely, outperforms walls of text.
+- **Human-curated over generated.** Agent-written documentation about how to use agents creates a feedback loop that degrades quality.
+- **Compounding over static.** The best context files grow through real corrections, not speculative additions.
+- **Traceable over ad-hoc.** Every prototype should connect back to the research that motivated it.

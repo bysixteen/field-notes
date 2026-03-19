@@ -1,0 +1,15 @@
+{
+  "title": "Platform Patterns",
+  "pages": [
+    "index",
+    "---Architecture Patterns---",
+    "data-architecture",
+    "auth-rls",
+    "audit-first",
+    "documentation-hub",
+    "---Monorepo Patterns---",
+    "monorepo",
+    "three-app-model",
+    "scaffolding-first"
+  ]
+}

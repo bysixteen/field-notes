@@ -1,0 +1,30 @@
+---
+title: Component Slots
+description: Layer 3 — named openings inside a component's variable collections.
+---
+
+## Definition
+
+Component slots are **named openings** inside a component's variable collections. Each slot declares *which semantic token fills this role* under a given combination of dimensions.
+
+## How Slots Work
+
+```
+// Button component slots (examples)
+background/rest   → --background-neutral-weak-rest  (neutral, low emphasis)
+background/rest   → --background-brand-rest          (neutral, high emphasis)
+background/hover  → --background-neutral-weak-hover
+```
+
+Slots are the **named contract** between a component and its token system. They are the vocabulary the resolver speaks.
+
+## Design to Code Flow
+
+1. **Designer** defines variable collections per component
+2. **Transformer** extracts collections into a manifest
+3. **Component manifest** publishes the compiled slots
+4. **Resolver** reads slots at runtime to resolve the correct token
+
+## Strategic Sampling
+
+Rather than generating every possible dimensional combination per component, the manifest can contain a set of **strategic samples** covering the most common real-world configurations. The resolver interpolates from these samples for uncovered combinations.

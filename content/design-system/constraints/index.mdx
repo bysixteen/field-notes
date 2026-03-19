@@ -1,0 +1,34 @@
+---
+title: Constraints & Rules
+description: Guardrails for working with the token system.
+---
+
+## Core Rules
+
+| Rule | Rationale |
+|------|-----------|
+| Never invent token names — use existing tokens | Maintains traceability to the design system source |
+| Never hardcode colour/spacing values | Breaks theming and consistency |
+| Use semantic tokens in components, not primitives | Primitives bypass theme switching |
+| Primitives only when defining new semantics | Semantics reference primitives via `var()` |
+| Import primitives before semantics in CSS | Semantics depend on primitive `var()` declarations |
+| Never edit auto-generated token files | Overwritten on next build; use extension files for manual tokens |
+
+## Component Development
+
+- All values from CSS custom properties — no hardcoded values
+- Token resolution via a resolver service for dimensional variation
+- Semantic tokens only in component styles
+
+## Composition Rules
+
+See [Composition Checklist](/design-system/composition) for the full decision framework.
+
+Key guardrails:
+1. Sentiment is content-driven — confirm intent before assigning
+2. Emphasis reflects criticality — not aesthetics
+3. Only declared sentiments are valid
+4. State is never set manually
+5. Sentiment flows down; emphasis does not
+6. Never set emphasis on a container
+7. Density is inherited, not composed

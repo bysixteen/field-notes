@@ -1,0 +1,175 @@
+---
+title: Data Architecture Patterns
+description: Splitting transactional and editorial data across purpose-built services.
+---
+
+Platform data splits naturally into two categories: transactional data that requires integrity, security, and complex queries, and editorial content that requires easy authoring, preview, and flexible structuring. Each category belongs in a purpose-built service.
+
+## The Split
+
+| Data Type | Service | Examples |
+| --- | --- | --- |
+| **Transactional** | Relational database (e.g., Supabase/Postgres) | User records, status tracking, financial data, audit trails, role assignments |
+| **Editorial** | Headless CMS (e.g., Sanity, Contentful) | Page content, news articles, timetables, FAQs, email templates |
+
+The boundary is clear: if the data requires referential integrity, row-level security, or participates in workflows with state transitions, it belongs in the relational database. If the data is content that non-technical team members need to author and preview, it belongs in the CMS.
+
+## Why Split
+
+### Each Service Excels at Its Purpose
+
+A relational database is purpose-built for transactional integrity. It enforces foreign key constraints, supports complex joins, provides row-level security, and guarantees ACID transactions. Asking a CMS to do these things results in fragile workarounds.
+
+A headless CMS is purpose-built for content authoring. It provides rich text editors, image handling, content preview, draft/publish workflows, and a UI that non-technical team members can use without developer involvement. Building this in a relational database means building a custom CMS.
+
+### Operational Independence
+
+Content editors can publish a news article or update a page without touching the database or requiring a code deployment. Database schema changes don't affect content workflows. Each service can be maintained, scaled, and backed up independently.
+
+### Team Autonomy
+
+Non-technical team members manage editorial content directly in the CMS. Developers manage transactional data through migrations and application code. Neither team blocks the other.
+
+## Transactional Side
+
+The relational database (e.g., Supabase backed by PostgreSQL) handles all data that requires integrity guarantees and access control.
+
+### What Lives Here
+
+- **User records**: Profiles, contact information, account status.
+- **Status tracking**: Workflow stages, application states, approval chains.
+- **Financial data**: Payments, invoices, fee calculations, billing records.
+- **Audit trails**: Append-only event records for every state change (see [Audit-First Architecture](/platform/audit-first)).
+- **Role assignments**: Which users have which roles, used by RLS policies.
+- **Relationships**: Any data where referential integrity matters (foreign keys between tables).
+
+### Row-Level Security
+
+RLS policies enforce access control at the database level. Every query is filtered based on the authenticated user's role and identity. See [Auth & Row-Level Security](/platform/auth-rls) for the full pattern.
+
+### Edge Functions
+
+Serverless functions that run close to the database, used for:
+
+- **Webhook handlers**: Receiving callbacks from external services (payment processors, form submissions, email delivery status).
+- **Background processing**: Tasks triggered by database changes (sending notifications, updating aggregates).
+- **External integrations**: Connecting to third-party APIs that shouldn't be called directly from the client.
+
+### Scheduled Jobs with pg_cron
+
+PostgreSQL's `pg_cron` extension enables scheduled database tasks without external cron services:
+
+```sql
+-- Check for expired records every day at midnight
+SELECT cron.schedule(
+  'check-expirations',
+  '0 0 * * *',
+  $$
+    UPDATE memberships
+    SET status = 'expired'
+    WHERE expiry_date < CURRENT_DATE
+    AND status = 'active';
+  $$
+);
+
+-- Sync data aggregates every hour
+SELECT cron.schedule(
+  'sync-aggregates',
+  '0 * * * *',
+  $$
+    SELECT refresh_dashboard_stats();
+  $$
+);
+```
+
+Benefits of pg_cron over external schedulers:
+- Runs inside the database with full SQL access.
+- No additional infrastructure to maintain.
+- Respects RLS and database permissions.
+- Survives application deployments (it's a database extension, not application code).
+
+## Editorial Side
+
+The headless CMS handles all content that non-technical team members need to create, edit, and publish.
+
+### What Lives Here
+
+- **Page content**: Landing pages, about pages, service descriptions — any content-driven page on the public site.
+- **News and announcements**: Articles with rich text, images, categories, and publish dates.
+- **Timetables and schedules**: Structured content with times, locations, and descriptions.
+- **FAQs and help content**: Question-answer pairs, categorized and searchable.
+- **Email templates**: Reusable templates with variable substitution for transactional emails.
+
+### Email Templates with Variable Substitution
+
+The CMS stores email templates as structured content with placeholder variables:
+
+```
+Subject: Your {{record_type}} has been {{status}}
+
+Hello {{first_name}},
+
+Your {{record_type}} (reference: {{reference_number}}) has been
+{{status}} on {{date}}.
+
+{{#if notes}}
+Note from the team: {{notes}}
+{{/if}}
+
+Best regards,
+The Team
+```
+
+When the application needs to send an email:
+1. Fetch the template from the CMS.
+2. Substitute variables with actual data from the database.
+3. Send via the email provider.
+
+This means non-technical team members can edit email wording, formatting, and structure without code changes or deployments.
+
+### Content Preview
+
+The CMS provides preview capabilities so editors can see exactly how content will appear on the public site before publishing. This typically involves:
+
+- A draft/published state for each content document.
+- A preview endpoint in the public site app that renders draft content.
+- Visual editing or side-by-side preview in the CMS studio.
+
+## Database Conventions
+
+Consistent naming and structural conventions across the transactional database:
+
+### Table Naming
+
+- **Plural snake_case**: `users`, `prospect_events`, `fee_schedules`.
+- Table names describe what they contain (a collection of records), hence plural.
+
+### Column Naming
+
+- **snake_case**: `first_name`, `created_at`, `updated_by`.
+- Timestamps use `_at` suffix: `created_at`, `updated_at`, `deleted_at`.
+- Foreign keys use the singular table name with `_id`: `user_id`, `prospect_id`.
+- Boolean columns use `is_` or `has_` prefix: `is_active`, `has_verified_email`.
+
+### Event and Audit Tables
+
+- Named as `{entity}_events` (e.g., `prospect_events`, `membership_events`).
+- Always append-only — never update or delete rows in event tables.
+- Always include: `id`, `{entity}_id`, `from_stage`/`from_status`, `to_stage`/`to_status`, `changed_by`, `changed_at`, `notes`.
+
+### Status Tracking
+
+- Use a dedicated `status` or `stage` column on the main record for the current state.
+- The event table records the full history of state transitions.
+- Status values are lowercase snake_case strings: `enquiry_received`, `under_review`, `approved`, `rejected`.
+
+## Trade-offs
+
+| Benefit | Cost |
+| --- | --- |
+| Each service used for its strength | Two systems to learn and maintain |
+| Non-technical team edits content directly | Data relationships can't span the two systems |
+| Independent scaling and backup | Need a strategy for data that could live in either |
+| Strong transactional integrity where needed | Slightly more complex initial setup |
+
+The split pays for itself on any platform where both transactional workflows and editorial content are first-class concerns. If the platform is purely transactional (no content authoring), a CMS may be unnecessary. If it is purely editorial (no user data or workflows), a relational database may be overkill.

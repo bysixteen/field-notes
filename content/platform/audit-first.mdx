@@ -1,0 +1,287 @@
+---
+title: Audit-First Architecture
+description: Append-only event tables for complete state transition history.
+---
+
+Every significant state change is recorded in an append-only events table. The current state is a column on the main record, but the full history is always available. This provides a complete audit trail, supports compliance requirements, and enables questions like "what happened to this record and when?"
+
+## The Pattern
+
+Two tables work together for every entity that has a lifecycle:
+
+1. **Main record table**: Holds the current state of the entity, including a `status` or `stage` column that reflects the most recent state.
+2. **Events table**: An append-only log of every state transition — who changed it, when, from what state, to what state, and why.
+
+The main record tells you where something is now. The events table tells you everywhere it has been.
+
+## Example Schema
+
+```sql
+-- Main record: holds the current state
+CREATE TABLE prospects (
+  id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  first_name text NOT NULL,
+  last_name text NOT NULL,
+  email text,
+  phone text,
+  stage text NOT NULL DEFAULT 'enquiry_received',
+  assigned_to uuid REFERENCES auth.users(id),
+  created_at timestamptz DEFAULT now(),
+  updated_at timestamptz DEFAULT now()
+);
+
+-- Append-only audit trail: records every state transition
+CREATE TABLE prospect_events (
+  id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  prospect_id uuid NOT NULL REFERENCES prospects(id),
+  from_stage text,
+  to_stage text NOT NULL,
+  changed_by uuid REFERENCES auth.users(id),
+  changed_at timestamptz DEFAULT now(),
+  notes text
+);
+```
+
+### Reading the Schema
+
+- When a new prospect is created, `stage` defaults to `'enquiry_received'` and an initial event is recorded with `from_stage = NULL` and `to_stage = 'enquiry_received'`.
+- When the stage changes, the `stage` column on the prospect is updated, and a new row is appended to `prospect_events`.
+- The events table is never updated or deleted. Every row is a permanent record.
+
+### Stage Lifecycle Example
+
+A typical entity might move through stages like:
+
+```
+enquiry_received → contacted → assessment_booked → assessment_completed
+→ offer_made → enrolled → active → completed
+```
+
+Or it might branch:
+
+```
+enquiry_received → contacted → no_response → archived
+enquiry_received → contacted → assessment_booked → declined
+```
+
+Every path is captured in the events table, regardless of how simple or complex the workflow.
+
+## Implementation
+
+### The Append-Only Rule
+
+Events tables have one absolute rule: **never update or delete event records.**
+
+- `INSERT` is the only write operation on an events table.
+- If an event was recorded incorrectly, add a correction event — do not modify the original.
+- This guarantees the audit trail is tamper-proof and complete.
+
+### Creating Events on State Changes
+
+When application code changes the stage of a record, it must also insert an event:
+
+```ts
+async function updateProspectStage(
+  prospectId: string,
+  newStage: string,
+  userId: string,
+  notes?: string
+) {
+  const { data: prospect } = await supabase
+    .from('prospects')
+    .select('stage')
+    .eq('id', prospectId)
+    .single()
+
+  // Update the current stage
+  await supabase
+    .from('prospects')
+    .update({ stage: newStage, updated_at: new Date().toISOString() })
+    .eq('id', prospectId)
+
+  // Record the transition (append-only)
+  await supabase
+    .from('prospect_events')
+    .insert({
+      prospect_id: prospectId,
+      from_stage: prospect.stage,
+      to_stage: newStage,
+      changed_by: userId,
+      notes: notes ?? null,
+    })
+}
+```
+
+### Querying the Audit Trail
+
+Retrieve the full history of any record:
+
+```sql
+SELECT
+  pe.from_stage,
+  pe.to_stage,
+  pe.changed_at,
+  pe.notes,
+  u.email AS changed_by_email
+FROM prospect_events pe
+LEFT JOIN auth.users u ON pe.changed_by = u.id
+WHERE pe.prospect_id = 'some-uuid'
+ORDER BY pe.changed_at ASC;
+```
+
+This returns a chronological timeline of every state change, including who made each change and any notes they left.
+
+## Automated Triggers
+
+Rather than relying on application code to always create events (which introduces the risk of forgetting), database triggers can automate event creation:
+
+```sql
+CREATE OR REPLACE FUNCTION record_prospect_stage_change()
+RETURNS TRIGGER AS $$
+BEGIN
+  IF OLD.stage IS DISTINCT FROM NEW.stage THEN
+    INSERT INTO prospect_events (
+      prospect_id,
+      from_stage,
+      to_stage,
+      changed_by,
+      notes
+    ) VALUES (
+      NEW.id,
+      OLD.stage,
+      NEW.stage,
+      auth.uid(),
+      NULL
+    );
+  END IF;
+  RETURN NEW;
+END;
+$$ LANGUAGE plpgsql SECURITY DEFINER;
+
+CREATE TRIGGER on_prospect_stage_change
+  AFTER UPDATE OF stage ON prospects
+  FOR EACH ROW
+  EXECUTE FUNCTION record_prospect_stage_change();
+```
+
+With this trigger in place, any update to the `stage` column automatically creates an event record. Application code only needs to update the stage — the audit trail takes care of itself.
+
+### Trade-off: Triggers vs. Application Code
+
+| Approach | Benefit | Cost |
+| --- | --- | --- |
+| **Database trigger** | Never forgotten, works regardless of which app or service makes the change | Harder to include contextual notes, less visible in application code |
+| **Application code** | Can include rich context (notes, metadata), visible in code reviews | Can be forgotten, inconsistent across multiple apps |
+
+A common hybrid approach: use triggers for the core event creation (guaranteeing the audit trail), and allow application code to update the event with additional context (notes, metadata) after the fact.
+
+## Scheduled Jobs
+
+`pg_cron` enables periodic database tasks that interact with the audit system:
+
+### Weekly Expiry Alerts
+
+```sql
+SELECT cron.schedule(
+  'weekly-expiry-check',
+  '0 9 * * 1',  -- Every Monday at 9 AM
+  $$
+    -- Find records expiring in the next 30 days
+    UPDATE memberships
+    SET stage = 'expiry_warning'
+    WHERE expiry_date BETWEEN CURRENT_DATE AND CURRENT_DATE + INTERVAL '30 days'
+    AND stage = 'active';
+    -- The trigger automatically creates audit events for each change
+  $$
+);
+```
+
+### Data Synchronization
+
+```sql
+SELECT cron.schedule(
+  'sync-external-data',
+  '0 */6 * * *',  -- Every 6 hours
+  $$
+    SELECT sync_external_records();
+  $$
+);
+```
+
+Scheduled jobs that change entity stages automatically generate audit events through the database trigger, keeping the audit trail complete even for automated processes.
+
+## Benefits
+
+### Complete Audit Trail
+
+Every state change is recorded with who, when, from, to, and why. This answers questions that are impossible to answer from current state alone:
+
+- "Who moved this record to 'approved' status?"
+- "How long did this record spend in the 'under_review' stage?"
+- "What was the status of this record on March 15th?"
+- "How many records were processed by each staff member last month?"
+
+### Compliance
+
+Many regulated industries require audit trails. Append-only event tables satisfy audit requirements because:
+
+- The history is complete — no gaps.
+- The history is tamper-proof — no updates or deletes.
+- Each entry includes the actor (`changed_by`) and timestamp (`changed_at`).
+
+### Undo and Rollback
+
+Because the events table records the `from_stage`, it is straightforward to implement undo:
+
+```sql
+-- Find the most recent event for a prospect
+SELECT from_stage FROM prospect_events
+WHERE prospect_id = 'some-uuid'
+ORDER BY changed_at DESC
+LIMIT 1;
+
+-- Use the from_stage to revert (which creates a new event)
+UPDATE prospects SET stage = 'previous_stage' WHERE id = 'some-uuid';
+```
+
+The revert itself creates a new event, so the undo is also part of the audit trail.
+
+### Analytics and Reporting
+
+Event data enables time-based analytics:
+
+- **Funnel analysis**: How many records move from each stage to the next?
+- **Bottleneck detection**: Which stages have the longest dwell times?
+- **Staff performance**: How many transitions does each staff member process?
+- **Trend analysis**: Are processing times improving or degrading over time?
+
+```sql
+-- Average time spent in each stage
+SELECT
+  from_stage,
+  to_stage,
+  avg(changed_at - lag_changed_at) AS avg_duration
+FROM (
+  SELECT
+    from_stage,
+    to_stage,
+    changed_at,
+    LAG(changed_at) OVER (PARTITION BY prospect_id ORDER BY changed_at) AS lag_changed_at
+  FROM prospect_events
+) sub
+WHERE lag_changed_at IS NOT NULL
+GROUP BY from_stage, to_stage
+ORDER BY avg_duration DESC;
+```
+
+## Design Principles
+
+1. **Current state on the record, history in the events table.** Never derive current state from the events table — that's slow and fragile. The `stage` column is the source of truth for "where is this now?"
+
+2. **Events are append-only.** No exceptions. If you need to correct an event, add a new event that records the correction.
+
+3. **Every event has an actor.** The `changed_by` field is never null for human-initiated changes. Automated changes (triggers, cron jobs) should use a system identifier.
+
+4. **Every event has a timestamp.** The `changed_at` field defaults to `now()` and should never be overridden except in data migration scenarios.
+
+5. **Events tables follow a naming convention.** `{entity}_events` — consistent and predictable across the entire schema.

@@ -1,0 +1,201 @@
+---
+title: "Journey Mapping Template"
+description: "Reusable structure for mapping any part of a system from user need to validated outcome."
+---
+
+A journey map traces a user's path through the system from an initial need to a resolved outcome. It connects individual features into a coherent narrative and exposes gaps, friction points, and opportunities that are invisible when features are designed in isolation.
+
+## The Journey Map Structure
+
+Every journey map contains six sections:
+
+### 1. Context
+
+A brief description of who the user is, what triggers the journey, and what success looks like.
+
+### 2. Journey Table
+
+The step-by-step path through the system, including:
+
+- **Step number and name**
+- **User action**: What the user does
+- **System response**: What the system does in response
+- **Touchpoint**: The specific page, component, or notification involved
+- **Emotional state**: The user's likely emotional state at this step (confident, uncertain, frustrated, satisfied)
+- **Failure mode**: What could go wrong at this step
+- **Recovery**: How the system helps the user recover from failure
+
+### 3. Critical Moments
+
+The 2-4 steps where the journey is most likely to succeed or fail. These are the points that deserve the most design attention and testing.
+
+### 4. Validation Checklist
+
+The four-pillar validation applied specifically to this journey's critical moments.
+
+### 5. Open Questions
+
+Unresolved questions about the journey that need research, testing, or stakeholder input to answer.
+
+### 6. Linked Artifacts
+
+References to related decisions, personas, principles, and page-tree entries.
+
+## Full Markdown Template
+
+```markdown
+# Journey: [Journey Name]
+
+**ID**: JOURNEY-[NNN]
+**Persona**: [Link to persona in PERSONAS.md]
+**Trigger**: [What initiates this journey]
+**Success Outcome**: [What "done" looks like for the user]
+**Last Updated**: YYYY-MM-DD
+**Status**: Draft | In Review | Validated
+
+## Context
+
+[2-3 sentences describing the scenario. Who is the user?
+What do they need? What are the constraints?]
+
+## Journey
+
+| Step | User Action | System Response | Touchpoint | Emotional State | Failure Mode | Recovery |
+|---|---|---|---|---|---|---|
+| 1. [Name] | [What user does] | [What system does] | [Page/component] | [Emotion] | [What could go wrong] | [How to recover] |
+| 2. [Name] | | | | | | |
+| 3. [Name] | | | | | | |
+| 4. [Name] | | | | | | |
+| 5. [Name] | | | | | | |
+
+## Critical Moments
+
+### Critical Moment 1: [Step N — Name]
+- **Why this matters**: [Why this step is make-or-break]
+- **Design priority**: [What to focus on]
+- **Testing approach**: [How to validate this step works]
+
+### Critical Moment 2: [Step N — Name]
+- **Why this matters**: [...]
+- **Design priority**: [...]
+- **Testing approach**: [...]
+
+## Validation Checklist
+
+### Clarity
+- [ ] Each step's purpose is obvious to the user
+- [ ] Progress through the journey is visible
+- [ ] The user always knows what to do next
+
+### Attribution
+- [ ] Any data shown during the journey has a clear source
+- [ ] Recommendations or suggestions explain their basis
+
+### Reversibility
+- [ ] The user can go back to any previous step
+- [ ] Partial progress is saved automatically
+- [ ] The user can abandon the journey without penalty
+
+### Consistency
+- [ ] Each step follows the application's established patterns
+- [ ] Terminology is consistent throughout the journey
+- [ ] Visual treatment matches the design system
+
+## Open Questions
+
+- [ ] [Question 1]
+- [ ] [Question 2]
+- [ ] [Question 3]
+
+## Linked Artifacts
+
+- **Decisions**: [DEC-NNN, DEC-NNN]
+- **Principles**: [PRIN-NNN]
+- **Page Tree**: [Routes involved in this journey]
+- **Sprint**: [Sprint(s) that addressed this journey]
+```
+
+## Worked Example: Enquiry to Onboarding
+
+This example demonstrates a generic "enquiry to onboarding" journey for a membership platform. It maps the path from a prospective member's first interaction to their fully onboarded state.
+
+---
+
+### Journey: Enquiry to Onboarded Member
+
+**ID**: JOURNEY-001
+**Persona**: Prospective Member
+**Trigger**: User visits the platform's public landing page or receives a referral link
+**Success Outcome**: User has a fully activated account, has completed their profile, and has accessed the core platform feature for the first time
+**Last Updated**: 2025-01-15
+**Status**: In Review
+
+### Context
+
+A prospective member discovers the platform through organic search, social media, or a referral from an existing member. They need to understand what the platform offers, evaluate whether it meets their needs, and — if convinced — complete the sign-up and onboarding process with minimal friction. They may be comparing the platform to alternatives and will abandon the process if it feels confusing, slow, or untrustworthy.
+
+### Journey
+
+| Step | User Action | System Response | Touchpoint | Emotional State | Failure Mode | Recovery |
+|---|---|---|---|---|---|---|
+| 1. Discovery | Arrives at landing page | Displays value proposition, social proof, and clear CTA | Landing page | Curious but skeptical | Value proposition is unclear or generic | A/B test headlines; show specific outcomes not features |
+| 2. Exploration | Browses features, pricing, and testimonials | Surfaces relevant content based on referral source or landing context | Feature pages, pricing page | Evaluating, comparing | Information overload or insufficient detail | Progressive disclosure; FAQs that address common objections |
+| 3. Trial Initiation | Clicks "Start Free Trial" or "Sign Up" | Presents minimal sign-up form (email + password or SSO) | Sign-up modal/page | Committed but impatient | Form is too long or requires unnecessary information | Reduce to essential fields only; defer profile completion |
+| 4. Email Verification | Clicks verification link in email | Confirms account, redirects to onboarding flow | Email, verification page | Mildly annoyed (friction) | Email not received, link expired | Resend option, magic link alternative, clear error messaging |
+| 5. Profile Setup | Completes profile (role, interests, goals) | Saves profile, tailors onboarding based on responses | Profile setup wizard | Engaged if quick, frustrated if long | Wizard is too many steps or asks irrelevant questions | Show progress bar; allow "Skip for now" on optional fields |
+| 6. Guided First Action | Follows prompt to complete the platform's core action | Walks user through the core feature with contextual help | Core feature page with overlay guidance | Hopeful, slightly uncertain | Guidance is patronizing or insufficient | Offer both quick-start and detailed walkthrough options |
+| 7. Completion Confirmation | Completes core action | Celebrates completion, shows what to explore next | Success state, dashboard | Satisfied, motivated | Anticlimactic response or unclear next steps | Clear success messaging with 2-3 suggested next actions |
+
+### Critical Moments
+
+#### Critical Moment 1: Step 3 — Trial Initiation
+
+- **Why this matters**: This is the highest-intent moment. The user has decided to try the platform. Any friction here directly converts to abandonment. Studies consistently show that each additional form field reduces conversion by 5-10%.
+- **Design priority**: Minimize form fields to the absolute minimum. Offer SSO options. Make the commitment feel low-risk (emphasize "free," "no credit card," "cancel anytime").
+- **Testing approach**: Measure conversion rate from landing page to completed sign-up. A/B test form length and SSO options. Run usability tests with 5 participants to identify friction points.
+
+#### Critical Moment 2: Step 6 — Guided First Action
+
+- **Why this matters**: This is the "aha moment" — the point where the user experiences the platform's core value for the first time. If this step fails, the user has an account but no reason to return. Time-to-value is the strongest predictor of long-term retention.
+- **Design priority**: Ensure the guided action demonstrates real value, not a trivial example. Use the user's profile data (from Step 5) to personalize the experience. Keep the guidance unobtrusive but available.
+- **Testing approach**: Measure completion rate of guided action. Track time-to-completion. Interview users who abandon at this step to understand why. Test with users who have zero prior context.
+
+### Validation Checklist
+
+#### Clarity
+- [ ] Landing page communicates the value proposition within 5 seconds
+- [ ] Sign-up form makes the commitment level clear (free trial, no credit card)
+- [ ] Onboarding wizard shows progress and estimated time remaining
+- [ ] Guided first action has clear, step-by-step instructions
+- [ ] Success state confirms completion and suggests next steps
+
+#### Attribution
+- [ ] Testimonials and social proof include verifiable sources
+- [ ] Pricing page clearly explains what is included at each tier
+- [ ] Any personalized recommendations explain why they were suggested
+
+#### Reversibility
+- [ ] User can go back to any previous step in the onboarding wizard
+- [ ] Profile information can be edited after initial setup
+- [ ] Account can be deactivated (not just deleted) if the user changes their mind
+- [ ] The guided first action can be restarted or skipped
+
+#### Consistency
+- [ ] Visual design matches across landing page, sign-up, and onboarding
+- [ ] Terminology for the core action is consistent throughout
+- [ ] Button styles and placement follow the design system
+- [ ] Error messages follow the application's established format
+
+### Open Questions
+
+- [ ] What is the optimal number of profile setup fields? Need data from comparable platforms.
+- [ ] Should the guided first action use real user data or sample data? Trade-off between value demonstration and setup friction.
+- [ ] What is the drop-off rate at email verification? Is magic link sign-in a viable alternative?
+- [ ] How do referral users differ from organic users in onboarding completion rate?
+
+### Linked Artifacts
+
+- **Decisions**: DEC-001 (Authentication method), DEC-005 (Onboarding flow structure)
+- **Principles**: PRIN-002 (Progressive Disclosure), PRIN-004 (Time-to-Value)
+- **Page Tree**: `/landing`, `/signup`, `/verify`, `/onboarding/*`, `/dashboard`
+- **Sprint**: Sprint 1 (initial design), Sprint 3 (usability testing and iteration)

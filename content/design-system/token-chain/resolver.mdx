@@ -1,0 +1,63 @@
+---
+title: Resolver
+description: Layer 4 — runtime engine that resolves multi-dimensional token combinations.
+---
+
+## Definition
+
+The resolver takes a component name, a property (slot), and a modes object describing the active dimensional combination. It walks the alias chain and returns a concrete CSS custom property reference.
+
+## Usage
+
+```typescript
+tokenResolver.resolve('Button', 'background', {
+  state:     'hover',
+  emphasis:  'high',
+  sentiment: 'neutral',
+});
+// → var(--background-brand-hover)
+```
+
+## Key Principle
+
+The resolver is **mechanically pure**. It performs no semantic validation and will resolve any dimensionally valid combination. Whether a combination is *appropriate* is entirely a **composition-time responsibility**.
+
+This means:
+- The resolver will happily resolve `warning` + `low` emphasis even if the content is critical
+- Validation of semantic correctness happens at composition time, not resolution time
+- The resolver is a lookup engine, not a rules engine
+
+## How Dimensions Become Props
+
+Each dimension surfaces as an explicit, typed prop on the component. The calling context must have resolved all relevant dimension values before rendering.
+
+```tsx
+<Button
+  sentiment="warning"
+  emphasis="high"
+  size="md"
+  density="default"
+>
+  Submit
+</Button>
+```
+
+Internally, the component calls the resolver at render time:
+
+```typescript
+resolver.resolve('Button', 'background', {
+  state:     this.currentState,  // always runtime
+  emphasis:  this.emphasis,      // from prop
+  sentiment: this.sentiment,     // from prop
+  size:      this.size,          // from prop
+  density:   this.density,       // from prop
+});
+```
+
+## Fallback Behaviour
+
+When an exact combination has no explicit token in the manifest, the resolver falls back through defaults:
+
+1. Try the exact dimensional combination
+2. Fall back omitted dimensions to their defaults
+3. Use the base token if no dimensional match exists

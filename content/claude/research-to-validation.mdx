@@ -1,0 +1,139 @@
+---
+title: Research to Validation Pathway
+description: A five-step pathway connecting prototypes to source research.
+---
+
+AI coding agents can generate prototypes quickly. The bottleneck is rarely creation — it is ensuring that what gets created actually aligns with the research, decisions, and user needs that motivated the work in the first place.
+
+This page defines a five-step pathway that connects research artifacts to validated prototypes, ensuring traceability at every stage.
+
+## The Problem
+
+Without a structured pathway from research to prototype, teams encounter four recurring failure modes:
+
+- **Scope creep.** The agent generates work that goes beyond what was researched and decided. Features appear that no one asked for. Design decisions get made implicitly rather than explicitly.
+- **Wasted effort.** Prototypes get built, reviewed, and rejected because they do not reflect the original intent. The time spent building and reviewing is unrecoverable.
+- **Subjective reviews.** Without clear validation criteria tied to research, reviews devolve into opinion-based feedback. "I don't like this" replaces "this doesn't match the user journey."
+- **Context burn.** Agents consume tokens re-reading raw research files on every invocation. Unprocessed research documents — interview transcripts, lengthy PRDs, raw persona descriptions — are expensive to parse and difficult for agents to extract actionable guidance from.
+
+## The Five Steps
+
+```
+Research → Synthesis → Prototype Creation → Validation → Outcome
+```
+
+Each step has clear inputs, outputs, and responsibilities.
+
+---
+
+### Step 1: Research
+
+**Purpose:** Gather the raw materials that will inform the prototype.
+
+**Artifacts produced:**
+
+- **User Journeys** — Step-by-step descriptions of how users move through the system to accomplish their goals. These define the scope of what the prototype must support.
+- **Product Requirements Documents (PRDs)** — Specifications covering functional requirements, constraints, success metrics, and priorities.
+- **Personas** — Descriptions of the target users, their contexts, their skill levels, and their needs. These ground design decisions in real user characteristics.
+- **Design Principles** — The explicit values that should guide decision-making when tradeoffs arise (e.g., "speed over completeness" or "consistency over novelty").
+
+**Key point:** These artifacts exist before any agent involvement. They are the product of human research, stakeholder conversations, and strategic decisions.
+
+---
+
+### Step 2: Synthesis
+
+**Purpose:** Transform raw research into agent-consumable documents.
+
+Raw research files are typically long, unstructured, and full of context that is important for humans but noisy for agents. The synthesis step creates a bridge: a set of living documents that distill research into the format an agent can act on efficiently.
+
+**The three living documents:**
+
+1. **Synthesized User Journey** — A condensed version of the user journey that maps each step to specific interface requirements. Removes narrative context and focuses on what the prototype must do at each stage.
+2. **Synthesized PRD** — A distilled requirements document that extracts actionable specifications from the full PRD. Organized by priority, with clear acceptance criteria for each requirement.
+3. **Synthesized Principles + Persona Context** — A combined document that pairs design principles with relevant persona attributes. When a principle says "prioritize clarity," the synthesized version specifies what clarity means for the target persona (e.g., "uses the product once a month, so nothing should require recall of previous sessions").
+
+**Key point:** The agent reads synthesized documents, not raw research files. This reduces token consumption, improves accuracy, and ensures the agent operates from a curated interpretation of the research rather than attempting its own interpretation.
+
+---
+
+### Step 3: Prototype Creation
+
+**Purpose:** Generate the prototype using synthesized research as input.
+
+**Inputs to the agent:**
+
+- Synthesized User Journey
+- Synthesized PRD
+- Synthesized Principles + Persona Context
+
+The agent reads these documents and generates the prototype. Because the inputs are pre-synthesized, the agent spends fewer tokens on comprehension and more on generation. The synthesized documents also constrain the agent's scope — it builds what was researched, not what it imagines might be useful.
+
+**Key point:** The agent should reference the synthesized documents explicitly. If a design decision in the prototype cannot be traced back to a specific entry in the synthesized documents, it is a candidate for removal.
+
+---
+
+### Step 4: Validation
+
+**Purpose:** Verify that the prototype aligns with the research.
+
+Validation is performed using a `VALIDATION.md` file — a structured checklist that maps prototype features back to their source research. This file is created alongside (or immediately after) the prototype and serves as the basis for review.
+
+**VALIDATION.md structure:**
+
+```markdown
+## Traceability Check
+- [ ] Every screen/component maps to a step in the synthesized user journey
+- [ ] Every feature maps to a requirement in the synthesized PRD
+- [ ] Design decisions align with synthesized principles
+- [ ] No features exist that lack a research source
+
+## Persona Alignment
+- [ ] Language and terminology match persona expectations
+- [ ] Interaction complexity is appropriate for persona skill level
+- [ ] Edge cases relevant to the persona are handled
+
+## Scope Check
+- [ ] No features beyond what was specified in the synthesized PRD
+- [ ] No design patterns that contradict stated principles
+- [ ] Prototype scope matches the user journey scope (no extra steps)
+```
+
+**Three properties of good validation:**
+
+- **Traceability** — every element in the prototype can be traced back to a specific research artifact.
+- **Objectivity** — validation criteria are binary (pass/fail), not subjective ("looks good").
+- **Efficiency** — the checklist is concise enough to complete in minutes, not hours.
+
+---
+
+### Step 5: Outcome
+
+**Purpose:** Make a clear decision based on validation results.
+
+The outcome is binary:
+
+- **Ready for Review** — the prototype passes all validation checks and can proceed to human review, stakeholder feedback, or further development.
+- **Needs Rework** — one or more validation checks failed. The specific failures are documented, and the prototype returns to Step 3 with targeted corrections.
+
+**Key point:** "Needs Rework" is not a failure — it is the system working as intended. Catching misalignment at the validation stage is far cheaper than catching it in code review, QA, or production.
+
+---
+
+## Recommendations for Adoption
+
+### Adopt the synthesis framework
+
+Do not skip Step 2. The temptation is to hand raw research files directly to the agent. This leads to higher token consumption, inconsistent interpretation, and prototypes that reflect the agent's reading of the research rather than the team's intent.
+
+### Mandate VALIDATION.md
+
+Make the creation of a `VALIDATION.md` file a required step in any agent-generated prototype workflow. Without it, reviews default to subjective assessment, and traceability is lost.
+
+### Add a template to your repository
+
+Include a `VALIDATION.md` template in your repository so that the structure is consistent across projects. The template should cover traceability, persona alignment, and scope checks at a minimum, with room for project-specific criteria.
+
+### Keep synthesized documents alive
+
+Synthesized documents are living artifacts. As research evolves — new user interviews, updated requirements, revised priorities — the synthesized documents should be updated accordingly. Stale synthesis leads to prototypes built on outdated assumptions.

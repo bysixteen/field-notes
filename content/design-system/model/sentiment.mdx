@@ -1,0 +1,55 @@
+---
+title: Sentiment
+description: What a component communicates — its semantic intent, not its visual appearance.
+---
+
+## Definition
+
+Sentiment defines the communicative **intent** of a component. It is a **semantic decision, not a visual one.** It answers: *what does this component need to say to the user?*
+
+## Values
+
+| Value | Meaning | When to use |
+|-------|---------|-------------|
+| `neutral` | No specific signal needed | Default. Standard UI chrome. |
+| `warning` | User needs to notice something that may affect their outcome | Expiring items, destructive actions, validation errors |
+| `highlight` | Something is being surfaced as featured or recommended | Promotions, recommended actions, featured content |
+| `new` | Something has been recently added or changed | New features, recent updates, badges |
+| `positive` | Something completed successfully or the user should feel affirmed | Success states, confirmation messages |
+
+## Rules for Sentiment Selection
+
+Sentiment is determined by **content and context**. It cannot be correctly assigned without understanding what the component represents. This decision is made at composition time.
+
+Ask: *What does this content need to signal to the user about their situation or required action?*
+
+Do not improvise sentiments outside the [Concepts Manifest](/design-system/concepts-manifest).
+
+## Container vs Action Sentiment
+
+Sentiment is assigned per-component, not per-surface. A container (banner, card, panel) and the action elements within it can carry **different sentiments**.
+
+- The **container's** job is *spatial presence* — it draws attention through emphasis and visual weight
+- The **action element's** job is *semantic signalling* — it tells the user what kind of action this is
+
+When a situation is not yet urgent, the container stays `neutral` with high emphasis (strong visual presence without alarm), while the action button carries the specific sentiment. The container only escalates its own sentiment when the situation becomes **imminent or blocking**.
+
+### Example — API key expiring in 3 days
+
+| Component | Sentiment | Emphasis | Why |
+|-----------|-----------|----------|-----|
+| Banner | `neutral` | `high` | Strong presence to ensure visibility, but no alarm — user can still proceed |
+| Renew button | `warning` | `medium` | The action carries the caution signal — renewal resolves a future risk |
+
+### Same scenario — key expires today
+
+| Component | Sentiment | Emphasis | Why |
+|-----------|-----------|----------|-----|
+| Banner | `warning` | `high` | Situation is now imminent — the container itself must signal urgency |
+| Renew button | `warning` | `high` | Action matches the container's urgency — both demand attention |
+
+This separation prevents false alarms. A neutral container with a warning action says "here is something to be aware of." A warning container with a warning action says "act now."
+
+## Relationship with Emphasis
+
+See [Sentiment + Emphasis](/design-system/composition/sentiment-emphasis) for the full interaction model between these two dimensions.

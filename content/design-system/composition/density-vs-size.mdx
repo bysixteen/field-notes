@@ -1,0 +1,38 @@
+---
+title: Density vs Size
+description: Why these dimensions must stay separate — and the common mistake of collapsing them.
+---
+
+## The Distinction
+
+These dimensions are deliberately separated. **Collapsing them is a common design system mistake** that creates inflexibility.
+
+| Dimension | Controls | Question |
+|-----------|----------|----------|
+| **Size** | Component's fixed footprint — height, touch target area, padding scale | *How much space does this component occupy?* |
+| **Density** | How content is distributed within that footprint — internal padding and gaps | *How tightly is the content packed inside?* |
+
+## Fully Orthogonal
+
+```tsx
+// Size and density vary independently
+<ListItem size="lg"  density="default" />   // Big footprint, standard packing
+<ListItem size="lg"  density="relaxed" />   // Big footprint, spacious packing
+<ListItem size="sm"  density="default" />   // Compact footprint, standard packing
+<ListItem size="md"  density="relaxed" />   // Standard footprint, spacious packing
+```
+
+A large component with tight density clusters its content centrally, leaving proportionally more negative space at the edges. A small component with relaxed density spreads its content out, using more of its compact footprint for internal breathing room.
+
+Neither dimension substitutes for the other.
+
+## The Common Mistake
+
+If a component "feels too big" in a tight layout (e.g. buttons in a data table), ask which problem you're actually solving:
+
+| Problem | Solution |
+|---------|----------|
+| The component takes up too much vertical/horizontal space | Change `size` (e.g. `size="sm"` for a smaller touch target and height) |
+| The component's content feels loosely arranged inside its bounds | Change `density` (e.g. `density="default"` for tighter internal packing) |
+
+**Density adjusts internal arrangement. Size adjusts the box itself.**

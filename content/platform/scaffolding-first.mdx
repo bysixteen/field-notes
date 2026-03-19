@@ -1,0 +1,146 @@
+---
+title: Scaffolding-First Approach
+description: External services and AI context before any feature code.
+---
+
+> **Monorepo examples below.** The scaffolding-first principle applies to any project structure, but Phase 2 specifically covers monorepo setup. Skip or adapt that phase for single-repo projects.
+
+Complete all infrastructure setup, external service configuration, and foundational architecture before writing a single line of feature code. This front-loads risk and ensures every feature builds on verified foundations.
+
+## The Pattern
+
+Most platform builds fail not because of bad feature code, but because of shaky foundations — a database that wasn't configured correctly, an auth service that doesn't support the required flow, or a CMS that can't model the content structure. The scaffolding-first approach eliminates these risks by verifying every external dependency before building on top of it.
+
+The core principle: **nothing is assumed to work until it is proven to work.** Every external service is configured, connected, and tested before any feature code depends on it.
+
+## The Sequence
+
+### Phase 1: Framework Setup and External Services
+
+Configure and verify every external service the platform depends on:
+
+- **Database**: Provision the database, configure connection strings, verify access from the application framework.
+- **Authentication**: Set up the auth provider, configure OAuth flows or email/password, verify login/logout/token refresh works end-to-end.
+- **CMS**: Create the CMS project, define initial schemas, verify content can be created and queried from the application.
+- **Email**: Configure the transactional email provider, verify sending works with test templates.
+- **Hosting/Deployment**: Set up deployment targets, verify builds complete and deploy successfully (even if the app is just a hello-world page).
+
+Each service is tested in isolation before moving on. If a service doesn't work as expected, this is the cheapest time to discover that — before any feature code depends on it.
+
+### Phase 2: Monorepo Scaffold
+
+With external services verified, build the repository structure:
+
+- Initialize the monorepo with pnpm workspaces and Turborepo.
+- Create the directory structure (`apps/`, `packages/`, service directories).
+- Set up shared configuration (TypeScript, ESLint, Prettier, Husky).
+- Write `CLAUDE.md` as permanent AI context (see below).
+- Verify that `pnpm install`, `pnpm turbo build`, and `pnpm turbo dev` all work.
+
+### Phase 3: Design System Foundation
+
+Before any feature UI, establish the design system:
+
+- Import or define design tokens (colors, spacing, typography, radii).
+- Build foundational components (Button, Input, Card, Layout primitives).
+- Verify components render correctly in each app.
+- This becomes the shared vocabulary for all UI work going forward.
+
+### Phase 4: Data Scaffolding
+
+With the database configured and the repository structured, build the data layer:
+
+- Write database schema migrations (tables, constraints, indexes).
+- Configure Row-Level Security policies.
+- Create seed data for development and testing.
+- Verify RLS policies work correctly with different user roles.
+- Set up Edge Functions or serverless handlers for webhooks and background tasks.
+
+### Phase 5: Features
+
+Only now — with infrastructure verified, the repository structured, the design system in place, and the data layer configured — begin writing feature code. Every feature builds on proven foundations.
+
+## CLAUDE.md as Permanent Context
+
+`CLAUDE.md` is a markdown file at the repository root that serves as permanent context for AI coding agents. When an AI agent opens the repository, it reads `CLAUDE.md` to understand the project's architecture, conventions, and constraints.
+
+### What to Include
+
+- **Project structure**: Where apps, packages, and services live.
+- **Key commands**: How to install dependencies, run dev servers, run tests, deploy.
+- **Architectural decisions**: Why the project is structured the way it is.
+- **Naming conventions**: How files, components, and database tables are named.
+- **Constraints**: What not to do (e.g., "never import between apps directly").
+
+### What Not to Include
+
+- Entire codebases or file contents — keep it concise.
+- Information that changes frequently — it should be a stable reference.
+- Opinions or aspirations — document what is, not what might be.
+
+### Maintenance
+
+`CLAUDE.md` is human-curated. It is updated when architectural decisions change, not on every commit. Think of it as the project's constitution — amended rarely, referenced constantly.
+
+## Skills Automation
+
+Repetitive scaffolding tasks should be encoded as reusable skills — small, focused scripts or command sequences that can be invoked by AI agents or developers.
+
+### Examples of Skills
+
+- **Component creation**: Generate a new component with the correct file structure, exports, and boilerplate.
+- **Token syncing**: Pull design tokens from a source (e.g., Figma variables) and update the design system package.
+- **Migration creation**: Generate a new database migration file with the correct naming convention and boilerplate.
+- **Package creation**: Scaffold a new shared package with `package.json`, `tsconfig.json`, `src/index.ts`, and workspace configuration.
+
+### Benefits
+
+- **Consistency**: Every component, migration, or package follows the same structure.
+- **Speed**: A skill that takes 30 seconds replaces a manual process that takes 5 minutes.
+- **Reduced errors**: Automated processes don't forget steps or make typos in boilerplate.
+
+Skills are stored alongside the project (e.g., in a `.claude/` directory or as documented commands in `CLAUDE.md`) so they are available to both human developers and AI agents.
+
+## Risk Mitigation
+
+The scaffolding-first approach includes specific practices to reduce risk throughout the build:
+
+### Dry-Run Migrations
+
+Always preview database migrations before executing them:
+
+```bash
+# Preview what the migration will do
+supabase db diff --local
+
+# Apply only after reviewing
+supabase db push
+```
+
+This prevents accidental data loss or schema corruption.
+
+### Rollback Mechanisms
+
+Every migration should be reversible. If a migration adds a column, the rollback removes it. If a migration creates a table, the rollback drops it. Test rollbacks in development before applying migrations to production.
+
+### UAT Before Go-Live
+
+User Acceptance Testing (UAT) happens in a staging environment that mirrors production:
+
+- Same database schema (restored from a production snapshot or seeded with realistic data).
+- Same external service configuration (using staging/sandbox credentials).
+- Same deployment pipeline (built and deployed the same way as production).
+
+Stakeholders test in UAT. Issues found in UAT are fixed before production deployment. This is the final gate before go-live.
+
+## Why This Order Matters
+
+| Phase | Risk Eliminated |
+| --- | --- |
+| External services first | "The auth provider doesn't support our use case" — discovered in week 1, not week 8. |
+| Monorepo scaffold | "The build system can't handle our package structure" — discovered before any packages exist. |
+| Design system | "The component library doesn't work in all three apps" — discovered before features depend on it. |
+| Data scaffolding | "RLS policies block legitimate access" — discovered with seed data, not real users. |
+| Features last | Every feature builds on verified, tested infrastructure. |
+
+The scaffolding-first approach is slower at the start and dramatically faster in the middle and end. The total build time is shorter because there is no rework from foundation-level surprises.

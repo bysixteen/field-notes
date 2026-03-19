@@ -1,0 +1,236 @@
+---
+title: "Synthesis & Validation Framework"
+description: "Three-artifact model and four-pillar validation for preventing context burn."
+---
+
+This framework has two parts: a **Sprint Synthesis Framework** that prevents context burn by distilling sprint outputs into living documents, and a **Generic Validation Framework** that ensures every piece of work meets a consistent quality bar.
+
+## Part A: Sprint Synthesis Framework
+
+### Core Principle: Distill, Don't Repeat
+
+The raw artifacts of a sprint — meeting notes, Slack threads, Figma explorations, code spikes, user testing recordings — are inputs, not outputs. The output is the **synthesized knowledge** captured in three canonical artifacts.
+
+If you find yourself re-reading raw sprint material to answer a question, the synthesis has failed.
+
+### The Three Artifacts
+
+#### 1. DECISIONS.md
+
+The canonical record of every significant decision made during the project.
+
+**Template:**
+
+```markdown
+# Decisions Log
+
+## DEC-[NNN]: [Decision Title]
+
+**Date**: YYYY-MM-DD
+**Sprint**: [Sprint number or name]
+**Status**: Accepted | Superseded by DEC-[NNN] | Reverted
+
+### Context
+[1-2 paragraphs explaining why this decision was needed.
+What problem or question prompted it?]
+
+### Decision
+[Clear, unambiguous statement of what was decided.]
+
+### Alternatives Considered
+1. **[Alternative A]**: [Brief description]
+   - Pros: [Why this was attractive]
+   - Cons: [Why this was rejected]
+
+2. **[Alternative B]**: [Brief description]
+   - Pros: [Why this was attractive]
+   - Cons: [Why this was rejected]
+
+### Consequences
+- [Expected positive outcomes]
+- [Expected negative outcomes or trade-offs]
+- [Technical debt incurred, if any]
+
+### Dissent
+[Record any dissenting opinions. Include the role that raised
+the concern, their rationale, and how it was resolved.
+If no dissent was raised, state "None recorded."]
+
+### Review Trigger
+[Conditions under which this decision should be revisited.
+Example: "Revisit if user testing shows completion rate below 80%"
+or "Revisit at the start of Q3 planning."]
+```
+
+**Rules:**
+- Decisions are **append-only**. Never delete a decision. If a decision is reversed, add a new entry that supersedes it and update the status of the original.
+- Every decision must record alternatives considered. If no alternatives were discussed, the decision was not properly evaluated.
+- The dissent field is mandatory. "None recorded" is acceptable; a blank field is not.
+
+#### 2. PERSONAS.md
+
+The canonical record of the team's understanding of its users.
+
+**Template:**
+
+```markdown
+# Personas
+
+## Persona: [Descriptive Name]
+
+**Role**: [Job title, function, or user type]
+**Last Updated**: YYYY-MM-DD
+**Confidence**: High | Medium | Low
+**Source**: [Sprint N user testing | Stakeholder interview | Domain research]
+
+### Goal
+[Primary objective when using the system. One sentence.]
+
+### Context
+[Environment in which they work. Constraints they operate under.
+Tools they currently use. Frequency of system interaction.]
+
+### Workflow
+1. [Step 1 of their typical workflow]
+2. [Step 2]
+3. [Step 3]
+
+### Pain Points
+- [Frustration 1]
+- [Frustration 2]
+- [Frustration 3]
+
+### Success Metric
+[How this persona measures whether the system helped them.
+Should be concrete and observable.]
+
+### Representative Quote
+> "[A real or synthesized quote that captures their perspective]"
+
+### Open Questions
+- [Things we still do not know about this persona]
+- [Assumptions that need validation]
+```
+
+**Rules:**
+- Personas are **refined over time**, not rewritten. Update the "Last Updated" date and adjust the confidence level as new information is gathered.
+- Every persona must have a confidence rating. "High" means validated through direct user research. "Medium" means informed by stakeholder input. "Low" means based on assumptions.
+- Open questions drive future research. If a persona has no open questions, the team has stopped learning.
+
+#### 3. PRINCIPLES.md
+
+The canonical record of design and engineering principles validated through project work.
+
+**Template:**
+
+```markdown
+# Design & Engineering Principles
+
+## PRIN-[NNN]: [Principle Name]
+
+**Status**: Proposed | Validated | Retired
+**Source**: [Sprint N retrospective | User testing finding | Technical discovery]
+**Last Updated**: YYYY-MM-DD
+
+### Statement
+[The principle in one clear sentence.]
+
+### Rationale
+[Why this principle matters. What failure mode does it prevent?
+What quality does it ensure?]
+
+### Example
+[A concrete example of the principle applied correctly in this project.]
+
+### Counter-Example
+[A concrete example of what happens when this principle is violated.]
+
+### Validation
+[Evidence that supports this principle. Test results, user feedback,
+performance metrics, or team observations.]
+```
+
+**Rules:**
+- New principles start as "Proposed." They are promoted to "Validated" only after being confirmed through sprint work (user testing, production metrics, or team consensus after application).
+- Principles can be "Retired" if they are found to be wrong, no longer applicable, or superseded. Retired principles are kept in the document with a note explaining why.
+- The counter-example field is mandatory. A principle without a counter-example is too abstract to be useful.
+
+### Sprint Synthesis Workflow
+
+At the end of every sprint (or at natural breakpoints in continuous work):
+
+1. **Gather raw material**: Collect all sprint artifacts — notes, recordings, designs, code, test results, Slack conversations
+2. **Extract decisions**: Identify every significant decision made. Add each to DECISIONS.md using the template
+3. **Update personas**: Incorporate any new user insights into PERSONAS.md. Adjust confidence levels. Add new open questions
+4. **Validate principles**: Promote any proposed principles that were confirmed. Add new principles discovered. Retire any that were disproven
+5. **Archive raw material**: Move raw artifacts to an archive folder. They have served their purpose
+6. **Run the context burn test**: Can someone who missed the sprint read only the three living documents and be fully caught up? If not, the synthesis is incomplete
+
+## Part B: Generic Validation Framework
+
+### The Four Pillars
+
+Every piece of delivered work — a design, a prototype, a feature, a document — must be validated against four pillars.
+
+| Pillar | Core Question | Rationale | Example Checks |
+|---|---|---|---|
+| **Clarity** | Is the purpose and state immediately obvious? | Users should never guess what the system is doing or what action to take. Ambiguity creates support burden and reduces adoption. | Can a new user describe the screen's purpose within 5 seconds? Are all states (loading, empty, error, success) explicitly handled? Is the primary action visually dominant? |
+| **Attribution** | Can every piece of data be traced to its source? | Data without provenance is untrustworthy, especially AI-generated content. Attribution is often a regulatory requirement. | Does every metric show its source and freshness? Can AI-generated summaries be traced to underlying data? Are calculations reproducible from stated inputs? |
+| **Reversibility** | Can the user undo any action? | Fear of irreversible mistakes stifles exploration and slows adoption. Users need a safety net. | Do destructive actions require confirmation? Is soft delete used instead of hard delete? Can form submissions be edited after submission? Are there draft/publish workflows for content? |
+| **Consistency** | Does the work follow established patterns? | Inconsistency increases cognitive load, slows learning, and creates maintenance burden. | Do similar features use the same interaction patterns? Is terminology consistent across the application? Do error states follow the same format? Are spacing and sizing based on the design system tokens? |
+
+### Validation Checklist
+
+For each piece of work under review, score each pillar:
+
+```markdown
+## Validation: [Feature/Component Name]
+
+### Clarity
+- [ ] Purpose is immediately obvious without explanation
+- [ ] All states are explicitly handled (loading, empty, error, success)
+- [ ] Primary action is visually dominant
+- [ ] Labels and microcopy are unambiguous
+- [ ] No jargon or unexplained abbreviations
+
+### Attribution
+- [ ] Data sources are visible or accessible
+- [ ] Timestamps show data freshness
+- [ ] AI-generated content is labeled as such
+- [ ] Calculations can be verified by the user
+- [ ] External data sources are cited
+
+### Reversibility
+- [ ] Destructive actions require confirmation
+- [ ] Undo is available for common actions
+- [ ] Soft delete is used where appropriate
+- [ ] Draft states are available for complex inputs
+- [ ] Navigation does not lose unsaved work
+
+### Consistency
+- [ ] Visual patterns match the design system
+- [ ] Interaction patterns match similar features
+- [ ] Terminology matches the glossary
+- [ ] Error handling follows the established format
+- [ ] Layout follows the page template conventions
+```
+
+## Implementation Guide
+
+### Step 1: Initialize Artifacts
+
+Create `DECISIONS.md`, `PERSONAS.md`, and `PRINCIPLES.md` at the project root using the templates above. Populate them with whatever is currently known, even if confidence is low. Mark initial entries clearly as "Pre-Sprint" or "Assumed" so they can be validated during the first sprint.
+
+### Step 2: Establish the Sprint Synthesis Ritual
+
+At the end of every sprint, allocate dedicated time (typically 2-4 hours) for synthesis. This is not optional. Without a protected time block, synthesis will be deferred indefinitely and context burn will set in.
+
+Assign synthesis responsibility to the Sprint Lead, but involve the full team for extraction. Different team members will recall different decisions, insights, and concerns.
+
+### Step 3: Integrate Validation into Workflow
+
+Add the four-pillar validation checklist to the pull request template. Every PR that includes user-facing changes must include a completed checklist. Incomplete checklists block merge.
+
+During design reviews, use the four pillars as the evaluation framework. Instead of subjective feedback ("I don't like the layout"), ground all critique in the pillars ("The primary action fails the clarity check — it is visually subordinate to the secondary action").
+
+Over time, the team will internalize the four pillars and apply them instinctively during creation, not just during review.

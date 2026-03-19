@@ -1,0 +1,136 @@
+---
+title: Three-Application Model
+description: "Admin, public site, and wiki from a shared codebase — one platform, three faces."
+---
+
+> **Assumes monorepo architecture.** This pattern deploys multiple apps from a shared codebase using pnpm workspaces. The multi-audience principle applies generally, but the shared-code implementation assumes a monorepo.
+
+A single platform serves multiple audiences. Rather than building one monolithic application with role-based views, deploy three independent applications that share a common foundation.
+
+## The Pattern
+
+Three independently deployed applications, each purpose-built for its audience, all sharing a design system and core packages from the same monorepo:
+
+| Application | Audience | Purpose |
+| --- | --- | --- |
+| **Admin Portal** | Staff and management | Dashboard for managing records, users, workflows, and reporting. Protected by authentication and role-based access. |
+| **Public Site** | External users | The public-facing website — information pages, forms, contact details, news. Optimized for performance and SEO. |
+| **Internal Wiki** | Team members | Knowledge base for processes, documentation, onboarding guides, and internal reference material. |
+
+## Why Separate Applications
+
+### Different Audiences
+
+The admin portal serves staff who need dense data tables, filters, and bulk actions. The public site serves users who need clear information hierarchy and fast page loads. The wiki serves team members who need searchable, structured documentation. Building all three as views within a single app creates compromises for every audience.
+
+### Different Deployment Cadences
+
+The public site might deploy multiple times a day for content updates. The admin portal deploys when features ship. The wiki deploys when documentation changes. Independent deployment means a content fix on the public site never risks breaking the admin dashboard.
+
+### Different Access Controls
+
+The admin portal requires authentication and role-based authorization. The public site is largely open. The wiki may use simple authentication without complex role hierarchies. Separating apps simplifies each one's security model.
+
+### Different Performance Profiles
+
+The public site is optimized for Core Web Vitals, static generation, and CDN caching. The admin portal prioritizes interactivity and real-time data. The wiki prioritizes search and readability. Each app can optimize for its own priorities without compromising the others.
+
+## What's Shared
+
+Despite being separate applications, the three apps share significant infrastructure through the monorepo's `packages/` directory:
+
+### Design System Package
+
+A shared component library ensures visual consistency across all three applications. Buttons, typography, color tokens, and layout primitives look and behave the same whether a user is on the public site or a staff member is in the admin portal.
+
+```
+packages/design-system/
+├── src/
+│   ├── tokens/        # Color, spacing, typography tokens
+│   ├── components/    # Button, Card, Input, DataTable, etc.
+│   ├── layouts/       # Shell, Sidebar, Stack, Grid
+│   └── index.ts       # Barrel export
+```
+
+### Type Definitions
+
+Shared TypeScript types ensure that all three apps agree on data shapes. When a database schema changes, the type definition updates once and all apps see the change at compile time.
+
+```ts
+// packages/types/src/index.ts
+export interface User {
+  id: string
+  email: string
+  role: 'admin' | 'staff' | 'member'
+  created_at: string
+}
+
+export interface AuditEvent {
+  id: string
+  entity_id: string
+  from_state: string
+  to_state: string
+  changed_by: string
+  changed_at: string
+}
+```
+
+### Utility Functions
+
+Date formatting, validation helpers, API response parsing, and other common logic lives in a shared utilities package rather than being duplicated across apps.
+
+### API Client
+
+A shared API client wraps the backend service (e.g., Supabase client configuration, query helpers, type-safe wrappers). Each app imports the same client, ensuring consistent data access patterns.
+
+## Deployment
+
+Each app deploys independently to its own target. With platforms like Vercel, each app in the monorepo maps to a separate project:
+
+```
+apps/admin  → admin.platform.com
+apps/web    → www.platform.com
+apps/wiki   → wiki.platform.com
+```
+
+### Independent Build and Deploy
+
+- A change to `apps/web` only triggers a build and deploy for the public site.
+- A change to `packages/design-system` triggers builds for all three apps (since they all depend on it).
+- Turborepo's dependency graph ensures the correct build order.
+
+### Deployment Configuration
+
+Each app has its own framework configuration, build output, and deployment settings. There is no shared deployment step — each app is a standalone deployable unit.
+
+## Environment Variables
+
+Environment variables are managed per-app through the deployment platform (e.g., Vercel project settings, CI/CD secrets). This is the single source of truth for configuration.
+
+### Principles
+
+- **Never commit secrets to the repository.** Use `.env.local` for local development (gitignored) and the deployment platform for production.
+- **Each app has its own set of variables.** The admin portal might need different API keys or feature flags than the public site.
+- **Share a `.env.example` file** that documents required variables without containing actual values.
+
+```
+# apps/admin/.env.example
+NEXT_PUBLIC_SUPABASE_URL=
+NEXT_PUBLIC_SUPABASE_ANON_KEY=
+SUPABASE_SERVICE_ROLE_KEY=
+```
+
+### Environment Isolation
+
+Each deployment environment (development, staging, production) has its own variable set. The deployment platform manages environment-specific values, so the same code deploys to different environments without code changes.
+
+## Trade-offs
+
+| Benefit | Cost |
+| --- | --- |
+| Each app optimized for its audience | Three apps to maintain instead of one |
+| Independent deployment reduces risk | Shared package changes affect all apps |
+| Simpler per-app security model | Initial setup requires monorepo tooling |
+| Clear separation of concerns | Need to coordinate cross-app features |
+
+The three-app model works best when the audiences are genuinely different and the applications have distinct requirements. If the platform only serves a single audience, a single app with role-based views may be simpler.

@@ -1,0 +1,10 @@
+{
+  "title": "The Token Chain",
+  "pages": [
+    "index",
+    "primitives",
+    "semantics",
+    "component-slots",
+    "resolver"
+  ]
+}
