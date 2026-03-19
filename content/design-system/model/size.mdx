@@ -1,0 +1,45 @@
+---
+title: Size
+description: The physical footprint of a component — height, touch target, and padding scale.
+---
+
+## Definition
+
+Size controls the component's **fixed footprint**: height, touch target area, and the padding scale that defines its physical presence.
+
+Size answers: *how much space does this component occupy?*
+
+## Values
+
+| Value | Use |
+|-------|-----|
+| `xs` | Extra compact — icon buttons, badges |
+| `sm` | Compact — toolbars, inline actions, dense tables |
+| `md` | Standard — forms, lists, content pages |
+| `lg` | Prominent — CTAs, onboarding |
+| `xl` | Maximum — marketing surfaces, hero elements |
+
+**Default:** `md`
+
+## Size vs Density
+
+These are **deliberately separated**. Collapsing them is a common design system mistake that creates inflexibility.
+
+- **Size** controls the component's **outer box** — the physical space it takes up in the layout
+- **Density** controls **how content is distributed** within that box
+
+They are fully orthogonal:
+
+```tsx
+// Size and density vary independently
+<Button size="lg" density="default" />   // Big footprint, standard packing
+<Button size="lg" density="relaxed" />   // Big footprint, spacious packing
+<Button size="sm" density="default" />   // Compact footprint, standard packing
+<Button size="md" density="relaxed" />   // Standard footprint, spacious packing
+```
+
+See [Density vs Size](/design-system/composition/density-vs-size) for the full explanation.
+
+## Accessibility
+
+Touch-safe minimum sizes should be enforced per size variant. Even the `sm` size must meet minimum interactive touch target requirements for the platform.

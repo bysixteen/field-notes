@@ -1,0 +1,52 @@
+---
+title: "Compounding Engineering"
+description: "Build guidance from real mistakes, not upfront speculation. Let documentation grow organically from actual needs."
+---
+
+## The Principle
+
+Don't pre-populate guidance. Let it grow based on real needs.
+
+When something is done incorrectly, add the correction to documentation. This is the opposite of writing a comprehensive guide upfront. The knowledge base is built from **real mistakes and their solutions**, not from anticipated problems that may never occur.
+
+## Why This Matters
+
+Upfront documentation has two fundamental problems:
+
+1. **It solves the wrong problems.** The issues you anticipate before starting are rarely the issues you actually encounter. A 30-page style guide written before the first line of code addresses hypothetical concerns while missing the real ones.
+
+2. **Nobody reads it.** Comprehensive guides are written once and ignored forever. They are too long to consume, too abstract to apply, and too static to stay relevant.
+
+Compounding engineering solves both problems by building documentation from the ground up, one real correction at a time.
+
+## The Practice
+
+The canonical example is `CLAUDE.md` (or any equivalent project-level instruction file for AI-assisted development):
+
+1. **Start with almost nothing.** The initial file contains only the most basic project setup information.
+2. **When a mistake happens, add the correction.** If the AI generates a component using the wrong import path, add the correct import path to the file. If a team member misuses an API, document the correct usage.
+3. **Each correction prevents the same mistake from recurring.** The next time the AI (or a human) encounters the same situation, the guidance is there.
+4. **The file grows organically.** After a few sprints, it contains exactly the guidance the project actually needs — no more, no less.
+
+This pattern applies beyond AI instruction files:
+
+- **Code review checklists** that grow from actual review feedback
+- **Testing guidelines** that grow from actual bugs found in production
+- **Architectural decision records** that grow from actual decisions made
+- **Onboarding documents** that grow from actual questions asked by new team members
+
+## The Compounding Effect
+
+Each correction added to the knowledge base has a compounding return:
+
+- **First occurrence**: The mistake happens, time is spent fixing it, the correction is documented
+- **Every subsequent occurrence**: The mistake is prevented entirely, or caught immediately
+
+Over the life of a project, a well-maintained compounding knowledge base saves orders of magnitude more time than it costs to maintain. The key is discipline — every correction must be captured at the moment it is discovered, not deferred to a "documentation sprint" that never happens.
+
+## Anti-Patterns
+
+- **The Big Bang Guide**: Writing comprehensive documentation before work begins. Most of it will be wrong or irrelevant.
+- **The Oral Tradition**: Correcting mistakes verbally but never writing them down. The same mistakes recur when team members change.
+- **The Perfection Trap**: Refusing to add a correction because "the documentation isn't well-organized yet." A messy but accurate knowledge base beats an elegant but empty one.
+- **The Deferred Update**: Noting that documentation should be updated but not doing it immediately. The correction will be forgotten.

@@ -1,0 +1,94 @@
+---
+title: Worked Examples
+description: Real-world scenarios showing how to apply the dimensional model.
+---
+
+## Example 1: API Key Expiry Banner
+
+A user's API key is expiring. The banner needs to communicate this clearly without over-alarming when the deadline is distant.
+
+### 3 days remaining
+
+The situation is not yet urgent. The container provides visibility, the action carries the caution.
+
+```tsx
+<banner sentiment="neutral" emphasis="high">
+  <text>Your API key expires in 3 days</text>
+  <button sentiment="warning" emphasis="medium">
+    Renew Key
+  </button>
+</banner>
+```
+
+| Component | Sentiment | Emphasis | Reasoning |
+|-----------|-----------|----------|-----------|
+| Banner | `neutral` | `high` | Strong presence without alarm — user can still proceed |
+| Button | `warning` | `medium` | Action carries the caution — renewal resolves a future risk |
+
+### Expires today
+
+The situation is now imminent. Both container and action escalate.
+
+```tsx
+<banner sentiment="warning" emphasis="high">
+  <text>Your API key expires today</text>
+  <button sentiment="warning" emphasis="high">
+    Renew Key Now
+  </button>
+</banner>
+```
+
+| Component | Sentiment | Emphasis | Reasoning |
+|-----------|-----------|----------|-----------|
+| Banner | `warning` | `high` | Container itself signals urgency |
+| Button | `warning` | `high` | Both demand immediate attention |
+
+## Example 2: Data Table Actions
+
+A data table row has edit and delete actions. These serve categorically different purposes.
+
+### Spacing
+
+```
+[ Edit ]  --size-4--  [ Duplicate ]        --size-32--        [ Delete ]
+   ↑ tight: related constructive actions        ↑ loose: destructive, separated
+```
+
+### Dimensional assignment
+
+| Component | Sentiment | Emphasis | Size |
+|-----------|-----------|----------|------|
+| Edit button | `neutral` | `medium` | `small` |
+| Duplicate button | `neutral` | `low` | `small` |
+| Delete button | `warning` | `low` | `small` |
+
+All buttons use `size="sm"` because they're in a data table (compact layout). The delete button uses `warning` sentiment but `low` emphasis — it's available but not screaming at the user.
+
+## Example 3: Feature Announcement Card
+
+A new feature is being promoted on the dashboard.
+
+```tsx
+<card sentiment="new" emphasis="high" size="md" density="relaxed">
+  <badge sentiment="new" emphasis="high">New</badge>
+  <heading>Analytics Dashboard</heading>
+  <text>Track your usage patterns with real-time charts.</text>
+  <button sentiment="highlight" emphasis="medium">
+    Try it out
+  </button>
+</card>
+```
+
+The card uses `new` sentiment (recently added), `relaxed` density (content-focused, not data-dense), and the action button uses `highlight` (recommended action).
+
+## Applying the Checklist
+
+For any composition, walk through:
+
+1. **What does this communicate?** → Assign sentiment
+2. **How urgently?** → Assign emphasis
+3. **Semantically coherent?** → Validate the combination
+4. **What scale?** → Assign size
+5. **What environment?** → Assign density
+6. **Spacing tier?** → Apply tight/medium/loose
+7. **Coherent hierarchy?** → Check the postmodern balance

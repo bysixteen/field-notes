@@ -1,0 +1,58 @@
+---
+title: Sentiment + Emphasis
+description: The relationship between what a component says and how loudly it says it.
+---
+
+## Two Independent Axes
+
+Sentiment and Emphasis are independent axes, but their **combination carries semantic weight**.
+
+- **Sentiment** = what to communicate (neutral, warning, highlight, new)
+- **Emphasis** = how loudly (high, medium, low)
+
+Low emphasis degrades a sentiment's signal across multiple properties simultaneously — reducing colour intensity, saturation, and the presence of background or border surfaces. This is intentional: it enables **advisory communication** without alarming the user.
+
+## The Legibility Floor
+
+This degradation creates a legibility floor. A warning at low emphasis may visually approach neutral. This is only appropriate when the warning is **genuinely advisory rather than critical.**
+
+### Hard Rule
+
+> The combination of `sentiment + emphasis` must reflect the actual urgency of the content. Reducing emphasis to lower visual weight when the situation is genuinely critical is a **semantic error** — not an aesthetic choice.
+
+## Decision Guide for Actions
+
+| Content criticality | Correct combination |
+|--------------------|---------------------|
+| User's action is blocked or irreversible | `warning` + `high` |
+| User should be aware but can proceed | `warning` + `medium` |
+| User may want to know, not blocking | `warning` + `low` |
+| Positive distinction, prominent | `highlight` + `high` |
+| Positive distinction, ambient | `highlight` + `low` |
+
+## Container vs Action Escalation
+
+Containers (banners, cards, panels) and their action elements can carry **different sentiments**.
+
+**The pattern:**
+- Container defaults to `neutral` with appropriate emphasis for visibility
+- Action element carries the specific sentiment
+- Container only escalates when the situation becomes **imminent or blocking**
+
+### Not yet urgent
+
+| Component | Sentiment | Emphasis | Why |
+|-----------|-----------|----------|-----|
+| Banner | `neutral` | `high` | Strong presence without alarm |
+| Action button | `warning` | `medium` | Action carries the caution signal |
+
+### Now urgent
+
+| Component | Sentiment | Emphasis | Why |
+|-----------|-----------|----------|-----|
+| Banner | `warning` | `high` | Container itself signals urgency |
+| Action button | `warning` | `high` | Both demand attention |
+
+This separation prevents false alarms:
+- **Neutral container + warning action** = "here is something to be aware of"
+- **Warning container + warning action** = "act now"

@@ -1,0 +1,127 @@
+---
+title: Concepts Manifest
+description: The single source of truth for valid dimension values across the design system.
+---
+
+## Purpose
+
+This file is the **single source of truth** for valid dimension values. It is intentionally separate so it can be expanded without editing the core philosophy.
+
+> **Rule:** Only values listed here may be used when composing components. Undeclared concepts should be flagged for formal addition rather than improvised inline. Using undeclared values creates token drift.
+
+---
+
+## Sentiment
+
+What a component communicates to the user.
+
+| Value | Meaning | Typical use |
+|-------|---------|-------------|
+| `neutral` | No specific signal. Default for most UI. | Standard buttons, inputs, list items |
+| `warning` | Caution is warranted. Requires attention. | Alert banners, risky action confirmations, validation errors |
+| `highlight` | Notable or featured. Positive distinction. | Recommended options, featured content, promotions |
+| `new` | Recently added or changed. | New feature badges, changelog markers, unread indicators |
+| `positive` | Completed successfully or user should feel affirmed. | Success states, confirmation messages |
+
+**Reserved for future formal addition:**
+- `destructive` — Irreversible or harmful actions (delete, revoke, remove)
+- `success` — Confirmation that an operation completed correctly
+- `info` — Neutral informational signal, lower urgency than warning
+
+---
+
+## Emphasis
+
+How loudly a component communicates its sentiment.
+
+| Value | Meaning |
+|-------|---------|
+| `high` | Maximum presence. Solid backgrounds, strong colour, full surface visibility. |
+| `medium` | Moderate presence. Tinted or bordered surfaces. |
+| `low` | Minimal presence. Reduced saturation, no background, reduced or no border. |
+
+---
+
+## State
+
+Interactive surface state. Always resolved at runtime from user interaction. **Never set as a static prop.**
+
+| Value | Trigger |
+|-------|---------|
+| `rest` | Default. No interaction occurring. |
+| `hover` | Pointer over the element. |
+| `active` | Element is being pressed / clicked. |
+| `selected` | Element is in a chosen / on state. |
+| `disabled` | Element is not interactive. |
+| `resolving` | Async operation in progress. |
+| `pending` | Awaiting confirmation or external state. |
+
+---
+
+## Size
+
+Component footprint within its hierarchy.
+
+| Value | Use |
+|-------|-----|
+| `xs` | Extra compact — icon buttons, badges |
+| `sm` | Compact — toolbars, inline actions, dense tables |
+| `md` | Standard — forms, lists, content pages |
+| `lg` | Prominent — CTAs, onboarding |
+| `xl` | Maximum — marketing surfaces, hero elements |
+
+Touch-safe minimum sizes should be enforced per size variant.
+
+---
+
+## Density
+
+Spatial breathing room in response to the layout environment.
+
+| Value | Use |
+|-------|-----|
+| `default` | Standard product UI — dashboards, forms, data tables |
+| `relaxed` | Spacious contexts — onboarding, marketing, empty states |
+
+---
+
+## Spacing Tiers (Gestalt Reference)
+
+Not props — compositional guidance mapped to the semantic scale.
+
+| Tier | Token range | Semantic meaning |
+|------|-------------|------------------|
+| Tight | `--size-4` → `--size-8` | Related. Belongs together. |
+| Medium | `--size-12` → `--size-20` | Governed. One owns the other. |
+| Loose | `--size-28` → `--size-32`+ | Separated. Categorically distinct. |
+
+---
+
+## Motion (Reference)
+
+Not a component prop — used in animation and transition decisions.
+
+| Token | Use |
+|-------|-----|
+| `--motion-duration-instant` | State changes requiring no perceived delay |
+| `--motion-duration-fast` | Micro-interactions, hover states |
+| `--motion-duration-normal` | Standard transitions |
+| `--motion-duration-slow` | Emphasis transitions, entrances |
+| `--motion-easing-default` | General purpose |
+| `--motion-easing-enter` | Elements entering the viewport |
+| `--motion-easing-exit` | Elements leaving the viewport |
+| `--motion-easing-emphasized` | High-importance transitions |
+| `--motion-easing-playful` | Expressive / delight moments |
+
+---
+
+## Elevation
+
+| Token | Use |
+|-------|-----|
+| `--elevation-ground` | Base page level |
+| `--elevation-raised` | Cards, panels |
+| `--elevation-floating` | Dropdowns, popovers |
+| `--elevation-elevated` | Modals, dialogs |
+| `--elevation-high` | Toasts, notifications |
+| `--elevation-highest` | Critical overlays |

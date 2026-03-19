@@ -1,0 +1,268 @@
+---
+title: "The Pioneer Framework"
+description: "A project-agnostic operating system for design and delivery."
+---
+
+A complete operating system for design and delivery projects. This framework provides the structure for auditing existing work, organizing repositories, running sprints, assembling specialist teams, and mapping user journeys.
+
+> This framework is available as a portable CLI toolkit. See [Project Squad](/principles/project-squad) for installation and usage — one command bootstraps the entire structure described below.
+
+## Part 1: The Audit
+
+Every project begins with an honest assessment of what exists. The audit is not a criticism of past work — it is a baseline measurement that informs the plan.
+
+### Common Gaps Found Across Projects
+
+Projects typically exhibit a consistent set of gaps regardless of domain or team size:
+
+| Gap Category | Symptoms |
+|---|---|
+| **Missing living documentation** | Decisions are buried in Slack threads, meeting notes, or individual memory. No canonical source of truth. |
+| **Inconsistent component patterns** | Similar UI elements implemented differently across pages. No shared design language. |
+| **Unclear user model** | The team cannot articulate who the primary users are, what their goals are, or where the critical friction points exist. |
+| **No validation framework** | Features are shipped without systematic checks for clarity, attribution, reversibility, or consistency. |
+| **Disconnected journeys** | Individual features work in isolation but the end-to-end user experience has gaps, dead ends, or contradictions. |
+| **Context burn** | Raw artifacts accumulate but synthesized knowledge does not. New team members cannot get up to speed efficiently. |
+
+The audit produces a gap analysis document that maps each finding to a specific remediation action and assigns it to a sprint.
+
+## Part 2: The Repository Architecture
+
+Every project should follow a canonical directory structure. This eliminates "where does this go?" questions and ensures that anyone familiar with the framework can navigate any project instantly.
+
+```
+project-root/
+├── CLAUDE.md                    # Compounding engineering knowledge base
+├── DECISIONS.md                 # Living decision log
+├── PERSONAS.md                  # Living persona document
+├── PRINCIPLES.md                # Living design/engineering principles
+│
+├── docs/
+│   ├── audit/                   # Initial audit findings
+│   │   └── gap-analysis.md
+│   ├── journeys/                # End-to-end journey maps
+│   │   ├── journey-001-onboarding.md
+│   │   └── journey-002-core-workflow.md
+│   ├── sprints/                 # Sprint records
+│   │   ├── sprint-001/
+│   │   │   ├── brief.md
+│   │   │   ├── outputs.md
+│   │   │   └── retro.md
+│   │   └── sprint-002/
+│   ├── dissent/                 # Dissent register
+│   │   └── register.md
+│   └── page-tree/               # PAGE-TREE structural map
+│       └── page-tree.md
+│
+├── src/                         # Application source code
+│   ├── components/
+│   │   ├── ui/                  # Primitive UI components
+│   │   └── features/            # Feature-specific compositions
+│   ├── lib/                     # Shared utilities
+│   ├── hooks/                   # Custom hooks
+│   └── app/                     # Application routes/pages
+│
+├── tests/                       # Test suites
+│   ├── unit/
+│   ├── integration/
+│   └── e2e/
+│
+└── public/                      # Static assets
+```
+
+### Key Conventions
+
+- **Living documents** (`DECISIONS.md`, `PERSONAS.md`, `PRINCIPLES.md`) live at the repository root for maximum visibility
+- **CLAUDE.md** (or equivalent AI instruction file) also lives at root, growing via compounding engineering
+- **Sprint records** are numbered sequentially and contain the brief, outputs, and retrospective
+- **Journey maps** are numbered and named descriptively
+- **The dissent register** is a single file, appended to over the project lifetime
+
+## Part 3: The Sprint Model
+
+Two sprint modes are available, selected based on project phase and need.
+
+### Mode A: Full 5-Day Design Sprint
+
+Used for complex problems requiring deep exploration, typically at project kickoff or when tackling a major new feature area.
+
+| Day | Focus | Activities | Outputs |
+|---|---|---|---|
+| **Day 1: Understand** | Map the problem space | Stakeholder interviews, existing system audit, user research review, competitive analysis | Problem statement, constraint map, initial journey draft |
+| **Day 2: Diverge** | Generate options | Sketching sessions, "How Might We" exercises, reference gathering, individual solution proposals | Solution sketches (quantity over quality), opportunity matrix |
+| **Day 3: Converge** | Select direction | Dot voting, feasibility assessment, Mandatory Challenger review, decision documentation | Selected direction with rationale, dissent register entries, updated DECISIONS.md |
+| **Day 4: Prototype** | Build testable artifact | Rapid prototyping (Figma, code, or hybrid), content drafting, flow assembly | Interactive prototype covering the critical path |
+| **Day 5: Validate** | Test with real users | Usability testing (5+ participants), four-pillar validation, stakeholder review | Validation report, prioritized findings, updated PERSONAS.md and PRINCIPLES.md |
+
+### Mode B: Continuous Sprint
+
+Used for ongoing delivery after the initial design sprint. Operates in 1-2 week cycles.
+
+Each continuous sprint follows a simplified loop:
+
+1. **Plan** — Review living documents, select work items, assign Tiger Team roles
+2. **Execute** — Build, with daily check-ins against the four pillars
+3. **Validate** — Run the PR Validation Checklist (see below), conduct user testing if applicable
+4. **Synthesize** — Update DECISIONS.md, PERSONAS.md, and PRINCIPLES.md with sprint learnings
+
+## Part 4: The Tiger Team
+
+A Tiger Team is a small, cross-functional group assembled for a specific sprint or problem. Each member has a defined role, mandate, and perspective lens.
+
+### Full Roster
+
+| Role | Mandate | Perspective Lens | Hill to Die On |
+|---|---|---|---|
+| **Sprint Lead** | Owns the sprint outcome and timeline | Delivery and prioritization | "We ship something testable every sprint" |
+| **UX Architect** | Owns the user experience and information architecture | User mental models and workflows | "If the user has to think about how to use it, we have failed" |
+| **Visual Designer** | Owns the visual language and component consistency | Aesthetics, hierarchy, and brand alignment | "Every pixel communicates intent" |
+| **Frontend Engineer** | Owns the implementation and technical feasibility | Performance, accessibility, and maintainability | "If it cannot be built to production quality, it does not ship" |
+| **Content Strategist** | Owns the language, terminology, and microcopy | Clarity of communication | "Every word must earn its place" |
+| **Mandatory Challenger** | Owns the quality of decision-making | Assumptions, risks, and alternatives | "What are we wrong about?" |
+| **Domain Expert** | Owns the subject matter accuracy | Business rules, regulations, and domain conventions | "The system must reflect reality, not our assumptions about it" |
+
+### Assembling a Sprint Team
+
+Not every sprint needs every role. Select based on the problem type:
+
+| Problem Type | Required Roles | Optional Roles |
+|---|---|---|
+| **New feature design** | Sprint Lead, UX Architect, Visual Designer, Frontend Engineer | Content Strategist, Domain Expert |
+| **Usability improvement** | Sprint Lead, UX Architect, Frontend Engineer | Visual Designer, Content Strategist |
+| **Technical refactor** | Sprint Lead, Frontend Engineer | UX Architect (for impact assessment) |
+| **Content overhaul** | Sprint Lead, Content Strategist, UX Architect | Domain Expert |
+| **Validation sprint** | Sprint Lead, Mandatory Challenger, UX Architect | Domain Expert |
+
+The **Mandatory Challenger** role can be filled by any team member on a rotating basis. It is a function, not a permanent assignment.
+
+## Part 5: The End-to-End Journey
+
+Every project must map its critical user journeys from end to end. The journey map is the connective tissue between individual features and the overall user experience.
+
+See the [Journey Mapping Template](/principles/journey-template) for the complete structure and a worked example.
+
+## The Three Living Documents
+
+These documents are the synthesized output of all project work. They are the single source of truth.
+
+### DECISIONS.md
+
+```markdown
+# Decisions Log
+
+## DEC-001: [Decision Title]
+- **Date**: YYYY-MM-DD
+- **Status**: Accepted | Superseded | Reverted
+- **Context**: [Why this decision was needed]
+- **Decision**: [What was decided]
+- **Alternatives Considered**:
+  1. [Alternative A] — rejected because [reason]
+  2. [Alternative B] — rejected because [reason]
+- **Consequences**: [Expected impact]
+- **Dissent**: [Any dissenting opinions, or "None recorded"]
+- **Review Date**: [When this should be revisited, if applicable]
+```
+
+### PERSONAS.md
+
+```markdown
+# Personas
+
+## Persona: [Name / Role]
+- **Role**: [Job title or function]
+- **Goal**: [Primary objective when using the system]
+- **Context**: [Environment, constraints, typical workflow]
+- **Pain Points**: [Current frustrations]
+- **Success Metric**: [How they measure whether the system helped]
+- **Quote**: [A representative quote from research]
+- **Last Updated**: YYYY-MM-DD
+- **Confidence**: High | Medium | Low
+```
+
+### PRINCIPLES.md
+
+```markdown
+# Design & Engineering Principles
+
+## PRIN-001: [Principle Name]
+- **Statement**: [The principle in one sentence]
+- **Rationale**: [Why this principle matters for this project]
+- **Example**: [A concrete example of the principle applied]
+- **Counter-Example**: [What violating this principle looks like]
+- **Source**: [Which sprint or research produced this principle]
+- **Status**: Proposed | Validated | Retired
+```
+
+## The PAGE-TREE Pattern
+
+The PAGE-TREE is a structural map of every page and state in the application. It serves as the master reference for what exists, preventing duplicate work and ensuring complete coverage.
+
+```markdown
+# PAGE-TREE
+
+## /dashboard
+- **Purpose**: Primary landing page after login
+- **States**: Loading, Empty (new user), Populated, Error
+- **Key Components**: MetricCards, ActivityFeed, QuickActions
+- **Journey**: Onboarding (step 3), Core Workflow (step 1)
+- **Status**: Implemented | In Progress | Planned
+
+## /dashboard/settings
+- **Purpose**: User preferences and configuration
+- **States**: Default, Modified (unsaved), Saving, Error
+- **Key Components**: SettingsForm, NotificationPreferences
+- **Journey**: Core Workflow (branching path)
+- **Status**: Planned
+```
+
+Each entry maps a route to its purpose, states, components, journey connections, and implementation status. The PAGE-TREE is updated whenever new pages are added or existing pages change.
+
+## PR Validation Checklist
+
+Every pull request must pass this checklist before merge:
+
+```markdown
+## PR Validation
+
+### Four Pillars
+- [ ] **Clarity**: UI purpose and state are immediately obvious
+- [ ] **Attribution**: All data can be traced to its source
+- [ ] **Reversibility**: All actions can be undone (or are gated)
+- [ ] **Consistency**: Patterns match established conventions
+
+### Technical
+- [ ] Tests pass (`npm test`)
+- [ ] Build succeeds (`npm run build`)
+- [ ] No lint errors (`npm run lint`)
+- [ ] Accessibility audit passes
+- [ ] Responsive behavior verified (mobile, tablet, desktop)
+
+### Documentation
+- [ ] DECISIONS.md updated (if a decision was made)
+- [ ] PERSONAS.md updated (if user understanding changed)
+- [ ] PRINCIPLES.md updated (if a principle was validated or discovered)
+- [ ] PAGE-TREE updated (if pages were added or changed)
+- [ ] CLAUDE.md updated (if a new correction was needed)
+```
+
+## Initializing the Framework on a New Project
+
+### Step 1: Create the Repository Structure
+
+The fastest path: run `npx project-squad init` to bootstrap the canonical directory structure automatically (see [Project Squad](/principles/project-squad)). Alternatively, set it up manually as defined in Part 2. Create empty living documents with the template headers.
+
+### Step 2: Run the Audit
+
+Conduct an honest assessment of what exists (if anything). Document all findings in `docs/audit/gap-analysis.md`. Map each gap to a remediation action.
+
+### Step 3: Define the Initial Personas and Journeys
+
+Even before the first sprint, draft initial personas based on available knowledge (stakeholder conversations, existing research, domain understanding). Mark confidence as "Low" — these will be refined through sprint work.
+
+Map the critical user journeys at a high level. These become the backbone for sprint planning.
+
+### Step 4: Run the First Sprint
+
+Assemble the Tiger Team for a Full 5-Day Design Sprint (Mode A). Focus on the highest-priority journey identified in Step 3. The sprint will produce the first validated entries in DECISIONS.md, PERSONAS.md, and PRINCIPLES.md, transforming them from empty templates into living documents.
+
+After the first sprint, transition to Continuous Sprint mode (Mode B) for ongoing delivery.

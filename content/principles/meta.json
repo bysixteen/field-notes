@@ -1,0 +1,19 @@
+{
+  "title": "Principles & Frameworks",
+  "pages": [
+    "index",
+    "---Core Principles---",
+    "distill-dont-repeat",
+    "clarity-attribution-reversibility-consistency",
+    "compounding-engineering",
+    "verification-over-instruction",
+    "dissent-as-feature",
+    "answer-first",
+    "---Frameworks---",
+    "pioneer-framework",
+    "project-squad",
+    "synthesis-validation",
+    "journey-template",
+    "new-project-checklist"
+  ]
+}

@@ -1,0 +1,82 @@
+---
+title: New Project Checklist
+description: "Bootstrap sequence using Field Notes, Project Squad, and llms.txt."
+---
+
+When starting a new project, this sequence ties together the patterns documented across Field Notes into a single bootstrap workflow. Each step links to the relevant documentation.
+
+## The Bootstrap Sequence
+
+### Step 1: Initialize Project Squad
+
+```bash
+npx project-squad init
+```
+
+Creates `.squad/` personas, `.claude/commands/`, and living document templates. Before running, write `_meta/PROJECT_CONTEXT.md` describing the project's purpose, users, and constraints.
+
+[Read about Project Squad](/principles/project-squad)
+
+### Step 2: Connect to Field Notes
+
+Add the Field Notes URL to your project's `CLAUDE.md` so AI agents have instant access to all documented patterns:
+
+```markdown
+## Reference
+
+See https://bysixteen.github.io/field-notes/llms-full.txt for design engineering patterns.
+```
+
+[Read the Documentation Hub Pattern](/platform/documentation-hub)
+
+### Step 3: Set Up Git Conventions
+
+Add to your `CLAUDE.md`:
+
+- Branch prefixes: `feat/`, `fix/`, `docs/`, `refactor/`, `chore/`
+- Commit format: Conventional Commits — `type(scope): description`
+
+### Step 4: Choose Architecture Patterns
+
+Review the [Platform Patterns](/platform) domain. Key decisions:
+
+- **Data**: Will you split transactional and editorial data? → [Data Architecture](/platform/data-architecture)
+- **Auth**: Do you need row-level security? → [Auth & RLS](/platform/auth-rls)
+- **Audit**: Do you need state transition history? → [Audit-First](/platform/audit-first)
+- **Structure**: Monorepo or single-repo? → [Monorepo Architecture](/platform/monorepo)
+
+### Step 5: Run the Audit
+
+Even for greenfield projects, audit what exists — design comps, requirements docs, stakeholder assumptions, competitive landscape. Document findings in `docs/audit/gap-analysis.md`.
+
+[Read the Pioneer Framework — Part 1: The Audit](/principles/pioneer-framework)
+
+### Step 6: Run the First Sprint
+
+Assemble a Tiger Team or assign persona roles if working solo. Run a Mode A (Full 5-Day) sprint targeting the highest-priority user journey. This produces the first real entries in DECISIONS.md, PERSONAS.md, and PRINCIPLES.md.
+
+[Read the Pioneer Framework — Part 3: The Sprint Model](/principles/pioneer-framework)
+
+### Step 7: Start Compounding
+
+After the first sprint, living documents are no longer empty templates. Transition to Continuous Sprint mode (Mode B). Let `CLAUDE.md` grow from real corrections, not predictions.
+
+[Read about Compounding Engineering](/principles/compounding-engineering)
+
+## Quick Reference
+
+Copy this checklist into your project kickoff document:
+
+```markdown
+## Project Bootstrap
+
+- [ ] Write `_meta/PROJECT_CONTEXT.md`
+- [ ] Run `npx project-squad init`
+- [ ] Add Field Notes llms-full.txt URL to CLAUDE.md
+- [ ] Set up git conventions (branch prefixes, commit format) in CLAUDE.md
+- [ ] Choose architecture patterns from Platform domain
+- [ ] Run the audit (Pioneer Framework Part 1)
+- [ ] Run first sprint (Mode A)
+- [ ] Update living documents (DECISIONS, PERSONAS, PRINCIPLES)
+- [ ] Transition to Continuous Sprint mode (Mode B)
+```

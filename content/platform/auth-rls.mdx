@@ -1,0 +1,269 @@
+---
+title: Auth & Row-Level Security
+description: JWT custom claims, RLS policies, and middleware route protection.
+---
+
+Authentication tells you who the user is. Authorization tells you what they can access. This pattern combines managed authentication with database-level Row-Level Security (RLS) to enforce access control at the deepest possible layer.
+
+## The Pattern
+
+1. A managed auth service handles user registration, login, and session management.
+2. The user's role is stored as a custom claim in their JWT token.
+3. The database reads the JWT claims and enforces RLS policies on every query.
+4. Application middleware provides an additional layer of route-level protection.
+
+Security is enforced at the database level, not just the application level. Even if application code has a bug, the database will not return unauthorized data.
+
+## JWT Custom Claims
+
+When a user authenticates, the auth service issues a JWT token. Custom claims are additional fields embedded in this token that the database can read.
+
+### Storing Roles in the JWT
+
+A typical custom claims structure:
+
+```json
+{
+  "sub": "user-uuid-here",
+  "email": "user@example.com",
+  "role": "staff",
+  "aud": "authenticated",
+  "exp": 1700000000
+}
+```
+
+The `role` claim is the key piece. It tells the database what level of access this user has.
+
+### Common Roles
+
+| Role | Description | Access Level |
+| --- | --- | --- |
+| `admin` | Platform administrators | Full access to all records and settings |
+| `staff` | Staff members | Access to assigned records and operational features |
+| `member` | Registered users | Access to their own records only |
+
+### Setting Custom Claims
+
+Custom claims are typically set via a database function called during user creation or role assignment:
+
+```sql
+CREATE OR REPLACE FUNCTION set_user_role(user_id uuid, new_role text)
+RETURNS void AS $$
+BEGIN
+  UPDATE auth.users
+  SET raw_app_meta_data = raw_app_meta_data || json_build_object('role', new_role)::jsonb
+  WHERE id = user_id;
+END;
+$$ LANGUAGE plpgsql SECURITY DEFINER;
+```
+
+The role is read from the JWT in RLS policies using a helper function:
+
+```sql
+CREATE OR REPLACE FUNCTION get_user_role()
+RETURNS text AS $$
+BEGIN
+  RETURN coalesce(
+    current_setting('request.jwt.claims', true)::json->>'role',
+    'anonymous'
+  );
+END;
+$$ LANGUAGE plpgsql STABLE;
+```
+
+## RLS Policies
+
+Row-Level Security policies are rules defined on database tables that automatically filter which rows a user can see or modify. They execute on every query — there is no way to bypass them from the application layer.
+
+### Enabling RLS
+
+RLS must be explicitly enabled on each table:
+
+```sql
+ALTER TABLE prospects ENABLE ROW LEVEL SECURITY;
+ALTER TABLE prospect_events ENABLE ROW LEVEL SECURITY;
+```
+
+Once enabled, no rows are accessible unless a policy explicitly grants access.
+
+### Policy Examples
+
+#### Admin: Full Access
+
+Admins can read and write all records:
+
+```sql
+CREATE POLICY "Admins have full access to prospects"
+ON prospects
+FOR ALL
+TO authenticated
+USING (get_user_role() = 'admin')
+WITH CHECK (get_user_role() = 'admin');
+```
+
+#### Staff: Access to Assigned Records
+
+Staff members can see records assigned to them:
+
+```sql
+CREATE POLICY "Staff can view assigned prospects"
+ON prospects
+FOR SELECT
+TO authenticated
+USING (
+  get_user_role() = 'staff'
+  AND assigned_to = auth.uid()
+);
+
+CREATE POLICY "Staff can update assigned prospects"
+ON prospects
+FOR UPDATE
+TO authenticated
+USING (
+  get_user_role() = 'staff'
+  AND assigned_to = auth.uid()
+)
+WITH CHECK (
+  get_user_role() = 'staff'
+  AND assigned_to = auth.uid()
+);
+```
+
+#### Members: Own Records Only
+
+Members can only access their own records:
+
+```sql
+CREATE POLICY "Members can view own records"
+ON prospects
+FOR SELECT
+TO authenticated
+USING (
+  get_user_role() = 'member'
+  AND user_id = auth.uid()
+);
+```
+
+#### Sensitive Data Restriction
+
+Columns containing sensitive information (medical, financial, personal) can be restricted to admin-only access through separate tables or views:
+
+```sql
+-- Sensitive details in a separate table with strict RLS
+CREATE TABLE prospect_sensitive (
+  prospect_id uuid PRIMARY KEY REFERENCES prospects(id),
+  medical_notes text,
+  financial_details jsonb
+);
+
+ALTER TABLE prospect_sensitive ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY "Only admins can access sensitive data"
+ON prospect_sensitive
+FOR ALL
+TO authenticated
+USING (get_user_role() = 'admin')
+WITH CHECK (get_user_role() = 'admin');
+```
+
+### Combining Policies
+
+Multiple policies on the same table are combined with OR logic for the same operation. This means a user only needs to satisfy one policy to gain access. Design policies carefully to avoid unintended access through policy combination.
+
+## Middleware Route Protection
+
+While RLS protects data at the database level, application middleware provides a user-facing access control layer. Middleware runs before the page renders, redirecting unauthorized users before they even reach the application code.
+
+### How It Works
+
+```
+User Request
+    → Middleware checks JWT
+    → JWT missing or expired? → Redirect to login
+    → JWT valid but wrong role? → Redirect to unauthorized page
+    → JWT valid and correct role? → Render the page
+```
+
+### Implementation Pattern
+
+```ts
+// middleware.ts
+import { NextResponse } from 'next/server'
+import type { NextRequest } from 'next/server'
+
+const protectedRoutes = {
+  '/admin': ['admin'],
+  '/dashboard': ['admin', 'staff'],
+  '/my-account': ['admin', 'staff', 'member'],
+}
+
+export function middleware(request: NextRequest) {
+  const session = getSession(request) // Read JWT from cookie/header
+  const path = request.nextUrl.pathname
+
+  for (const [route, allowedRoles] of Object.entries(protectedRoutes)) {
+    if (path.startsWith(route)) {
+      if (!session) {
+        return NextResponse.redirect(new URL('/login', request.url))
+      }
+      if (!allowedRoles.includes(session.role)) {
+        return NextResponse.redirect(new URL('/unauthorized', request.url))
+      }
+    }
+  }
+
+  return NextResponse.next()
+}
+```
+
+### Middleware vs. RLS
+
+Middleware and RLS serve different purposes and both are necessary:
+
+| Layer | Purpose | Protects Against |
+| --- | --- | --- |
+| **Middleware** | UX-level access control | Users seeing pages they shouldn't access |
+| **RLS** | Data-level access control | Application bugs returning unauthorized data |
+
+Middleware is the friendly bouncer at the door. RLS is the vault that won't open without the right key. Both are needed because:
+
+- Middleware can be bypassed by direct API calls.
+- RLS cannot be bypassed — it runs inside the database on every query.
+- Middleware provides a good user experience (redirect to login, show a helpful error).
+- RLS provides a security guarantee (even if middleware fails, data is safe).
+
+## The Benefit: Defense in Depth
+
+This pattern creates multiple layers of security:
+
+1. **Auth service**: Handles authentication, issues JWTs, manages sessions.
+2. **Middleware**: Checks the JWT before rendering any protected page.
+3. **RLS policies**: Filter data at the database level based on JWT claims.
+
+If any single layer has a bug, the other layers still protect the data. An application code bug that forgets to check the user's role won't leak data because RLS policies still filter the query results. A middleware bypass through a direct API call still hits RLS policies.
+
+This is the core value of database-level security: **the database is the last line of defense, and it never trusts the application.**
+
+## Testing RLS Policies
+
+RLS policies must be tested with different user roles to verify they work correctly:
+
+```sql
+-- Test as admin: should see all records
+SET request.jwt.claims = '{"role": "admin", "sub": "admin-uuid"}';
+SELECT count(*) FROM prospects; -- Should return total count
+
+-- Test as staff: should see only assigned records
+SET request.jwt.claims = '{"role": "staff", "sub": "staff-uuid"}';
+SELECT count(*) FROM prospects; -- Should return only assigned records
+
+-- Test as member: should see only own records
+SET request.jwt.claims = '{"role": "member", "sub": "member-uuid"}';
+SELECT count(*) FROM prospects; -- Should return only own records
+
+-- Test as anonymous: should see nothing
+SET request.jwt.claims = '{}';
+SELECT count(*) FROM prospects; -- Should return 0
+```
+
+Test RLS policies with seed data during the scaffolding phase (see [Scaffolding-First Approach](/platform/scaffolding-first)), not after features are built.

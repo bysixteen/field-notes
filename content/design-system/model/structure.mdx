@@ -1,0 +1,39 @@
+---
+title: Structure
+description: The fixed anatomical skeleton of a component — internal padding, gap, fixed heights.
+---
+
+## Definition
+
+Structure defines the **fixed anatomical dimensions** of a component: internal padding, gap, fixed heights, border radii, and font families that form its skeleton.
+
+Structure is a **build-time** decision. It defines what the component *is*, not how it varies.
+
+## Values
+
+Structure values are component-specific. Unlike other dimensions which have a shared vocabulary (e.g. `high`, `medium`, `low`), structure modes are defined per-component based on its anatomy.
+
+Common structure modes include:
+
+| Value | Meaning |
+|-------|---------|
+| `Mode 1` | Default structural layout |
+| `text` | Text-only variant (no icon, no badge) |
+
+## When Decided
+
+Structure is decided at **build time** — when the component is designed and its variants are defined. It is not typically changed by consumers of the component.
+
+## In the Design Tool
+
+Structure maps to variable collections that define the component's skeleton. These collections contain the fixed spatial tokens that don't change with state, emphasis, or sentiment.
+
+## Relationship with Other Dimensions
+
+Structure is the most "fixed" dimension:
+
+- **Size** can be changed per-instance
+- **Density** can be changed per-context
+- **Structure** is defined per-component-variant
+
+A component's structure determines *what spaces exist*. Size and density determine *how large those spaces are*.

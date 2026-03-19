@@ -1,0 +1,242 @@
+---
+title: Monorepo Architecture
+description: pnpm workspaces + Turborepo for shared-code platform builds.
+---
+
+> **Assumes monorepo architecture.** This pattern uses pnpm workspaces and Turborepo. For single-repo or polyrepo projects, the shared-code benefits described here may be achieved through published packages or other mechanisms.
+
+A monorepo houses all platform applications and shared packages in a single repository, enabling code reuse, consistent tooling, and atomic changes across the entire system.
+
+## When to Use
+
+- Multiple applications need to share code (design system, utilities, type definitions).
+- The team needs consistent tooling, linting, and formatting across all apps.
+- Changes to shared packages should be immediately reflected in all consuming apps without publishing to a registry.
+- You want a single PR to update a shared component and every app that uses it.
+
+## Repository Structure
+
+```
+platform/
+├── apps/
+│   ├── admin/          # Staff/management dashboard
+│   ├── web/            # Public-facing site
+│   └── wiki/           # Internal knowledge base
+├── packages/
+│   ├── design-system/  # Shared UI components and tokens
+│   ├── utils/          # Shared utility functions
+│   └── types/          # Shared TypeScript type definitions
+├── supabase/           # Database migrations, seed data, edge functions
+├── sanity/             # CMS schema and configuration
+├── turbo.json          # Turborepo pipeline configuration
+├── pnpm-workspace.yaml # Workspace package definitions
+├── package.json        # Root scripts and dev dependencies
+├── .eslintrc.js        # Shared ESLint configuration
+├── .prettierrc         # Shared Prettier configuration
+└── CLAUDE.md           # AI agent context (see Scaffolding-First)
+```
+
+### `apps/` — Deployable Applications
+
+Each directory under `apps/` is a standalone application with its own `package.json`, framework configuration, and deployment target. Apps import from `packages/` but never from each other.
+
+### `packages/` — Shared Libraries
+
+Shared code lives in `packages/`. Each package is a self-contained module with a clear API surface. Apps depend on packages; packages never depend on apps.
+
+### External Service Directories
+
+Directories like `supabase/` and `sanity/` sit at the root level. They contain configuration, schemas, and migrations for external services. They are not npm packages — they have their own CLIs and deployment workflows.
+
+## Tooling
+
+### pnpm Workspaces
+
+pnpm workspaces manage dependencies across all packages and apps. The `pnpm-workspace.yaml` file defines which directories participate:
+
+```yaml
+packages:
+  - "apps/*"
+  - "packages/*"
+```
+
+Cross-package dependencies use the `workspace:*` protocol:
+
+```json
+{
+  "dependencies": {
+    "@platform/design-system": "workspace:*",
+    "@platform/utils": "workspace:*",
+    "@platform/types": "workspace:*"
+  }
+}
+```
+
+This ensures apps always use the local version of shared packages rather than a published one.
+
+### Turborepo
+
+Turborepo orchestrates builds, linting, and type-checking across the monorepo. It understands the dependency graph and runs tasks in the correct order with maximum parallelism.
+
+```json
+{
+  "$schema": "https://turbo.build/schema.json",
+  "pipeline": {
+    "build": {
+      "dependsOn": ["^build"],
+      "outputs": [".next/**", "dist/**"]
+    },
+    "lint": {},
+    "typecheck": {
+      "dependsOn": ["^build"]
+    },
+    "dev": {
+      "cache": false,
+      "persistent": true
+    }
+  }
+}
+```
+
+Key behaviors:
+- `^build` means "build my dependencies first."
+- Turborepo caches task outputs — unchanged packages skip rebuilds entirely.
+- `dev` is marked `persistent` so it stays running for local development.
+
+## Shared Configuration
+
+### TypeScript
+
+A base `tsconfig.json` at the root defines shared compiler options. Each package and app extends it:
+
+```json
+// packages/utils/tsconfig.json
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "outDir": "dist",
+    "rootDir": "src"
+  },
+  "include": ["src"]
+}
+```
+
+This ensures consistent strictness, module resolution, and target across the entire codebase.
+
+### ESLint and Prettier
+
+A single ESLint configuration at the root covers all packages and apps. Prettier handles formatting with a shared `.prettierrc`. This eliminates style debates and ensures consistency regardless of which app or package a developer is working in.
+
+### Pre-Commit Hooks
+
+Husky and lint-staged run linting and formatting on staged files before every commit:
+
+```json
+// package.json (root)
+{
+  "lint-staged": {
+    "*.{ts,tsx}": ["eslint --fix", "prettier --write"],
+    "*.{json,md,mdx}": ["prettier --write"]
+  }
+}
+```
+
+This catches issues before they reach CI, keeping the main branch clean.
+
+## Naming Conventions
+
+Consistent naming reduces cognitive load across the monorepo:
+
+| Element | Convention | Example |
+| --- | --- | --- |
+| Directories | kebab-case | `design-system/`, `admin-portal/` |
+| Components | PascalCase | `Button.tsx`, `DataTable.tsx` |
+| Utilities | camelCase | `formatDate.ts`, `parseToken.ts` |
+| Types/Interfaces | PascalCase | `UserProfile`, `AuditEvent` |
+| Constants | SCREAMING_SNAKE_CASE | `MAX_RETRIES`, `DEFAULT_PAGE_SIZE` |
+| Commits | Conventional commits with scope | `feat(design-system): add badge component` |
+
+## Package Structure Template
+
+Every shared package follows the same internal structure:
+
+```
+packages/utils/
+├── src/
+│   ├── index.ts        # Barrel export — public API surface
+│   ├── formatDate.ts
+│   ├── parseToken.ts
+│   └── validators.ts
+├── package.json
+└── tsconfig.json
+```
+
+The `package.json` points to the barrel export:
+
+```json
+{
+  "name": "@platform/utils",
+  "main": "./src/index.ts",
+  "types": "./src/index.ts",
+  "scripts": {
+    "build": "tsc",
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint src/"
+  }
+}
+```
+
+The barrel export (`src/index.ts`) defines the public API:
+
+```ts
+export { formatDate, formatRelativeDate } from './formatDate'
+export { parseToken, isTokenExpired } from './parseToken'
+export { validateEmail, validatePhone } from './validators'
+```
+
+Consumers import only from the package name, never from internal paths:
+
+```ts
+// Correct
+import { formatDate } from '@platform/utils'
+
+// Incorrect — reaches into internal structure
+import { formatDate } from '@platform/utils/src/formatDate'
+```
+
+## CI Pipeline
+
+GitHub Actions runs lint and type-checking on every pull request:
+
+```yaml
+name: CI
+on:
+  pull_request:
+    branches: [main]
+
+jobs:
+  checks:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v2
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'pnpm'
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm turbo lint typecheck
+```
+
+Turborepo's caching means CI only re-checks packages that changed, keeping pipeline times short even as the monorepo grows.
+
+## Trade-offs
+
+| Benefit | Cost |
+| --- | --- |
+| Single source of truth for shared code | Larger repository size |
+| Atomic cross-package changes | Requires monorepo tooling knowledge |
+| Consistent tooling and configuration | Initial setup complexity |
+| Turborepo caching speeds up CI | All team members work in one repo |
+
+The monorepo pattern pays for itself quickly on multi-app platforms where shared code is the norm rather than the exception.

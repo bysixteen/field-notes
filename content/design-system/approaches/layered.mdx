@@ -1,0 +1,38 @@
+---
+title: Layered Architecture
+description: The full four-layer token chain for enterprise and multi-brand systems.
+---
+
+## When to Use
+
+- Large teams with multiple contributors to the design system
+- Multi-brand products that need theme switching
+- Projects where the design tool is the source of truth and changes flow automatically
+- Systems that need to scale to many components (10+)
+
+## The Four Layers
+
+```
+Primitive → Semantic → Component Slot → Resolver → Rendered Value
+```
+
+See [The Token Chain](/design-system/token-chain) for full details on each layer.
+
+## Advantages
+
+| Advantage | Detail |
+|-----------|--------|
+| Automatic theme switching | Change primitives, semantics cascade automatically |
+| Design tool traceability | 1:1 mapping from design tool variable collections |
+| Scalability | Adding components doesn't increase primitive count |
+| Multi-brand | Swap the primitive layer for a different brand |
+| Contrast guarantees | Paired semantic tokens ensure WCAG AA |
+
+## Trade-offs
+
+| Limitation | Detail |
+|-----------|--------|
+| Aliasing complexity | Debugging requires following `var()` chains |
+| Potential token bloat | Many primitives may go unused without careful pruning |
+| Build pipeline required | Design tool → transformer → CSS → components |
+| Onboarding cost | New developers must understand the layer model |

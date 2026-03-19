@@ -1,0 +1,43 @@
+---
+title: Emphasis Scale
+description: The weaker → weak → standard → strong naming convention for visual weight.
+---
+
+## The Scale
+
+Emphasis is encoded in semantic token names using four levels:
+
+```
+weaker → weak → (standard/omitted) → strong
+```
+
+When the emphasis level is **standard**, it is omitted from the name.
+
+## Examples
+
+| Token | Emphasis | Meaning |
+|-------|----------|---------|
+| `--background-neutral-weaker-rest` | Weakest | Minimal presence, barely visible |
+| `--background-neutral-weak-rest` | Weak | Reduced presence |
+| `--background-neutral-rest` | Standard | Normal presence (omitted) |
+| `--background-neutral-strong-rest` | Strong | Maximum presence |
+
+## How It Maps to the Emphasis Dimension
+
+| Emphasis dimension value | Token naming |
+|-------------------------|-------------|
+| `low` | `weaker` or `weak` |
+| `medium` | (omitted / standard) |
+| `high` | `strong` |
+
+The token naming uses a four-point scale while the dimension uses three points. The `weaker`/`weak` distinction gives finer control within the low-emphasis range.
+
+## Visual Effect
+
+Moving along the emphasis scale simultaneously adjusts:
+
+- **Colour intensity** — from muted/tinted to full saturation
+- **Background presence** — from transparent/subtle to solid fill
+- **Border visibility** — from hidden to prominent
+
+This multi-property degradation is intentional — it creates a coherent visual weight shift rather than just changing one property.

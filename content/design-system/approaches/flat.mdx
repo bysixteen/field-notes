@@ -1,0 +1,62 @@
+---
+title: Flat Architecture
+description: Single-layer CSS custom properties for LLM-mediated workflows.
+---
+
+## When to Use
+
+- LLM-mediated workflows where AI manages token relationships
+- Small teams or solo developers
+- Prototypes and experiments
+- Projects where build pipeline simplicity matters
+
+## The Flat Pattern
+
+One layer. CSS custom properties with meaningful names:
+
+```css
+:root {
+  --button-bg-rest: #3b82f6;
+  --button-bg-hover: #2563eb;
+  --input-border-focus: #3b82f6;
+  --input-border-error: #ef4444;
+}
+```
+
+## Naming Convention
+
+`--{component}-{part}-{state}`
+
+| Segment | Examples |
+|---------|----------|
+| component | button, input, card, alert, modal |
+| part | bg, border, text, shadow, height, padding-x, font-size, radius |
+| state | rest, hover, focus, active, disabled, error |
+
+Sizes use a suffix: `--input-height-sm`, `--input-height-md`, `--input-height-lg`
+
+## Advantages
+
+| Advantage | Detail |
+|-----------|--------|
+| No aliasing chains | Direct value inspection, no `var()` chains to debug |
+| Fewer tokens | Dramatically fewer tokens to manage |
+| Zero build pipeline | No design tool → transform → CSS step |
+| LLM-readable | AI reads values directly, understands relationships from naming |
+
+## Trade-offs
+
+| Limitation | Detail |
+|-----------|--------|
+| No automatic cascade | Changing a brand colour means updating multiple tokens |
+| No theme switching via alias swaps | Requires runtime switching or AI tooling |
+| Relationships are implicit | Naming convention, not explicit aliasing |
+| Harder to scale | More tokens needed as component count grows |
+
+## The AI Mitigations
+
+The limitations are manageable with AI tooling because:
+
+- The LLM knows which variables are brand-related without an alias chain
+- The LLM understands state relationships from the naming convention
+- Bulk changes ("make all warning tokens use this red") are natural language operations

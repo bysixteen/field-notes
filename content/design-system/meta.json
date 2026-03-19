@@ -1,0 +1,16 @@
+{
+  "title": "Design System",
+  "pages": [
+    "---Introduction---",
+    "index",
+    "concepts-manifest",
+    "---Core Concepts---",
+    "model",
+    "token-chain",
+    "composition",
+    "---Implementation---",
+    "naming",
+    "approaches",
+    "constraints"
+  ]
+}

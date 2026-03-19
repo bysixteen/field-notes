@@ -1,0 +1,38 @@
+---
+title: Primitive Naming
+description: The --{category}-{name} pattern for raw token values.
+---
+
+## Pattern
+
+`--{category}-{name}`
+
+## Categories
+
+| Category | Example |
+|----------|---------|
+| `colors` | `--colors-neutral-500` |
+| `size` | `--size-16` |
+| `radii` | `--radii-08` |
+| `stroke-weight` | `--stroke-weight-01` |
+| `font-family` | `--font-family-primary` |
+| `font-weight` | `--font-weight-500` |
+| `font-size` | `--font-size-14` |
+| `leading` | `--leading-20` |
+| `tracking` | `--tracking-100` |
+
+## Value Convention
+
+Names use **pixel-equivalent values**: `--font-size-14` = `0.875rem`
+
+This makes it easy to mentally map between the token name and its rendered size without looking up the value.
+
+## Alpha Variant Naming
+
+Colour alpha variants follow:
+
+`--colors-{palette}-alpha-{shade}-a{opacity}`
+
+```css
+--colors-brand-alpha-800-a50    /* brand-800 at 50% opacity */
+```

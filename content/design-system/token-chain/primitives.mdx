@@ -1,0 +1,33 @@
+---
+title: Primitives
+description: Layer 1 — raw values that are theme-aware but never used directly in components.
+---
+
+## Definition
+
+Primitives are **raw values**. They are theme-aware (light/dark mode) but should **never be used directly in components**.
+
+## Naming Pattern
+
+`--{category}-{name}`
+
+Common categories include:
+
+| Category | Example |
+|----------|---------|
+| `colors` | `--colors-neutral-500` |
+| `size` | `--size-16` |
+| `radii` | `--radii-08` |
+| `font-family` | `--font-family-primary` |
+| `font-weight` | `--font-weight-500` |
+| `font-size` | `--font-size-14` |
+| `leading` | `--leading-20` |
+
+Names typically use **pixel-equivalent values** (e.g. `--font-size-14` = `0.875rem`) for easy mental mapping.
+
+## Rules
+
+- Never use primitives directly in component styles
+- Primitives are only referenced when **defining semantic tokens** via `var()`
+- Import primitives **before** semantics in CSS (semantics depend on primitive declarations)
+- Never edit auto-generated files — use extension files for manual tokens

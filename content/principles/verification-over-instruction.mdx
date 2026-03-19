@@ -1,0 +1,80 @@
+---
+title: "Verification Over Instruction"
+description: "Give AI a way to verify its work rather than a long list of instructions. Success conditions beat specifications."
+---
+
+## The Principle
+
+Give the AI a way to **verify its work**. This is more effective than giving it a long list of instructions.
+
+Providing a clear success condition dramatically improves the quality of the final result. A verifiable outcome lets the AI self-correct, iterate, and converge on the right answer — something that even the most detailed specification cannot guarantee.
+
+## Why This Matters
+
+Instructions are inherently ambiguous. No matter how carefully you write them, there are edge cases, implicit assumptions, and contextual details that get lost. The longer the instruction set, the more likely the AI is to miss or misinterpret a critical detail.
+
+Verification, by contrast, is binary. Either the work passes the check or it does not. This clarity eliminates entire categories of miscommunication.
+
+## Verification Methods
+
+### Test Suites
+
+The most robust form of verification. If the desired behavior can be expressed as a test, write the test first and let the AI write the implementation.
+
+```
+"Write a function that passes these tests"
+```
+
+is vastly more effective than:
+
+```
+"Write a function that takes a list of users,
+filters out inactive ones, groups them by role,
+and returns a sorted summary object"
+```
+
+The test suite encodes the exact expected behavior, including edge cases, error handling, and output format.
+
+### Browser Testing
+
+For UI work, give the AI access to browser-based verification:
+
+- **Visual regression tests**: Does the rendered output match the expected screenshot?
+- **Accessibility audits**: Does the page pass automated accessibility checks?
+- **Interaction tests**: Do clicks, form submissions, and navigation work as expected?
+
+### Bash Validation
+
+For build and infrastructure tasks, simple bash commands serve as verification:
+
+- `npm run build` exits with code 0
+- `npm run lint` produces no errors
+- `curl localhost:3000/api/health` returns 200
+- The output file exists and contains the expected structure
+
+### Data Verification
+
+For data processing tasks, verify the output rather than the process:
+
+- Row counts match expectations
+- Required fields are non-null
+- Aggregate values fall within expected ranges
+- Output schema matches the specification
+
+## The Pattern
+
+1. **Define the success condition first.** Before describing the work, describe what "done" looks like in verifiable terms.
+2. **Make verification automated.** If the AI can run the verification itself, it can iterate without human intervention.
+3. **Keep instructions minimal.** Once the verification is in place, the instructions can be brief. The AI will figure out the approach through iteration.
+
+## Example
+
+Instead of this (instruction-heavy):
+
+> Build a responsive card component using our design system tokens. It should have a header with a title and subtitle, a body area for content, and a footer with action buttons. Use the `space-4` token for padding, `radius-md` for border radius, and `shadow-sm` for the box shadow. The header should use `text-lg` for the title and `text-sm text-muted` for the subtitle. Make sure it works on mobile with a single-column layout.
+
+Try this (verification-focused):
+
+> Build a responsive card component. Here is a screenshot of the expected result at desktop and mobile widths. The component should pass the existing Storybook visual regression test and the accessibility audit. Run `npm test -- --grep "Card"` to verify.
+
+The second version is shorter, less ambiguous, and self-verifying.

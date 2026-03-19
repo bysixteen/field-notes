@@ -1,0 +1,47 @@
+---
+title: Spacing & Gestalt
+description: Spatial distance encodes semantic distance — the three spacing tiers.
+---
+
+## Core Principle
+
+**Spatial distance encodes semantic distance.** The further apart two elements are, the less related they are functionally or hierarchically. This principle operates consistently across both horizontal action groups and vertical typographic hierarchies.
+
+## The Three Spacing Tiers
+
+| Tier | Token range | Meaning |
+|------|-------------|---------|
+| **Tight** | `--size-4` → `--size-8` | Functional or semantic relationship. These things belong together. |
+| **Medium** | `--size-12` → `--size-20` | Governed relationship. One element owns or introduces what follows. |
+| **Loose** | `--size-28` → `--size-32`+ | Functional separation. These things are categorically distinct. |
+
+These tiers are a **documentation abstraction**. The token scale is numeric (`--size-4`, `--size-8`, etc.). The tier concept lives in this guide, not in named tier tokens.
+
+## Horizontal Spacing — Action Groups
+
+Within an action bar, toolbar, or button group, spacing signals the functional relationship between actions.
+
+```
+[ Primary ]  --size-4--  [ Secondary ]        --size-32--        [ Search ]
+      ↑ tight: related actions            ↑ loose: different function
+```
+
+Actions that share a functional purpose (confirm/cancel, save/save as) use **tight** spacing. Actions that serve categorically different purposes on the same surface use **loose** spacing.
+
+When a destructive action sentiment is introduced, it will follow a loose gap from the primary action cluster as a hard compositional rule — physical separation reinforces the semantic separation between constructive and destructive intent.
+
+## Vertical Spacing — Typographic Hierarchy
+
+Spacing between typographic elements communicates two distinct relationships:
+
+**Relational spacing (tight):** Elements that belong together sit close. An eyebrow label and its heading are semantically bonded — tight spacing.
+
+**Dominance spacing (medium):** A heading sits at medium distance from the content it governs. This breathing room signals *ownership*, not separation.
+
+| Relationship | Tier | Token range |
+|---|---|---|
+| Eyebrow → Heading | Tight | `--size-4` to `--size-6` |
+| Heading → Subheading | Medium | `--size-12` to `--size-16` |
+| Heading → Body | Medium | `--size-16` to `--size-20` |
+| Subheading → Body | Tight | `--size-6` to `--size-8` |
+| Section → Section | Loose | `--size-32`+ |

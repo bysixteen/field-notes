@@ -1,0 +1,171 @@
+---
+title: Skill-Based Automation
+description: Patterns for creating reusable Claude skills to automate repetitive workflows.
+---
+
+As teams work with AI coding agents over time, certain patterns emerge: the same instructions get repeated, the same file structures get scaffolded, the same review criteria get applied. Skills are the mechanism for capturing these patterns so they can be invoked reliably without re-explaining them every time.
+
+This page documents common skill categories, structural best practices, and the design principles behind effective skills — distilled from observing 107+ skills across projects.
+
+## What is a Skill?
+
+A skill is a `SKILL.md` file placed in the `.claude/skills/` directory of your project. It gives Claude reusable context and step-by-step instructions for a specific workflow. When a task matches the skill's trigger conditions, the agent follows the skill's instructions instead of improvising.
+
+Think of a skill as a runbook for a specific type of work — but one that the agent can execute autonomously.
+
+## When to Create a Skill
+
+Not every workflow needs a skill. Create one when:
+
+- **You find yourself giving the same instructions repeatedly.** If you have typed the same set of instructions to the agent three or more times, it is time to encode them.
+- **A workflow has clear steps that should be consistent.** If the order of operations matters, or if there are specific conventions that must be followed, a skill ensures consistency.
+- **You are onboarding new team members to established patterns.** Skills serve as executable documentation — a new team member can invoke a skill and see the team's conventions applied automatically.
+
+Do not create skills for one-off tasks, tasks that change frequently, or tasks where improvisation is desirable.
+
+## Skill Structure
+
+A well-structured skill has four parts:
+
+### Name
+
+A short, descriptive name that makes it clear what the skill does. Use verb-noun format: "Create Component," "Run Accessibility Audit," "Start Issue."
+
+### Description
+
+One to two sentences explaining what the skill accomplishes and when it should be used. This helps both humans browsing the skills directory and the agent deciding whether a skill applies.
+
+### Trigger Conditions
+
+A description of when this skill should activate. This can be based on the type of request ("when asked to create a new component"), the files involved ("when working in the `src/components/` directory"), or explicit invocation ("when the user says `/scaffold`").
+
+### Instructions
+
+The step-by-step instructions the agent follows. These should be specific enough to produce consistent results but flexible enough to handle variation in inputs. Include:
+
+- What files to create, modify, or read
+- What conventions to follow (naming, structure, patterns)
+- What checks to perform before considering the task complete
+- What output to provide to the user
+
+## Common Skill Categories
+
+Across 107+ skills observed in production projects, five categories appear most frequently.
+
+### Component Scaffolding
+
+**Purpose:** Create consistent file structures when adding new components, modules, or features.
+
+A component scaffolding skill typically generates:
+
+- The component file itself with standard boilerplate
+- An accompanying test file with a basic test structure
+- A story file or documentation stub if the project uses Storybook or similar tools
+- An index file for clean exports
+
+The value is consistency. Every new component follows the same structure, uses the same naming conventions, and includes the same baseline tests — regardless of which team member created it or how they phrased the request.
+
+### Code Review Checklists
+
+**Purpose:** Apply systematic review criteria to code changes.
+
+Examples include:
+
+- **Accessibility audits** — check for ARIA attributes, keyboard navigation, color contrast, screen reader compatibility
+- **Modernization reviews** — identify legacy patterns that should be migrated (e.g., class components to functional components, old API usage to current patterns)
+- **Security reviews** — check for common vulnerabilities, input validation, authentication handling
+
+These skills turn subjective "looks good to me" reviews into structured, repeatable evaluations.
+
+### Design System Philosophy
+
+**Purpose:** Encode design system principles so the agent applies them consistently.
+
+These skills capture rules like:
+
+- Compositional reasoning (prefer composing existing primitives over creating new components)
+- Token consumption rules (use design tokens instead of hardcoded values)
+- Naming conventions (how components, variants, and props should be named)
+- Accessibility requirements (minimum contrast ratios, required ARIA patterns)
+
+### Project Workflow
+
+**Purpose:** Standardize how work begins, progresses, and concludes.
+
+Examples include:
+
+- **Start-issue skills** — create a branch with the correct naming convention, set up the initial file structure, pull in relevant context
+- **Start-work skills** — read the issue description, identify affected files, outline an approach before writing code
+- **Commit convention skills** — enforce commit message formats, ensure related files are committed together
+
+### Technology Patterns
+
+**Purpose:** Encode framework-specific best practices that the agent should follow.
+
+These skills capture patterns specific to the team's technology stack:
+
+- How to write API routes in the project's framework
+- Which state management patterns to use and when
+- How to handle error boundaries, loading states, and edge cases
+- Testing patterns specific to the project's test framework
+
+## Best Practices
+
+### Keep skills focused
+
+One skill per workflow. A skill that tries to handle component creation, testing, documentation, and deployment is too broad. Break it into focused skills that can be composed.
+
+### Use trigger descriptions
+
+Write clear trigger descriptions so skills activate at the right time. Vague triggers lead to skills firing when they should not, or not firing when they should. Be specific about the conditions under which the skill applies.
+
+### Include verification steps
+
+Every skill should define how the agent knows it did the job correctly. This might be:
+
+- Running a specific test command and confirming it passes
+- Checking that created files match expected naming conventions
+- Verifying that no lint errors were introduced
+- Confirming that exports are properly set up
+
+Without verification steps, the agent completes the skill's instructions but has no way to confirm the outcome is correct.
+
+### Encode "how we do things here"
+
+Skills should capture your team's specific conventions, not general programming knowledge. The agent already knows how to write a React component. What it does not know is that your team uses a specific prop naming convention, puts test files in a specific location, or wraps components in a specific provider pattern. That is what belongs in a skill.
+
+### Evolve skills through compounding engineering
+
+Skills are not write-once artifacts. When a skill produces incorrect output — wrong file structure, missing import, incorrect naming — fix the skill. Add the correction. Over time, skills accumulate the specific knowledge of your codebase and become increasingly reliable.
+
+Treat skill maintenance the same way you treat `CLAUDE.md` maintenance: every correction from a real mistake is a valuable addition. Speculative additions are not.
+
+## The Scaffolding Pattern
+
+One of the most common and highest-value skill patterns is scaffolding: generating consistent boilerplate for new pieces of the codebase.
+
+The scaffolding pattern works because:
+
+- **Consistency compounds.** When every component, every test file, and every API route follows the same structure, the codebase becomes easier to navigate, review, and maintain.
+- **Onboarding accelerates.** New team members invoke the scaffolding skill and immediately produce work that matches team conventions.
+- **Review burden decreases.** Reviewers do not need to check structural conventions because the skill enforces them automatically.
+
+A well-designed scaffolding skill takes minimal input (usually just a name and a type) and produces a complete, convention-compliant set of files ready for the developer to fill in with business logic.
+
+### Example structure of a scaffolding skill
+
+```
+Name: Create Component
+Description: Scaffolds a new UI component with test and story files.
+Trigger: When asked to create a new component in src/components/
+
+Instructions:
+1. Create src/components/{name}/{name}.tsx with standard component template
+2. Create src/components/{name}/{name}.test.tsx with basic render test
+3. Create src/components/{name}/{name}.stories.tsx with default story
+4. Create src/components/{name}/index.ts with named export
+5. Verify all files follow naming conventions
+6. Run lint to confirm no errors
+```
+
+This is a simplified example — real scaffolding skills often include additional steps for registering components in indexes, updating barrel files, or adding entries to documentation manifests. The key is that all of these steps are encoded once and executed consistently every time.

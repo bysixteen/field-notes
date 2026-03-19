@@ -1,0 +1,30 @@
+---
+title: Platform Patterns
+description: Transferable architectural patterns for building platforms.
+---
+
+These are architectural patterns distilled from real platform builds. Each pattern represents hard-won decisions about how to structure codebases, split data responsibilities, enforce security, and maintain auditability.
+
+**Architecture Patterns** are genuinely project-agnostic — they apply regardless of repository structure, framework choice, or team size. **Monorepo Patterns** are transferable across monorepo projects but assume a pnpm workspaces + Turborepo setup. If your project uses a different structure, the architecture patterns still apply; adapt the monorepo patterns to your context or skip them.
+
+## Quick Reference
+
+| Pattern | Description |
+| --- | --- |
+| [Data Architecture](/platform/data-architecture) | Split transactional data (relational DB) from editorial content (headless CMS) by purpose. |
+| [Auth & Row-Level Security](/platform/auth-rls) | JWT custom claims with database-level RLS policies for defense-in-depth authorization. |
+| [Audit-First Architecture](/platform/audit-first) | Append-only event tables that capture every state transition for full history and compliance. |
+| [Documentation Hub](/platform/documentation-hub) | Multi-collection knowledge base with llms.txt generation for AI-consumable documentation. |
+| [Monorepo Architecture](/platform/monorepo) | pnpm workspaces + Turborepo for shared-code platform builds with consistent tooling. |
+| [Three-Application Model](/platform/three-app-model) | Admin portal, public site, and internal wiki deployed independently from a shared codebase. |
+| [Scaffolding-First Approach](/platform/scaffolding-first) | Complete all infrastructure and external service setup before writing any feature code. |
+
+## How to Use These Patterns
+
+Each pattern page covers:
+
+- **When to use it** — the problem it solves and the context where it applies.
+- **How it works** — the concrete structure, conventions, and implementation details.
+- **Why it matters** — the benefits and trade-offs of adopting the pattern.
+
+Architecture patterns compose well together. A typical platform build uses several: split data architecture, RLS-based authorization, and append-only audit trails. If building a monorepo, layer the monorepo patterns on top.

@@ -1,0 +1,63 @@
+---
+title: Dos and Don'ts
+description: Practical rules for using tokens correctly in components and layouts.
+---
+
+## Token Usage
+
+```css
+/* DO — use semantic tokens in components */
+.card { background: var(--background-neutral-weaker-rest); }
+
+/* DON'T — hardcode primitives in components */
+.card { background: var(--colors-neutral-100); }
+
+/* DO — reference primitives when defining semantics */
+--background-neutral-weaker-rest: var(--colors-neutral-100);
+
+/* DON'T — use raw values anywhere */
+.card { background: #f5f5f5; }
+```
+
+## Foreground / Background Pairing
+
+```css
+/* DO — matched family and emphasis */
+.card {
+  background: var(--background-neutral-weaker-rest);
+  color: var(--foreground-neutral-rest);
+}
+
+/* DON'T — mismatched families */
+.card {
+  background: var(--background-brand-rest);
+  color: var(--foreground-neutral-strong-rest);
+}
+```
+
+## Composition
+
+| Do | Don't |
+|----|-------|
+| Assign sentiment based on content intent | Choose sentiment for aesthetic reasons |
+| Match emphasis to actual urgency | Reduce emphasis to make things "look nicer" |
+| Use declared sentiments only | Invent new sentiment values |
+| Let state be runtime-determined | Set state via static props |
+| Use size for footprint changes | Use density when you mean size |
+| Use density for internal spacing | Use size when you mean density |
+
+## Spacing
+
+| Do | Don't |
+|----|-------|
+| Use tight spacing for related elements | Space everything equally |
+| Use loose spacing between categories | Use tight spacing for unrelated items |
+| Follow the spacing tier guide | Guess pixel values |
+
+## File Management
+
+| Do | Don't |
+|----|-------|
+| Edit `*-extended.css` for manual tokens | Edit `dist/tokens.css` |
+| Import primitives before semantics | Import in random order |
+| Use `var()` references in semantic definitions | Copy raw values into semantics |
