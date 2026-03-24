@@ -1,0 +1,122 @@
+---
+title: Workflow Architectures
+description: "Survey of proven Claude workflow patterns — from simple skill invocation to multi-agent orchestration."
+---
+
+As Claude Code usage matures, distinct workflow architectures have emerged. This page surveys the proven patterns as of March 2026, from single-skill invocation to multi-agent orchestration, and provides guidance on choosing between them.
+
+## The Command → Agent → Skill Model
+
+The foundational composition pattern in Claude Code uses three layers with progressive disclosure:
+
+| Layer | Role | Context Cost |
+|---|---|---|
+| **Command** | User-facing entry point (`/deploy`, `/review`) | ~100 tokens (description only, until invoked) |
+| **Agent** | Orchestrator with its own context window | Full content loads on spawn |
+| **Skill** | Domain-specific knowledge or capability | Full content loads on invocation |
+
+The key insight is **progressive disclosure**: command descriptions load at session start (cheap), but full instructions load only when invoked (expensive, but only when needed). This scales to hundreds of capabilities without overwhelming the context window.
+
+### How It Flows
+
+```
+User invokes /deploy
+  → deploy command loads (parses input, delegates)
+    → deploy-agent spawns (orchestrates workflow)
+      → env-validator skill checks environment
+      → deployment-runner skill executes deploy
+    → agent returns summary to user
+```
+
+Each layer has a single responsibility:
+- The command handles user input and delegation
+- The agent handles orchestration and decision-making
+- Skills handle domain-specific execution
+
+## The Holy Trinity Pattern
+
+A specific implementation of Command → Agent → Skill where a single command, a single agent, and a single skill form a minimal but complete unit.
+
+| Component | File Location | Role |
+|---|---|---|
+| Command | `.claude/skills/greet.md` | Entry point — parses input, spawns agent |
+| Agent | `.claude/agents/greet-agent.md` | Orchestrator — decides which skills to use |
+| Skill | `.claude/skills/greeting-formatter.md` | Domain knowledge — knows how to format output |
+
+### Why Three Layers?
+
+- **Separation of concerns** — each file has one job
+- **Reusability** — the formatter skill can be used by other agents
+- **Isolated context** — the agent runs in its own context window, keeping the main conversation clean
+- **Testability** — each layer can be validated independently
+
+This pattern is most valuable when the workflow involves decision-making (the agent layer) and specialised knowledge (the skill layer). For simple workflows, a single skill without an agent is sufficient.
+
+## Community Workflow Architectures
+
+Beyond the core patterns, several workflow architectures have emerged from the community:
+
+| Architecture | Description | Best For |
+|---|---|---|
+| **TDD-First** | Write failing tests, then implement until they pass | Feature development with clear specifications |
+| **Spec-Driven** | Generate a specification document, then implement from spec | Complex features requiring upfront design |
+| **Role-Based** | Assign the agent a specific persona or expertise lens | Reviews, audits, domain-specific work |
+| **Wave Execution** | Break work into sequential waves, each building on the last | Large refactors, migrations |
+| **Full SDLC** | Plan → implement → test → review → deploy as a single flow | End-to-end feature delivery |
+| **Parallel Review** | Multiple Claude instances review the same changes independently | High-stakes code review |
+
+### TDD-First
+
+The agent writes test cases from requirements before writing any implementation code. This produces:
+- Clear pass/fail criteria before implementation begins
+- Regression safety from the first commit
+- Natural documentation of expected behaviour
+
+Works best when requirements can be expressed as testable assertions.
+
+### Spec-Driven
+
+The agent produces a detailed specification document (often as a GitHub Issue or markdown file) before writing code. The specification includes architecture decisions, file changes, edge cases, and acceptance criteria. Implementation follows the spec.
+
+Advantage: the spec can be reviewed and approved before any code is written, catching design issues early.
+
+### Wave Execution
+
+Large changes are broken into sequential waves. Each wave:
+1. Has a clear scope and success criteria
+2. Builds on the previous wave's output
+3. Is committed and verified before the next wave begins
+
+This prevents the "big bang" problem where a large change fails and the entire session's work is lost.
+
+## Cross-Model Review
+
+Using parallel Claude instances for quality assurance:
+
+1. **Instance A** writes the implementation
+2. **Instance B** reviews the diff with fresh context (no implementation bias)
+3. Findings from B are fed back to A for resolution
+
+This is effective because Instance B approaches the code without the sunk-cost bias of having written it. The review catches issues that the implementing instance is blind to.
+
+Orchestration tools like Conductor make this pattern practical by managing multiple agent sessions in parallel.
+
+## Choosing a Pattern
+
+| Situation | Recommended Pattern |
+|---|---|
+| Simple, repeatable task | Single skill (no agent layer needed) |
+| Task with decision points | Command → Agent → Skill |
+| Feature with clear requirements | TDD-First |
+| Complex feature needing design review | Spec-Driven |
+| Large migration or refactor | Wave Execution |
+| High-stakes change | Parallel Review |
+| Orchestrating multiple capabilities | Full C→A→S with multiple skills |
+
+Start simple. A single skill handles most repeatable tasks. Add the agent layer only when the workflow involves conditional logic or multi-step orchestration. Add parallel review only when the cost of mistakes is high.
+
+## Relationship to Other Pages
+
+- [Context Engineering](/claude/context-engineering) — the theory behind why progressive disclosure and sub-agent isolation work
+- [Skill-Based Automation](/claude/skills-patterns) — deep dive on skill design, categories, and best practices
+- [CLAUDE.md Playbook](/claude/claude-md-playbook) — how CLAUDE.md fits into the broader context strategy

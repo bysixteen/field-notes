@@ -1,0 +1,167 @@
+---
+title: Claude Code Setup
+description: "Practical guide for configuring Claude Code on a new project — CLAUDE.md, rules, hooks, and session management."
+---
+
+A practical reference for configuring Claude Code on a new project. This page covers the configuration surface area and the patterns that matter most, distilled from real-world usage as of March 2026.
+
+## CLAUDE.md
+
+The `CLAUDE.md` file is the primary interface between your codebase and the agent. It loads automatically at session start.
+
+### Sizing
+
+Keep it under 150 lines. If it grows beyond that, move content into `.claude/rules/` files that activate conditionally. The [CLAUDE.md Playbook](/claude/claude-md-playbook) covers the full tier model, but the sizing principle is simple: if you cannot point to a time the agent got it wrong, the entry probably does not need to exist.
+
+### What Belongs in CLAUDE.md
+
+| Include | Exclude |
+|---|---|
+| Build/test/lint commands | General programming knowledge |
+| Project structure overview | Framework documentation |
+| Git conventions | Anything the agent can derive from code |
+| Error-prone patterns specific to this codebase | Speculative rules not earned from mistakes |
+
+### Importance Tags
+
+Use `IMPORTANT:` and `CRITICAL:` prefixes sparingly for entries the agent must never ignore. Overuse dilutes their signal.
+
+## Rules
+
+Rules live in `.claude/rules/` and provide targeted context that loads conditionally based on glob patterns.
+
+```
+.claude/
+└── rules/
+    ├── api-conventions.md       # Loads when editing API routes
+    ├── testing.md               # Loads when editing test files
+    └── content-conventions.md   # Loads when editing content files
+```
+
+### Glob-Activated Rules
+
+Add a frontmatter glob pattern to make a rule file load only when relevant files are active:
+
+```markdown
+---
+globs: ["**/*.test.ts", "**/*.spec.ts"]
+---
+
+# Testing Rules
+
+- Use Vitest, not Jest
+- Follow the AAA pattern (Arrange, Act, Assert)
+- Test names start with "should"
+```
+
+This keeps the context window lean — testing rules only load when the agent is working on tests.
+
+### When to Use Rules vs CLAUDE.md
+
+| CLAUDE.md | Rules |
+|---|---|
+| Always relevant (build commands, git conventions) | Relevant to specific file types or directories |
+| Under 150 lines | Can be longer — they load conditionally |
+| Earned from real mistakes | Can be more prescriptive (scoped impact) |
+
+## Hooks
+
+Hooks are shell scripts that run before or after tool execution. They extend agent behaviour without modifying the agent itself.
+
+### Hook Types
+
+| Hook | Trigger | Use Case |
+|---|---|---|
+| `PreToolUse` | Before a tool executes | Block operations, validate inputs |
+| `PostToolUse` | After a tool executes | Format files, run checks |
+
+### Exit Codes
+
+| Code | Meaning |
+|---|---|
+| `0` | Success — tool proceeds normally |
+| `1` | Error — logged, but tool still proceeds |
+| `2` | **Block** — prevents the tool from executing |
+
+### Secret-Blocking Pattern
+
+A PreToolUse hook that prevents the agent from editing sensitive files:
+
+```bash
+#!/bin/bash
+# Reads tool call JSON from stdin, checks file path against blocked patterns
+FILE_PATH=$(cat | jq -r '.tool_input.file_path // empty')
+FILENAME=$(basename "$FILE_PATH")
+
+BLOCKED=(".env" ".env.local" "credentials.json" "secrets.json" "*.pem" "*.key")
+for pattern in "${BLOCKED[@]}"; do
+    case "$FILENAME" in $pattern) echo "BLOCKED: $FILENAME"; exit 2 ;; esac
+done
+exit 0
+```
+
+### Auto-Format Pattern
+
+A PostToolUse hook that runs Prettier after every file edit:
+
+```bash
+#!/bin/bash
+FILE_PATH=$(cat | jq -r '.tool_input.file_path // empty')
+case "$FILE_PATH" in
+    *.js|*.ts|*.jsx|*.tsx|*.json|*.md|*.css)
+        npx prettier --write "$FILE_PATH" 2>/dev/null || true ;;
+esac
+exit 0
+```
+
+### Settings Configuration
+
+Hooks are registered in `.claude/settings.json`:
+
+```json
+{
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Edit|Write",
+        "hooks": [{ "type": "command", "command": ".claude/hooks/block-secrets.sh" }]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "Edit",
+        "hooks": [{ "type": "command", "command": ".claude/hooks/format-on-edit.sh" }]
+      }
+    ]
+  }
+}
+```
+
+## Session Management
+
+### Landing the Plane
+
+Every session should end with the codebase in a clean state. Establish a closing checklist:
+
+1. **Tests pass** — run the test suite before ending
+2. **Issues updated** — close or update GitHub Issues that were addressed
+3. **Changes committed** — no uncommitted work left behind
+4. **Context preserved** — update CLAUDE.md if a new correction was discovered
+
+### First-Try Success
+
+The litmus test for a well-configured project: any developer (or agent) should be able to clone the repo, read CLAUDE.md, and successfully run the test suite on the first try. If `npm test` requires undocumented setup steps, the configuration is incomplete.
+
+This applies to human developers and AI agents equally. If the agent cannot run the tests without asking clarifying questions, the CLAUDE.md is missing something.
+
+## Quick Setup Checklist
+
+```markdown
+- [ ] Create CLAUDE.md at project root (under 150 lines)
+- [ ] Add build/test/lint commands
+- [ ] Add git conventions (branch prefixes, commit format)
+- [ ] Create .claude/rules/ for file-type-specific conventions
+- [ ] Add glob frontmatter to each rule file
+- [ ] Create hooks only when there is a genuine need (not for show)
+- [ ] Test: can a fresh agent clone + run tests on first try?
+```

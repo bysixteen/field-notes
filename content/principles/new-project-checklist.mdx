@@ -1,21 +1,17 @@
 ---
 title: New Project Checklist
-description: "Bootstrap sequence using Field Notes, Project Squad, and llms.txt."
+description: "Bootstrap sequence using Field Notes, the Delivery Framework, and llms.txt."
 ---
 
 When starting a new project, this sequence ties together the patterns documented across Field Notes into a single bootstrap workflow. Each step links to the relevant documentation.
 
 ## The Bootstrap Sequence
 
-### Step 1: Initialize Project Squad
+### Step 1: Set Up Project Structure
 
-```bash
-npx project-squad init
-```
+Create the canonical directory structure from the [Delivery Framework](/principles/delivery-framework) — living documents at the root, sprint records in `docs/`, and a `_meta/PROJECT_CONTEXT.md` describing the project's purpose, users, and constraints.
 
-Creates `.squad/` personas, `.claude/commands/`, and living document templates. Before running, write `_meta/PROJECT_CONTEXT.md` describing the project's purpose, users, and constraints.
-
-[Read about Project Squad](/principles/project-squad)
+Optionally set up [Project Squad](/principles/project-squad) personas and commands for structured sprint execution.
 
 ### Step 2: Connect to Field Notes
 
@@ -29,12 +25,14 @@ See https://bysixteen.github.io/field-notes/llms-full.txt for design engineering
 
 [Read the Documentation Hub Pattern](/platform/documentation-hub)
 
-### Step 3: Set Up Git Conventions
+### Step 3: Configure Claude Code
 
-Add to your `CLAUDE.md`:
+Set up your AI agent configuration following the [Claude Code Setup](/claude/claude-code-setup) guide:
 
-- Branch prefixes: `feat/`, `fix/`, `docs/`, `refactor/`, `chore/`
-- Commit format: Conventional Commits — `type(scope): description`
+- Create `CLAUDE.md` at project root (under 150 lines)
+- Add build/test/lint commands and git conventions
+- Create `.claude/rules/` for file-type-specific conventions
+- Test: can a fresh agent clone and run tests on first try?
 
 ### Step 4: Choose Architecture Patterns
 
@@ -49,13 +47,13 @@ Review the [Platform Patterns](/platform) domain. Key decisions:
 
 Even for greenfield projects, audit what exists — design comps, requirements docs, stakeholder assumptions, competitive landscape. Document findings in `docs/audit/gap-analysis.md`.
 
-[Read the Pioneer Framework — Part 1: The Audit](/principles/pioneer-framework)
+[Read the Delivery Framework — Part 1: The Audit](/principles/delivery-framework)
 
 ### Step 6: Run the First Sprint
 
 Assemble a Tiger Team or assign persona roles if working solo. Run a Mode A (Full 5-Day) sprint targeting the highest-priority user journey. This produces the first real entries in DECISIONS.md, PERSONAS.md, and PRINCIPLES.md.
 
-[Read the Pioneer Framework — Part 3: The Sprint Model](/principles/pioneer-framework)
+[Read the Delivery Framework — Part 3: The Sprint Model](/principles/delivery-framework)
 
 ### Step 7: Start Compounding
 
@@ -71,11 +69,12 @@ Copy this checklist into your project kickoff document:
 ## Project Bootstrap
 
 - [ ] Write `_meta/PROJECT_CONTEXT.md`
-- [ ] Run `npx project-squad init`
+- [ ] Set up Delivery Framework directory structure
 - [ ] Add Field Notes llms-full.txt URL to CLAUDE.md
-- [ ] Set up git conventions (branch prefixes, commit format) in CLAUDE.md
+- [ ] Configure Claude Code (CLAUDE.md, rules, first-try test)
+- [ ] Set up git conventions (branch prefixes, commit format)
 - [ ] Choose architecture patterns from Platform domain
-- [ ] Run the audit (Pioneer Framework Part 1)
+- [ ] Run the audit (Delivery Framework Part 1)
 - [ ] Run first sprint (Mode A)
 - [ ] Update living documents (DECISIONS, PERSONAS, PRINCIPLES)
 - [ ] Transition to Continuous Sprint mode (Mode B)

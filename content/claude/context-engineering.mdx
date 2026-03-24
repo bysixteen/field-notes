@@ -1,0 +1,143 @@
+---
+title: Context Engineering
+description: "Strategies for curating the optimal set of tokens during LLM inference — the discipline that replaced prompt engineering."
+---
+
+Context engineering is the set of strategies for curating and maintaining the optimal set of tokens during LLM inference. Where prompt engineering focuses on how you ask, context engineering focuses on everything that surrounds the ask — system prompts, tools, examples, retrieved data, conversation history, and structured memory.
+
+The shift matters because intelligence is no longer the bottleneck. Modern models are capable enough. The constraint is context: what information is available when the model reasons, and how efficiently that information is encoded.
+
+> Think of the LLM as a CPU and the context window as RAM. You would not blame a CPU for poor performance if you loaded the wrong data into memory.
+
+## Context vs Prompt Engineering
+
+Prompt engineering and context engineering are complementary, not competing:
+
+| Aspect | Prompt Engineering | Context Engineering |
+|---|---|---|
+| **Focus** | How you phrase the instruction | What information surrounds the instruction |
+| **Scope** | Single turn or message | Full session lifecycle |
+| **Optimises for** | Instruction clarity | Token efficiency and relevance |
+| **Scales with** | Task complexity | Session length and tool count |
+
+A perfectly phrased prompt fails if the context is wrong. A mediocre prompt often succeeds if the right context is present.
+
+## The Anatomy of Effective Context
+
+Three components make up the context a model sees at inference time. Each has distinct design constraints.
+
+### System Prompts
+
+The system prompt sets the operating parameters. Two failure modes to avoid:
+
+- **Overly rigid** — Hardcoded complex logic creates fragility and maintenance burden
+- **Overly vague** — High-level guidance without concrete signals fails to direct behaviour
+
+Best practices:
+
+- Organise into distinct sections using XML tags or Markdown headers
+- Aim for the minimal set of information that fully outlines expected behaviour
+- Start with minimal prompts on capable models, then add instructions based on observed failure modes
+- Write at the right altitude — general enough to handle variation, specific enough to prevent drift
+
+### Tools
+
+Tools extend what the model can do. Effective tools are self-contained, robust to error, and extremely clear about their intended use.
+
+Design principles:
+
+- **Minimal overlap** — Avoid ambiguous decision points between similar tools
+- **Descriptive parameters** — Unambiguous input names and descriptions
+- **Token-efficient returns** — Return only what the model needs, not everything available
+- **No bloated tool sets** — Each tool should do one thing well
+
+### Examples
+
+Examples are worth a thousand words of instruction. Use diverse, canonical examples that portray expected behaviour — not exhaustive edge-case lists.
+
+A few well-chosen examples teach patterns more effectively than pages of rules. Select examples that demonstrate the boundaries of acceptable behaviour, not just the happy path.
+
+## Runtime Context Strategies
+
+How context enters the window during a session determines both cost and quality.
+
+### Just-in-Time Loading
+
+Rather than preloading all potentially relevant data, maintain lightweight identifiers (file paths, URLs, queries) and retrieve information dynamically at runtime.
+
+Benefits:
+- Reduces immediate token burden
+- Enables progressive discovery — agents incrementally find relevant context through exploration
+- Metadata (folder hierarchies, naming conventions, timestamps) provides implicit guidance without consuming tokens
+
+### Hybrid Approach
+
+Retrieve some data upfront for speed while allowing autonomous exploration for the rest. This is the pattern Claude Code uses: `CLAUDE.md` files load automatically at session start, while `glob` and `grep` enable selective file discovery — effectively bypassing stale indexing and complex syntax trees.
+
+Trade-off: runtime exploration is slower than retrieving pre-computed data. Design tools and guidance to minimise unnecessary exploration.
+
+### Progressive Disclosure
+
+Load metadata at startup (descriptions, triggers — roughly 100 tokens per item) and full content only on invocation. This is the pattern behind Claude's skill system: skill descriptions are always available, but full skill instructions load only when the skill activates.
+
+This scales to hundreds of capabilities without overwhelming the context window.
+
+## Choosing a Strategy
+
+| Task Type | Recommended Approach | Rationale |
+|---|---|---|
+| **Short, focused task** | Upfront loading | Fast; context window has capacity |
+| **Multi-file codebase exploration** | Hybrid (essentials + search tools) | Unknown scope; discovery needed |
+| **Long-running session (hours)** | Just-in-time + compaction | Context window will fill; manage actively |
+| **Multi-agent orchestration** | Progressive disclosure + sub-agents | Isolate concerns; minimise cross-contamination |
+| **Repetitive workflow** | Skills with metadata + on-demand load | Amortise cost across invocations |
+
+## Long-Horizon Patterns
+
+Sessions that run for extended periods face a fundamental challenge: the context window fills up, and performance degrades. Three patterns address this.
+
+### Compaction
+
+When context approaches capacity, summarise the session state and reinitiate with the compressed summary. The compaction process should:
+
+- Preserve architectural decisions, unresolved issues, and implementation details
+- Discard redundant tool outputs and superseded information
+- Enable continuation with minimal performance degradation
+
+Start by maximising recall — ensure the compaction prompt captures every relevant piece of information from the trace. Then iterate to improve precision by removing noise.
+
+### Structured Note-Taking
+
+Agents maintain persistent notes outside the context window, reading them back when relevant. Applications:
+
+- Progress tracking across complex tasks
+- Strategic information preserved for later reference
+- Multi-hour sessions where prior notes survive context resets
+
+The key is writing notes at the right granularity — too detailed wastes tokens when read back, too sparse loses critical information.
+
+### Sub-Agent Architectures
+
+Specialised agents handle focused tasks with clean context windows. The coordination pattern:
+
+1. Main agent plans and coordinates at a high level
+2. Sub-agents perform deep work, potentially consuming tens of thousands of tokens
+3. Each sub-agent returns a condensed summary (typically 1,000–2,000 tokens)
+4. Main agent synthesises results without inheriting the sub-agents' full context
+
+This achieves clear separation of concerns — detailed search context remains isolated within sub-agents, while the lead agent focuses on synthesis.
+
+## Context Rot
+
+As the number of tokens in the context window increases, the model's ability to accurately recall information from that context decreases. This stems from transformer architecture: with n tokens, there are n² pairwise relationships. Models trained on shorter sequences handle full context-width dependencies less reliably.
+
+The degradation is a performance gradient, not a hard cliff. Practical implications:
+
+- Treat context as a finite resource, not an unlimited buffer
+- Front-load the most important information (system prompt, key constraints)
+- Actively prune stale or redundant content during long sessions
+- Prefer retrieval over retention — fetch what you need rather than keeping everything loaded
+
+## The Guiding Principle
+
+Across all techniques, the goal is the same: find the smallest set of high-signal tokens that maximise the likelihood of the desired outcome. As models improve, they require less prescriptive engineering and can operate with more autonomy — but context remains a precious, finite resource that rewards careful curation.
