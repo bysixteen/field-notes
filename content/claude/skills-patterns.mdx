@@ -169,3 +169,13 @@ Instructions:
 ```
 
 This is a simplified example — real scaffolding skills often include additional steps for registering components in indexes, updating barrel files, or adding entries to documentation manifests. The key is that all of these steps are encoded once and executed consistently every time.
+
+## Composing Skills with Agents
+
+Skills become more powerful when composed through agent orchestration. The [Command → Agent → Skill model](/claude/workflow-architectures) uses three layers with progressive disclosure:
+
+- **Commands** — user-facing entry points that parse input and delegate
+- **Agents** — orchestrators that decide which skills to invoke and in what order
+- **Skills** — the domain knowledge documented on this page
+
+This composition pattern (sometimes called the "Holy Trinity") keeps each skill focused on a single concern while allowing complex workflows to emerge from simple building blocks. See [Workflow Architectures](/claude/workflow-architectures) for the full pattern survey.

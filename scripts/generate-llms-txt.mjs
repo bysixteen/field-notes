@@ -17,8 +17,8 @@ const PUBLIC_DIR = join(ROOT, 'public');
 
 const DOMAINS = [
   { dir: 'design-system', title: 'Design System', description: 'Multi-dimensional token model, composition rules, naming conventions, and constraints.' },
-  { dir: 'principles', title: 'Principles & Frameworks', description: 'Core principles, the Pioneer framework, synthesis and validation methodology.' },
-  { dir: 'claude', title: 'Claude & AI Workflows', description: 'CLAUDE.md playbook, agent efficiency research, skill-based automation patterns.' },
+  { dir: 'principles', title: 'Principles & Frameworks', description: 'Core principles, the Delivery Framework, synthesis and validation methodology.' },
+  { dir: 'claude', title: 'Claude & AI Workflows', description: 'Context engineering, CLAUDE.md playbook, Claude Code setup, workflow architectures, skill-based automation.' },
   { dir: 'platform', title: 'Platform Patterns', description: 'Monorepo architecture, data patterns, auth and RLS, scaffolding-first approach.' },
 ];
 

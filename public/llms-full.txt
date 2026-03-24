@@ -1558,7 +1558,7 @@ Always pair foreground and background tokens from the **same family and emphasis
 
 ## Principles & Frameworks
 
-Core principles, the Pioneer framework, synthesis and validation methodology.
+Core principles, the Delivery Framework, synthesis and validation methodology.
 
 ### Answer First
 
@@ -1763,455 +1763,13 @@ Over the life of a project, a well-maintained compounding knowledge base saves o
 - **The Perfection Trap**: Refusing to add a correction because "the documentation isn't well-organized yet." A messy but accurate knowledge base beats an elegant but empty one.
 - **The Deferred Update**: Noting that documentation should be updated but not doing it immediately. The correction will be forgotten.
 
-### Dissent is a Feature
+### The Delivery Framework
 
-*Structurally encourage and document dissent to prevent groupthink and preserve overruled concerns for future reference.*
-
-## The Principle
-
-Structurally encourage and document dissent. The "Mandatory Challenger" role in the Tiger Team model ensures that assumptions are always tested. All significant dissenting opinions are recorded in a **dissent register**, preventing groupthink and preserving overruled concerns for future reference.
-
-## Why This Matters
-
-Teams naturally converge on consensus. This is efficient for execution but dangerous for decision-making. Without structural mechanisms to surface disagreement, teams fall into predictable failure modes:
-
-- **Groupthink**: Everyone agrees because disagreement feels socially costly
-- **Authority bias**: Junior team members defer to senior ones even when they see problems
-- **Momentum bias**: Once a direction is chosen, the cost of changing course feels too high, so concerns are suppressed
-- **Survivorship bias**: Only the decisions that worked are remembered; the warnings that were ignored are forgotten
-
-## The Practice
-
-### The Mandatory Challenger
-
-In any structured review or decision-making session, one team member is assigned the role of **Mandatory Challenger**. Their job is to:
-
-- Argue against the proposed direction, even if they personally agree with it
-- Identify the weakest assumptions in the current plan
-- Propose at least one credible alternative
-- Articulate the scenario in which the current plan fails
-
-This role rotates. It is not a personality trait — it is a structural function. By making challenge a formal responsibility, it removes the social cost of disagreement.
-
-### The Dissent Register
-
-Every significant dissenting opinion is recorded in the project's decision log with the following structure:
-
-| Field | Description |
-|---|---|
-| **Decision ID** | Reference to the decision being challenged |
-| **Dissenting View** | The alternative position or concern |
-| **Raised By** | Who raised the concern (role, not necessarily name) |
-| **Rationale** | Why this concern has merit |
-| **Resolution** | How the concern was addressed — accepted, mitigated, or overruled |
-| **Overrule Rationale** | If overruled, why the team chose to proceed anyway |
-| **Review Trigger** | Conditions under which this dissent should be revisited |
-
-### Why Record Overruled Concerns?
-
-Overruled concerns are not dead. They are **dormant**. Recording them serves three purposes:
-
-1. **Future validation**: If the overruled concern proves correct later, the team can trace back to the original warning and learn from the pattern
-2. **Accountability**: The rationale for overruling is preserved, preventing revisionist history
-3. **Onboarding**: New team members can understand not just what was decided, but what was considered and rejected, and why
-
-## Integration with Sprint Workflow
-
-- **Sprint planning**: Review the dissent register from the previous sprint. Have any review triggers been activated?
-- **Sprint review**: The Mandatory Challenger presents the strongest counterargument to the sprint's key decisions
-- **Retrospective**: Identify any dissent that was suppressed or not captured, and add it to the register
-
-## Anti-Patterns
-
-- **Performative Challenge**: The Mandatory Challenger raises trivial objections to fulfill the role without engaging substantively. The role requires genuine intellectual effort.
-- **Dissent Without Documentation**: Concerns are raised in meetings but not recorded. They are effectively lost.
-- **Punishment for Dissent**: Team members who raise uncomfortable concerns are sidelined or labeled as "negative." This kills the mechanism entirely.
-- **Permanent Overrule**: A concern is overruled once and never revisited, even when circumstances change.
-
-### Distill, Don't Repeat
-
-*The output of a sprint is synthesized knowledge, not raw artifacts. Create living documents that serve as the single source of truth.*
-
-## The Principle
-
-The output of a sprint is not the raw artifacts themselves — the transcripts, the screenshots, the meeting notes, the Figma files. The output is the **synthesized knowledge** extracted from them.
-
-This is a fundamental shift in how project documentation works. Instead of accumulating folders of raw material that nobody will ever re-read, the team creates and maintains **living documents** that serve as the single source of truth.
-
-## Why This Matters
-
-Every project suffers from **context burn** — the gradual loss of institutional knowledge as raw artifacts pile up and become impossible to navigate. A team that finishes a two-week sprint with 47 documents, 12 recordings, and 200 Slack messages has not created knowledge. They have created noise.
-
-The cost is concrete:
-
-- **Onboarding new team members** requires them to read through weeks of accumulated material
-- **Returning to a decision** means hunting through meeting notes to find the original rationale
-- **AI assistants** cannot effectively consume sprawling, unstructured project histories
-- **Sprint planning** starts from scratch because the lessons from previous sprints are buried
-
-## The Practice
-
-At the end of every sprint (or at natural breakpoints during continuous work), synthesize all raw material into three canonical documents:
-
-1. **DECISIONS.md** — Every significant decision, its context, alternatives considered, rationale for the choice made, and any dissenting opinions
-2. **PERSONAS.md** — The current understanding of users, updated with any new insights from research, testing, or stakeholder feedback
-3. **PRINCIPLES.md** — Design and engineering principles that have been validated or discovered during the sprint
-
-These documents are **append-and-refine**, not **rewrite**. Each sprint adds to them, corrects them, or promotes uncertain observations to confirmed principles.
-
-## The Test
-
-After synthesis is complete, apply this test: **Can someone who missed the entire sprint read only the three living documents and be fully caught up?**
-
-If the answer is no, the synthesis is incomplete. If the answer is yes, the raw artifacts can be archived — they have served their purpose.
-
-## Anti-Patterns
-
-- **The Archive Trap**: Saving everything "just in case" without synthesizing. The archive grows, but knowledge does not.
-- **The Summary Email**: Writing a summary at the end of a sprint but not updating the canonical documents. The summary becomes stale immediately.
-- **The Fresh Start**: Beginning each sprint with a blank slate instead of building on the living documents from the previous sprint.
-
-### Principles & Frameworks
-
-*Core principles and operating frameworks distilled from real project work, designed to compound across every engagement.*
-
-These are not theoretical guidelines. They are principles distilled from real project delivery — patterns that emerged from mistakes made, lessons learned, and workflows that proved their worth across multiple engagements. Each one compounds: the more consistently they are applied, the more value they generate over time.
-
-## Core Principles
-
-| Principle | Summary |
-|---|---|
-| [Distill, Don't Repeat](/principles/distill-dont-repeat) | The output of a sprint is synthesized knowledge, not raw artifacts. Create living documents that eliminate the need to re-read source material. |
-| [Clarity, Attribution, Reversibility, Consistency](/principles/clarity-attribution-reversibility-consistency) | The four pillars of validation for any prototype or feature. Every piece of work must pass all four checks. |
-| [Compounding Engineering](/principles/compounding-engineering) | Build guidance from real mistakes, not upfront speculation. Let documentation grow organically from actual needs. |
-| [Verification Over Instruction](/principles/verification-over-instruction) | Give AI a way to verify its work rather than a long list of instructions. Success conditions beat specifications. |
-| [Dissent is a Feature](/principles/dissent-as-feature) | Structurally encourage and document dissent. Record overruled concerns for future reference. |
-| [Answer First](/principles/answer-first) | Every document must have the conclusion in the first body section. Never bury the lead. |
-
-## Frameworks
-
-These frameworks operationalize the principles above into repeatable systems.
-
-### The Pioneer Framework
-
-A project-agnostic operating system for design and delivery. It covers the full lifecycle from initial audit through sprint execution and journey mapping, providing a canonical structure for repository architecture, team composition, and validation workflows.
-
-[Read the Pioneer Framework](/principles/pioneer-framework)
-
-### Project Squad
-
-The portable CLI toolkit (`@by-sixteen/project-squad`) that implements the Pioneer Framework. One command bootstraps personas, sprint commands, and living documents into any project.
-
-[Read about Project Squad](/principles/project-squad)
-
-### Synthesis & Validation Framework
-
-A three-artifact model and four-pillar validation system for preventing context burn. It defines the exact documents to maintain, the ritual for updating them after each sprint, and the checklist for validating every piece of work.
-
-[Read the Synthesis & Validation Framework](/principles/synthesis-validation)
-
-### Journey Mapping Template
-
-A reusable structure for mapping any part of a system from user need to validated outcome, including a complete markdown template and worked example.
-
-[Read the Journey Mapping Template](/principles/journey-template)
-
-### New Project Checklist
-
-The step-by-step bootstrap sequence that ties together Project Squad, Field Notes, and the Pioneer Framework into a single startup workflow.
-
-[Read the New Project Checklist](/principles/new-project-checklist)
-
-### Journey Mapping Template
-
-*Reusable structure for mapping any part of a system from user need to validated outcome.*
-
-A journey map traces a user's path through the system from an initial need to a resolved outcome. It connects individual features into a coherent narrative and exposes gaps, friction points, and opportunities that are invisible when features are designed in isolation.
-
-## The Journey Map Structure
-
-Every journey map contains six sections:
-
-### 1. Context
-
-A brief description of who the user is, what triggers the journey, and what success looks like.
-
-### 2. Journey Table
-
-The step-by-step path through the system, including:
-
-- **Step number and name**
-- **User action**: What the user does
-- **System response**: What the system does in response
-- **Touchpoint**: The specific page, component, or notification involved
-- **Emotional state**: The user's likely emotional state at this step (confident, uncertain, frustrated, satisfied)
-- **Failure mode**: What could go wrong at this step
-- **Recovery**: How the system helps the user recover from failure
-
-### 3. Critical Moments
-
-The 2-4 steps where the journey is most likely to succeed or fail. These are the points that deserve the most design attention and testing.
-
-### 4. Validation Checklist
-
-The four-pillar validation applied specifically to this journey's critical moments.
-
-### 5. Open Questions
-
-Unresolved questions about the journey that need research, testing, or stakeholder input to answer.
-
-### 6. Linked Artifacts
-
-References to related decisions, personas, principles, and page-tree entries.
-
-## Full Markdown Template
-
-```markdown
-# Journey: [Journey Name]
-
-**ID**: JOURNEY-[NNN]
-**Persona**: [Link to persona in PERSONAS.md]
-**Trigger**: [What initiates this journey]
-**Success Outcome**: [What "done" looks like for the user]
-**Last Updated**: YYYY-MM-DD
-**Status**: Draft | In Review | Validated
-
-## Context
-
-[2-3 sentences describing the scenario. Who is the user?
-What do they need? What are the constraints?]
-
-## Journey
-
-| Step | User Action | System Response | Touchpoint | Emotional State | Failure Mode | Recovery |
-|---|---|---|---|---|---|---|
-| 1. [Name] | [What user does] | [What system does] | [Page/component] | [Emotion] | [What could go wrong] | [How to recover] |
-| 2. [Name] | | | | | | |
-| 3. [Name] | | | | | | |
-| 4. [Name] | | | | | | |
-| 5. [Name] | | | | | | |
-
-## Critical Moments
-
-### Critical Moment 1: [Step N — Name]
-- **Why this matters**: [Why this step is make-or-break]
-- **Design priority**: [What to focus on]
-- **Testing approach**: [How to validate this step works]
-
-### Critical Moment 2: [Step N — Name]
-- **Why this matters**: [...]
-- **Design priority**: [...]
-- **Testing approach**: [...]
-
-## Validation Checklist
-
-### Clarity
-- [ ] Each step's purpose is obvious to the user
-- [ ] Progress through the journey is visible
-- [ ] The user always knows what to do next
-
-### Attribution
-- [ ] Any data shown during the journey has a clear source
-- [ ] Recommendations or suggestions explain their basis
-
-### Reversibility
-- [ ] The user can go back to any previous step
-- [ ] Partial progress is saved automatically
-- [ ] The user can abandon the journey without penalty
-
-### Consistency
-- [ ] Each step follows the application's established patterns
-- [ ] Terminology is consistent throughout the journey
-- [ ] Visual treatment matches the design system
-
-## Open Questions
-
-- [ ] [Question 1]
-- [ ] [Question 2]
-- [ ] [Question 3]
-
-## Linked Artifacts
-
-- **Decisions**: [DEC-NNN, DEC-NNN]
-- **Principles**: [PRIN-NNN]
-- **Page Tree**: [Routes involved in this journey]
-- **Sprint**: [Sprint(s) that addressed this journey]
-```
-
-## Worked Example: Enquiry to Onboarding
-
-This example demonstrates a generic "enquiry to onboarding" journey for a membership platform. It maps the path from a prospective member's first interaction to their fully onboarded state.
-
----
-
-### Journey: Enquiry to Onboarded Member
-
-**ID**: JOURNEY-001
-**Persona**: Prospective Member
-**Trigger**: User visits the platform's public landing page or receives a referral link
-**Success Outcome**: User has a fully activated account, has completed their profile, and has accessed the core platform feature for the first time
-**Last Updated**: 2025-01-15
-**Status**: In Review
-
-### Context
-
-A prospective member discovers the platform through organic search, social media, or a referral from an existing member. They need to understand what the platform offers, evaluate whether it meets their needs, and — if convinced — complete the sign-up and onboarding process with minimal friction. They may be comparing the platform to alternatives and will abandon the process if it feels confusing, slow, or untrustworthy.
-
-### Journey
-
-| Step | User Action | System Response | Touchpoint | Emotional State | Failure Mode | Recovery |
-|---|---|---|---|---|---|---|
-| 1. Discovery | Arrives at landing page | Displays value proposition, social proof, and clear CTA | Landing page | Curious but skeptical | Value proposition is unclear or generic | A/B test headlines; show specific outcomes not features |
-| 2. Exploration | Browses features, pricing, and testimonials | Surfaces relevant content based on referral source or landing context | Feature pages, pricing page | Evaluating, comparing | Information overload or insufficient detail | Progressive disclosure; FAQs that address common objections |
-| 3. Trial Initiation | Clicks "Start Free Trial" or "Sign Up" | Presents minimal sign-up form (email + password or SSO) | Sign-up modal/page | Committed but impatient | Form is too long or requires unnecessary information | Reduce to essential fields only; defer profile completion |
-| 4. Email Verification | Clicks verification link in email | Confirms account, redirects to onboarding flow | Email, verification page | Mildly annoyed (friction) | Email not received, link expired | Resend option, magic link alternative, clear error messaging |
-| 5. Profile Setup | Completes profile (role, interests, goals) | Saves profile, tailors onboarding based on responses | Profile setup wizard | Engaged if quick, frustrated if long | Wizard is too many steps or asks irrelevant questions | Show progress bar; allow "Skip for now" on optional fields |
-| 6. Guided First Action | Follows prompt to complete the platform's core action | Walks user through the core feature with contextual help | Core feature page with overlay guidance | Hopeful, slightly uncertain | Guidance is patronizing or insufficient | Offer both quick-start and detailed walkthrough options |
-| 7. Completion Confirmation | Completes core action | Celebrates completion, shows what to explore next | Success state, dashboard | Satisfied, motivated | Anticlimactic response or unclear next steps | Clear success messaging with 2-3 suggested next actions |
-
-### Critical Moments
-
-#### Critical Moment 1: Step 3 — Trial Initiation
-
-- **Why this matters**: This is the highest-intent moment. The user has decided to try the platform. Any friction here directly converts to abandonment. Studies consistently show that each additional form field reduces conversion by 5-10%.
-- **Design priority**: Minimize form fields to the absolute minimum. Offer SSO options. Make the commitment feel low-risk (emphasize "free," "no credit card," "cancel anytime").
-- **Testing approach**: Measure conversion rate from landing page to completed sign-up. A/B test form length and SSO options. Run usability tests with 5 participants to identify friction points.
-
-#### Critical Moment 2: Step 6 — Guided First Action
-
-- **Why this matters**: This is the "aha moment" — the point where the user experiences the platform's core value for the first time. If this step fails, the user has an account but no reason to return. Time-to-value is the strongest predictor of long-term retention.
-- **Design priority**: Ensure the guided action demonstrates real value, not a trivial example. Use the user's profile data (from Step 5) to personalize the experience. Keep the guidance unobtrusive but available.
-- **Testing approach**: Measure completion rate of guided action. Track time-to-completion. Interview users who abandon at this step to understand why. Test with users who have zero prior context.
-
-### Validation Checklist
-
-#### Clarity
-- [ ] Landing page communicates the value proposition within 5 seconds
-- [ ] Sign-up form makes the commitment level clear (free trial, no credit card)
-- [ ] Onboarding wizard shows progress and estimated time remaining
-- [ ] Guided first action has clear, step-by-step instructions
-- [ ] Success state confirms completion and suggests next steps
-
-#### Attribution
-- [ ] Testimonials and social proof include verifiable sources
-- [ ] Pricing page clearly explains what is included at each tier
-- [ ] Any personalized recommendations explain why they were suggested
-
-#### Reversibility
-- [ ] User can go back to any previous step in the onboarding wizard
-- [ ] Profile information can be edited after initial setup
-- [ ] Account can be deactivated (not just deleted) if the user changes their mind
-- [ ] The guided first action can be restarted or skipped
-
-#### Consistency
-- [ ] Visual design matches across landing page, sign-up, and onboarding
-- [ ] Terminology for the core action is consistent throughout
-- [ ] Button styles and placement follow the design system
-- [ ] Error messages follow the application's established format
-
-### Open Questions
-
-- [ ] What is the optimal number of profile setup fields? Need data from comparable platforms.
-- [ ] Should the guided first action use real user data or sample data? Trade-off between value demonstration and setup friction.
-- [ ] What is the drop-off rate at email verification? Is magic link sign-in a viable alternative?
-- [ ] How do referral users differ from organic users in onboarding completion rate?
-
-### Linked Artifacts
-
-- **Decisions**: DEC-001 (Authentication method), DEC-005 (Onboarding flow structure)
-- **Principles**: PRIN-002 (Progressive Disclosure), PRIN-004 (Time-to-Value)
-- **Page Tree**: `/landing`, `/signup`, `/verify`, `/onboarding/*`, `/dashboard`
-- **Sprint**: Sprint 1 (initial design), Sprint 3 (usability testing and iteration)
-
-### New Project Checklist
-
-*Bootstrap sequence using Field Notes, Project Squad, and llms.txt.*
-
-When starting a new project, this sequence ties together the patterns documented across Field Notes into a single bootstrap workflow. Each step links to the relevant documentation.
-
-## The Bootstrap Sequence
-
-### Step 1: Initialize Project Squad
-
-```bash
-npx project-squad init
-```
-
-Creates `.squad/` personas, `.claude/commands/`, and living document templates. Before running, write `_meta/PROJECT_CONTEXT.md` describing the project's purpose, users, and constraints.
-
-[Read about Project Squad](/principles/project-squad)
-
-### Step 2: Connect to Field Notes
-
-Add the Field Notes URL to your project's `CLAUDE.md` so AI agents have instant access to all documented patterns:
-
-```markdown
-## Reference
-
-See https://bysixteen.github.io/field-notes/llms-full.txt for design engineering patterns.
-```
-
-[Read the Documentation Hub Pattern](/platform/documentation-hub)
-
-### Step 3: Set Up Git Conventions
-
-Add to your `CLAUDE.md`:
-
-- Branch prefixes: `feat/`, `fix/`, `docs/`, `refactor/`, `chore/`
-- Commit format: Conventional Commits — `type(scope): description`
-
-### Step 4: Choose Architecture Patterns
-
-Review the [Platform Patterns](/platform) domain. Key decisions:
-
-- **Data**: Will you split transactional and editorial data? → [Data Architecture](/platform/data-architecture)
-- **Auth**: Do you need row-level security? → [Auth & RLS](/platform/auth-rls)
-- **Audit**: Do you need state transition history? → [Audit-First](/platform/audit-first)
-- **Structure**: Monorepo or single-repo? → [Monorepo Architecture](/platform/monorepo)
-
-### Step 5: Run the Audit
-
-Even for greenfield projects, audit what exists — design comps, requirements docs, stakeholder assumptions, competitive landscape. Document findings in `docs/audit/gap-analysis.md`.
-
-[Read the Pioneer Framework — Part 1: The Audit](/principles/pioneer-framework)
-
-### Step 6: Run the First Sprint
-
-Assemble a Tiger Team or assign persona roles if working solo. Run a Mode A (Full 5-Day) sprint targeting the highest-priority user journey. This produces the first real entries in DECISIONS.md, PERSONAS.md, and PRINCIPLES.md.
-
-[Read the Pioneer Framework — Part 3: The Sprint Model](/principles/pioneer-framework)
-
-### Step 7: Start Compounding
-
-After the first sprint, living documents are no longer empty templates. Transition to Continuous Sprint mode (Mode B). Let `CLAUDE.md` grow from real corrections, not predictions.
-
-[Read about Compounding Engineering](/principles/compounding-engineering)
-
-## Quick Reference
-
-Copy this checklist into your project kickoff document:
-
-```markdown
-## Project Bootstrap
-
-- [ ] Write `_meta/PROJECT_CONTEXT.md`
-- [ ] Run `npx project-squad init`
-- [ ] Add Field Notes llms-full.txt URL to CLAUDE.md
-- [ ] Set up git conventions (branch prefixes, commit format) in CLAUDE.md
-- [ ] Choose architecture patterns from Platform domain
-- [ ] Run the audit (Pioneer Framework Part 1)
-- [ ] Run first sprint (Mode A)
-- [ ] Update living documents (DECISIONS, PERSONAS, PRINCIPLES)
-- [ ] Transition to Continuous Sprint mode (Mode B)
-```
-
-### The Pioneer Framework
-
-*A project-agnostic operating system for design and delivery.*
+*A project-agnostic operating system for design and delivery — auditing, repo structure, sprints, teams, and journeys.*
 
 A complete operating system for design and delivery projects. This framework provides the structure for auditing existing work, organizing repositories, running sprints, assembling specialist teams, and mapping user journeys.
 
-> This framework is available as a portable CLI toolkit. See [Project Squad](/principles/project-squad) for installation and usage — one command bootstraps the entire structure described below.
+> This framework is available as a portable toolkit. See [Project Squad](/principles/project-squad) for the personas, commands, and templates that implement the operational parts described below.
 
 ## Part 1: The Audit
 
@@ -2455,7 +2013,7 @@ Every pull request must pass this checklist before merge:
 
 ### Step 1: Create the Repository Structure
 
-The fastest path: run `npx project-squad init` to bootstrap the canonical directory structure automatically (see [Project Squad](/principles/project-squad)). Alternatively, set it up manually as defined in Part 2. Create empty living documents with the template headers.
+Set up the canonical directory structure as defined in Part 2. Create empty living documents with the template headers. See [Project Squad](/principles/project-squad) for the personas and commands that accelerate this process.
 
 ### Step 2: Run the Audit
 
@@ -2473,19 +2031,456 @@ Assemble the Tiger Team for a Full 5-Day Design Sprint (Mode A). Focus on the hi
 
 After the first sprint, transition to Continuous Sprint mode (Mode B) for ongoing delivery.
 
+### Dissent is a Feature
+
+*Structurally encourage and document dissent to prevent groupthink and preserve overruled concerns for future reference.*
+
+## The Principle
+
+Structurally encourage and document dissent. The "Mandatory Challenger" role in the Tiger Team model ensures that assumptions are always tested. All significant dissenting opinions are recorded in a **dissent register**, preventing groupthink and preserving overruled concerns for future reference.
+
+## Why This Matters
+
+Teams naturally converge on consensus. This is efficient for execution but dangerous for decision-making. Without structural mechanisms to surface disagreement, teams fall into predictable failure modes:
+
+- **Groupthink**: Everyone agrees because disagreement feels socially costly
+- **Authority bias**: Junior team members defer to senior ones even when they see problems
+- **Momentum bias**: Once a direction is chosen, the cost of changing course feels too high, so concerns are suppressed
+- **Survivorship bias**: Only the decisions that worked are remembered; the warnings that were ignored are forgotten
+
+## The Practice
+
+### The Mandatory Challenger
+
+In any structured review or decision-making session, one team member is assigned the role of **Mandatory Challenger**. Their job is to:
+
+- Argue against the proposed direction, even if they personally agree with it
+- Identify the weakest assumptions in the current plan
+- Propose at least one credible alternative
+- Articulate the scenario in which the current plan fails
+
+This role rotates. It is not a personality trait — it is a structural function. By making challenge a formal responsibility, it removes the social cost of disagreement.
+
+### The Dissent Register
+
+Every significant dissenting opinion is recorded in the project's decision log with the following structure:
+
+| Field | Description |
+|---|---|
+| **Decision ID** | Reference to the decision being challenged |
+| **Dissenting View** | The alternative position or concern |
+| **Raised By** | Who raised the concern (role, not necessarily name) |
+| **Rationale** | Why this concern has merit |
+| **Resolution** | How the concern was addressed — accepted, mitigated, or overruled |
+| **Overrule Rationale** | If overruled, why the team chose to proceed anyway |
+| **Review Trigger** | Conditions under which this dissent should be revisited |
+
+### Why Record Overruled Concerns?
+
+Overruled concerns are not dead. They are **dormant**. Recording them serves three purposes:
+
+1. **Future validation**: If the overruled concern proves correct later, the team can trace back to the original warning and learn from the pattern
+2. **Accountability**: The rationale for overruling is preserved, preventing revisionist history
+3. **Onboarding**: New team members can understand not just what was decided, but what was considered and rejected, and why
+
+## Integration with Sprint Workflow
+
+- **Sprint planning**: Review the dissent register from the previous sprint. Have any review triggers been activated?
+- **Sprint review**: The Mandatory Challenger presents the strongest counterargument to the sprint's key decisions
+- **Retrospective**: Identify any dissent that was suppressed or not captured, and add it to the register
+
+## Anti-Patterns
+
+- **Performative Challenge**: The Mandatory Challenger raises trivial objections to fulfill the role without engaging substantively. The role requires genuine intellectual effort.
+- **Dissent Without Documentation**: Concerns are raised in meetings but not recorded. They are effectively lost.
+- **Punishment for Dissent**: Team members who raise uncomfortable concerns are sidelined or labeled as "negative." This kills the mechanism entirely.
+- **Permanent Overrule**: A concern is overruled once and never revisited, even when circumstances change.
+
+### Distill, Don't Repeat
+
+*The output of a sprint is synthesized knowledge, not raw artifacts. Create living documents that serve as the single source of truth.*
+
+## The Principle
+
+The output of a sprint is not the raw artifacts themselves — the transcripts, the screenshots, the meeting notes, the Figma files. The output is the **synthesized knowledge** extracted from them.
+
+This is a fundamental shift in how project documentation works. Instead of accumulating folders of raw material that nobody will ever re-read, the team creates and maintains **living documents** that serve as the single source of truth.
+
+## Why This Matters
+
+Every project suffers from **context burn** — the gradual loss of institutional knowledge as raw artifacts pile up and become impossible to navigate. A team that finishes a two-week sprint with 47 documents, 12 recordings, and 200 Slack messages has not created knowledge. They have created noise.
+
+The cost is concrete:
+
+- **Onboarding new team members** requires them to read through weeks of accumulated material
+- **Returning to a decision** means hunting through meeting notes to find the original rationale
+- **AI assistants** cannot effectively consume sprawling, unstructured project histories
+- **Sprint planning** starts from scratch because the lessons from previous sprints are buried
+
+## The Practice
+
+At the end of every sprint (or at natural breakpoints during continuous work), synthesize all raw material into three canonical documents:
+
+1. **DECISIONS.md** — Every significant decision, its context, alternatives considered, rationale for the choice made, and any dissenting opinions
+2. **PERSONAS.md** — The current understanding of users, updated with any new insights from research, testing, or stakeholder feedback
+3. **PRINCIPLES.md** — Design and engineering principles that have been validated or discovered during the sprint
+
+These documents are **append-and-refine**, not **rewrite**. Each sprint adds to them, corrects them, or promotes uncertain observations to confirmed principles.
+
+## The Test
+
+After synthesis is complete, apply this test: **Can someone who missed the entire sprint read only the three living documents and be fully caught up?**
+
+If the answer is no, the synthesis is incomplete. If the answer is yes, the raw artifacts can be archived — they have served their purpose.
+
+## Anti-Patterns
+
+- **The Archive Trap**: Saving everything "just in case" without synthesizing. The archive grows, but knowledge does not.
+- **The Summary Email**: Writing a summary at the end of a sprint but not updating the canonical documents. The summary becomes stale immediately.
+- **The Fresh Start**: Beginning each sprint with a blank slate instead of building on the living documents from the previous sprint.
+
+### Principles & Frameworks
+
+*Core principles and operating frameworks distilled from real project work, designed to compound across every engagement.*
+
+These are not theoretical guidelines. They are principles distilled from real project delivery — patterns that emerged from mistakes made, lessons learned, and workflows that proved their worth across multiple engagements. Each one compounds: the more consistently they are applied, the more value they generate over time.
+
+## Core Principles
+
+| Principle | Summary |
+|---|---|
+| [Distill, Don't Repeat](/principles/distill-dont-repeat) | The output of a sprint is synthesized knowledge, not raw artifacts. Create living documents that eliminate the need to re-read source material. |
+| [Clarity, Attribution, Reversibility, Consistency](/principles/clarity-attribution-reversibility-consistency) | The four pillars of validation for any prototype or feature. Every piece of work must pass all four checks. |
+| [Compounding Engineering](/principles/compounding-engineering) | Build guidance from real mistakes, not upfront speculation. Let documentation grow organically from actual needs. |
+| [Verification Over Instruction](/principles/verification-over-instruction) | Give AI a way to verify its work rather than a long list of instructions. Success conditions beat specifications. |
+| [Dissent is a Feature](/principles/dissent-as-feature) | Structurally encourage and document dissent. Record overruled concerns for future reference. |
+| [Answer First](/principles/answer-first) | Every document must have the conclusion in the first body section. Never bury the lead. |
+
+## Frameworks
+
+These frameworks operationalize the principles above into repeatable systems.
+
+### The Delivery Framework
+
+A project-agnostic operating system for design and delivery. It covers the full lifecycle from initial audit through sprint execution and journey mapping, providing a canonical structure for repository architecture, team composition, and validation workflows.
+
+[Read the Delivery Framework](/principles/delivery-framework)
+
 ### Project Squad
 
-*The portable CLI toolkit that implements the Pioneer Framework — personas, sprints, workshops, and living documents.*
+The portable toolkit that implements the Delivery Framework. It provides personas, sprint commands, and living document templates for any project.
 
-Project Squad is the installable, portable version of the [Pioneer Framework](/principles/pioneer-framework). Where the Pioneer Framework documents the methodology, Project Squad provides the commands, personas, and templates to run it. One command bootstraps the entire operating system into any project.
+[Read about Project Squad](/principles/project-squad)
+
+### Synthesis & Validation Framework
+
+A three-artifact model and four-pillar validation system for preventing context burn. It defines the exact documents to maintain, the ritual for updating them after each sprint, and the checklist for validating every piece of work.
+
+[Read the Synthesis & Validation Framework](/principles/synthesis-validation)
+
+### Journey Mapping Template
+
+A reusable structure for mapping any part of a system from user need to validated outcome, including a complete markdown template and worked example.
+
+[Read the Journey Mapping Template](/principles/journey-template)
+
+### New Project Checklist
+
+The step-by-step bootstrap sequence that ties together Project Squad, Field Notes, and the Delivery Framework into a single startup workflow.
+
+[Read the New Project Checklist](/principles/new-project-checklist)
+
+### Journey Mapping Template
+
+*Reusable structure for mapping any part of a system from user need to validated outcome.*
+
+A journey map traces a user's path through the system from an initial need to a resolved outcome. It connects individual features into a coherent narrative and exposes gaps, friction points, and opportunities that are invisible when features are designed in isolation.
+
+## The Journey Map Structure
+
+Every journey map contains six sections:
+
+### 1. Context
+
+A brief description of who the user is, what triggers the journey, and what success looks like.
+
+### 2. Journey Table
+
+The step-by-step path through the system, including:
+
+- **Step number and name**
+- **User action**: What the user does
+- **System response**: What the system does in response
+- **Touchpoint**: The specific page, component, or notification involved
+- **Emotional state**: The user's likely emotional state at this step (confident, uncertain, frustrated, satisfied)
+- **Failure mode**: What could go wrong at this step
+- **Recovery**: How the system helps the user recover from failure
+
+### 3. Critical Moments
+
+The 2-4 steps where the journey is most likely to succeed or fail. These are the points that deserve the most design attention and testing.
+
+### 4. Validation Checklist
+
+The four-pillar validation applied specifically to this journey's critical moments.
+
+### 5. Open Questions
+
+Unresolved questions about the journey that need research, testing, or stakeholder input to answer.
+
+### 6. Linked Artifacts
+
+References to related decisions, personas, principles, and page-tree entries.
+
+## Full Markdown Template
+
+```markdown
+# Journey: [Journey Name]
+
+**ID**: JOURNEY-[NNN]
+**Persona**: [Link to persona in PERSONAS.md]
+**Trigger**: [What initiates this journey]
+**Success Outcome**: [What "done" looks like for the user]
+**Last Updated**: YYYY-MM-DD
+**Status**: Draft | In Review | Validated
+
+## Context
+
+[2-3 sentences describing the scenario. Who is the user?
+What do they need? What are the constraints?]
+
+## Journey
+
+| Step | User Action | System Response | Touchpoint | Emotional State | Failure Mode | Recovery |
+|---|---|---|---|---|---|---|
+| 1. [Name] | [What user does] | [What system does] | [Page/component] | [Emotion] | [What could go wrong] | [How to recover] |
+| 2. [Name] | | | | | | |
+| 3. [Name] | | | | | | |
+| 4. [Name] | | | | | | |
+| 5. [Name] | | | | | | |
+
+## Critical Moments
+
+### Critical Moment 1: [Step N — Name]
+- **Why this matters**: [Why this step is make-or-break]
+- **Design priority**: [What to focus on]
+- **Testing approach**: [How to validate this step works]
+
+### Critical Moment 2: [Step N — Name]
+- **Why this matters**: [...]
+- **Design priority**: [...]
+- **Testing approach**: [...]
+
+## Validation Checklist
+
+### Clarity
+- [ ] Each step's purpose is obvious to the user
+- [ ] Progress through the journey is visible
+- [ ] The user always knows what to do next
+
+### Attribution
+- [ ] Any data shown during the journey has a clear source
+- [ ] Recommendations or suggestions explain their basis
+
+### Reversibility
+- [ ] The user can go back to any previous step
+- [ ] Partial progress is saved automatically
+- [ ] The user can abandon the journey without penalty
+
+### Consistency
+- [ ] Each step follows the application's established patterns
+- [ ] Terminology is consistent throughout the journey
+- [ ] Visual treatment matches the design system
+
+## Open Questions
+
+- [ ] [Question 1]
+- [ ] [Question 2]
+- [ ] [Question 3]
+
+## Linked Artifacts
+
+- **Decisions**: [DEC-NNN, DEC-NNN]
+- **Principles**: [PRIN-NNN]
+- **Page Tree**: [Routes involved in this journey]
+- **Sprint**: [Sprint(s) that addressed this journey]
+```
+
+## Worked Example: Enquiry to Onboarding
+
+This example demonstrates a generic "enquiry to onboarding" journey for a membership platform. It maps the path from a prospective member's first interaction to their fully onboarded state.
+
+---
+
+### Journey: Enquiry to Onboarded Member
+
+**ID**: JOURNEY-001
+**Persona**: Prospective Member
+**Trigger**: User visits the platform's public landing page or receives a referral link
+**Success Outcome**: User has a fully activated account, has completed their profile, and has accessed the core platform feature for the first time
+**Last Updated**: 2025-01-15
+**Status**: In Review
+
+### Context
+
+A prospective member discovers the platform through organic search, social media, or a referral from an existing member. They need to understand what the platform offers, evaluate whether it meets their needs, and — if convinced — complete the sign-up and onboarding process with minimal friction. They may be comparing the platform to alternatives and will abandon the process if it feels confusing, slow, or untrustworthy.
+
+### Journey
+
+| Step | User Action | System Response | Touchpoint | Emotional State | Failure Mode | Recovery |
+|---|---|---|---|---|---|---|
+| 1. Discovery | Arrives at landing page | Displays value proposition, social proof, and clear CTA | Landing page | Curious but skeptical | Value proposition is unclear or generic | A/B test headlines; show specific outcomes not features |
+| 2. Exploration | Browses features, pricing, and testimonials | Surfaces relevant content based on referral source or landing context | Feature pages, pricing page | Evaluating, comparing | Information overload or insufficient detail | Progressive disclosure; FAQs that address common objections |
+| 3. Trial Initiation | Clicks "Start Free Trial" or "Sign Up" | Presents minimal sign-up form (email + password or SSO) | Sign-up modal/page | Committed but impatient | Form is too long or requires unnecessary information | Reduce to essential fields only; defer profile completion |
+| 4. Email Verification | Clicks verification link in email | Confirms account, redirects to onboarding flow | Email, verification page | Mildly annoyed (friction) | Email not received, link expired | Resend option, magic link alternative, clear error messaging |
+| 5. Profile Setup | Completes profile (role, interests, goals) | Saves profile, tailors onboarding based on responses | Profile setup wizard | Engaged if quick, frustrated if long | Wizard is too many steps or asks irrelevant questions | Show progress bar; allow "Skip for now" on optional fields |
+| 6. Guided First Action | Follows prompt to complete the platform's core action | Walks user through the core feature with contextual help | Core feature page with overlay guidance | Hopeful, slightly uncertain | Guidance is patronizing or insufficient | Offer both quick-start and detailed walkthrough options |
+| 7. Completion Confirmation | Completes core action | Celebrates completion, shows what to explore next | Success state, dashboard | Satisfied, motivated | Anticlimactic response or unclear next steps | Clear success messaging with 2-3 suggested next actions |
+
+### Critical Moments
+
+#### Critical Moment 1: Step 3 — Trial Initiation
+
+- **Why this matters**: This is the highest-intent moment. The user has decided to try the platform. Any friction here directly converts to abandonment. Studies consistently show that each additional form field reduces conversion by 5-10%.
+- **Design priority**: Minimize form fields to the absolute minimum. Offer SSO options. Make the commitment feel low-risk (emphasize "free," "no credit card," "cancel anytime").
+- **Testing approach**: Measure conversion rate from landing page to completed sign-up. A/B test form length and SSO options. Run usability tests with 5 participants to identify friction points.
+
+#### Critical Moment 2: Step 6 — Guided First Action
+
+- **Why this matters**: This is the "aha moment" — the point where the user experiences the platform's core value for the first time. If this step fails, the user has an account but no reason to return. Time-to-value is the strongest predictor of long-term retention.
+- **Design priority**: Ensure the guided action demonstrates real value, not a trivial example. Use the user's profile data (from Step 5) to personalize the experience. Keep the guidance unobtrusive but available.
+- **Testing approach**: Measure completion rate of guided action. Track time-to-completion. Interview users who abandon at this step to understand why. Test with users who have zero prior context.
+
+### Validation Checklist
+
+#### Clarity
+- [ ] Landing page communicates the value proposition within 5 seconds
+- [ ] Sign-up form makes the commitment level clear (free trial, no credit card)
+- [ ] Onboarding wizard shows progress and estimated time remaining
+- [ ] Guided first action has clear, step-by-step instructions
+- [ ] Success state confirms completion and suggests next steps
+
+#### Attribution
+- [ ] Testimonials and social proof include verifiable sources
+- [ ] Pricing page clearly explains what is included at each tier
+- [ ] Any personalized recommendations explain why they were suggested
+
+#### Reversibility
+- [ ] User can go back to any previous step in the onboarding wizard
+- [ ] Profile information can be edited after initial setup
+- [ ] Account can be deactivated (not just deleted) if the user changes their mind
+- [ ] The guided first action can be restarted or skipped
+
+#### Consistency
+- [ ] Visual design matches across landing page, sign-up, and onboarding
+- [ ] Terminology for the core action is consistent throughout
+- [ ] Button styles and placement follow the design system
+- [ ] Error messages follow the application's established format
+
+### Open Questions
+
+- [ ] What is the optimal number of profile setup fields? Need data from comparable platforms.
+- [ ] Should the guided first action use real user data or sample data? Trade-off between value demonstration and setup friction.
+- [ ] What is the drop-off rate at email verification? Is magic link sign-in a viable alternative?
+- [ ] How do referral users differ from organic users in onboarding completion rate?
+
+### Linked Artifacts
+
+- **Decisions**: DEC-001 (Authentication method), DEC-005 (Onboarding flow structure)
+- **Principles**: PRIN-002 (Progressive Disclosure), PRIN-004 (Time-to-Value)
+- **Page Tree**: `/landing`, `/signup`, `/verify`, `/onboarding/*`, `/dashboard`
+- **Sprint**: Sprint 1 (initial design), Sprint 3 (usability testing and iteration)
+
+### New Project Checklist
+
+*Bootstrap sequence using Field Notes, the Delivery Framework, and llms.txt.*
+
+When starting a new project, this sequence ties together the patterns documented across Field Notes into a single bootstrap workflow. Each step links to the relevant documentation.
+
+## The Bootstrap Sequence
+
+### Step 1: Set Up Project Structure
+
+Create the canonical directory structure from the [Delivery Framework](/principles/delivery-framework) — living documents at the root, sprint records in `docs/`, and a `_meta/PROJECT_CONTEXT.md` describing the project's purpose, users, and constraints.
+
+Optionally set up [Project Squad](/principles/project-squad) personas and commands for structured sprint execution.
+
+### Step 2: Connect to Field Notes
+
+Add the Field Notes URL to your project's `CLAUDE.md` so AI agents have instant access to all documented patterns:
+
+```markdown
+## Reference
+
+See https://bysixteen.github.io/field-notes/llms-full.txt for design engineering patterns.
+```
+
+[Read the Documentation Hub Pattern](/platform/documentation-hub)
+
+### Step 3: Configure Claude Code
+
+Set up your AI agent configuration following the [Claude Code Setup](/claude/claude-code-setup) guide:
+
+- Create `CLAUDE.md` at project root (under 150 lines)
+- Add build/test/lint commands and git conventions
+- Create `.claude/rules/` for file-type-specific conventions
+- Test: can a fresh agent clone and run tests on first try?
+
+### Step 4: Choose Architecture Patterns
+
+Review the [Platform Patterns](/platform) domain. Key decisions:
+
+- **Data**: Will you split transactional and editorial data? → [Data Architecture](/platform/data-architecture)
+- **Auth**: Do you need row-level security? → [Auth & RLS](/platform/auth-rls)
+- **Audit**: Do you need state transition history? → [Audit-First](/platform/audit-first)
+- **Structure**: Monorepo or single-repo? → [Monorepo Architecture](/platform/monorepo)
+
+### Step 5: Run the Audit
+
+Even for greenfield projects, audit what exists — design comps, requirements docs, stakeholder assumptions, competitive landscape. Document findings in `docs/audit/gap-analysis.md`.
+
+[Read the Delivery Framework — Part 1: The Audit](/principles/delivery-framework)
+
+### Step 6: Run the First Sprint
+
+Assemble a Tiger Team or assign persona roles if working solo. Run a Mode A (Full 5-Day) sprint targeting the highest-priority user journey. This produces the first real entries in DECISIONS.md, PERSONAS.md, and PRINCIPLES.md.
+
+[Read the Delivery Framework — Part 3: The Sprint Model](/principles/delivery-framework)
+
+### Step 7: Start Compounding
+
+After the first sprint, living documents are no longer empty templates. Transition to Continuous Sprint mode (Mode B). Let `CLAUDE.md` grow from real corrections, not predictions.
+
+[Read about Compounding Engineering](/principles/compounding-engineering)
+
+## Quick Reference
+
+Copy this checklist into your project kickoff document:
+
+```markdown
+## Project Bootstrap
+
+- [ ] Write `_meta/PROJECT_CONTEXT.md`
+- [ ] Set up Delivery Framework directory structure
+- [ ] Add Field Notes llms-full.txt URL to CLAUDE.md
+- [ ] Configure Claude Code (CLAUDE.md, rules, first-try test)
+- [ ] Set up git conventions (branch prefixes, commit format)
+- [ ] Choose architecture patterns from Platform domain
+- [ ] Run the audit (Delivery Framework Part 1)
+- [ ] Run first sprint (Mode A)
+- [ ] Update living documents (DECISIONS, PERSONAS, PRINCIPLES)
+- [ ] Transition to Continuous Sprint mode (Mode B)
+```
+
+### Project Squad
+
+*The portable toolkit that implements the Delivery Framework — personas, sprints, workshops, and living documents.*
+
+Project Squad is the portable version of the [Delivery Framework](/principles/delivery-framework). Where the Delivery Framework documents the methodology, Project Squad provides the commands, personas, and templates to run it.
 
 ## Quick Start
 
-```bash
-npx project-squad init
-```
-
-This creates the directory structure, copies the nine persona definitions, installs the Claude commands, and scaffolds empty living documents. Before running init, create `_meta/PROJECT_CONTEXT.md` describing your project — the init command reads this to seed context.
+Set up the Project Squad structure in your repository by creating the directories and files listed below. Before starting, create `_meta/PROJECT_CONTEXT.md` describing your project — this seeds context for all subsequent sprint work.
 
 ## What It Creates
 
@@ -2564,17 +2559,16 @@ Every sprint updates three living documents at the project root:
 
 These documents are the synthesized output of all project work. They eliminate context burn — new team members or AI agents read these instead of re-reading raw sprint artifacts.
 
-## Relationship to the Pioneer Framework
+## Relationship to the Delivery Framework
 
-The [Pioneer Framework](/principles/pioneer-framework) documents the complete methodology: the audit, repository architecture, sprint model, Tiger Team composition, and journey mapping. Project Squad implements the operational parts as portable, installable tooling.
+The [Delivery Framework](/principles/delivery-framework) documents the complete methodology: the audit, repository architecture, sprint model, Tiger Team composition, and journey mapping. Project Squad implements the operational parts as portable tooling.
 
-| Aspect | Pioneer Framework | Project Squad |
+| Aspect | Delivery Framework | Project Squad |
 |---|---|---|
-| **Nature** | Methodology documentation | CLI toolkit |
+| **Nature** | Methodology documentation | Portable toolkit |
 | **Scope** | Full lifecycle (audit → delivery) | Sprint/workshop/spike execution |
 | **Team model** | Tiger Team (7 roles) | Nine Personas (archetypal characters) |
-| **Installation** | Read and apply manually | `npx project-squad init` |
-| **Living documents** | Described in framework | Scaffolded automatically |
+| **Living documents** | Described in framework | Scaffolded from templates |
 
 ### Synthesis & Validation Framework
 
@@ -2896,7 +2890,7 @@ The second version is shorter, less ambiguous, and self-verifying.
 
 ## Claude & AI Workflows
 
-CLAUDE.md playbook, agent efficiency research, skill-based automation patterns.
+Context engineering, CLAUDE.md playbook, Claude Code setup, workflow architectures, skill-based automation.
 
 ### Agent Efficiency Research
 
@@ -2977,6 +2971,173 @@ These findings have practical implications for how teams manage their agent cont
 - **Assign ownership.** Someone on the team should be responsible for reviewing and pruning the file quarterly.
 - **Measure impact.** If you are tracking agent performance metrics (task completion rate, token usage, time to completion), measure before and after changes to the context file to validate that additions are actually helping.
 - **Resist the urge to be comprehensive.** The instinct to "document everything" works against you here. Completeness is not the goal — precision is.
+
+### Claude Code Setup
+
+*Practical guide for configuring Claude Code on a new project — CLAUDE.md, rules, hooks, and session management.*
+
+A practical reference for configuring Claude Code on a new project. This page covers the configuration surface area and the patterns that matter most, distilled from real-world usage as of March 2026.
+
+## CLAUDE.md
+
+The `CLAUDE.md` file is the primary interface between your codebase and the agent. It loads automatically at session start.
+
+### Sizing
+
+Keep it under 150 lines. If it grows beyond that, move content into `.claude/rules/` files that activate conditionally. The [CLAUDE.md Playbook](/claude/claude-md-playbook) covers the full tier model, but the sizing principle is simple: if you cannot point to a time the agent got it wrong, the entry probably does not need to exist.
+
+### What Belongs in CLAUDE.md
+
+| Include | Exclude |
+|---|---|
+| Build/test/lint commands | General programming knowledge |
+| Project structure overview | Framework documentation |
+| Git conventions | Anything the agent can derive from code |
+| Error-prone patterns specific to this codebase | Speculative rules not earned from mistakes |
+
+### Importance Tags
+
+Use `IMPORTANT:` and `CRITICAL:` prefixes sparingly for entries the agent must never ignore. Overuse dilutes their signal.
+
+## Rules
+
+Rules live in `.claude/rules/` and provide targeted context that loads conditionally based on glob patterns.
+
+```
+.claude/
+└── rules/
+    ├── api-conventions.md       # Loads when editing API routes
+    ├── testing.md               # Loads when editing test files
+    └── content-conventions.md   # Loads when editing content files
+```
+
+### Glob-Activated Rules
+
+Add a frontmatter glob pattern to make a rule file load only when relevant files are active:
+
+```markdown
+---
+globs: ["**/*.test.ts", "**/*.spec.ts"]
+---
+
+# Testing Rules
+
+- Use Vitest, not Jest
+- Follow the AAA pattern (Arrange, Act, Assert)
+- Test names start with "should"
+```
+
+This keeps the context window lean — testing rules only load when the agent is working on tests.
+
+### When to Use Rules vs CLAUDE.md
+
+| CLAUDE.md | Rules |
+|---|---|
+| Always relevant (build commands, git conventions) | Relevant to specific file types or directories |
+| Under 150 lines | Can be longer — they load conditionally |
+| Earned from real mistakes | Can be more prescriptive (scoped impact) |
+
+## Hooks
+
+Hooks are shell scripts that run before or after tool execution. They extend agent behaviour without modifying the agent itself.
+
+### Hook Types
+
+| Hook | Trigger | Use Case |
+|---|---|---|
+| `PreToolUse` | Before a tool executes | Block operations, validate inputs |
+| `PostToolUse` | After a tool executes | Format files, run checks |
+
+### Exit Codes
+
+| Code | Meaning |
+|---|---|
+| `0` | Success — tool proceeds normally |
+| `1` | Error — logged, but tool still proceeds |
+| `2` | **Block** — prevents the tool from executing |
+
+### Secret-Blocking Pattern
+
+A PreToolUse hook that prevents the agent from editing sensitive files:
+
+```bash
+#!/bin/bash
+# Reads tool call JSON from stdin, checks file path against blocked patterns
+FILE_PATH=$(cat | jq -r '.tool_input.file_path // empty')
+FILENAME=$(basename "$FILE_PATH")
+
+BLOCKED=(".env" ".env.local" "credentials.json" "secrets.json" "*.pem" "*.key")
+for pattern in "${BLOCKED[@]}"; do
+    case "$FILENAME" in $pattern) echo "BLOCKED: $FILENAME"; exit 2 ;; esac
+done
+exit 0
+```
+
+### Auto-Format Pattern
+
+A PostToolUse hook that runs Prettier after every file edit:
+
+```bash
+#!/bin/bash
+FILE_PATH=$(cat | jq -r '.tool_input.file_path // empty')
+case "$FILE_PATH" in
+    *.js|*.ts|*.jsx|*.tsx|*.json|*.md|*.css)
+        npx prettier --write "$FILE_PATH" 2>/dev/null || true ;;
+esac
+exit 0
+```
+
+### Settings Configuration
+
+Hooks are registered in `.claude/settings.json`:
+
+```json
+{
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Edit|Write",
+        "hooks": [{ "type": "command", "command": ".claude/hooks/block-secrets.sh" }]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "Edit",
+        "hooks": [{ "type": "command", "command": ".claude/hooks/format-on-edit.sh" }]
+      }
+    ]
+  }
+}
+```
+
+## Session Management
+
+### Landing the Plane
+
+Every session should end with the codebase in a clean state. Establish a closing checklist:
+
+1. **Tests pass** — run the test suite before ending
+2. **Issues updated** — close or update GitHub Issues that were addressed
+3. **Changes committed** — no uncommitted work left behind
+4. **Context preserved** — update CLAUDE.md if a new correction was discovered
+
+### First-Try Success
+
+The litmus test for a well-configured project: any developer (or agent) should be able to clone the repo, read CLAUDE.md, and successfully run the test suite on the first try. If `npm test` requires undocumented setup steps, the configuration is incomplete.
+
+This applies to human developers and AI agents equally. If the agent cannot run the tests without asking clarifying questions, the CLAUDE.md is missing something.
+
+## Quick Setup Checklist
+
+```markdown
+- [ ] Create CLAUDE.md at project root (under 150 lines)
+- [ ] Add build/test/lint commands
+- [ ] Add git conventions (branch prefixes, commit format)
+- [ ] Create .claude/rules/ for file-type-specific conventions
+- [ ] Add glob frontmatter to each rule file
+- [ ] Create hooks only when there is a genuine need (not for show)
+- [ ] Test: can a fresh agent clone + run tests on first try?
+```
 
 ### The CLAUDE.md Playbook
 
@@ -3083,29 +3244,174 @@ Delete aggressively. The file should get shorter over time as the agent improves
 
 The most valuable additions come from the workflow itself. When the agent makes a mistake, fix the mistake and then add a one-line correction to `CLAUDE.md`. Over weeks and months, these corrections compound into a highly effective context file — one that reflects the actual failure modes of your specific codebase, not generic best practices.
 
+### Context Engineering
+
+*Strategies for curating the optimal set of tokens during LLM inference — the discipline that replaced prompt engineering.*
+
+Context engineering is the set of strategies for curating and maintaining the optimal set of tokens during LLM inference. Where prompt engineering focuses on how you ask, context engineering focuses on everything that surrounds the ask — system prompts, tools, examples, retrieved data, conversation history, and structured memory.
+
+The shift matters because intelligence is no longer the bottleneck. Modern models are capable enough. The constraint is context: what information is available when the model reasons, and how efficiently that information is encoded.
+
+> Think of the LLM as a CPU and the context window as RAM. You would not blame a CPU for poor performance if you loaded the wrong data into memory.
+
+## Context vs Prompt Engineering
+
+Prompt engineering and context engineering are complementary, not competing:
+
+| Aspect | Prompt Engineering | Context Engineering |
+|---|---|---|
+| **Focus** | How you phrase the instruction | What information surrounds the instruction |
+| **Scope** | Single turn or message | Full session lifecycle |
+| **Optimises for** | Instruction clarity | Token efficiency and relevance |
+| **Scales with** | Task complexity | Session length and tool count |
+
+A perfectly phrased prompt fails if the context is wrong. A mediocre prompt often succeeds if the right context is present.
+
+## The Anatomy of Effective Context
+
+Three components make up the context a model sees at inference time. Each has distinct design constraints.
+
+### System Prompts
+
+The system prompt sets the operating parameters. Two failure modes to avoid:
+
+- **Overly rigid** — Hardcoded complex logic creates fragility and maintenance burden
+- **Overly vague** — High-level guidance without concrete signals fails to direct behaviour
+
+Best practices:
+
+- Organise into distinct sections using XML tags or Markdown headers
+- Aim for the minimal set of information that fully outlines expected behaviour
+- Start with minimal prompts on capable models, then add instructions based on observed failure modes
+- Write at the right altitude — general enough to handle variation, specific enough to prevent drift
+
+### Tools
+
+Tools extend what the model can do. Effective tools are self-contained, robust to error, and extremely clear about their intended use.
+
+Design principles:
+
+- **Minimal overlap** — Avoid ambiguous decision points between similar tools
+- **Descriptive parameters** — Unambiguous input names and descriptions
+- **Token-efficient returns** — Return only what the model needs, not everything available
+- **No bloated tool sets** — Each tool should do one thing well
+
+### Examples
+
+Examples are worth a thousand words of instruction. Use diverse, canonical examples that portray expected behaviour — not exhaustive edge-case lists.
+
+A few well-chosen examples teach patterns more effectively than pages of rules. Select examples that demonstrate the boundaries of acceptable behaviour, not just the happy path.
+
+## Runtime Context Strategies
+
+How context enters the window during a session determines both cost and quality.
+
+### Just-in-Time Loading
+
+Rather than preloading all potentially relevant data, maintain lightweight identifiers (file paths, URLs, queries) and retrieve information dynamically at runtime.
+
+Benefits:
+- Reduces immediate token burden
+- Enables progressive discovery — agents incrementally find relevant context through exploration
+- Metadata (folder hierarchies, naming conventions, timestamps) provides implicit guidance without consuming tokens
+
+### Hybrid Approach
+
+Retrieve some data upfront for speed while allowing autonomous exploration for the rest. This is the pattern Claude Code uses: `CLAUDE.md` files load automatically at session start, while `glob` and `grep` enable selective file discovery — effectively bypassing stale indexing and complex syntax trees.
+
+Trade-off: runtime exploration is slower than retrieving pre-computed data. Design tools and guidance to minimise unnecessary exploration.
+
+### Progressive Disclosure
+
+Load metadata at startup (descriptions, triggers — roughly 100 tokens per item) and full content only on invocation. This is the pattern behind Claude's skill system: skill descriptions are always available, but full skill instructions load only when the skill activates.
+
+This scales to hundreds of capabilities without overwhelming the context window.
+
+## Choosing a Strategy
+
+| Task Type | Recommended Approach | Rationale |
+|---|---|---|
+| **Short, focused task** | Upfront loading | Fast; context window has capacity |
+| **Multi-file codebase exploration** | Hybrid (essentials + search tools) | Unknown scope; discovery needed |
+| **Long-running session (hours)** | Just-in-time + compaction | Context window will fill; manage actively |
+| **Multi-agent orchestration** | Progressive disclosure + sub-agents | Isolate concerns; minimise cross-contamination |
+| **Repetitive workflow** | Skills with metadata + on-demand load | Amortise cost across invocations |
+
+## Long-Horizon Patterns
+
+Sessions that run for extended periods face a fundamental challenge: the context window fills up, and performance degrades. Three patterns address this.
+
+### Compaction
+
+When context approaches capacity, summarise the session state and reinitiate with the compressed summary. The compaction process should:
+
+- Preserve architectural decisions, unresolved issues, and implementation details
+- Discard redundant tool outputs and superseded information
+- Enable continuation with minimal performance degradation
+
+Start by maximising recall — ensure the compaction prompt captures every relevant piece of information from the trace. Then iterate to improve precision by removing noise.
+
+### Structured Note-Taking
+
+Agents maintain persistent notes outside the context window, reading them back when relevant. Applications:
+
+- Progress tracking across complex tasks
+- Strategic information preserved for later reference
+- Multi-hour sessions where prior notes survive context resets
+
+The key is writing notes at the right granularity — too detailed wastes tokens when read back, too sparse loses critical information.
+
+### Sub-Agent Architectures
+
+Specialised agents handle focused tasks with clean context windows. The coordination pattern:
+
+1. Main agent plans and coordinates at a high level
+2. Sub-agents perform deep work, potentially consuming tens of thousands of tokens
+3. Each sub-agent returns a condensed summary (typically 1,000–2,000 tokens)
+4. Main agent synthesises results without inheriting the sub-agents' full context
+
+This achieves clear separation of concerns — detailed search context remains isolated within sub-agents, while the lead agent focuses on synthesis.
+
+## Context Rot
+
+As the number of tokens in the context window increases, the model's ability to accurately recall information from that context decreases. This stems from transformer architecture: with n tokens, there are n² pairwise relationships. Models trained on shorter sequences handle full context-width dependencies less reliably.
+
+The degradation is a performance gradient, not a hard cliff. Practical implications:
+
+- Treat context as a finite resource, not an unlimited buffer
+- Front-load the most important information (system prompt, key constraints)
+- Actively prune stale or redundant content during long sessions
+- Prefer retrieval over retention — fetch what you need rather than keeping everything loaded
+
+## The Guiding Principle
+
+Across all techniques, the goal is the same: find the smallest set of high-signal tokens that maximise the likelihood of the desired outcome. As models improve, they require less prescriptive engineering and can operate with more autonomy — but context remains a precious, finite resource that rewards careful curation.
+
 ### Claude & AI Workflows
 
-*Patterns for working effectively with AI coding agents.*
+*Patterns for working effectively with AI coding agents — from context engineering to workflow architectures.*
 
 This section documents patterns, research findings, and practical frameworks for working effectively with AI coding agents. The goal is to move beyond ad-hoc prompting toward systematic, repeatable workflows that compound in value over time.
 
 ## What You'll Find Here
 
-### CLAUDE.md Best Practices
+### Concepts
 
-The `CLAUDE.md` file (or `AGENTS.md`) is the primary interface between your codebase and an AI agent. Research shows that having one improves agent efficiency — but only if it is human-written, minimal, and actively maintained. The [CLAUDE.md Playbook](/claude/claude-md-playbook) covers what to include, what to leave out, and how to evolve the file over time.
+**[Context Engineering](/claude/context-engineering)** — The discipline that replaced prompt engineering. Strategies for curating the optimal set of tokens during LLM inference, including runtime retrieval, progressive disclosure, compaction, and sub-agent architectures.
 
-### Agent Efficiency Research
+**[CLAUDE.md Playbook](/claude/claude-md-playbook)** — The `CLAUDE.md` file is the primary interface between your codebase and an AI agent. Research shows that having one improves agent efficiency — but only if it is human-written, minimal, and actively maintained.
 
-Two prominent studies reached seemingly contradictory conclusions about the value of agent context files. The [Agent Efficiency Research](/claude/agent-efficiency) page reconciles these findings into a single, actionable truth: context files work, but authorship and size matter enormously.
+**[Agent Efficiency Research](/claude/agent-efficiency)** — Two prominent studies reached seemingly contradictory conclusions about the value of agent context files. This page reconciles them: context files work, but authorship and size matter enormously.
 
-### Research to Validation Pathway
+**[Research to Validation Pathway](/claude/research-to-validation)** — A five-step process — Research, Synthesis, Prototype Creation, Validation, Outcome — that keeps agent-generated work traceable back to the decisions that motivated it.
 
-Prototypes that drift from their source research create waste. The [Research to Validation Pathway](/claude/research-to-validation) defines a five-step process — Research, Synthesis, Prototype Creation, Validation, Outcome — that keeps agent-generated work traceable back to the decisions that motivated it.
+### Practical
 
-### Skill-Based Automation
+**[Claude Code Setup](/claude/claude-code-setup)** — Practical guide for configuring Claude Code on a new project: CLAUDE.md sizing, rules with glob activation, hooks for automation, and session management.
 
-When you find yourself giving the same instructions to an agent repeatedly, it is time to encode that workflow as a skill. The [Skill-Based Automation](/claude/skills-patterns) page catalogs common skill categories observed across projects and provides best practices for writing skills that remain useful as your codebase evolves.
+**[Skill-Based Automation](/claude/skills-patterns)** — Common skill categories observed across projects, structural best practices, and the design principles behind effective skills.
+
+**[Workflow Architectures](/claude/workflow-architectures)** — Survey of proven workflow patterns: Command → Agent → Skill, Holy Trinity, TDD-first, spec-driven, wave execution, and parallel review.
 
 ## Guiding Principles
 
@@ -3423,6 +3729,138 @@ Instructions:
 ```
 
 This is a simplified example — real scaffolding skills often include additional steps for registering components in indexes, updating barrel files, or adding entries to documentation manifests. The key is that all of these steps are encoded once and executed consistently every time.
+
+## Composing Skills with Agents
+
+Skills become more powerful when composed through agent orchestration. The [Command → Agent → Skill model](/claude/workflow-architectures) uses three layers with progressive disclosure:
+
+- **Commands** — user-facing entry points that parse input and delegate
+- **Agents** — orchestrators that decide which skills to invoke and in what order
+- **Skills** — the domain knowledge documented on this page
+
+This composition pattern (sometimes called the "Holy Trinity") keeps each skill focused on a single concern while allowing complex workflows to emerge from simple building blocks. See [Workflow Architectures](/claude/workflow-architectures) for the full pattern survey.
+
+### Workflow Architectures
+
+*Survey of proven Claude workflow patterns — from simple skill invocation to multi-agent orchestration.*
+
+As Claude Code usage matures, distinct workflow architectures have emerged. This page surveys the proven patterns as of March 2026, from single-skill invocation to multi-agent orchestration, and provides guidance on choosing between them.
+
+## The Command → Agent → Skill Model
+
+The foundational composition pattern in Claude Code uses three layers with progressive disclosure:
+
+| Layer | Role | Context Cost |
+|---|---|---|
+| **Command** | User-facing entry point (`/deploy`, `/review`) | ~100 tokens (description only, until invoked) |
+| **Agent** | Orchestrator with its own context window | Full content loads on spawn |
+| **Skill** | Domain-specific knowledge or capability | Full content loads on invocation |
+
+The key insight is **progressive disclosure**: command descriptions load at session start (cheap), but full instructions load only when invoked (expensive, but only when needed). This scales to hundreds of capabilities without overwhelming the context window.
+
+### How It Flows
+
+```
+User invokes /deploy
+  → deploy command loads (parses input, delegates)
+    → deploy-agent spawns (orchestrates workflow)
+      → env-validator skill checks environment
+      → deployment-runner skill executes deploy
+    → agent returns summary to user
+```
+
+Each layer has a single responsibility:
+- The command handles user input and delegation
+- The agent handles orchestration and decision-making
+- Skills handle domain-specific execution
+
+## The Holy Trinity Pattern
+
+A specific implementation of Command → Agent → Skill where a single command, a single agent, and a single skill form a minimal but complete unit.
+
+| Component | File Location | Role |
+|---|---|---|
+| Command | `.claude/skills/greet.md` | Entry point — parses input, spawns agent |
+| Agent | `.claude/agents/greet-agent.md` | Orchestrator — decides which skills to use |
+| Skill | `.claude/skills/greeting-formatter.md` | Domain knowledge — knows how to format output |
+
+### Why Three Layers?
+
+- **Separation of concerns** — each file has one job
+- **Reusability** — the formatter skill can be used by other agents
+- **Isolated context** — the agent runs in its own context window, keeping the main conversation clean
+- **Testability** — each layer can be validated independently
+
+This pattern is most valuable when the workflow involves decision-making (the agent layer) and specialised knowledge (the skill layer). For simple workflows, a single skill without an agent is sufficient.
+
+## Community Workflow Architectures
+
+Beyond the core patterns, several workflow architectures have emerged from the community:
+
+| Architecture | Description | Best For |
+|---|---|---|
+| **TDD-First** | Write failing tests, then implement until they pass | Feature development with clear specifications |
+| **Spec-Driven** | Generate a specification document, then implement from spec | Complex features requiring upfront design |
+| **Role-Based** | Assign the agent a specific persona or expertise lens | Reviews, audits, domain-specific work |
+| **Wave Execution** | Break work into sequential waves, each building on the last | Large refactors, migrations |
+| **Full SDLC** | Plan → implement → test → review → deploy as a single flow | End-to-end feature delivery |
+| **Parallel Review** | Multiple Claude instances review the same changes independently | High-stakes code review |
+
+### TDD-First
+
+The agent writes test cases from requirements before writing any implementation code. This produces:
+- Clear pass/fail criteria before implementation begins
+- Regression safety from the first commit
+- Natural documentation of expected behaviour
+
+Works best when requirements can be expressed as testable assertions.
+
+### Spec-Driven
+
+The agent produces a detailed specification document (often as a GitHub Issue or markdown file) before writing code. The specification includes architecture decisions, file changes, edge cases, and acceptance criteria. Implementation follows the spec.
+
+Advantage: the spec can be reviewed and approved before any code is written, catching design issues early.
+
+### Wave Execution
+
+Large changes are broken into sequential waves. Each wave:
+1. Has a clear scope and success criteria
+2. Builds on the previous wave's output
+3. Is committed and verified before the next wave begins
+
+This prevents the "big bang" problem where a large change fails and the entire session's work is lost.
+
+## Cross-Model Review
+
+Using parallel Claude instances for quality assurance:
+
+1. **Instance A** writes the implementation
+2. **Instance B** reviews the diff with fresh context (no implementation bias)
+3. Findings from B are fed back to A for resolution
+
+This is effective because Instance B approaches the code without the sunk-cost bias of having written it. The review catches issues that the implementing instance is blind to.
+
+Orchestration tools like Conductor make this pattern practical by managing multiple agent sessions in parallel.
+
+## Choosing a Pattern
+
+| Situation | Recommended Pattern |
+|---|---|
+| Simple, repeatable task | Single skill (no agent layer needed) |
+| Task with decision points | Command → Agent → Skill |
+| Feature with clear requirements | TDD-First |
+| Complex feature needing design review | Spec-Driven |
+| Large migration or refactor | Wave Execution |
+| High-stakes change | Parallel Review |
+| Orchestrating multiple capabilities | Full C→A→S with multiple skills |
+
+Start simple. A single skill handles most repeatable tasks. Add the agent layer only when the workflow involves conditional logic or multi-step orchestration. Add parallel review only when the cost of mistakes is high.
+
+## Relationship to Other Pages
+
+- [Context Engineering](/claude/context-engineering) — the theory behind why progressive disclosure and sub-agent isolation work
+- [Skill-Based Automation](/claude/skills-patterns) — deep dive on skill design, categories, and best practices
+- [CLAUDE.md Playbook](/claude/claude-md-playbook) — how CLAUDE.md fits into the broader context strategy
 
 ---
 

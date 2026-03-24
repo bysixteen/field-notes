@@ -1,17 +1,13 @@
 ---
 title: Project Squad
-description: "The portable CLI toolkit that implements the Pioneer Framework — personas, sprints, workshops, and living documents."
+description: "The portable toolkit that implements the Delivery Framework — personas, sprints, workshops, and living documents."
 ---
 
-Project Squad is the installable, portable version of the [Pioneer Framework](/principles/pioneer-framework). Where the Pioneer Framework documents the methodology, Project Squad provides the commands, personas, and templates to run it. One command bootstraps the entire operating system into any project.
+Project Squad is the portable version of the [Delivery Framework](/principles/delivery-framework). Where the Delivery Framework documents the methodology, Project Squad provides the commands, personas, and templates to run it.
 
 ## Quick Start
 
-```bash
-npx project-squad init
-```
-
-This creates the directory structure, copies the nine persona definitions, installs the Claude commands, and scaffolds empty living documents. Before running init, create `_meta/PROJECT_CONTEXT.md` describing your project — the init command reads this to seed context.
+Set up the Project Squad structure in your repository by creating the directories and files listed below. Before starting, create `_meta/PROJECT_CONTEXT.md` describing your project — this seeds context for all subsequent sprint work.
 
 ## What It Creates
 
@@ -90,14 +86,13 @@ Every sprint updates three living documents at the project root:
 
 These documents are the synthesized output of all project work. They eliminate context burn — new team members or AI agents read these instead of re-reading raw sprint artifacts.
 
-## Relationship to the Pioneer Framework
+## Relationship to the Delivery Framework
 
-The [Pioneer Framework](/principles/pioneer-framework) documents the complete methodology: the audit, repository architecture, sprint model, Tiger Team composition, and journey mapping. Project Squad implements the operational parts as portable, installable tooling.
+The [Delivery Framework](/principles/delivery-framework) documents the complete methodology: the audit, repository architecture, sprint model, Tiger Team composition, and journey mapping. Project Squad implements the operational parts as portable tooling.
 
-| Aspect | Pioneer Framework | Project Squad |
+| Aspect | Delivery Framework | Project Squad |
 |---|---|---|
-| **Nature** | Methodology documentation | CLI toolkit |
+| **Nature** | Methodology documentation | Portable toolkit |
 | **Scope** | Full lifecycle (audit → delivery) | Sprint/workshop/spike execution |
 | **Team model** | Tiger Team (7 roles) | Nine Personas (archetypal characters) |
-| **Installation** | Read and apply manually | `npx project-squad init` |
-| **Living documents** | Described in framework | Scaffolded automatically |
+| **Living documents** | Described in framework | Scaffolded from templates |

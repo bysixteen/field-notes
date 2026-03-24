@@ -1,27 +1,29 @@
 ---
 title: Claude & AI Workflows
-description: Patterns for working effectively with AI coding agents.
+description: Patterns for working effectively with AI coding agents — from context engineering to workflow architectures.
 ---
 
 This section documents patterns, research findings, and practical frameworks for working effectively with AI coding agents. The goal is to move beyond ad-hoc prompting toward systematic, repeatable workflows that compound in value over time.
 
 ## What You'll Find Here
 
-### CLAUDE.md Best Practices
+### Concepts
 
-The `CLAUDE.md` file (or `AGENTS.md`) is the primary interface between your codebase and an AI agent. Research shows that having one improves agent efficiency — but only if it is human-written, minimal, and actively maintained. The [CLAUDE.md Playbook](/claude/claude-md-playbook) covers what to include, what to leave out, and how to evolve the file over time.
+**[Context Engineering](/claude/context-engineering)** — The discipline that replaced prompt engineering. Strategies for curating the optimal set of tokens during LLM inference, including runtime retrieval, progressive disclosure, compaction, and sub-agent architectures.
 
-### Agent Efficiency Research
+**[CLAUDE.md Playbook](/claude/claude-md-playbook)** — The `CLAUDE.md` file is the primary interface between your codebase and an AI agent. Research shows that having one improves agent efficiency — but only if it is human-written, minimal, and actively maintained.
 
-Two prominent studies reached seemingly contradictory conclusions about the value of agent context files. The [Agent Efficiency Research](/claude/agent-efficiency) page reconciles these findings into a single, actionable truth: context files work, but authorship and size matter enormously.
+**[Agent Efficiency Research](/claude/agent-efficiency)** — Two prominent studies reached seemingly contradictory conclusions about the value of agent context files. This page reconciles them: context files work, but authorship and size matter enormously.
 
-### Research to Validation Pathway
+**[Research to Validation Pathway](/claude/research-to-validation)** — A five-step process — Research, Synthesis, Prototype Creation, Validation, Outcome — that keeps agent-generated work traceable back to the decisions that motivated it.
 
-Prototypes that drift from their source research create waste. The [Research to Validation Pathway](/claude/research-to-validation) defines a five-step process — Research, Synthesis, Prototype Creation, Validation, Outcome — that keeps agent-generated work traceable back to the decisions that motivated it.
+### Practical
 
-### Skill-Based Automation
+**[Claude Code Setup](/claude/claude-code-setup)** — Practical guide for configuring Claude Code on a new project: CLAUDE.md sizing, rules with glob activation, hooks for automation, and session management.
 
-When you find yourself giving the same instructions to an agent repeatedly, it is time to encode that workflow as a skill. The [Skill-Based Automation](/claude/skills-patterns) page catalogs common skill categories observed across projects and provides best practices for writing skills that remain useful as your codebase evolves.
+**[Skill-Based Automation](/claude/skills-patterns)** — Common skill categories observed across projects, structural best practices, and the design principles behind effective skills.
+
+**[Workflow Architectures](/claude/workflow-architectures)** — Survey of proven workflow patterns: Command → Agent → Skill, Holy Trinity, TDD-first, spec-driven, wave execution, and parallel review.
 
 ## Guiding Principles
 

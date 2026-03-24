@@ -41,30 +41,33 @@ Multi-dimensional token model, composition rules, naming conventions, and constr
 
 ## Principles & Frameworks
 
-Core principles, the Pioneer framework, synthesis and validation methodology.
+Core principles, the Delivery Framework, synthesis and validation methodology.
 
 - [Answer First](/principles/answer-first): Every document must have the conclusion in the first body section. Never bury the lead.
 - [Clarity, Attribution, Reversibility, Consistency](/principles/clarity-attribution-reversibility-consistency): The four pillars of validation for any prototype or feature. Every piece of work must pass all four checks.
 - [Compounding Engineering](/principles/compounding-engineering): Build guidance from real mistakes, not upfront speculation. Let documentation grow organically from actual needs.
+- [The Delivery Framework](/principles/delivery-framework): A project-agnostic operating system for design and delivery — auditing, repo structure, sprints, teams, and journeys.
 - [Dissent is a Feature](/principles/dissent-as-feature): Structurally encourage and document dissent to prevent groupthink and preserve overruled concerns for future reference.
 - [Distill, Don't Repeat](/principles/distill-dont-repeat): The output of a sprint is synthesized knowledge, not raw artifacts. Create living documents that serve as the single source of truth.
 - [Principles & Frameworks](/principles): Core principles and operating frameworks distilled from real project work, designed to compound across every engagement.
 - [Journey Mapping Template](/principles/journey-template): Reusable structure for mapping any part of a system from user need to validated outcome.
-- [New Project Checklist](/principles/new-project-checklist): Bootstrap sequence using Field Notes, Project Squad, and llms.txt.
-- [The Pioneer Framework](/principles/pioneer-framework): A project-agnostic operating system for design and delivery.
-- [Project Squad](/principles/project-squad): The portable CLI toolkit that implements the Pioneer Framework — personas, sprints, workshops, and living documents.
+- [New Project Checklist](/principles/new-project-checklist): Bootstrap sequence using Field Notes, the Delivery Framework, and llms.txt.
+- [Project Squad](/principles/project-squad): The portable toolkit that implements the Delivery Framework — personas, sprints, workshops, and living documents.
 - [Synthesis & Validation Framework](/principles/synthesis-validation): Three-artifact model and four-pillar validation for preventing context burn.
 - [Verification Over Instruction](/principles/verification-over-instruction): Give AI a way to verify its work rather than a long list of instructions. Success conditions beat specifications.
 
 ## Claude & AI Workflows
 
-CLAUDE.md playbook, agent efficiency research, skill-based automation patterns.
+Context engineering, CLAUDE.md playbook, Claude Code setup, workflow architectures, skill-based automation.
 
 - [Agent Efficiency Research](/claude/agent-efficiency): Reconciled findings from studies on AGENTS.md file impact.
+- [Claude Code Setup](/claude/claude-code-setup): Practical guide for configuring Claude Code on a new project — CLAUDE.md, rules, hooks, and session management.
 - [The CLAUDE.md Playbook](/claude/claude-md-playbook): How to write effective CLAUDE.md files — minimal, human-curated, and evolving.
-- [Claude & AI Workflows](/claude): Patterns for working effectively with AI coding agents.
+- [Context Engineering](/claude/context-engineering): Strategies for curating the optimal set of tokens during LLM inference — the discipline that replaced prompt engineering.
+- [Claude & AI Workflows](/claude): Patterns for working effectively with AI coding agents — from context engineering to workflow architectures.
 - [Research to Validation Pathway](/claude/research-to-validation): A five-step pathway connecting prototypes to source research.
 - [Skill-Based Automation](/claude/skills-patterns): Patterns for creating reusable Claude skills to automate repetitive workflows.
+- [Workflow Architectures](/claude/workflow-architectures): Survey of proven Claude workflow patterns — from simple skill invocation to multi-agent orchestration.
 
 ## Platform Patterns
 
