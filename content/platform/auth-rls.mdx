@@ -77,6 +77,8 @@ Row-Level Security policies are rules defined on database tables that automatica
 
 ### Enabling RLS
 
+> **Warning:** RLS is **disabled by default** on new Supabase tables. Until you explicitly enable it, any authenticated user can read and write all rows. Treat every `CREATE TABLE` as incomplete until `ENABLE ROW LEVEL SECURITY` is added.
+
 RLS must be explicitly enabled on each table:
 
 ```sql
@@ -85,6 +87,15 @@ ALTER TABLE prospect_events ENABLE ROW LEVEL SECURITY;
 ```
 
 Once enabled, no rows are accessible unless a policy explicitly grants access.
+
+### Index Columns Used in RLS Policies
+
+RLS policies execute on every query. If your policy references columns like `assigned_to` or `user_id`, ensure those columns are indexed — otherwise the policy becomes a full table scan:
+
+```sql
+CREATE INDEX idx_prospects_assigned_to ON prospects(assigned_to);
+CREATE INDEX idx_prospects_user_id ON prospects(user_id);
+```
 
 ### Policy Examples
 

@@ -27,22 +27,22 @@ This study measured the impact of including an `AGENTS.md` file on AI coding age
 
 The study's conclusion was straightforward: providing agents with a context file that describes the project, its conventions, and its structure leads to measurably better outcomes.
 
-### Study 2: Authorship Determines Value
+### Community Finding: Authorship Determines Value
 
-**Source:** Referenced by Theo (YouTube / X)
+**Source:** Popularised by Theo (t3.gg, YouTube / X) — no peer-reviewed paper exists; treat as community-reported finding, not verified research.
 
-This study introduced a critical variable that the first study did not isolate: **who wrote the context file**. The results diverged sharply based on authorship:
+This finding introduced a critical variable that the first study did not isolate: **who wrote the context file**. The results diverged sharply based on authorship:
 
-- **LLM-generated context files:** Performance decreased by **3%**, while token costs increased by **20%**. The agent spent more tokens processing information that was either redundant (things it could discover on its own) or subtly misleading (plausible-sounding but imprecise descriptions of the codebase).
-- **Human-written context files:** Performance improved by **4%**. The agent benefited from concise, accurate pointers to information it could not easily discover through code exploration alone.
+- **LLM-generated context files:** Performance decreased by **~3%**, while token costs increased by **~20%**. The agent spent more tokens processing information that was either redundant (things it could discover on its own) or subtly misleading (plausible-sounding but imprecise descriptions of the codebase).
+- **Human-written context files:** Performance improved by **~4%**. The agent benefited from concise, accurate pointers to information it could not easily discover through code exploration alone.
 
 ## The Contradiction
 
-At first glance, these studies appear to disagree. Study 1 says context files help. Study 2 says they can hurt.
+At first glance, these findings appear to disagree. The verified study says context files help. The community finding says they can hurt.
 
 ## The Reconciliation
 
-The studies are not contradictory — they are measuring different things. Study 1 demonstrated that the *concept* of a context file is sound. Study 2 demonstrated that the *implementation* matters enormously.
+The findings are not contradictory — they are measuring different things. The verified study demonstrated that the *concept* of a context file is sound. The community finding demonstrated that the *implementation* matters enormously.
 
 The reconciled finding is:
 
@@ -56,9 +56,9 @@ This is not a subtle distinction. The difference between a human-written file (+
 
 The data is clear that having a context file is better than not having one. Do not skip it. But do not let it grow unchecked.
 
-### Aim for fewer than 60 lines
+### Keep it concise
 
-Every line in the file costs tokens on every agent invocation. Lines that provide genuine, non-discoverable context earn their cost back through faster, more accurate task completion. Lines that restate the obvious consume tokens without providing value. The threshold of roughly 60 lines is a practical guideline — short enough to remain focused, long enough to cover essentials and accumulated corrections.
+Every line in the file costs tokens on every agent invocation. Lines that provide genuine, non-discoverable context earn their cost back through faster, more accurate task completion. Lines that restate the obvious consume tokens without providing value. Anthropic's guidance is qualitative: keep it focused. As an editorial recommendation, aim for the shortest file that covers essentials and accumulated corrections — typically well under 100 lines.
 
 ### Focus on non-discoverable information
 
@@ -100,7 +100,7 @@ The `CLAUDE.md` file is the primary interface between your codebase and the agen
 
 ### Sizing
 
-Keep it under 150 lines. If it grows beyond that, move content into `.claude/rules/` files that activate conditionally. The [CLAUDE.md Playbook](/claude/claude-md-playbook) covers the full tier model, but the sizing principle is simple: if you cannot point to a time the agent got it wrong, the entry probably does not need to exist.
+Keep it concise and focused. If it grows large, move content into `.claude/rules/` files that activate conditionally. The [CLAUDE.md Playbook](/claude/claude-md-playbook) covers the full tier model, but the sizing principle is simple: if you cannot point to a time the agent got it wrong, the entry probably does not need to exist.
 
 ### What Belongs in CLAUDE.md
 
@@ -150,7 +150,7 @@ This keeps the context window lean — testing rules only load when the agent is
 | CLAUDE.md | Rules |
 |---|---|
 | Always relevant (build commands, git conventions) | Relevant to specific file types or directories |
-| Under 150 lines | Can be longer — they load conditionally |
+| Concise — every line earns its place | Can be longer — they load conditionally |
 | Earned from real mistakes | Can be more prescriptive (scoped impact) |
 
 ## Hooks
@@ -246,7 +246,7 @@ This applies to human developers and AI agents equally. If the agent cannot run 
 ## Quick Setup Checklist
 
 ```markdown
-- [ ] Create CLAUDE.md at project root (under 150 lines)
+- [ ] Create CLAUDE.md at project root (concise and focused)
 - [ ] Add build/test/lint commands
 - [ ] Add git conventions (branch prefixes, commit format)
 - [ ] Create .claude/rules/ for file-type-specific conventions
@@ -269,7 +269,7 @@ The most effective `CLAUDE.md` files share three qualities: they are small, they
 
 | Do | Don't |
 |---|---|
-| Keep the file under 60 lines | Write a comprehensive project wiki |
+| Keep the file concise and focused | Write a comprehensive project wiki |
 | Add entries only when correcting real observed mistakes | Add speculative "might be useful" entries |
 | Write entries yourself, by hand | Ask an LLM to generate the file |
 | Review and prune quarterly | Let the file grow without bounds |
@@ -284,9 +284,9 @@ Two studies provide the empirical foundation for these recommendations.
 
 A study published as [arXiv:2601.20404](https://arxiv.org/abs/2601.20404) found that including an `AGENTS.md` file led to **28.64% faster task completion** and **16.58% lower token consumption**. The conclusion was clear: giving agents structured context about a project makes them more efficient.
 
-### Study 2: Authorship Matters
+### Community Finding: Authorship Matters
 
-A study referenced by Theo found a more nuanced result. When the context file was **LLM-generated**, agent performance dropped by **3%** while token costs increased by **20%**. When the file was **human-written**, performance improved by **4%**.
+A finding popularised by Theo (t3.gg) — not a peer-reviewed study — reported a more nuanced result. When the context file was **LLM-generated**, agent performance dropped by **~3%** while token costs increased by **~20%**. When the file was **human-written**, performance improved by **~4%**.
 
 ### The Reconciled Truth
 
@@ -362,7 +362,7 @@ The most valuable additions come from the workflow itself. When the agent makes 
 
 ### Context Engineering
 
-*Strategies for curating the optimal set of tokens during LLM inference — the discipline that replaced prompt engineering.*
+*Strategies for curating the optimal set of tokens during LLM inference — a discipline that evolved from prompt engineering.*
 
 Context engineering is the set of strategies for curating and maintaining the optimal set of tokens during LLM inference. Where prompt engineering focuses on how you ask, context engineering focuses on everything that surrounds the ask — system prompts, tools, examples, retrieved data, conversation history, and structured memory.
 
@@ -1053,7 +1053,7 @@ A specific implementation of Command → Agent → Skill where a single command,
 
 | Component | File Location | Role |
 |---|---|---|
-| Command | `.claude/skills/greet.md` | Entry point — parses input, spawns agent |
+| Command | `.claude/commands/greet.md` | Entry point — parses input, spawns agent |
 | Agent | `.claude/agents/greet-agent.md` | Orchestrator — decides which skills to use |
 | Skill | `.claude/skills/greeting-formatter.md` | Domain knowledge — knows how to format output |
 
@@ -1148,6 +1148,8 @@ Core principles, delivery approach, synthesis and validation methodology.
 ## The Principle
 
 Every document must have the conclusion in the **first body section**. Never bury the lead.
+
+Based on Barbara Minto's **Pyramid Principle** (McKinsey, 1960s): start with the answer, then provide supporting arguments, then the detail. This page applies that principle to all project documentation.
 
 This applies to sprint outputs, decision logs, status reports, technical analyses, and all other forms of documentation. The reader should know the answer, recommendation, or conclusion before they encounter any supporting detail.
 
@@ -2303,6 +2305,8 @@ Row-Level Security policies are rules defined on database tables that automatica
 
 ### Enabling RLS
 
+> **Warning:** RLS is **disabled by default** on new Supabase tables. Until you explicitly enable it, any authenticated user can read and write all rows. Treat every `CREATE TABLE` as incomplete until `ENABLE ROW LEVEL SECURITY` is added.
+
 RLS must be explicitly enabled on each table:
 
 ```sql
@@ -2311,6 +2315,15 @@ ALTER TABLE prospect_events ENABLE ROW LEVEL SECURITY;
 ```
 
 Once enabled, no rows are accessible unless a policy explicitly grants access.
+
+### Index Columns Used in RLS Policies
+
+RLS policies execute on every query. If your policy references columns like `assigned_to` or `user_id`, ensure those columns are indexed — otherwise the policy becomes a full table scan:
+
+```sql
+CREATE INDEX idx_prospects_assigned_to ON prospects(assigned_to);
+CREATE INDEX idx_prospects_user_id ON prospects(user_id);
+```
 
 ### Policy Examples
 
@@ -3221,7 +3234,7 @@ Turborepo orchestrates builds, linting, and type-checking across the monorepo. I
 ```json
 {
   "$schema": "https://turbo.build/schema.json",
-  "pipeline": {
+  "tasks": {
     "build": {
       "dependsOn": ["^build"],
       "outputs": [".next/**", "dist/**"]
@@ -3953,7 +3966,6 @@ Instead of naming every combination, we describe components using a few simple, 
 | **What is this trying to say?** | Sentiment | neutral, warning, highlight, new, positive |
 | **How urgently?** | Emphasis | high, medium, low |
 | **How big should it be?** | Size | extra small through extra large |
-| **How tightly packed?** | Density | default, relaxed |
 
 Each question is answered independently. They don't interfere with each other — choosing "warning" doesn't force you into a specific size or emphasis level.
 
@@ -4004,14 +4016,9 @@ The separation between *what* something says (sentiment) and *how loudly* it say
 
 With a typical system, the list of things to maintain grows with every new component. With dimensions, you define the options once and every component resolves them automatically.
 
-### Size and spacing are separate on purpose
+### Size handles both footprint and spacing
 
-A common mistake is treating "small" as one thing — but "the button is too tall for this table row" and "the content inside feels too spread out" are two different problems with two different solutions:
-
-- **Too tall?** Make the size smaller.
-- **Content too spread out?** Make the density tighter.
-
-Keeping these separate means you can mix and match — a large button with tightly packed content, or a small button with generous breathing room.
+The size scale (`xs` through `xl`) controls both a component's outer footprint and its internal spacing proportionally. If a component feels too big, use a smaller size. If you need environment-level spacing adjustments (e.g., data-dense dashboards vs. content pages), use CSS custom properties or a layout context provider rather than a per-component setting.
 
 ---
 
@@ -4020,44 +4027,6 @@ Keeping these separate means you can mix and match — a large button with tight
 Typical systems name every combination. That works at first, but the list grows fast, names lose meaning, and changes ripple everywhere.
 
 The dimensional model asks a few clear questions instead. The answers combine automatically, the system stays small as it grows, and everyone on the team can make confident decisions without memorising a glossary of variant names.
-
-### Density vs Size
-
-*Why these dimensions must stay separate — and the common mistake of collapsing them.*
-
-## The Distinction
-
-These dimensions are deliberately separated. **Collapsing them is a common design system mistake** that creates inflexibility.
-
-| Dimension | Controls | Question |
-|-----------|----------|----------|
-| **Size** | Component's fixed footprint — height, touch target area, padding scale | *How much space does this component occupy?* |
-| **Density** | How content is distributed within that footprint — internal padding and gaps | *How tightly is the content packed inside?* |
-
-## Fully Orthogonal
-
-```tsx
-// Size and density vary independently
-   // Big footprint, standard packing
-   // Big footprint, spacious packing
-   // Compact footprint, standard packing
-   // Standard footprint, spacious packing
-```
-
-A large component with tight density clusters its content centrally, leaving proportionally more negative space at the edges. A small component with relaxed density spreads its content out, using more of its compact footprint for internal breathing room.
-
-Neither dimension substitutes for the other.
-
-## The Common Mistake
-
-If a component "feels too big" in a tight layout (e.g. buttons in a data table), ask which problem you're actually solving:
-
-| Problem | Solution |
-|---------|----------|
-| The component takes up too much vertical/horizontal space | Change `size` (e.g. `size="sm"` for a smaller touch target and height) |
-| The component's content feels loosely arranged inside its bounds | Change `density` (e.g. `density="default"` for tighter internal packing) |
-
-**Density adjusts internal arrangement. Size adjusts the box itself.**
 
 ### Composition
 
@@ -4071,9 +4040,8 @@ Answer these questions **in order** before composing any component:
 2. **How urgently must the user receive this?** → Assign `emphasis`
 3. **Is this combination semantically coherent?** → Validate against the [sentiment-emphasis relationship](/design-system/composition/sentiment-emphasis)
 4. **What physical scale is appropriate?** → Assign `size`
-5. **What environment is this placed in?** → Assign `density`
-6. **What spacing tier separates this from adjacent elements?** → Apply [spacing tiers](/design-system/composition/spacing-gestalt)
-7. **Does the overall composition read as a coherent hierarchy?** → Validate the postmodern balance
+5. **What spacing tier separates this from adjacent elements?** → Apply [spacing tiers](/design-system/composition/spacing-gestalt)
+6. **Does the overall composition read as a coherent hierarchy?** → Validate the postmodern balance
 
 **State is never answered here.** It is always runtime.
 
@@ -4086,8 +4054,7 @@ These rules must be validated at composition time. The resolver does not enforce
 3. **Only declared sentiments are valid.** Do not improvise sentiments outside the manifest.
 4. **State is never set manually.** State is always runtime. Never pass a static state prop.
 5. **Sentiment flows down; emphasis does not.** A container's sentiment may influence its children, but emphasis is always set per-component.
-6. **Never set emphasis on a container.** Containers provide context (sentiment, density); emphasis belongs on the action or content elements within.
-7. **Density is inherited, not composed.** A parent sets density for the region; children inherit it. Do not set density on individual child components.
+6. **Never set emphasis on a container.** Containers provide context (sentiment); emphasis belongs on the action or content elements within.
 
 ## The Postmodern Balance
 
@@ -4272,7 +4239,7 @@ All buttons use `size="sm"` because they're in a data table (compact layout). Th
 A new feature is being promoted on the dashboard.
 
 ```tsx
-<card sentiment="new" emphasis="high" size="md" density="relaxed">
+<card sentiment="new" emphasis="high" size="md">
   <badge sentiment="new" emphasis="high">New</badge>
   <heading>Analytics Dashboard</heading>
   <text>Track your usage patterns with real-time charts.</text>
@@ -4282,7 +4249,7 @@ A new feature is being promoted on the dashboard.
 </card>
 ```
 
-The card uses `new` sentiment (recently added), `relaxed` density (content-focused, not data-dense), and the action button uses `highlight` (recommended action).
+The card uses `new` sentiment (recently added) and the action button uses `highlight` (recommended action).
 
 ## Applying the Checklist
 
@@ -4292,9 +4259,8 @@ For any composition, walk through:
 2. **How urgently?** → Assign emphasis
 3. **Semantically coherent?** → Validate the combination
 4. **What scale?** → Assign size
-5. **What environment?** → Assign density
-6. **Spacing tier?** → Apply tight/medium/loose
-7. **Coherent hierarchy?** → Check the postmodern balance
+5. **Spacing tier?** → Apply tight/medium/loose
+6. **Coherent hierarchy?** → Check the postmodern balance
 
 ### Concepts Manifest
 
@@ -4368,17 +4334,6 @@ Component footprint within its hierarchy.
 | `xl` | Maximum — marketing surfaces, hero elements |
 
 Touch-safe minimum sizes should be enforced per size variant.
-
----
-
-## Density
-
-Spatial breathing room in response to the layout environment.
-
-| Value | Use |
-|-------|-----|
-| `default` | Standard product UI — dashboards, forms, data tables |
-| `relaxed` | Spacious contexts — onboarding, marketing, empty states |
 
 ---
 
@@ -4516,8 +4471,7 @@ Never rely on colour alone to convey information. Complement colour signals with
 | Match emphasis to actual urgency | Reduce emphasis to make things "look nicer" |
 | Use declared sentiments only | Invent new sentiment values |
 | Let state be runtime-determined | Set state via static props |
-| Use size for footprint changes | Use density when you mean size |
-| Use density for internal spacing | Use size when you mean density |
+| Use size for footprint and spacing changes | Invent per-component density overrides |
 
 ## Spacing
 
@@ -4567,7 +4521,6 @@ Key guardrails:
 4. State is never set manually
 5. Sentiment flows down; emphasis does not
 6. Never set emphasis on a container
-7. Density is inherited, not composed
 
 ### Figma Documentation Rules
 
@@ -4683,15 +4636,14 @@ A Figma documentation page is complete when:
 
 ## What This Is
 
-A methodology for building design systems using **independent, orthogonal dimensions**. Every component's visual appearance is the product of up to six dimensions:
+A methodology for building design systems using **independent, orthogonal dimensions**. Every component's visual appearance is the product of up to five dimensions:
 
 | Dimension | Controls | Question it answers |
 |-----------|----------|-------------------|
 | **Sentiment** | Communicative intent | *What does this component need to say?* |
 | **Emphasis** | Visual weight | *How urgently must the user receive this signal?* |
 | **State** | Interactive condition | *What is happening right now?* (runtime only) |
-| **Size** | Component footprint | *How much space does this occupy?* |
-| **Density** | Internal breathing room | *How tightly is content packed inside?* |
+| **Size** | Component footprint and internal spacing | *How much space does this occupy?* |
 | **Structure** | Layout variant | *What is the fixed skeleton of this component?* |
 
 Plus **Theme** (light/dark) as an environmental dimension.
@@ -4706,52 +4658,6 @@ Plus **Theme** (light/dark) as an environmental dimension.
 ## Living Document
 
 This guide grows as the approach evolves. Pages marked as `draft` are in progress. The [Concepts Manifest](/design-system/concepts-manifest) is the single source of truth for valid dimension values — expand it when introducing new concepts rather than improvising inline.
-
-### Density
-
-*Internal breathing room — how tightly content is packed inside a component.*
-
-## Definition
-
-Density controls how content is **distributed within** a component's footprint: the internal padding and gap values that cluster or spread the component's content.
-
-Density answers: *how tightly is the content packed inside?*
-
-## Values
-
-| Value | Meaning |
-|-------|---------|
-| `default` | Standard internal spacing |
-| `relaxed` | More generous internal padding and gaps |
-
-**Default:** `default`
-
-## When to Use
-
-Density is a **layout/environment** decision. It adapts components to the context they're placed in:
-
-- Data-dense interfaces (tables, dashboards) → `default` density
-- Content-focused layouts (articles, cards) → `relaxed` density
-- Touch interfaces with generous spacing → `relaxed` density
-
-## Common Mistake: Using Density When You Mean Size
-
-If a component "feels too big" in a tight layout (e.g. buttons in a data table), ask which problem you're actually solving:
-
-- **The component takes up too much vertical/horizontal space** → change `size` (e.g. `size="sm"` for a smaller touch target and height)
-- **The component's content feels loosely arranged inside its bounds** → change `density` (e.g. `density="default"` for tighter internal packing)
-
-Density adjusts **internal arrangement**. Size adjusts **the box itself**.
-
-## In Tokens
-
-Density affects internal spacing tokens — padding, gap, and sometimes line-height within components. It does not affect the component's outer dimensions (that's size).
-
-## Relationship with Size
-
-A large component with tight density clusters its content centrally, leaving proportionally more negative space at the edges. A small component with relaxed density spreads its content out, using more of its compact footprint for internal breathing room.
-
-Neither dimension substitutes for the other. See [Density vs Size](/design-system/composition/density-vs-size) for worked examples.
 
 ### Emphasis
 
@@ -4810,11 +4716,13 @@ For **container elements** (banners, cards, panels) — containers default to `n
 
 ### The Dimensional Model
 
-*Every component is the product of up to six independent, orthogonal dimensions.*
+*Every component is the product of up to five independent, orthogonal dimensions.*
+
+> Developed by Pete and Daniel during BNY design system work. This is original work — not an established industry pattern — informed by practical experience building enterprise-scale token systems.
 
 ## Core Principle
 
-Every component's visual appearance is the product of up to **six independent dimensions**. Each dimension is orthogonal — it does not conflict with any other dimension. No two dimensions ever control the same CSS property simultaneously.
+Every component's visual appearance is the product of up to **five independent dimensions**. Each dimension is orthogonal — it does not conflict with any other dimension. No two dimensions ever control the same CSS property simultaneously.
 
 | Dimension | Controls | When decided |
 |-----------|----------|--------------|
@@ -4823,11 +4731,10 @@ Every component's visual appearance is the product of up to **six independent di
 | **Sentiment** | What the component communicates (neutral, warning, highlight, new, positive) | Composition time |
 | **Size** | Component footprint — height, touch target, padding scale (`xs / sm / md / lg / xl`) | Composition time |
 | **Structure** | Fixed anatomical dimensions — internal padding, gap, fixed heights | Build time |
-| **Density** | Spatial breathing room — padding and gap adjustments for context | Layout / environment |
 
 ## Colour vs Structural Dimensions
 
-The six dimensions split into two groups:
+The five dimensions split into two groups:
 
 **Colour Dimensions (Cascading)** — each layer aliases the one below:
 
@@ -4843,15 +4750,14 @@ The six dimensions split into two groups:
 |-----------|----------|
 | Size | Physical footprint |
 | Structure | Fixed skeleton (radius, font-family, gaps) |
-| Density | Spatial breathing room |
 
 ## Design Decision Order
 
 How a human or LLM should reason through a composition:
 
-> Sentiment → Emphasis → Size → Density → Structure → State
+> Sentiment → Emphasis → Size → Structure → State
 
-Start with meaning, then volume, then scale, then environment. State is never a composition decision.
+Start with meaning, then volume, then scale, then skeleton. State is never a composition decision.
 
 ## Coordinate Addressing
 
@@ -4868,7 +4774,6 @@ Omitted dimensions use their defaults. The resolver handles fallback when an exa
 **Sentiments:** `neutral` | `warning` | `highlight` | `new` | `positive`
 **Emphasis:** `high` | `medium` | `low`
 **Sizes:** `xs` | `sm` | `md` | `lg` | `xl`
-**Density:** `default` | `relaxed`
 
 **Sentiment selection:** What does this content need to signal?
 - No signal needed → `neutral`
@@ -4959,24 +4864,17 @@ Size answers: *how much space does this component occupy?*
 
 **Default:** `md`
 
-## Size vs Density
+## Why Not a Separate Density Dimension?
 
-These are **deliberately separated**. Collapsing them is a common design system mistake that creates inflexibility.
+Earlier iterations of this model included a sixth dimension — **Density** — to control internal spacing independently of Size. In practice, this distinction created more confusion than clarity. When a component "felt too big," teams consistently reached for Size rather than Density, and the two dimensions correlated so strongly that maintaining them separately added complexity without meaningful flexibility.
 
-- **Size** controls the component's **outer box** — the physical space it takes up in the layout
-- **Density** controls **how content is distributed** within that box
+This aligns with industry findings:
 
-They are fully orthogonal:
+- **Nathan Curtis (EightShapes):** Density and size correlate strongly in practice — separating them yields diminishing returns for most systems.
+- **Material Design 3:** Density adjustments are implemented as size reductions (smaller padding, shorter heights), not as an independent axis.
+- **Salt Design System (JP Morgan):** Treats density as an environment-level setting (high / medium / low / touch) that adjusts component sizing globally, rather than a per-component dimension.
 
-```tsx
-// Size and density vary independently
-   // Big footprint, standard packing
-   // Big footprint, spacious packing
-   // Compact footprint, standard packing
-   // Standard footprint, spacious packing
-```
-
-See [Density vs Size](/design-system/composition/density-vs-size) for the full explanation.
+Size now absorbs the responsibility that Density was intended to fill. The `xs` through `xl` scale controls both the component's footprint and its internal spacing proportionally. For environment-level spacing adjustments (e.g., data-dense dashboards vs. content pages), use CSS custom properties or a layout context provider — not a per-component dimension.
 
 ## Accessibility
 
@@ -5015,7 +4913,7 @@ State represents the **interactive condition** of a component at any given momen
 
 ```
 
-In the design decision order (Sentiment → Emphasis → Size → Density → Structure → State), state comes last because it is never chosen — it happens.
+In the design decision order (Sentiment → Emphasis → Size → Structure → State), state comes last because it is never chosen — it happens.
 
 ## Implementation
 
@@ -5077,10 +4975,9 @@ Structure maps to variable collections that define the component's skeleton. The
 Structure is the most "fixed" dimension:
 
 - **Size** can be changed per-instance
-- **Density** can be changed per-context
 - **Structure** is defined per-component-variant
 
-A component's structure determines *what spaces exist*. Size and density determine *how large those spaces are*.
+A component's structure determines *what spaces exist*. Size determines *how large those spaces are*.
 
 ### Theme
 
@@ -5603,7 +5500,6 @@ resolver.resolve('Button', 'background', {
   emphasis:  this.emphasis,      // from prop
   sentiment: this.sentiment,     // from prop
   size:      this.size,          // from prop
-  density:   this.density,       // from prop
 });
 ```
 

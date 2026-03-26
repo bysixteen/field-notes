@@ -37,7 +37,6 @@ Instead of naming every combination, we describe components using a few simple, 
 | **What is this trying to say?** | Sentiment | neutral, warning, highlight, new, positive |
 | **How urgently?** | Emphasis | high, medium, low |
 | **How big should it be?** | Size | extra small through extra large |
-| **How tightly packed?** | Density | default, relaxed |
 
 Each question is answered independently. They don't interfere with each other — choosing "warning" doesn't force you into a specific size or emphasis level.
 
@@ -88,14 +87,9 @@ The separation between *what* something says (sentiment) and *how loudly* it say
 
 With a typical system, the list of things to maintain grows with every new component. With dimensions, you define the options once and every component resolves them automatically.
 
-### Size and spacing are separate on purpose
+### Size handles both footprint and spacing
 
-A common mistake is treating "small" as one thing — but "the button is too tall for this table row" and "the content inside feels too spread out" are two different problems with two different solutions:
-
-- **Too tall?** Make the size smaller.
-- **Content too spread out?** Make the density tighter.
-
-Keeping these separate means you can mix and match — a large button with tightly packed content, or a small button with generous breathing room.
+The size scale (`xs` through `xl`) controls both a component's outer footprint and its internal spacing proportionally. If a component feels too big, use a smaller size. If you need environment-level spacing adjustments (e.g., data-dense dashboards vs. content pages), use CSS custom properties or a layout context provider rather than a per-component setting.
 
 ---
 

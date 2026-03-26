@@ -11,7 +11,7 @@ The `CLAUDE.md` file is the primary interface between your codebase and the agen
 
 ### Sizing
 
-Keep it under 150 lines. If it grows beyond that, move content into `.claude/rules/` files that activate conditionally. The [CLAUDE.md Playbook](/claude/claude-md-playbook) covers the full tier model, but the sizing principle is simple: if you cannot point to a time the agent got it wrong, the entry probably does not need to exist.
+Keep it concise and focused. If it grows large, move content into `.claude/rules/` files that activate conditionally. The [CLAUDE.md Playbook](/claude/claude-md-playbook) covers the full tier model, but the sizing principle is simple: if you cannot point to a time the agent got it wrong, the entry probably does not need to exist.
 
 ### What Belongs in CLAUDE.md
 
@@ -61,7 +61,7 @@ This keeps the context window lean — testing rules only load when the agent is
 | CLAUDE.md | Rules |
 |---|---|
 | Always relevant (build commands, git conventions) | Relevant to specific file types or directories |
-| Under 150 lines | Can be longer — they load conditionally |
+| Concise — every line earns its place | Can be longer — they load conditionally |
 | Earned from real mistakes | Can be more prescriptive (scoped impact) |
 
 ## Hooks
@@ -157,7 +157,7 @@ This applies to human developers and AI agents equally. If the agent cannot run 
 ## Quick Setup Checklist
 
 ```markdown
-- [ ] Create CLAUDE.md at project root (under 150 lines)
+- [ ] Create CLAUDE.md at project root (concise and focused)
 - [ ] Add build/test/lint commands
 - [ ] Add git conventions (branch prefixes, commit format)
 - [ ] Create .claude/rules/ for file-type-specific conventions

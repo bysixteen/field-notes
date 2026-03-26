@@ -2,15 +2,15 @@
   "title": "Claude & AI Workflows",
   "pages": [
     "index",
-    "---Concepts---",
-    "context-engineering",
-    "claude-md-playbook",
-    "agent-efficiency",
-    "research-to-validation",
-    "---Practical---",
+    "---Getting Started---",
     "claude-code-setup",
+    "claude-md-playbook",
     "skills-patterns",
     "skills-catalogue",
-    "workflow-architectures"
+    "---Patterns---",
+    "context-engineering",
+    "workflow-architectures",
+    "agent-efficiency",
+    "research-to-validation"
   ]
 }

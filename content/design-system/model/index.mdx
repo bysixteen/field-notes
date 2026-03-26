@@ -1,11 +1,13 @@
 ---
 title: The Dimensional Model
-description: Every component is the product of up to six independent, orthogonal dimensions.
+description: Every component is the product of up to five independent, orthogonal dimensions.
 ---
+
+> Developed by Pete and Daniel during BNY design system work. This is original work — not an established industry pattern — informed by practical experience building enterprise-scale token systems.
 
 ## Core Principle
 
-Every component's visual appearance is the product of up to **six independent dimensions**. Each dimension is orthogonal — it does not conflict with any other dimension. No two dimensions ever control the same CSS property simultaneously.
+Every component's visual appearance is the product of up to **five independent dimensions**. Each dimension is orthogonal — it does not conflict with any other dimension. No two dimensions ever control the same CSS property simultaneously.
 
 | Dimension | Controls | When decided |
 |-----------|----------|--------------|
@@ -14,11 +16,10 @@ Every component's visual appearance is the product of up to **six independent di
 | **Sentiment** | What the component communicates (neutral, warning, highlight, new, positive) | Composition time |
 | **Size** | Component footprint — height, touch target, padding scale (`xs / sm / md / lg / xl`) | Composition time |
 | **Structure** | Fixed anatomical dimensions — internal padding, gap, fixed heights | Build time |
-| **Density** | Spatial breathing room — padding and gap adjustments for context | Layout / environment |
 
 ## Colour vs Structural Dimensions
 
-The six dimensions split into two groups:
+The five dimensions split into two groups:
 
 **Colour Dimensions (Cascading)** — each layer aliases the one below:
 
@@ -34,15 +35,14 @@ The six dimensions split into two groups:
 |-----------|----------|
 | Size | Physical footprint |
 | Structure | Fixed skeleton (radius, font-family, gaps) |
-| Density | Spatial breathing room |
 
 ## Design Decision Order
 
 How a human or LLM should reason through a composition:
 
-> Sentiment → Emphasis → Size → Density → Structure → State
+> Sentiment → Emphasis → Size → Structure → State
 
-Start with meaning, then volume, then scale, then environment. State is never a composition decision.
+Start with meaning, then volume, then scale, then skeleton. State is never a composition decision.
 
 ## Coordinate Addressing
 
@@ -59,7 +59,6 @@ Omitted dimensions use their defaults. The resolver handles fallback when an exa
 **Sentiments:** `neutral` | `warning` | `highlight` | `new` | `positive`
 **Emphasis:** `high` | `medium` | `low`
 **Sizes:** `xs` | `sm` | `md` | `lg` | `xl`
-**Density:** `default` | `relaxed`
 
 **Sentiment selection:** What does this content need to signal?
 - No signal needed → `neutral`

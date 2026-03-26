@@ -2,18 +2,17 @@
   "title": "Platform Patterns",
   "pages": [
     "index",
-    "---Architecture Patterns---",
-    "data-architecture",
-    "auth-rls",
-    "audit-first",
-    "documentation-hub",
-    "---Monorepo Patterns---",
-    "monorepo",
-    "three-app-model",
-    "scaffolding-first",
     "---Bootstrapping---",
     "stack-decisions",
     "dependency-catalogue",
-    "bootstrap-commands"
+    "bootstrap-commands",
+    "---Architecture---",
+    "monorepo",
+    "three-app-model",
+    "scaffolding-first",
+    "data-architecture",
+    "auth-rls",
+    "audit-first",
+    "documentation-hub"
   ]
 }

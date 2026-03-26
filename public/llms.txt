@@ -11,7 +11,7 @@ Context engineering, CLAUDE.md playbook, Claude Code setup, workflow architectur
 - [Agent Efficiency Research](/claude/agent-efficiency): Reconciled findings from studies on AGENTS.md file impact.
 - [Claude Code Setup](/claude/claude-code-setup): Practical guide for configuring Claude Code on a new project — CLAUDE.md, rules, hooks, and session management.
 - [The CLAUDE.md Playbook](/claude/claude-md-playbook): How to write effective CLAUDE.md files — minimal, human-curated, and evolving.
-- [Context Engineering](/claude/context-engineering): Strategies for curating the optimal set of tokens during LLM inference — the discipline that replaced prompt engineering.
+- [Context Engineering](/claude/context-engineering): Strategies for curating the optimal set of tokens during LLM inference — a discipline that evolved from prompt engineering.
 - [Claude & AI Workflows](/claude): Patterns for working effectively with AI coding agents — from context engineering to workflow architectures.
 - [Research to Validation Pathway](/claude/research-to-validation): A five-step pathway connecting prototypes to source research.
 - [Skills Catalogue](/claude/skills-catalogue): A directory of available Claude skills with descriptions, trigger phrases, and usage guidance.
@@ -55,7 +55,6 @@ Multi-dimensional token model, composition rules, naming conventions, and constr
 - [Approaches](/design-system/approaches): When to use the full layered architecture vs flat tokens.
 - [Layered Architecture](/design-system/approaches/layered): The full four-layer token chain for enterprise and multi-brand systems.
 - [Why Dimensional](/design-system/approaches/why-dimensional): A plain-language explanation of how the dimensional model compares to typical design systems — and why it works better.
-- [Density vs Size](/design-system/composition/density-vs-size): Why these dimensions must stay separate — and the common mistake of collapsing them.
 - [Composition](/design-system/composition): The checklist and rules for composing components with the dimensional model.
 - [Sentiment + Emphasis](/design-system/composition/sentiment-emphasis): The relationship between what a component says and how loudly it says it.
 - [Spacing & Gestalt](/design-system/composition/spacing-gestalt): Spatial distance encodes semantic distance — the three spacing tiers.
@@ -66,9 +65,8 @@ Multi-dimensional token model, composition rules, naming conventions, and constr
 - [Constraints & Rules](/design-system/constraints): Guardrails for working with the token system.
 - [Figma Documentation Rules](/design-system/figma-documentation-rules): Best practices for documenting design tokens and components inside Figma files.
 - [Token Approach Guide](/design-system): A living methodology for multi-dimensional design token systems.
-- [Density](/design-system/model/density): Internal breathing room — how tightly content is packed inside a component.
 - [Emphasis](/design-system/model/emphasis): How loudly a component communicates — the visual weight and intensity of its signal.
-- [The Dimensional Model](/design-system/model): Every component is the product of up to six independent, orthogonal dimensions.
+- [The Dimensional Model](/design-system/model): Every component is the product of up to five independent, orthogonal dimensions.
 - [Sentiment](/design-system/model/sentiment): What a component communicates — its semantic intent, not its visual appearance.
 - [Size](/design-system/model/size): The physical footprint of a component — height, touch target, and padding scale.
 - [State](/design-system/model/state): The interactive condition of a component — always runtime, never a composition decision.
