@@ -1227,71 +1227,6 @@ Open any document produced by the team. Read only the first section. Do you know
 
 If any answer is no, the document needs restructuring.
 
-### Clarity, Attribution, Reversibility, Consistency
-
-*The four pillars of validation for any prototype or feature. Every piece of work must pass all four checks.*
-
-## The Principle
-
-Every prototype, feature, or piece of delivered work must be validated against four pillars. These are not aspirational qualities — they are concrete, testable requirements. If a piece of work fails any one of these checks, it is not ready for review.
-
-## The Four Pillars
-
-### Clarity
-
-**Is the UI's purpose and state immediately obvious?**
-
-A user should never have to guess what the system is doing or what they should do next. This applies to every state of the interface: loading, empty, error, partial, and success.
-
-Clarity failures are the most common and the most expensive. They manifest as support tickets, user confusion, and abandoned workflows. The fix is almost always simpler than expected — a better label, a progress indicator, an explicit empty state message.
-
-**Test**: Show the screen to someone with no context for five seconds. Can they tell you what it does and what they should do next?
-
-### Attribution
-
-**Can every piece of data be traced to its source?**
-
-AI-generated content is untrustworthy without clear provenance. Every number, recommendation, summary, or insight displayed to the user must be traceable back to its origin. This is not just a trust issue — it is a regulatory and legal requirement in many domains.
-
-Attribution applies to all data, not just AI outputs. If a dashboard shows a metric, the user must be able to understand where that number came from, when it was last updated, and what methodology produced it.
-
-**Test**: Point to any piece of data on screen. Can you trace it back to its source in under 30 seconds?
-
-### Reversibility
-
-**Can the user easily undo any action?**
-
-Users need a safety net. The fear of making an irreversible mistake stifles exploration and slows adoption. Every destructive action should either be reversible (undo, soft delete, draft states) or gated behind explicit confirmation with clear consequences stated.
-
-Reversibility is especially critical during onboarding and first-use experiences. New users need the confidence to explore without risk.
-
-**Test**: Perform every action available on a screen. Can each one be undone? If not, was the user warned clearly before proceeding?
-
-### Consistency
-
-**Does the work adhere to established patterns?**
-
-Similar elements should look and behave the same way throughout the entire application. Consistency reduces cognitive load, accelerates learning, and prevents the accumulation of one-off implementations that become maintenance burdens.
-
-Consistency operates at multiple levels:
-- **Visual**: Colors, spacing, typography, iconography
-- **Behavioral**: How similar interactions work (selection, filtering, navigation)
-- **Structural**: How pages are laid out, how data is organized
-- **Linguistic**: Terminology, tone, error message format
-
-**Test**: Find two features that serve a similar purpose. Do they look and behave the same way? If not, is the difference justified?
-
-## Applying the Pillars
-
-These four pillars form a validation checklist that should be applied at multiple stages:
-
-1. **During design review** — before any code is written
-2. **During PR review** — before code is merged
-3. **During QA** — before features are released
-4. **During retrospectives** — to identify systemic gaps
-
-When a piece of work fails a pillar, the failure should be documented with the specific pillar, the nature of the gap, and the remediation. Over time, this creates a pattern library of common failures and their solutions.
-
 ### Compounding Engineering
 
 *Build guidance from real mistakes, not upfront speculation. Let documentation grow organically from actual needs.*
@@ -1409,49 +1344,6 @@ Overruled concerns are not dead. They are **dormant**. Recording them serves thr
 - **Punishment for Dissent**: Team members who raise uncomfortable concerns are sidelined or labeled as "negative." This kills the mechanism entirely.
 - **Permanent Overrule**: A concern is overruled once and never revisited, even when circumstances change.
 
-### Distill, Don't Repeat
-
-*The output of a sprint is synthesized knowledge, not raw artifacts. Create living documents that serve as the single source of truth.*
-
-## The Principle
-
-The output of a sprint is not the raw artifacts themselves — the transcripts, the screenshots, the meeting notes, the Figma files. The output is the **synthesized knowledge** extracted from them.
-
-This is a fundamental shift in how project documentation works. Instead of accumulating folders of raw material that nobody will ever re-read, the team creates and maintains **living documents** that serve as the single source of truth.
-
-## Why This Matters
-
-Every project suffers from **context burn** — the gradual loss of institutional knowledge as raw artifacts pile up and become impossible to navigate. A team that finishes a two-week sprint with 47 documents, 12 recordings, and 200 Slack messages has not created knowledge. They have created noise.
-
-The cost is concrete:
-
-- **Onboarding new team members** requires them to read through weeks of accumulated material
-- **Returning to a decision** means hunting through meeting notes to find the original rationale
-- **AI assistants** cannot effectively consume sprawling, unstructured project histories
-- **Sprint planning** starts from scratch because the lessons from previous sprints are buried
-
-## The Practice
-
-At the end of every sprint (or at natural breakpoints during continuous work), synthesize all raw material into three canonical documents:
-
-1. **DECISIONS.md** — Every significant decision, its context, alternatives considered, rationale for the choice made, and any dissenting opinions
-2. **PERSONAS.md** — The current understanding of users, updated with any new insights from research, testing, or stakeholder feedback
-3. **PRINCIPLES.md** — Design and engineering principles that have been validated or discovered during the sprint
-
-These documents are **append-and-refine**, not **rewrite**. Each sprint adds to them, corrects them, or promotes uncertain observations to confirmed principles.
-
-## The Test
-
-After synthesis is complete, apply this test: **Can someone who missed the entire sprint read only the three living documents and be fully caught up?**
-
-If the answer is no, the synthesis is incomplete. If the answer is yes, the raw artifacts can be archived — they have served their purpose.
-
-## Anti-Patterns
-
-- **The Archive Trap**: Saving everything "just in case" without synthesizing. The archive grows, but knowledge does not.
-- **The Summary Email**: Writing a summary at the end of a sprint but not updating the canonical documents. The summary becomes stale immediately.
-- **The Fresh Start**: Beginning each sprint with a blank slate instead of building on the living documents from the previous sprint.
-
 ### Principles & Frameworks
 
 *Core principles and operating frameworks distilled from real project work, designed to compound across every engagement.*
@@ -1462,8 +1354,6 @@ These are not theoretical guidelines. They are principles distilled from real pr
 
 | Principle | Summary |
 |---|---|
-| [Distill, Don't Repeat](/principles/distill-dont-repeat) | The output of a sprint is synthesized knowledge, not raw artifacts. Create living documents that eliminate the need to re-read source material. |
-| [Clarity, Attribution, Reversibility, Consistency](/principles/clarity-attribution-reversibility-consistency) | The four pillars of validation for any prototype or feature. Every piece of work must pass all four checks. |
 | [Compounding Engineering](/principles/compounding-engineering) | Build guidance from real mistakes, not upfront speculation. Let documentation grow organically from actual needs. |
 | [Verification Over Instruction](/principles/verification-over-instruction) | Give AI a way to verify its work rather than a long list of instructions. Success conditions beat specifications. |
 | [Dissent is a Feature](/principles/dissent-as-feature) | Structurally encourage and document dissent. Record overruled concerns for future reference. |
@@ -1471,17 +1361,15 @@ These are not theoretical guidelines. They are principles distilled from real pr
 
 ## Frameworks
 
-These frameworks operationalize the principles above into repeatable systems.
-
 ### Synthesis & Validation
 
-The canonical home for living document templates (DECISIONS.md, PERSONAS.md, PRINCIPLES.md), the sprint synthesis workflow, the PAGE-TREE pattern, and the PR validation checklist. Ensures every piece of work meets a consistent quality bar using the four-pillar model.
+Living document templates (DECISIONS.md, PERSONAS.md, PRINCIPLES.md), sprint synthesis workflow, four-pillar validation (Clarity, Attribution, Reversibility, Consistency), PAGE-TREE pattern, and PR checklists.
 
-[Read the Synthesis & Validation Framework](/principles/synthesis-validation)
+[Read Synthesis & Validation](/principles/synthesis-validation)
 
 ### Journey Mapping Template
 
-A reusable structure for mapping any part of a system from user need to validated outcome, including a complete markdown template and worked example.
+A reusable structure for mapping any part of a system from user need to validated outcome, including a complete markdown template.
 
 [Read the Journey Mapping Template](/principles/journey-template)
 
@@ -1607,90 +1495,18 @@ What do they need? What are the constraints?]
 - **Sprint**: [Sprint(s) that addressed this journey]
 ```
 
-## Worked Example: Enquiry to Onboarding
+## Worked Example (Skeleton)
 
-This example demonstrates a generic "enquiry to onboarding" journey for a membership platform. It maps the path from a prospective member's first interaction to their fully onboarded state.
+A brief skeleton showing the template applied to a "sign-up to onboarded" journey:
 
----
+| Step | User Action | Touchpoint | Failure Mode | Recovery |
+|---|---|---|---|---|
+| 1. Discovery | Arrives at landing page | Landing page | Value prop unclear | A/B test headlines |
+| 2. Sign-up | Clicks "Start Free Trial" | Sign-up form | Form too long | Reduce to essential fields |
+| 3. Verification | Clicks email link | Email | Email not received | Resend option, magic link |
+| 4. First action | Completes guided core feature | Core feature page | Guidance insufficient | Quick-start + detailed options |
 
-### Journey: Enquiry to Onboarded Member
-
-**ID**: JOURNEY-001
-**Persona**: Prospective Member
-**Trigger**: User visits the platform's public landing page or receives a referral link
-**Success Outcome**: User has a fully activated account, has completed their profile, and has accessed the core platform feature for the first time
-**Last Updated**: 2025-01-15
-**Status**: In Review
-
-### Context
-
-A prospective member discovers the platform through organic search, social media, or a referral from an existing member. They need to understand what the platform offers, evaluate whether it meets their needs, and — if convinced — complete the sign-up and onboarding process with minimal friction. They may be comparing the platform to alternatives and will abandon the process if it feels confusing, slow, or untrustworthy.
-
-### Journey
-
-| Step | User Action | System Response | Touchpoint | Emotional State | Failure Mode | Recovery |
-|---|---|---|---|---|---|---|
-| 1. Discovery | Arrives at landing page | Displays value proposition, social proof, and clear CTA | Landing page | Curious but skeptical | Value proposition is unclear or generic | A/B test headlines; show specific outcomes not features |
-| 2. Exploration | Browses features, pricing, and testimonials | Surfaces relevant content based on referral source or landing context | Feature pages, pricing page | Evaluating, comparing | Information overload or insufficient detail | Progressive disclosure; FAQs that address common objections |
-| 3. Trial Initiation | Clicks "Start Free Trial" or "Sign Up" | Presents minimal sign-up form (email + password or SSO) | Sign-up modal/page | Committed but impatient | Form is too long or requires unnecessary information | Reduce to essential fields only; defer profile completion |
-| 4. Email Verification | Clicks verification link in email | Confirms account, redirects to onboarding flow | Email, verification page | Mildly annoyed (friction) | Email not received, link expired | Resend option, magic link alternative, clear error messaging |
-| 5. Profile Setup | Completes profile (role, interests, goals) | Saves profile, tailors onboarding based on responses | Profile setup wizard | Engaged if quick, frustrated if long | Wizard is too many steps or asks irrelevant questions | Show progress bar; allow "Skip for now" on optional fields |
-| 6. Guided First Action | Follows prompt to complete the platform's core action | Walks user through the core feature with contextual help | Core feature page with overlay guidance | Hopeful, slightly uncertain | Guidance is patronizing or insufficient | Offer both quick-start and detailed walkthrough options |
-| 7. Completion Confirmation | Completes core action | Celebrates completion, shows what to explore next | Success state, dashboard | Satisfied, motivated | Anticlimactic response or unclear next steps | Clear success messaging with 2-3 suggested next actions |
-
-### Critical Moments
-
-#### Critical Moment 1: Step 3 — Trial Initiation
-
-- **Why this matters**: This is the highest-intent moment. The user has decided to try the platform. Any friction here directly converts to abandonment. Studies consistently show that each additional form field reduces conversion by 5-10%.
-- **Design priority**: Minimize form fields to the absolute minimum. Offer SSO options. Make the commitment feel low-risk (emphasize "free," "no credit card," "cancel anytime").
-- **Testing approach**: Measure conversion rate from landing page to completed sign-up. A/B test form length and SSO options. Run usability tests with 5 participants to identify friction points.
-
-#### Critical Moment 2: Step 6 — Guided First Action
-
-- **Why this matters**: This is the "aha moment" — the point where the user experiences the platform's core value for the first time. If this step fails, the user has an account but no reason to return. Time-to-value is the strongest predictor of long-term retention.
-- **Design priority**: Ensure the guided action demonstrates real value, not a trivial example. Use the user's profile data (from Step 5) to personalize the experience. Keep the guidance unobtrusive but available.
-- **Testing approach**: Measure completion rate of guided action. Track time-to-completion. Interview users who abandon at this step to understand why. Test with users who have zero prior context.
-
-### Validation Checklist
-
-#### Clarity
-- [ ] Landing page communicates the value proposition within 5 seconds
-- [ ] Sign-up form makes the commitment level clear (free trial, no credit card)
-- [ ] Onboarding wizard shows progress and estimated time remaining
-- [ ] Guided first action has clear, step-by-step instructions
-- [ ] Success state confirms completion and suggests next steps
-
-#### Attribution
-- [ ] Testimonials and social proof include verifiable sources
-- [ ] Pricing page clearly explains what is included at each tier
-- [ ] Any personalized recommendations explain why they were suggested
-
-#### Reversibility
-- [ ] User can go back to any previous step in the onboarding wizard
-- [ ] Profile information can be edited after initial setup
-- [ ] Account can be deactivated (not just deleted) if the user changes their mind
-- [ ] The guided first action can be restarted or skipped
-
-#### Consistency
-- [ ] Visual design matches across landing page, sign-up, and onboarding
-- [ ] Terminology for the core action is consistent throughout
-- [ ] Button styles and placement follow the design system
-- [ ] Error messages follow the application's established format
-
-### Open Questions
-
-- [ ] What is the optimal number of profile setup fields? Need data from comparable platforms.
-- [ ] Should the guided first action use real user data or sample data? Trade-off between value demonstration and setup friction.
-- [ ] What is the drop-off rate at email verification? Is magic link sign-in a viable alternative?
-- [ ] How do referral users differ from organic users in onboarding completion rate?
-
-### Linked Artifacts
-
-- **Decisions**: DEC-001 (Authentication method), DEC-005 (Onboarding flow structure)
-- **Principles**: PRIN-002 (Progressive Disclosure), PRIN-004 (Time-to-Value)
-- **Page Tree**: `/landing`, `/signup`, `/verify`, `/onboarding/*`, `/dashboard`
-- **Sprint**: Sprint 1 (initial design), Sprint 3 (usability testing and iteration)
+**Critical moments:** Step 2 (highest-intent, friction = abandonment) and Step 4 (the "aha moment" — time-to-value predicts retention).
 
 ### New Project Checklist
 
@@ -1784,19 +1600,28 @@ Copy this checklist into your project kickoff document:
 - [ ] Update living documents (DECISIONS, PERSONAS, PRINCIPLES)
 ```
 
-### Synthesis & Validation Framework
+### Synthesis & Validation
 
-*Three-artifact model and four-pillar validation for preventing context burn.*
+*Living document templates, sprint synthesis workflow, four-pillar validation, PAGE-TREE, and PR checklists.*
 
-This framework has two parts: a **Sprint Synthesis Framework** that prevents context burn by distilling sprint outputs into living documents, and a **Generic Validation Framework** that ensures every piece of work meets a consistent quality bar.
+This framework has two parts: a **Sprint Synthesis Framework** that prevents context burn by distilling sprint outputs into living documents, and a **Validation Framework** that ensures every piece of work meets a consistent quality bar.
 
-## Part A: Sprint Synthesis Framework
+## Part A: Sprint Synthesis
 
-### Core Principle: Distill, Don't Repeat
+### Distill, Don't Repeat
 
 The raw artifacts of a sprint — meeting notes, Slack threads, Figma explorations, code spikes, user testing recordings — are inputs, not outputs. The output is the **synthesized knowledge** captured in three canonical artifacts.
 
 If you find yourself re-reading raw sprint material to answer a question, the synthesis has failed.
+
+Every project suffers from **context burn** — the gradual loss of institutional knowledge as raw artifacts pile up. A team that finishes a sprint with 47 documents, 12 recordings, and 200 Slack messages has not created knowledge. They have created noise. The cost is concrete: onboarding slows down, decisions can't be traced, AI assistants can't consume sprawling histories, and sprint planning starts from scratch.
+
+**The test:** Can someone who missed the entire sprint read only the three living documents and be fully caught up? If the answer is no, the synthesis is incomplete. If yes, the raw artifacts can be archived.
+
+**Anti-patterns to avoid:**
+- **The Archive Trap** — saving everything "just in case" without synthesizing
+- **The Summary Email** — writing a summary but not updating the canonical documents
+- **The Fresh Start** — beginning each sprint from scratch instead of building on living documents
 
 ### The Three Artifacts
 
@@ -1816,8 +1641,7 @@ The canonical record of every significant decision made during the project.
 **Status**: Accepted | Superseded by DEC-[NNN] | Reverted
 
 ### Context
-[1-2 paragraphs explaining why this decision was needed.
-What problem or question prompted it?]
+[1-2 paragraphs explaining why this decision was needed.]
 
 ### Decision
 [Clear, unambiguous statement of what was decided.]
@@ -1827,30 +1651,21 @@ What problem or question prompted it?]
    - Pros: [Why this was attractive]
    - Cons: [Why this was rejected]
 
-2. **[Alternative B]**: [Brief description]
-   - Pros: [Why this was attractive]
-   - Cons: [Why this was rejected]
-
 ### Consequences
 - [Expected positive outcomes]
 - [Expected negative outcomes or trade-offs]
-- [Technical debt incurred, if any]
 
 ### Dissent
-[Record any dissenting opinions. Include the role that raised
-the concern, their rationale, and how it was resolved.
-If no dissent was raised, state "None recorded."]
+[Record any dissenting opinions. If none, state "None recorded."]
 
 ### Review Trigger
-[Conditions under which this decision should be revisited.
-Example: "Revisit if user testing shows completion rate below 80%"
-or "Revisit at the start of Q3 planning."]
+[Conditions under which this decision should be revisited.]
 ```
 
 **Rules:**
-- Decisions are **append-only**. Never delete a decision. If a decision is reversed, add a new entry that supersedes it and update the status of the original.
-- Every decision must record alternatives considered. If no alternatives were discussed, the decision was not properly evaluated.
-- The dissent field is mandatory. "None recorded" is acceptable; a blank field is not.
+- Decisions are **append-only**. Never delete a decision — supersede it.
+- Every decision must record alternatives considered.
+- The dissent field is mandatory. "None recorded" is acceptable; blank is not.
 
 #### 2. PERSONAS.md
 
@@ -1872,35 +1687,23 @@ The canonical record of the team's understanding of its users.
 [Primary objective when using the system. One sentence.]
 
 ### Context
-[Environment in which they work. Constraints they operate under.
-Tools they currently use. Frequency of system interaction.]
-
-### Workflow
-1. [Step 1 of their typical workflow]
-2. [Step 2]
-3. [Step 3]
+[Environment, constraints, tools, frequency of interaction.]
 
 ### Pain Points
 - [Frustration 1]
 - [Frustration 2]
-- [Frustration 3]
 
 ### Success Metric
-[How this persona measures whether the system helped them.
-Should be concrete and observable.]
-
-### Representative Quote
-> "[A real or synthesized quote that captures their perspective]"
+[How this persona measures whether the system helped them.]
 
 ### Open Questions
 - [Things we still do not know about this persona]
-- [Assumptions that need validation]
 ```
 
 **Rules:**
-- Personas are **refined over time**, not rewritten. Update the "Last Updated" date and adjust the confidence level as new information is gathered.
-- Every persona must have a confidence rating. "High" means validated through direct user research. "Medium" means informed by stakeholder input. "Low" means based on assumptions.
-- Open questions drive future research. If a persona has no open questions, the team has stopped learning.
+- Personas are **refined over time**, not rewritten. Update the date and adjust confidence as new information arrives.
+- "High" = validated through user research. "Medium" = stakeholder input. "Low" = assumptions.
+- Open questions drive future research. No open questions means the team has stopped learning.
 
 #### 3. PRINCIPLES.md
 
@@ -1914,50 +1717,53 @@ The canonical record of design and engineering principles validated through proj
 ## PRIN-[NNN]: [Principle Name]
 
 **Status**: Proposed | Validated | Retired
-**Source**: [Sprint N retrospective | User testing finding | Technical discovery]
-**Last Updated**: YYYY-MM-DD
+**Source**: [Sprint N retrospective | User testing | Technical discovery]
 
 ### Statement
 [The principle in one clear sentence.]
 
 ### Rationale
-[Why this principle matters. What failure mode does it prevent?
-What quality does it ensure?]
+[Why this principle matters. What failure mode does it prevent?]
 
 ### Example
-[A concrete example of the principle applied correctly in this project.]
+[A concrete example of the principle applied correctly.]
 
 ### Counter-Example
-[A concrete example of what happens when this principle is violated.]
-
-### Validation
-[Evidence that supports this principle. Test results, user feedback,
-performance metrics, or team observations.]
+[What happens when this principle is violated.]
 ```
 
 **Rules:**
-- New principles start as "Proposed." They are promoted to "Validated" only after being confirmed through sprint work (user testing, production metrics, or team consensus after application).
-- Principles can be "Retired" if they are found to be wrong, no longer applicable, or superseded. Retired principles are kept in the document with a note explaining why.
-- The counter-example field is mandatory. A principle without a counter-example is too abstract to be useful.
+- New principles start as "Proposed" and are promoted to "Validated" after confirmation through sprint work.
+- Retired principles are kept with a note explaining why.
+- The counter-example field is mandatory — a principle without one is too abstract.
 
 ### Sprint Synthesis Workflow
 
-At the end of every sprint (or at natural breakpoints in continuous work):
+At the end of every sprint (or at natural breakpoints):
 
-1. **Gather raw material**: Collect all sprint artifacts — notes, recordings, designs, code, test results, Slack conversations
-2. **Extract decisions**: Identify every significant decision made. Add each to DECISIONS.md using the template
-3. **Update personas**: Incorporate any new user insights into PERSONAS.md. Adjust confidence levels. Add new open questions
-4. **Validate principles**: Promote any proposed principles that were confirmed. Add new principles discovered. Retire any that were disproven
-5. **Archive raw material**: Move raw artifacts to an archive folder. They have served their purpose
-6. **Run the context burn test**: Can someone who missed the sprint read only the three living documents and be fully caught up? If not, the synthesis is incomplete
+1. **Gather raw material** — collect all sprint artifacts
+2. **Extract decisions** — add each to DECISIONS.md
+3. **Update personas** — incorporate new insights, adjust confidence
+4. **Validate principles** — promote confirmed principles, retire disproven ones
+5. **Archive raw material** — it has served its purpose
+6. **Run the context burn test** — can someone who missed the sprint catch up from the living documents alone?
 
 ## Part B: Validation Framework
 
-Every piece of delivered work must be validated against the four pillars: Clarity, Attribution, Reversibility, and Consistency. For the full explanation of each pillar — core questions, rationale, and example checks — see [CLARA](/principles/clarity-attribution-reversibility-consistency).
+### The Four Pillars
+
+Every piece of delivered work — a design, a prototype, a feature — must be validated against four pillars.
+
+| Pillar | Core Question | Test |
+|---|---|---|
+| **Clarity** | Is the purpose and state immediately obvious? | Show the screen to someone with no context for 5 seconds. Can they tell you what it does? |
+| **Attribution** | Can every piece of data be traced to its source? | Point to any data on screen. Can you trace it to its source in 30 seconds? |
+| **Reversibility** | Can the user undo any action? | Perform every action. Can each be undone? If not, was the user warned? |
+| **Consistency** | Does the work follow established patterns? | Find two similar features. Do they look and behave the same way? |
+
+Apply these at design review, PR review, QA, and retrospectives.
 
 ### Validation Checklist
-
-For each piece of work under review, score each pillar:
 
 ```markdown
 ## Validation: [Feature/Component Name]
@@ -1967,20 +1773,17 @@ For each piece of work under review, score each pillar:
 - [ ] All states are explicitly handled (loading, empty, error, success)
 - [ ] Primary action is visually dominant
 - [ ] Labels and microcopy are unambiguous
-- [ ] No jargon or unexplained abbreviations
 
 ### Attribution
 - [ ] Data sources are visible or accessible
 - [ ] Timestamps show data freshness
 - [ ] AI-generated content is labeled as such
 - [ ] Calculations can be verified by the user
-- [ ] External data sources are cited
 
 ### Reversibility
 - [ ] Destructive actions require confirmation
 - [ ] Undo is available for common actions
 - [ ] Soft delete is used where appropriate
-- [ ] Draft states are available for complex inputs
 - [ ] Navigation does not lose unsaved work
 
 ### Consistency
@@ -1988,32 +1791,25 @@ For each piece of work under review, score each pillar:
 - [ ] Interaction patterns match similar features
 - [ ] Terminology matches the glossary
 - [ ] Error handling follows the established format
-- [ ] Layout follows the page template conventions
 ```
 
 ## Implementation Guide
 
 ### Step 1: Initialize Artifacts
 
-Create `DECISIONS.md`, `PERSONAS.md`, and `PRINCIPLES.md` at the project root using the templates above. Populate them with whatever is currently known, even if confidence is low. Mark initial entries clearly as "Pre-Sprint" or "Assumed" so they can be validated during the first sprint.
+Create `DECISIONS.md`, `PERSONAS.md`, and `PRINCIPLES.md` at the project root using the templates above. Populate with whatever is known, even if confidence is low. Mark initial entries as "Pre-Sprint" or "Assumed."
 
-### Step 2: Establish the Sprint Synthesis Ritual
+### Step 2: Establish the Synthesis Ritual
 
-At the end of every sprint, allocate dedicated time (typically 2-4 hours) for synthesis. This is not optional. Without a protected time block, synthesis will be deferred indefinitely and context burn will set in.
-
-Assign synthesis responsibility to the Sprint Lead, but involve the full team for extraction. Different team members will recall different decisions, insights, and concerns.
+Allocate dedicated time (2-4 hours) at the end of every sprint for synthesis. Without a protected time block, synthesis will be deferred indefinitely and context burn will set in.
 
 ### Step 3: Integrate Validation into Workflow
 
-Add the four-pillar validation checklist to the pull request template. Every PR that includes user-facing changes must include a completed checklist. Incomplete checklists block merge.
-
-During design reviews, use the four pillars as the evaluation framework. Instead of subjective feedback ("I don't like the layout"), ground all critique in the pillars ("The primary action fails the clarity check — it is visually subordinate to the secondary action").
-
-Over time, the team will internalize the four pillars and apply them instinctively during creation, not just during review.
+Add the four-pillar checklist to your PR template. During design reviews, ground critique in the pillars ("the primary action fails the clarity check") rather than subjective feedback ("I don't like the layout").
 
 ## The PAGE-TREE Pattern
 
-The PAGE-TREE is a structural map of every page and state in the application. It serves as the master reference for what exists, preventing duplicate work and ensuring complete coverage.
+The PAGE-TREE is a structural map of every page and state in the application. It prevents duplicate work and ensures complete coverage.
 
 ```markdown
 # PAGE-TREE
@@ -2024,16 +1820,9 @@ The PAGE-TREE is a structural map of every page and state in the application. It
 - **Key Components**: MetricCards, ActivityFeed, QuickActions
 - **Journey**: Onboarding (step 3), Core Workflow (step 1)
 - **Status**: Implemented | In Progress | Planned
-
-## /dashboard/settings
-- **Purpose**: User preferences and configuration
-- **States**: Default, Modified (unsaved), Saving, Error
-- **Key Components**: SettingsForm, NotificationPreferences
-- **Journey**: Core Workflow (branching path)
-- **Status**: Planned
 ```
 
-Each entry maps a route to its purpose, states, components, journey connections, and implementation status. The PAGE-TREE is updated whenever new pages are added or existing pages change.
+Each entry maps a route to its purpose, states, components, journey connections, and implementation status. Update whenever pages are added or changed.
 
 ## PR Validation Checklist
 
@@ -3311,7 +3100,7 @@ This makes the `CLAUDE.md` both a practical reference for contributors and a dem
 
 The documentation hub pattern embodies several [core principles](/principles):
 
-- **[Distill, Don't Repeat](/principles/distill-dont-repeat)** — Knowledge is synthesized from project repos into concise pages, not raw notes
+- **Distill, Don't Repeat** ([Synthesis & Validation](/principles/synthesis-validation)) — Knowledge is synthesized from project repos into concise pages, not raw notes
 - **[Answer First](/principles/answer-first)** — Frontmatter descriptions ensure the key point is always visible before reading the full page
 - **[Compounding Engineering](/principles/compounding-engineering)** — Content grows from real project needs, not speculative documentation
 - **[Verification Over Instruction](/principles/verification-over-instruction)** — The build process verifies all pages compile, all links resolve, and search indexes generate correctly

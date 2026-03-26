@@ -23,14 +23,12 @@ Context engineering, CLAUDE.md playbook, Claude Code setup, workflow architectur
 Core principles, delivery approach, synthesis and validation methodology.
 
 - [Answer First](/principles/answer-first): Every document must have the conclusion in the first body section. Never bury the lead.
-- [Clarity, Attribution, Reversibility, Consistency](/principles/clarity-attribution-reversibility-consistency): The four pillars of validation for any prototype or feature. Every piece of work must pass all four checks.
 - [Compounding Engineering](/principles/compounding-engineering): Build guidance from real mistakes, not upfront speculation. Let documentation grow organically from actual needs.
 - [Dissent is a Feature](/principles/dissent-as-feature): Structurally encourage and document dissent to prevent groupthink and preserve overruled concerns for future reference.
-- [Distill, Don't Repeat](/principles/distill-dont-repeat): The output of a sprint is synthesized knowledge, not raw artifacts. Create living documents that serve as the single source of truth.
 - [Principles & Frameworks](/principles): Core principles and operating frameworks distilled from real project work, designed to compound across every engagement.
 - [Journey Mapping Template](/principles/journey-template): Reusable structure for mapping any part of a system from user need to validated outcome.
 - [New Project Checklist](/principles/new-project-checklist): Bootstrap sequence using Field Notes and llms.txt to get a new project running.
-- [Synthesis & Validation Framework](/principles/synthesis-validation): Three-artifact model and four-pillar validation for preventing context burn.
+- [Synthesis & Validation](/principles/synthesis-validation): Living document templates, sprint synthesis workflow, four-pillar validation, PAGE-TREE, and PR checklists.
 - [Verification Over Instruction](/principles/verification-over-instruction): Give AI a way to verify its work rather than a long list of instructions. Success conditions beat specifications.
 
 ## Platform Patterns
