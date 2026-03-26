@@ -166,18 +166,9 @@ At the end of every sprint (or at natural breakpoints in continuous work):
 5. **Archive raw material**: Move raw artifacts to an archive folder. They have served their purpose
 6. **Run the context burn test**: Can someone who missed the sprint read only the three living documents and be fully caught up? If not, the synthesis is incomplete
 
-## Part B: Generic Validation Framework
+## Part B: Validation Framework
 
-### The Four Pillars
-
-Every piece of delivered work — a design, a prototype, a feature, a document — must be validated against four pillars.
-
-| Pillar | Core Question | Rationale | Example Checks |
-|---|---|---|---|
-| **Clarity** | Is the purpose and state immediately obvious? | Users should never guess what the system is doing or what action to take. Ambiguity creates support burden and reduces adoption. | Can a new user describe the screen's purpose within 5 seconds? Are all states (loading, empty, error, success) explicitly handled? Is the primary action visually dominant? |
-| **Attribution** | Can every piece of data be traced to its source? | Data without provenance is untrustworthy, especially AI-generated content. Attribution is often a regulatory requirement. | Does every metric show its source and freshness? Can AI-generated summaries be traced to underlying data? Are calculations reproducible from stated inputs? |
-| **Reversibility** | Can the user undo any action? | Fear of irreversible mistakes stifles exploration and slows adoption. Users need a safety net. | Do destructive actions require confirmation? Is soft delete used instead of hard delete? Can form submissions be edited after submission? Are there draft/publish workflows for content? |
-| **Consistency** | Does the work follow established patterns? | Inconsistency increases cognitive load, slows learning, and creates maintenance burden. | Do similar features use the same interaction patterns? Is terminology consistent across the application? Do error states follow the same format? Are spacing and sizing based on the design system tokens? |
+Every piece of delivered work must be validated against the four pillars: Clarity, Attribution, Reversibility, and Consistency. For the full explanation of each pillar — core questions, rationale, and example checks — see [CLARA](/principles/clarity-attribution-reversibility-consistency).
 
 ### Validation Checklist
 
@@ -234,3 +225,55 @@ Add the four-pillar validation checklist to the pull request template. Every PR 
 During design reviews, use the four pillars as the evaluation framework. Instead of subjective feedback ("I don't like the layout"), ground all critique in the pillars ("The primary action fails the clarity check — it is visually subordinate to the secondary action").
 
 Over time, the team will internalize the four pillars and apply them instinctively during creation, not just during review.
+
+## The PAGE-TREE Pattern
+
+The PAGE-TREE is a structural map of every page and state in the application. It serves as the master reference for what exists, preventing duplicate work and ensuring complete coverage.
+
+```markdown
+# PAGE-TREE
+
+## /dashboard
+- **Purpose**: Primary landing page after login
+- **States**: Loading, Empty (new user), Populated, Error
+- **Key Components**: MetricCards, ActivityFeed, QuickActions
+- **Journey**: Onboarding (step 3), Core Workflow (step 1)
+- **Status**: Implemented | In Progress | Planned
+
+## /dashboard/settings
+- **Purpose**: User preferences and configuration
+- **States**: Default, Modified (unsaved), Saving, Error
+- **Key Components**: SettingsForm, NotificationPreferences
+- **Journey**: Core Workflow (branching path)
+- **Status**: Planned
+```
+
+Each entry maps a route to its purpose, states, components, journey connections, and implementation status. The PAGE-TREE is updated whenever new pages are added or existing pages change.
+
+## PR Validation Checklist
+
+Every pull request must pass this checklist before merge:
+
+```markdown
+## PR Validation
+
+### Four Pillars
+- [ ] **Clarity**: UI purpose and state are immediately obvious
+- [ ] **Attribution**: All data can be traced to its source
+- [ ] **Reversibility**: All actions can be undone (or are gated)
+- [ ] **Consistency**: Patterns match established conventions
+
+### Technical
+- [ ] Tests pass (`npm test`)
+- [ ] Build succeeds (`npm run build`)
+- [ ] No lint errors (`npm run lint`)
+- [ ] Accessibility audit passes
+- [ ] Responsive behavior verified (mobile, tablet, desktop)
+
+### Documentation
+- [ ] DECISIONS.md updated (if a decision was made)
+- [ ] PERSONAS.md updated (if user understanding changed)
+- [ ] PRINCIPLES.md updated (if a principle was validated or discovered)
+- [ ] PAGE-TREE updated (if pages were added or changed)
+- [ ] CLAUDE.md updated (if a new correction was needed)
+```

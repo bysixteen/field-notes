@@ -1,6 +1,6 @@
 ---
 title: New Project Checklist
-description: "Bootstrap sequence using Field Notes, the Delivery Framework, and llms.txt."
+description: "Bootstrap sequence using Field Notes and llms.txt to get a new project running."
 ---
 
 When starting a new project, this sequence ties together the patterns documented across Field Notes into a single bootstrap workflow. Each step links to the relevant documentation.
@@ -17,9 +17,9 @@ Key decisions: package manager, build system, framework, TypeScript strictness, 
 
 ### Step 1: Set Up Project Structure
 
-Create the canonical directory structure from the [Delivery Framework](/principles/delivery-framework) — living documents at the root, sprint records in `docs/`, and a `_meta/PROJECT_CONTEXT.md` describing the project's purpose, users, and constraints.
+Create a directory structure with living documents at the root (`DECISIONS.md`, `PERSONAS.md`, `PRINCIPLES.md`, `CLAUDE.md`), sprint records in `docs/`, and a `_meta/PROJECT_CONTEXT.md` describing the project's purpose, users, and constraints.
 
-Optionally set up [Project Squad](/principles/project-squad) personas and commands for structured sprint execution.
+See [Synthesis & Validation](/principles/synthesis-validation) for living document templates.
 
 Once the structure is in place, run the scaffold commands to install tooling and wire up the workspace.
 
@@ -27,7 +27,7 @@ Once the structure is in place, run the scaffold commands to install tooling and
 
 ### Step 2: Connect to Field Notes
 
-Add the Field Notes index to your project's `CLAUDE.md` so AI agents can look up specific patterns as needed. Use the index, not the full dump — agents fetch individual pages when relevant rather than loading 65 pages into context at once:
+Add the Field Notes index to your project's `CLAUDE.md` so AI agents can look up specific patterns as needed. Use the index, not the full dump — agents fetch individual pages when relevant rather than loading everything into context at once:
 
 ```markdown
 ## Reference
@@ -55,21 +55,19 @@ Review the [Platform Patterns](/platform) domain. Key decisions:
 - **Audit**: Do you need state transition history? → [Audit-First](/platform/audit-first)
 - **Structure**: Monorepo or single-repo? → [Monorepo Architecture](/platform/monorepo)
 
-### Step 5: Run the Audit
+### Step 5: Audit Your Inputs
 
-Even for greenfield projects, audit what exists — design comps, requirements docs, stakeholder assumptions, competitive landscape. Document findings in `docs/audit/gap-analysis.md`.
+For greenfield projects there is no codebase to audit — instead, audit the inputs that will shape the project: design briefs, requirements documents, stakeholder assumptions, competitive analysis, and any prior research. For existing projects, also audit the codebase.
 
-[Read the Delivery Framework — Part 1: The Audit](/principles/delivery-framework)
+Document findings in `docs/audit/gap-analysis.md`. Map each gap to a concrete remediation action.
 
 ### Step 6: Run the First Sprint
 
-Assemble a Tiger Team or assign persona roles if working solo. Run a Mode A (Full 5-Day) sprint targeting the highest-priority user journey. This produces the first real entries in DECISIONS.md, PERSONAS.md, and PRINCIPLES.md.
-
-[Read the Delivery Framework — Part 3: The Sprint Model](/principles/delivery-framework)
+Target the highest-priority user journey. The first sprint produces the first real entries in DECISIONS.md, PERSONAS.md, and PRINCIPLES.md — transforming them from empty templates into living documents.
 
 ### Step 7: Start Compounding
 
-After the first sprint, living documents are no longer empty templates. Transition to Continuous Sprint mode (Mode B). Let `CLAUDE.md` grow from real corrections, not predictions.
+After the first sprint, living documents are no longer empty templates. Let `CLAUDE.md` grow from real corrections, not predictions.
 
 [Read about Compounding Engineering](/principles/compounding-engineering)
 
@@ -82,14 +80,13 @@ Copy this checklist into your project kickoff document:
 
 - [ ] Make stack decisions and record in DECISIONS.md
 - [ ] Write `_meta/PROJECT_CONTEXT.md`
-- [ ] Set up Delivery Framework directory structure
+- [ ] Set up directory structure with living documents at root
 - [ ] Run bootstrap commands (scaffold, tooling, workspace)
 - [ ] Add Field Notes llms.txt index URL to CLAUDE.md
 - [ ] Configure Claude Code (CLAUDE.md, rules, first-try test)
 - [ ] Set up git conventions (branch prefixes, commit format)
 - [ ] Choose architecture patterns from Platform domain
-- [ ] Run the audit (Delivery Framework Part 1)
-- [ ] Run first sprint (Mode A)
+- [ ] Audit inputs (briefs, designs, requirements, assumptions)
+- [ ] Run first sprint targeting highest-priority journey
 - [ ] Update living documents (DECISIONS, PERSONAS, PRINCIPLES)
-- [ ] Transition to Continuous Sprint mode (Mode B)
 ```
