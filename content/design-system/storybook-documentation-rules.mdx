@@ -1,0 +1,146 @@
+---
+title: Storybook Documentation Rules
+description: Best practices for documenting design systems in Storybook with consistent structure and components.
+---
+
+Storybook documentation pages serve as the living reference for how a design system looks, behaves, and is consumed. These rules ensure every documentation page follows a consistent structure that is easy to read, maintain, and extend.
+
+All examples use generic placeholders. Adapt naming, token names, and file paths to your project.
+
+## File Structure
+
+```
+stories/
+├── helpers/              # Shared documentation components
+│   ├── docStyles.ts      # Shared style objects
+│   ├── DocPage.tsx        # Layout wrapper components
+│   ├── Swatch.tsx         # Colour token display
+│   ├── TokenTable.tsx     # Token name/value tables
+│   ├── Callout.tsx        # Notes, warnings, tips
+│   ├── CodeBlock.tsx      # Formatted code display
+│   ├── DosDonts.tsx       # Side-by-side comparison
+│   ├── DemoBox.tsx        # Component specimen container
+│   ├── FigmaRef.tsx       # Figma variable path reference
+│   ├── BreakpointScaleTable.tsx  # Multi-breakpoint px resolution
+│   └── index.ts           # Barrel export
+├── primitives/           # Token documentation stories
+│   ├── Colour.stories.tsx
+│   ├── Typography.stories.tsx
+│   └── Spacing.stories.tsx
+└── components/           # Component documentation stories
+    ├── Button.stories.tsx
+    └── Input.stories.tsx
+```
+
+Each story file has one default export (`Meta`) with a slash-separated `title` and `parameters: { layout: 'fullscreen' }`.
+
+## Page Anatomy
+
+Every documentation story follows this order:
+
+1. **Page title** — the topic name, rendered as an `h1`.
+2. **Page description** — one or two sentences explaining what this page covers.
+3. **Sections** — each with a heading, explanatory text, visual specimen, and token table where applicable.
+
+This consistent structure means a developer can navigate any documentation page without learning a new layout.
+
+## Shared Documentation Components
+
+Import shared components from the `helpers/` directory. These replace inline styles and ensure visual consistency.
+
+### Layout Components
+
+- **`DocPage`** — page wrapper with padding and max-width. Replaces raw `<div>` wrappers.
+- **`PageTitle`** — `h1` with display typography.
+- **`PageDesc`** — intro paragraph with secondary text colour.
+- **`Section`** — section wrapper with consistent bottom margin.
+- **`SectionHeading`** — `h2` with uppercase label treatment and border-bottom.
+
+### Token Display
+
+- **`Swatch`** — single colour swatch bound to a CSS custom property, with label.
+- **`SwatchGrid`** — flexible grid layout for arranging multiple swatches.
+- **`TonalRamp`** — horizontal strip showing a primitive colour palette with hex values and auto-calculated text contrast.
+- **`TokenTable`** — table displaying token name, value, and visual preview.
+
+### Content Components
+
+- **`Callout`** — highlighted message block. Variants: `note` (grey), `warning` (amber), `tip` (green), `danger` (red). Use for important caveats, gotchas, or best practices.
+- **`CodeBlock`** — monospace container with background and optional copy button. Use for CSS custom property examples and code snippets.
+- **`DosDonts`** — side-by-side layout with green "Do" and red "Don't" headers. Use for visual examples of correct and incorrect usage.
+- **`DemoBox`** — isolated frame with border for showcasing rendered components. Centred content by default.
+
+### Reference Components
+
+- **`FigmaRef`** — renders a Figma variable path in a consistent, small monospace format. Use on every token entry to link back to the Figma source.
+- **`BreakpointScaleTable`** — table showing token values resolved to px at each breakpoint. Accepts configurable breakpoints — no hardcoded device names.
+
+## Figma Cross-References
+
+Every token entry should include a `FigmaRef` with the Figma variable path. This creates a direct link between the Storybook documentation and the Figma source file:
+
+```tsx
+<TokenTable
+  tokens={[
+    { name: '--space-sm', value: '0.5rem', visual: '8px' },
+  ]}
+/>
+<FigmaRef path="Tokens / Semantic / space-sm" />
+```
+
+Developers and designers can look up the same token in both tools without guessing.
+
+## CSS Property Mapping
+
+Show the CSS custom property name alongside every documented token. Developers consume tokens as CSS custom properties — the Storybook documentation should reflect exactly what they type in code:
+
+```css
+/* What developers use */
+padding: var(--space-md);
+color: var(--text-primary);
+border-radius: var(--radius-md);
+```
+
+## Breakpoint Scaling
+
+When the design system targets multiple breakpoints with different root font sizes, use the `BreakpointScaleTable` component:
+
+```tsx
+<BreakpointScaleTable
+  tokens={[
+    { name: '--space-sm', rem: 0.5, description: 'Small spacing' },
+    { name: '--space-md', rem: 1, description: 'Medium spacing' },
+  ]}
+  breakpoints={[
+    { name: 'Desktop', rootPx: 16 },
+    { name: 'Large Display', rootPx: 24 },
+  ]}
+/>
+```
+
+The component auto-calculates px values from `REM × rootPx`. This keeps the table accurate without manual calculation.
+
+## Accessibility
+
+- Require `@storybook/addon-a11y` in the project.
+- Every component story must pass the accessibility addon's automated checks.
+- Document exceptions explicitly — if a component intentionally deviates from a guideline, explain why in a `Callout` with the `warning` variant.
+- Use sufficient colour contrast in documentation pages themselves, not just in the components being documented.
+
+## Definition of Done
+
+A Storybook documentation page is complete when:
+
+- [ ] All tokens in the category are shown with correct names and values
+- [ ] Figma variable paths are included via `FigmaRef`
+- [ ] CSS custom property names are visible
+- [ ] Visual specimens render correctly
+- [ ] No accessibility violations from the a11y addon
+- [ ] Page uses fullscreen layout without horizontal overflow
+- [ ] Breakpoint scaling table is included where applicable
+
+## See Also
+
+- [Figma Documentation Rules](/design-system/figma-documentation-rules) — the equivalent rules for Figma files
+- [The Token Chain](/design-system/token-chain) — how tokens flow from primitives to components
+- [Naming Conventions](/design-system/naming) — how tokens are named across the system

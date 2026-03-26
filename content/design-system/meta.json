@@ -11,6 +11,9 @@
     "---Implementation---",
     "naming",
     "approaches",
-    "constraints"
+    "constraints",
+    "---Documentation Standards---",
+    "figma-documentation-rules",
+    "storybook-documentation-rules"
   ]
 }

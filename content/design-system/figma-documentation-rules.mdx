@@ -1,0 +1,130 @@
+---
+title: Figma Documentation Rules
+description: Best practices for documenting design tokens and components inside Figma files.
+---
+
+Figma design system files serve two purposes: they are the source of truth for visual decisions, and they are documentation that designers and developers reference daily. These rules ensure documentation pages are consistent, maintainable, and useful.
+
+<Callout type="info">
+All examples use generic placeholders. Adapt naming and structure to your project.
+</Callout>
+
+## Page Structure
+
+Every documentation page follows the same layout:
+
+1. **Header component instance** — a reusable component containing the project logo area, page title, and subtitle.
+2. **Content frame** — a frame with vertical auto-layout, consistent padding, and a white fill. The frame width should match the project's primary design breakpoint.
+
+This two-part structure keeps every page visually consistent and makes it immediately clear which page you are on.
+
+## Token Documentation Layout
+
+Token documentation uses tabular rows to display each token's swatch and metadata:
+
+- **Left side:** colour swatch (bound to the Figma variable) + bold token name.
+- **Right side:** hex value, right-aligned.
+- **Grouping:** rows are organised into sections by element — background, foreground, border, action, overlay, etc.
+- **Section headers:** each group has a title and optional description explaining the category.
+
+This layout mirrors how developers consume tokens in code: name on the left, value on the right, grouped by purpose.
+
+## Layer Naming
+
+Every frame and group must have a semantic name:
+
+- Use descriptive names: "Background Section", "Token Row", "Typography Specimens".
+- Never leave auto-generated names: "Frame 47", "Group 3", "Rectangle 12".
+- Component instances retain their component name automatically — do not rename them.
+
+<Callout type="warn">
+Semantic layer names make the file navigable in the layers panel and reduce confusion when multiple people edit the same file. Auto-generated names like "Frame 47" are the number one source of confusion in shared Figma files.
+</Callout>
+
+## Font Declaration
+
+Document which font families and styles the project uses:
+
+- Specify the heading font family and weight (e.g., "Display: Inter SemiBold").
+- Specify the body font family and weight (e.g., "Body: Inter Regular").
+- Specify the monospace font if used (e.g., "Mono: JetBrains Mono").
+
+<Callout type="error">
+Before scripting text nodes via plugins or MCP tools, verify that the font is loaded in Figma. Font load errors are **silent** — text nodes will render but with a fallback font, producing inconsistent results that are easy to miss.
+</Callout>
+
+## Variable Binding Rules
+
+When creating token documentation with bound swatches:
+
+- **Colour swatches:** use `setBoundVariableForPaint()` to bind fills to variables. This keeps documentation swatches live — when the variable value changes, the swatch updates automatically.
+- **Corner radius:** bind per-corner radius properties (`topLeftRadius`, `topRightRadius`, etc.), not the shorthand `cornerRadius` property. The shorthand does not persist variable bindings correctly.
+- **All values in px:** Figma works exclusively in pixels. REM conversion happens in code, not in Figma. When documenting scale tokens, show the px value in Figma and note the REM equivalent in a separate column or annotation.
+
+## Breakpoint Scaling Tables
+
+When a project targets multiple breakpoints or device sizes with different root font sizes:
+
+- Include a table with one column per breakpoint.
+- Each row shows a token name, its REM value, and the resolved px value at each breakpoint.
+- Auto-calculate px values: `px = REM × root font size`.
+
+Example structure:
+
+| Token | REM | Desktop (16px) | Large Display (24px) |
+| --- | --- | --- | --- |
+| space-sm | 0.5rem | 8px | 12px |
+| space-md | 1rem | 16px | 24px |
+| space-lg | 1.5rem | 24px | 36px |
+
+This makes it immediately clear how spacing and typography scale across targets.
+
+## Cross-References
+
+Every token row should map to its CSS custom property name. Use Figma path notation for the variable reference:
+
+- **Figma path:** `Collection / Group / token-name`
+- **CSS property:** `--token-name`
+
+This dual reference helps developers find the corresponding value in both Figma and code without guessing.
+
+## No Boolean Component Properties
+
+<Callout type="warn">
+When creating component variants in Figma, use **string enums**, not booleans. Instead of a boolean "hasIcon" property, use a string property "icon" with values "none" and "visible". String enums are more descriptive in the properties panel and easier to extend later.
+</Callout>
+
+## Single Documentation Breakpoint
+
+Figma documentation pages should target one breakpoint — the primary design target. Do not create multiple versions of documentation pages for different breakpoints.
+
+Other breakpoints are handled in code. The Figma documentation captures the design intent; responsive adaptation is an implementation concern.
+
+## Reusable Documentation Components
+
+Create and publish these components for consistent documentation:
+
+- **Header** — project logo, page title, subtitle. Full-width, used on every documentation page.
+- **Token Row** — swatch + name + value, horizontal auto-layout with space-between alignment.
+- **Section Header** — title + description, vertical auto-layout.
+
+Publishing these as components ensures every documentation page uses the same structure and spacing.
+
+## Definition of Done
+
+A Figma documentation page is complete when:
+
+- [ ] Header component instance is present with correct title
+- [ ] All tokens in the category are shown with bound swatches
+- [ ] Hex values are resolved and visible
+- [ ] Layer names are semantic (no "Frame 47")
+- [ ] Font families are loaded and rendering correctly
+- [ ] A screenshot of the page has been reviewed for visual accuracy
+
+## See Also
+
+<Cards>
+  <Card title="Storybook Documentation Rules" description="The equivalent rules for Storybook" href="/design-system/storybook-documentation-rules" />
+  <Card title="The Token Chain" description="How tokens flow from primitives to components" href="/design-system/token-chain" />
+  <Card title="Naming Conventions" description="How tokens are named across the system" href="/design-system/naming" />
+</Cards>

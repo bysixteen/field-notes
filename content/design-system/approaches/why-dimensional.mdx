@@ -1,0 +1,106 @@
+---
+title: Why Dimensional
+description: A plain-language explanation of how the dimensional model compares to typical design systems — and why it works better.
+---
+
+## How Most Design Systems Work
+
+Most design systems give every variation of a component its own name. A button might have:
+
+- Primary
+- Secondary
+- Tertiary
+- Danger
+- Danger Outline
+- Ghost
+
+Each name bundles together several different decisions into one label. "Primary" means the most important action, *and* it's filled in, *and* it uses the brand colour, *and* it's usually the biggest. Four separate choices, one name.
+
+This works fine when you only have a handful of components. But it creates real problems as the system grows.
+
+### The problems
+
+**Names stop making sense.** What's the actual difference between "secondary" and "tertiary"? Between "ghost" and "outline"? People on the team will disagree, and over time, people just pick whatever looks right instead of what's semantically correct.
+
+**The list of variants keeps growing.** Every time you add a new meaning (like "new" for recently-added features), you need to create that variant for *every* component — buttons, cards, badges, banners — and define the colours for each one. The work multiplies fast.
+
+**You can't separate decisions.** If "Danger" always means red and always means filled, there's no clean way to say "this is a warning, but it's not urgent — make it softer." You'd need to invent yet another variant name.
+
+---
+
+## How the Dimensional Model Works
+
+Instead of naming every combination, we describe components using a few simple, independent questions:
+
+| Question | We call this | Options |
+|----------|-------------|---------|
+| **What is this trying to say?** | Sentiment | neutral, warning, highlight, new, positive |
+| **How urgently?** | Emphasis | high, medium, low |
+| **How big should it be?** | Size | extra small through extra large |
+| **How tightly packed?** | Density | default, relaxed |
+
+Each question is answered independently. They don't interfere with each other — choosing "warning" doesn't force you into a specific size or emphasis level.
+
+A button variant isn't a name anymore — it's a set of answers:
+
+> "This button communicates a **warning**, at **medium** urgency, in size **medium**."
+
+---
+
+## Seeing the Difference
+
+Here's the same set of buttons described both ways:
+
+| Typical name | What it actually means |
+|-------------|----------------------|
+| Primary | Neutral message, high emphasis |
+| Secondary | Neutral message, medium emphasis |
+| Ghost | Neutral message, low emphasis |
+| Danger | Warning message, high emphasis |
+| Danger Outline | Warning message, medium emphasis |
+| Success | Positive message, high emphasis |
+
+When you read it this way, the dimensional version tells you *why* each variant exists. The typical name just tells you what it looks like.
+
+---
+
+## Why This Approach Is Better
+
+### You answer simple questions instead of memorising names
+
+Instead of remembering what "tertiary" means versus "ghost," you just answer: *What is this saying?* and *How loud should it be?* Anyone on the team can make that decision without deep design system knowledge.
+
+### New meanings don't create busywork
+
+Want to add a "new" sentiment for recently-added features? In a typical system, someone has to create NewButton, NewCard, NewBadge, and define the colours for each. In the dimensional model, you add "new" to the list of sentiments once, and every component can use it immediately.
+
+### You can turn the volume up or down
+
+The separation between *what* something says (sentiment) and *how loudly* it says it (emphasis) is the biggest advantage. A warning at high emphasis says "stop and pay attention." A warning at low emphasis says "be aware, but you can keep going." In a typical system, there's no clean way to express that difference.
+
+### The system stays the same size as you add components
+
+| Number of components | Typical system | Dimensional system |
+|---------------------|---------------|-------------------|
+| 5 components | ~100 named variants to manage | ~13 options across all dimensions |
+| 15 components | ~300 named variants | ~13 options (same) |
+| 50 components | ~1,000 named variants | ~13 options (same) |
+
+With a typical system, the list of things to maintain grows with every new component. With dimensions, you define the options once and every component resolves them automatically.
+
+### Size and spacing are separate on purpose
+
+A common mistake is treating "small" as one thing — but "the button is too tall for this table row" and "the content inside feels too spread out" are two different problems with two different solutions:
+
+- **Too tall?** Make the size smaller.
+- **Content too spread out?** Make the density tighter.
+
+Keeping these separate means you can mix and match — a large button with tightly packed content, or a small button with generous breathing room.
+
+---
+
+## The Short Version
+
+Typical systems name every combination. That works at first, but the list grows fast, names lose meaning, and changes ripple everywhere.
+
+The dimensional model asks a few clear questions instead. The answers combine automatically, the system stays small as it grows, and everyone on the team can make confident decisions without memorising a glossary of variant names.

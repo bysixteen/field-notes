@@ -144,6 +144,112 @@ See [The Token Chain](/design-system/token-chain) for full details on each layer
 | Build pipeline required | Design tool → transformer → CSS → components |
 | Onboarding cost | New developers must understand the layer model |
 
+### Why Dimensional
+
+*A plain-language explanation of how the dimensional model compares to typical design systems — and why it works better.*
+
+## How Most Design Systems Work
+
+Most design systems give every variation of a component its own name. A button might have:
+
+- Primary
+- Secondary
+- Tertiary
+- Danger
+- Danger Outline
+- Ghost
+
+Each name bundles together several different decisions into one label. "Primary" means the most important action, *and* it's filled in, *and* it uses the brand colour, *and* it's usually the biggest. Four separate choices, one name.
+
+This works fine when you only have a handful of components. But it creates real problems as the system grows.
+
+### The problems
+
+**Names stop making sense.** What's the actual difference between "secondary" and "tertiary"? Between "ghost" and "outline"? People on the team will disagree, and over time, people just pick whatever looks right instead of what's semantically correct.
+
+**The list of variants keeps growing.** Every time you add a new meaning (like "new" for recently-added features), you need to create that variant for *every* component — buttons, cards, badges, banners — and define the colours for each one. The work multiplies fast.
+
+**You can't separate decisions.** If "Danger" always means red and always means filled, there's no clean way to say "this is a warning, but it's not urgent — make it softer." You'd need to invent yet another variant name.
+
+---
+
+## How the Dimensional Model Works
+
+Instead of naming every combination, we describe components using a few simple, independent questions:
+
+| Question | We call this | Options |
+|----------|-------------|---------|
+| **What is this trying to say?** | Sentiment | neutral, warning, highlight, new, positive |
+| **How urgently?** | Emphasis | high, medium, low |
+| **How big should it be?** | Size | extra small through extra large |
+| **How tightly packed?** | Density | default, relaxed |
+
+Each question is answered independently. They don't interfere with each other — choosing "warning" doesn't force you into a specific size or emphasis level.
+
+A button variant isn't a name anymore — it's a set of answers:
+
+> "This button communicates a **warning**, at **medium** urgency, in size **medium**."
+
+---
+
+## Seeing the Difference
+
+Here's the same set of buttons described both ways:
+
+| Typical name | What it actually means |
+|-------------|----------------------|
+| Primary | Neutral message, high emphasis |
+| Secondary | Neutral message, medium emphasis |
+| Ghost | Neutral message, low emphasis |
+| Danger | Warning message, high emphasis |
+| Danger Outline | Warning message, medium emphasis |
+| Success | Positive message, high emphasis |
+
+When you read it this way, the dimensional version tells you *why* each variant exists. The typical name just tells you what it looks like.
+
+---
+
+## Why This Approach Is Better
+
+### You answer simple questions instead of memorising names
+
+Instead of remembering what "tertiary" means versus "ghost," you just answer: *What is this saying?* and *How loud should it be?* Anyone on the team can make that decision without deep design system knowledge.
+
+### New meanings don't create busywork
+
+Want to add a "new" sentiment for recently-added features? In a typical system, someone has to create NewButton, NewCard, NewBadge, and define the colours for each. In the dimensional model, you add "new" to the list of sentiments once, and every component can use it immediately.
+
+### You can turn the volume up or down
+
+The separation between *what* something says (sentiment) and *how loudly* it says it (emphasis) is the biggest advantage. A warning at high emphasis says "stop and pay attention." A warning at low emphasis says "be aware, but you can keep going." In a typical system, there's no clean way to express that difference.
+
+### The system stays the same size as you add components
+
+| Number of components | Typical system | Dimensional system |
+|---------------------|---------------|-------------------|
+| 5 components | ~100 named variants to manage | ~13 options across all dimensions |
+| 15 components | ~300 named variants | ~13 options (same) |
+| 50 components | ~1,000 named variants | ~13 options (same) |
+
+With a typical system, the list of things to maintain grows with every new component. With dimensions, you define the options once and every component resolves them automatically.
+
+### Size and spacing are separate on purpose
+
+A common mistake is treating "small" as one thing — but "the button is too tall for this table row" and "the content inside feels too spread out" are two different problems with two different solutions:
+
+- **Too tall?** Make the size smaller.
+- **Content too spread out?** Make the density tighter.
+
+Keeping these separate means you can mix and match — a large button with tightly packed content, or a small button with generous breathing room.
+
+---
+
+## The Short Version
+
+Typical systems name every combination. That works at first, but the list grows fast, names lose meaning, and changes ripple everywhere.
+
+The dimensional model asks a few clear questions instead. The answers combine automatically, the system stays small as it grows, and everyone on the team can make confident decisions without memorising a glossary of variant names.
+
 ### Density vs Size
 
 *Why these dimensions must stay separate — and the common mistake of collapsing them.*
@@ -691,6 +797,114 @@ Key guardrails:
 5. Sentiment flows down; emphasis does not
 6. Never set emphasis on a container
 7. Density is inherited, not composed
+
+### Figma Documentation Rules
+
+*Best practices for documenting design tokens and components inside Figma files.*
+
+Figma design system files serve two purposes: they are the source of truth for visual decisions, and they are documentation that designers and developers reference daily. These rules ensure documentation pages are consistent, maintainable, and useful.
+
+## Page Structure
+
+Every documentation page follows the same layout:
+
+1. **Header component instance** — a reusable component containing the project logo area, page title, and subtitle.
+2. **Content frame** — a frame with vertical auto-layout, consistent padding, and a white fill. The frame width should match the project's primary design breakpoint.
+
+This two-part structure keeps every page visually consistent and makes it immediately clear which page you are on.
+
+## Token Documentation Layout
+
+Token documentation uses tabular rows to display each token's swatch and metadata:
+
+- **Left side:** colour swatch (bound to the Figma variable) + bold token name.
+- **Right side:** hex value, right-aligned.
+- **Grouping:** rows are organised into sections by element — background, foreground, border, action, overlay, etc.
+- **Section headers:** each group has a title and optional description explaining the category.
+
+This layout mirrors how developers consume tokens in code: name on the left, value on the right, grouped by purpose.
+
+## Layer Naming
+
+Every frame and group must have a semantic name:
+
+- Use descriptive names: "Background Section", "Token Row", "Typography Specimens".
+- Never leave auto-generated names: "Frame 47", "Group 3", "Rectangle 12".
+- Component instances retain their component name automatically — do not rename them.
+
+## Font Declaration
+
+Document which font families and styles the project uses:
+
+- Specify the heading font family and weight (e.g., "Display: Inter SemiBold").
+- Specify the body font family and weight (e.g., "Body: Inter Regular").
+- Specify the monospace font if used (e.g., "Mono: JetBrains Mono").
+
+## Variable Binding Rules
+
+When creating token documentation with bound swatches:
+
+- **Colour swatches:** use `setBoundVariableForPaint()` to bind fills to variables. This keeps documentation swatches live — when the variable value changes, the swatch updates automatically.
+- **Corner radius:** bind per-corner radius properties (`topLeftRadius`, `topRightRadius`, etc.), not the shorthand `cornerRadius` property. The shorthand does not persist variable bindings correctly.
+- **All values in px:** Figma works exclusively in pixels. REM conversion happens in code, not in Figma. When documenting scale tokens, show the px value in Figma and note the REM equivalent in a separate column or annotation.
+
+## Breakpoint Scaling Tables
+
+When a project targets multiple breakpoints or device sizes with different root font sizes:
+
+- Include a table with one column per breakpoint.
+- Each row shows a token name, its REM value, and the resolved px value at each breakpoint.
+- Auto-calculate px values: `px = REM × root font size`.
+
+Example structure:
+
+| Token | REM | Desktop (16px) | Large Display (24px) |
+| --- | --- | --- | --- |
+| space-sm | 0.5rem | 8px | 12px |
+| space-md | 1rem | 16px | 24px |
+| space-lg | 1.5rem | 24px | 36px |
+
+This makes it immediately clear how spacing and typography scale across targets.
+
+## Cross-References
+
+Every token row should map to its CSS custom property name. Use Figma path notation for the variable reference:
+
+- **Figma path:** `Collection / Group / token-name`
+- **CSS property:** `--token-name`
+
+This dual reference helps developers find the corresponding value in both Figma and code without guessing.
+
+## No Boolean Component Properties
+
+## Single Documentation Breakpoint
+
+Figma documentation pages should target one breakpoint — the primary design target. Do not create multiple versions of documentation pages for different breakpoints.
+
+Other breakpoints are handled in code. The Figma documentation captures the design intent; responsive adaptation is an implementation concern.
+
+## Reusable Documentation Components
+
+Create and publish these components for consistent documentation:
+
+- **Header** — project logo, page title, subtitle. Full-width, used on every documentation page.
+- **Token Row** — swatch + name + value, horizontal auto-layout with space-between alignment.
+- **Section Header** — title + description, vertical auto-layout.
+
+Publishing these as components ensures every documentation page uses the same structure and spacing.
+
+## Definition of Done
+
+A Figma documentation page is complete when:
+
+- [ ] Header component instance is present with correct title
+- [ ] All tokens in the category are shown with bound swatches
+- [ ] Hex values are resolved and visible
+- [ ] Layer names are semantic (no "Frame 47")
+- [ ] Font families are loaded and rendering correctly
+- [ ] A screenshot of the page has been reviewed for visual accuracy
+
+## See Also
 
 ### Token Approach Guide
 
@@ -1319,6 +1533,138 @@ The final segment is always the **interactive state**:
 --border-neutral-strong-hover        /* strong neutral border, hovered */
 --background-warning-rest            /* warning background, idle */
 ```
+
+### Storybook Documentation Rules
+
+*Best practices for documenting design systems in Storybook with consistent structure and components.*
+
+Storybook documentation pages serve as the living reference for how a design system looks, behaves, and is consumed. These rules ensure every documentation page follows a consistent structure that is easy to read, maintain, and extend.
+
+All examples use generic placeholders. Adapt naming, token names, and file paths to your project.
+
+## File Structure
+
+```
+stories/
+├── helpers/              # Shared documentation components
+│   ├── docStyles.ts      # Shared style objects
+│   ├── DocPage.tsx        # Layout wrapper components
+│   ├── Swatch.tsx         # Colour token display
+│   ├── TokenTable.tsx     # Token name/value tables
+│   ├── Callout.tsx        # Notes, warnings, tips
+│   ├── CodeBlock.tsx      # Formatted code display
+│   ├── DosDonts.tsx       # Side-by-side comparison
+│   ├── DemoBox.tsx        # Component specimen container
+│   ├── FigmaRef.tsx       # Figma variable path reference
+│   ├── BreakpointScaleTable.tsx  # Multi-breakpoint px resolution
+│   └── index.ts           # Barrel export
+├── primitives/           # Token documentation stories
+│   ├── Colour.stories.tsx
+│   ├── Typography.stories.tsx
+│   └── Spacing.stories.tsx
+└── components/           # Component documentation stories
+    ├── Button.stories.tsx
+    └── Input.stories.tsx
+```
+
+Each story file has one default export (`Meta`) with a slash-separated `title` and `parameters: { layout: 'fullscreen' }`.
+
+## Page Anatomy
+
+Every documentation story follows this order:
+
+1. **Page title** — the topic name, rendered as an `h1`.
+2. **Page description** — one or two sentences explaining what this page covers.
+3. **Sections** — each with a heading, explanatory text, visual specimen, and token table where applicable.
+
+This consistent structure means a developer can navigate any documentation page without learning a new layout.
+
+## Shared Documentation Components
+
+Import shared components from the `helpers/` directory. These replace inline styles and ensure visual consistency.
+
+### Layout Components
+
+- **`DocPage`** — page wrapper with padding and max-width. Replaces raw `<div>` wrappers.
+- **`PageTitle`** — `h1` with display typography.
+- **`PageDesc`** — intro paragraph with secondary text colour.
+- **`Section`** — section wrapper with consistent bottom margin.
+- **`SectionHeading`** — `h2` with uppercase label treatment and border-bottom.
+
+### Token Display
+
+- **`Swatch`** — single colour swatch bound to a CSS custom property, with label.
+- **`SwatchGrid`** — flexible grid layout for arranging multiple swatches.
+- **`TonalRamp`** — horizontal strip showing a primitive colour palette with hex values and auto-calculated text contrast.
+- **`TokenTable`** — table displaying token name, value, and visual preview.
+
+### Content Components
+
+- **`Callout`** — highlighted message block. Variants: `note` (grey), `warning` (amber), `tip` (green), `danger` (red). Use for important caveats, gotchas, or best practices.
+- **`CodeBlock`** — monospace container with background and optional copy button. Use for CSS custom property examples and code snippets.
+- **`DosDonts`** — side-by-side layout with green "Do" and red "Don't" headers. Use for visual examples of correct and incorrect usage.
+- **`DemoBox`** — isolated frame with border for showcasing rendered components. Centred content by default.
+
+### Reference Components
+
+- **`FigmaRef`** — renders a Figma variable path in a consistent, small monospace format. Use on every token entry to link back to the Figma source.
+- **`BreakpointScaleTable`** — table showing token values resolved to px at each breakpoint. Accepts configurable breakpoints — no hardcoded device names.
+
+## Figma Cross-References
+
+Every token entry should include a `FigmaRef` with the Figma variable path. This creates a direct link between the Storybook documentation and the Figma source file:
+
+```tsx
+
+```
+
+Developers and designers can look up the same token in both tools without guessing.
+
+## CSS Property Mapping
+
+Show the CSS custom property name alongside every documented token. Developers consume tokens as CSS custom properties — the Storybook documentation should reflect exactly what they type in code:
+
+```css
+/* What developers use */
+padding: var(--space-md);
+color: var(--text-primary);
+border-radius: var(--radius-md);
+```
+
+## Breakpoint Scaling
+
+When the design system targets multiple breakpoints with different root font sizes, use the `BreakpointScaleTable` component:
+
+```tsx
+
+```
+
+The component auto-calculates px values from `REM × rootPx`. This keeps the table accurate without manual calculation.
+
+## Accessibility
+
+- Require `@storybook/addon-a11y` in the project.
+- Every component story must pass the accessibility addon's automated checks.
+- Document exceptions explicitly — if a component intentionally deviates from a guideline, explain why in a `Callout` with the `warning` variant.
+- Use sufficient colour contrast in documentation pages themselves, not just in the components being documented.
+
+## Definition of Done
+
+A Storybook documentation page is complete when:
+
+- [ ] All tokens in the category are shown with correct names and values
+- [ ] Figma variable paths are included via `FigmaRef`
+- [ ] CSS custom property names are visible
+- [ ] Visual specimens render correctly
+- [ ] No accessibility violations from the a11y addon
+- [ ] Page uses fullscreen layout without horizontal overflow
+- [ ] Breakpoint scaling table is included where applicable
+
+## See Also
+
+- [Figma Documentation Rules](/design-system/figma-documentation-rules) — the equivalent rules for Figma files
+- [The Token Chain](/design-system/token-chain) — how tokens flow from primitives to components
+- [Naming Conventions](/design-system/naming) — how tokens are named across the system
 
 ### Component Slots
 
@@ -2399,11 +2745,23 @@ When starting a new project, this sequence ties together the patterns documented
 
 ## The Bootstrap Sequence
 
+### Step 0: Make Stack Decisions
+
+Before creating any files, decide on the technology stack. Record each choice with its rationale so the team can revisit decisions later without starting from scratch.
+
+Key decisions: package manager, build system, framework, TypeScript strictness, styling approach, testing tools.
+
+[Read Stack Decisions](/platform/stack-decisions)
+
 ### Step 1: Set Up Project Structure
 
 Create the canonical directory structure from the [Delivery Framework](/principles/delivery-framework) — living documents at the root, sprint records in `docs/`, and a `_meta/PROJECT_CONTEXT.md` describing the project's purpose, users, and constraints.
 
 Optionally set up [Project Squad](/principles/project-squad) personas and commands for structured sprint execution.
+
+Once the structure is in place, run the scaffold commands to install tooling and wire up the workspace.
+
+[Read Bootstrap Commands](/platform/bootstrap-commands)
 
 ### Step 2: Connect to Field Notes
 
@@ -2460,8 +2818,10 @@ Copy this checklist into your project kickoff document:
 ```markdown
 ## Project Bootstrap
 
+- [ ] Make stack decisions and record in DECISIONS.md
 - [ ] Write `_meta/PROJECT_CONTEXT.md`
 - [ ] Set up Delivery Framework directory structure
+- [ ] Run bootstrap commands (scaffold, tooling, workspace)
 - [ ] Add Field Notes llms-full.txt URL to CLAUDE.md
 - [ ] Configure Claude Code (CLAUDE.md, rules, first-try test)
 - [ ] Set up git conventions (branch prefixes, commit format)
@@ -3393,25 +3753,11 @@ Across all techniques, the goal is the same: find the smallest set of high-signa
 
 This section documents patterns, research findings, and practical frameworks for working effectively with AI coding agents. The goal is to move beyond ad-hoc prompting toward systematic, repeatable workflows that compound in value over time.
 
-## What You'll Find Here
+## Start Here
 
-### Concepts
+## Concepts
 
-**[Context Engineering](/claude/context-engineering)** — The discipline that replaced prompt engineering. Strategies for curating the optimal set of tokens during LLM inference, including runtime retrieval, progressive disclosure, compaction, and sub-agent architectures.
-
-**[CLAUDE.md Playbook](/claude/claude-md-playbook)** — The `CLAUDE.md` file is the primary interface between your codebase and an AI agent. Research shows that having one improves agent efficiency — but only if it is human-written, minimal, and actively maintained.
-
-**[Agent Efficiency Research](/claude/agent-efficiency)** — Two prominent studies reached seemingly contradictory conclusions about the value of agent context files. This page reconciles them: context files work, but authorship and size matter enormously.
-
-**[Research to Validation Pathway](/claude/research-to-validation)** — A five-step process — Research, Synthesis, Prototype Creation, Validation, Outcome — that keeps agent-generated work traceable back to the decisions that motivated it.
-
-### Practical
-
-**[Claude Code Setup](/claude/claude-code-setup)** — Practical guide for configuring Claude Code on a new project: CLAUDE.md sizing, rules with glob activation, hooks for automation, and session management.
-
-**[Skill-Based Automation](/claude/skills-patterns)** — Common skill categories observed across projects, structural best practices, and the design principles behind effective skills.
-
-**[Workflow Architectures](/claude/workflow-architectures)** — Survey of proven workflow patterns: Command → Agent → Skill, Holy Trinity, TDD-first, spec-driven, wave execution, and parallel review.
+## Practical
 
 ## Guiding Principles
 
@@ -3558,6 +3904,177 @@ Include a `VALIDATION.md` template in your repository so that the structure is c
 ### Keep synthesized documents alive
 
 Synthesized documents are living artifacts. As research evolves — new user interviews, updated requirements, revised priorities — the synthesized documents should be updated accordingly. Stale synthesis leads to prototypes built on outdated assumptions.
+
+### Skills Catalogue
+
+*A directory of available Claude skills with descriptions, trigger phrases, and usage guidance.*
+
+Skills are reusable instruction sets that Claude follows for specific workflows. Instead of re-explaining the same process each conversation, you invoke a skill and the agent follows a tested, consistent playbook.
+
+For how skills work and how to create them, see [Skill-Based Automation](/claude/skills-patterns).
+
+## Quick Start
+
+## Available Skills
+
+### start-issue
+
+**Invoke:** `/start-issue` | **Status:** Available
+
+Bootstraps work on an existing GitHub issue. Creates a correctly named branch, sets up commit conventions, and establishes the PR workflow.
+
+**When to use it:** When you have a GitHub issue number and want to start coding.
+
+**What it asks you:** The issue number or URL.
+
+**What it produces:**
+- A branch with the correct prefix (`feat/`, `fix/`, `chore/`, etc.)
+- Commit messages following Conventional Commits format
+- A PR workflow with automated review first, then manual review
+
+---
+
+### start-work
+
+**Invoke:** `/start-work` | **Status:** Available
+
+Begins a new piece of work that does not have an existing GitHub issue. Captures context as a written brief, sets up the branch, and guides commits.
+
+**When to use it:** When starting from scratch — a new feature idea, a refactor, an experiment — without a formal issue.
+
+**What it asks you:** What you are trying to accomplish, the scope, and any constraints.
+
+**What it produces:**
+- A context brief documenting the work
+- A correctly named branch
+- Guided commit workflow
+
+---
+
+### add-domain
+
+**Invoke:** `/add-domain` | **Status:** Available
+
+Adds a new content domain to Field Notes following the full setup checklist.
+
+**When to use it:** When the knowledge base needs a new top-level section (e.g., a new discipline or topic area).
+
+**What it asks you:** The domain name and description.
+
+**What it produces:**
+- Source configuration in `source.config.ts`
+- Loader in `lib/source.ts`
+- Route files (`layout.tsx`, `page.tsx`)
+- Navigation link
+- Content directory with `meta.json` and `index.mdx`
+- Domain entry in the llms.txt generation script
+
+---
+
+### add-page
+
+**Invoke:** `/add-page` | **Status:** Available
+
+Adds a new page to an existing Field Notes domain.
+
+**When to use it:** When you want to add a new topic page to an existing domain.
+
+**What it asks you:** The domain, page title, and description.
+
+**What it produces:**
+- An `.mdx` file with correct frontmatter
+- Updated `meta.json` with the new page entry
+- Regenerated `llms.txt` and `llms-full.txt`
+
+---
+
+### review-uplift
+
+**Invoke:** `/review-uplift` | **Status:** Available
+
+Fetches all GitHub issues labelled `review-finding` for a specific component, groups fixes by file, sequences them respecting dependencies, and applies all changes in a single branch.
+
+**When to use it:** After a design system review has generated findings that need to be resolved.
+
+**What it asks you:** The component name.
+
+**What it produces:**
+- A branch with all fixes applied
+- Commits grouped logically by file
+- A PR ready for review
+
+---
+
+### skill-creator
+
+**Invoke:** `/skill-creator` | **Status:** Available
+
+Creates new skills, modifies existing skills, runs evaluations to test them, and benchmarks performance.
+
+**When to use it:** When you need to encode a new workflow as a reusable skill, improve an existing skill, or verify a skill works correctly.
+
+**What it asks you:** What the skill should do, or which existing skill to modify.
+
+**What it produces:**
+- A `SKILL.md` file with name, description, triggers, and instructions
+- Evaluation results if testing was requested
+- Performance benchmarks if optimisation was requested
+
+---
+
+### new-project
+
+**Invoke:** `/new-project` | **Status:** Planned
+
+Bootstraps a complete project from an empty directory to a running CI pipeline. Walks through an interview phase to gather decisions, then executes scaffolding phases.
+
+**When to use it:** When starting a brand new project — creating the repo, setting up the monorepo, wiring the first app.
+
+**What it will ask you:**
+- Project name and scope
+- Package manager preference
+- Framework choice
+- Monorepo vs single-repo
+- External services needed
+- Design system scope
+- Whether a Figma project is needed
+
+**What it will produce:**
+- A fully scaffolded repository following [Bootstrap Commands](/platform/bootstrap-commands)
+- CLAUDE.md and AI context configured
+- CI pipeline ready
+- Living documents initialised
+
+---
+
+### new-figma-project
+
+**Invoke:** `/new-figma-project` | **Status:** Planned
+
+Scaffolds a Figma design system file with standard pages, token collections, and documentation structure using Figma MCP tools.
+
+**When to use it:** When setting up a new Figma file for a design system, whether as part of a new project or adding design tooling to an existing one.
+
+**What it will ask you:**
+- Project name
+- Colour palette or brand colour
+- Typography (heading and body font families)
+- Breakpoint targets and root font sizes
+- Component scope
+
+**What it will produce:**
+- Standard documentation pages (Cover, Colour, Typography, Spacing, Border Radius, Components)
+- Token collections (3 primitive + 3 semantic)
+- Reusable documentation components (Header, Token Row, Section Header)
+- Variable-bound swatches on all token pages
+
+## Installing Skills
+
+Skills live at `~/.claude/skills/{skill-name}/SKILL.md`. To use a skill:
+
+Skills are portable — you can copy a skill directory between machines or share it with teammates. The skill's `SKILL.md` contains everything the agent needs.
+
+## See Also
 
 ### Skill-Based Automation
 
@@ -4422,6 +4939,242 @@ SELECT count(*) FROM prospects; -- Should return 0
 
 Test RLS policies with seed data during the scaffolding phase (see [Scaffolding-First Approach](/platform/scaffolding-first)), not after features are built.
 
+### Bootstrap Commands
+
+*Executable CLI sequences for each scaffolding phase, from empty directory to running CI.*
+
+This page provides the executable CLI commands for each phase of the [Scaffolding-First Approach](/platform/scaffolding-first). That page explains the why; this page provides the how.
+
+### Phase 1: Monorepo Scaffold
+
+Set up the workspace structure, package manager, and shared tooling.
+
+```bash
+# Initialize root package
+pnpm init
+
+# Install workspace tooling
+pnpm add -D turbo typescript eslint prettier husky lint-staged
+
+# Create workspace configuration
+cat > pnpm-workspace.yaml << 'EOF'
+packages:
+  - "apps/*"
+  - "packages/*"
+EOF
+
+# Create Turborepo configuration
+cat > turbo.json << 'EOF'
+{
+  "$schema": "https://turbo.build/schema.json",
+  "pipeline": {
+    "build": {
+      "dependsOn": ["^build"],
+      "outputs": [".next/**", "dist/**"]
+    },
+    "lint": {},
+    "typecheck": {
+      "dependsOn": ["^build"]
+    },
+    "dev": {
+      "cache": false,
+      "persistent": true
+    }
+  }
+}
+EOF
+
+# Create directory structure
+mkdir -p apps packages
+
+# Create shared TypeScript configuration
+cat > tsconfig.base.json << 'EOF'
+{
+  "compilerOptions": {
+    "strict": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "moduleResolution": "bundler",
+    "module": "ESNext",
+    "target": "ES2022",
+    "lib": ["ES2022", "DOM", "DOM.Iterable"],
+    "jsx": "react-jsx",
+    "declaration": true,
+    "declarationMap": true,
+    "sourceMap": true
+  }
+}
+EOF
+
+# Set up pre-commit hooks
+pnpm exec husky init
+echo 'pnpm exec lint-staged' > .husky/pre-commit
+```
+
+Add lint-staged configuration to the root `package.json`:
+
+```json
+{
+  "lint-staged": {
+    "*.{ts,tsx}": ["eslint --fix", "prettier --write"],
+    "*.{json,md,mdx,yaml}": ["prettier --write"]
+  }
+}
+```
+
+### Phase 2: AI Context
+
+Set up the AI agent configuration so agents can work in the repo from day one.
+
+```bash
+# Create CLAUDE.md
+cat > CLAUDE.md << 'EOF'
+# {project-name}
+
+## Commands
+
+- `pnpm install` — install all dependencies
+- `pnpm turbo build` — build all packages and apps
+- `pnpm turbo dev` — start all dev servers
+- `pnpm turbo lint` — lint all packages
+- `pnpm turbo typecheck` — type-check all packages
+
+## Structure
+
+Monorepo using pnpm workspaces + Turborepo.
+
+- `apps/` — deployable applications
+- `packages/` — shared libraries (import via `@{project-name}/package-name`)
+
+## Git
+
+- Branch prefixes: `feat/`, `fix/`, `docs/`, `refactor/`, `chore/`
+- Commits: Conventional Commits — `type(scope): description`
+
+## Reference
+
+See https://bysixteen.github.io/field-notes/llms-full.txt for design engineering patterns.
+EOF
+
+# Create rules directory
+mkdir -p .claude/rules
+```
+
+### Phase 3: First Application
+
+Scaffold the first application and wire it into the workspace.
+
+</Tabs>
+
+After scaffolding, update the app's `package.json` name to use the workspace scope:
+
+```json
+{
+  "name": "@{project-name}/web"
+}
+```
+
+### Phase 4: Design System Package
+
+Create a shared design system package that apps import from.
+
+```bash
+# Create package directory
+mkdir -p packages/design-system/src
+
+# Initialize package
+cat > packages/design-system/package.json << 'EOF'
+{
+  "name": "@{project-name}/design-system",
+  "version": "0.0.0",
+  "main": "./src/index.ts",
+  "types": "./src/index.ts",
+  "scripts": {
+    "build": "tsc",
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint src/"
+  }
+}
+EOF
+
+# Create TypeScript configuration
+cat > packages/design-system/tsconfig.json << 'EOF'
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "outDir": "dist",
+    "rootDir": "src"
+  },
+  "include": ["src"]
+}
+EOF
+
+# Create barrel export
+cat > packages/design-system/src/index.ts << 'EOF'
+// Design system entry point
+// Export tokens, components, and utilities from here
+EOF
+```
+
+Add the dependency to your app:
+
+```bash
+cd apps/web
+pnpm add @{project-name}/design-system@workspace:*
+cd ../..
+```
+
+### Phase 5: CI Pipeline
+
+Add GitHub Actions to run checks on every pull request.
+
+```bash
+mkdir -p .github/workflows
+
+cat > .github/workflows/ci.yml << 'EOF'
+name: CI
+on:
+  pull_request:
+    branches: [main]
+
+jobs:
+  checks:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v2
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'pnpm'
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm turbo lint typecheck
+EOF
+```
+
+</Steps>
+
+## Full Verification Checklist
+
+After completing all phases, verify the entire stack:
+
+```markdown
+- [ ] `git log` shows commits for each phase
+- [ ] `pnpm install` succeeds with no warnings
+- [ ] `pnpm turbo build` builds all packages and apps
+- [ ] `pnpm turbo dev` starts the dev server
+- [ ] `pnpm turbo lint` passes
+- [ ] `pnpm turbo typecheck` passes
+- [ ] CLAUDE.md is accurate and complete
+- [ ] A fresh clone + `pnpm install` + `pnpm turbo build` works
+- [ ] PR to main triggers CI and passes
+```
+
+## See Also
+
 ### Data Architecture Patterns
 
 *Splitting transactional and editorial data across purpose-built services.*
@@ -4597,6 +5350,94 @@ Consistent naming and structural conventions across the transactional database:
 
 The split pays for itself on any platform where both transactional workflows and editorial content are first-class concerns. If the platform is purely transactional (no content authoring), a CMS may be unnecessary. If it is purely editorial (no user data or workflows), a relational database may be overkill.
 
+### Dependency Catalogue
+
+*Curated package selections grouped by purpose, with alternatives and usage guidance.*
+
+A curated list of packages grouped by purpose. Each entry reflects real project experience — packages that have proven reliable, well-maintained, and composable. This is a starting point, not a mandate.
+
+## Build and Tooling
+
+| Package | Purpose | When to Use | Alternative |
+| --- | --- | --- | --- |
+| `turbo` | Monorepo task orchestration and caching | Any multi-package repo | `nx` |
+| `typescript` | Type-safe JavaScript | Every project | — |
+| `eslint` | Code linting and static analysis | Every project | `biome` |
+| `prettier` | Code formatting | Every project | `biome` |
+| `husky` | Git hook management | Projects with pre-commit checks | `simple-git-hooks` |
+| `lint-staged` | Run linters on staged files only | Paired with husky | — |
+
+## Framework
+
+| Package | Purpose | When to Use | Alternative |
+| --- | --- | --- | --- |
+| `next` | Full-stack React framework | Web apps needing SSR, API routes, or ISR | `remix` |
+| `react` | UI component library | Any React-based project | `preact` (smaller bundle) |
+| `vite` | Dev server and build tool | SPAs, prototypes, Storybook | — |
+| `@vitejs/plugin-react` | React support for Vite | Vite + React projects | `@vitejs/plugin-react-swc` |
+
+## UI and Components
+
+| Package | Purpose | When to Use | Alternative |
+| --- | --- | --- | --- |
+| `@radix-ui/react-*` | Accessible, unstyled UI primitives | When you need accessible building blocks without opinionated styling | `@headlessui/react` |
+| `lucide-react` | Icon library (tree-shakeable SVGs) | Any project needing icons | `@phosphor-icons/react` |
+| `cva` | Class variance authority — variant management for className-based styling | Components with multiple visual variants | Hand-written conditional classNames |
+| `clsx` | Conditional className composition | Any project joining classNames | `cn` utility (clsx + tailwind-merge) |
+
+## Data and API
+
+| Package | Purpose | When to Use | Alternative |
+| --- | --- | --- | --- |
+| `zod` | Runtime schema validation and type inference | API boundaries, form validation, environment variable parsing | `valibot` (smaller bundle) |
+| `@supabase/supabase-js` | Supabase client (auth, database, storage, realtime) | Projects using Supabase | Direct `pg` client |
+| `@sanity/client` | Sanity CMS client | Projects using Sanity as editorial CMS | `contentlayer` |
+| `@tanstack/react-query` | Server state management with caching | Any app fetching remote data | `swr` |
+
+## Email
+
+| Package | Purpose | When to Use | Alternative |
+| --- | --- | --- | --- |
+| `resend` | Transactional email API | Projects needing reliable email delivery | `@sendgrid/mail` |
+| `@react-email/components` | React components for email templates | When emails need consistent branding and layout | `mjml` |
+
+## Charting and Visualization
+
+| Package | Purpose | When to Use | Alternative |
+| --- | --- | --- | --- |
+| `recharts` | Declarative React charts | Dashboards, reports, standard chart types | `@nivo/core` |
+| `d3` | Low-level data visualization | Custom visualizations, maps, complex interactions | `visx` (React + D3) |
+
+## Testing
+
+| Package | Purpose | When to Use | Alternative |
+| --- | --- | --- | --- |
+| `vitest` | Unit and integration testing | Vite-based projects | `jest` |
+| `@testing-library/react` | React component testing utilities | Any React test suite | `enzyme` (deprecated) |
+| `playwright` | Cross-browser E2E testing | Critical user journeys | `cypress` |
+| `msw` | API mocking via service workers | Tests and development with mock APIs | `nock` |
+
+## Animation
+
+| Package | Purpose | When to Use | Alternative |
+| --- | --- | --- | --- |
+| `gsap` | High-performance animation library | Complex sequences, scroll-driven animations, timeline control | `anime.js` |
+| `framer-motion` | Declarative React animation | Component transitions, layout animations, gestures | `react-spring` |
+
+## Versioning Policy
+
+- Update regularly. Apply minor/patch updates in a dedicated PR with a passing CI build.
+- Audit before adding. Before adding a new dependency, check: Is there already a package in the repo that does this? Is the package actively maintained? What is the bundle size impact?
+
+## Anti-Patterns
+
+- **Duplicate functionality.** Two packages solving the same problem (e.g., both `axios` and `fetch` wrappers).
+- **Abandoned packages.** Dependencies with no updates in 12+ months and open security advisories.
+- **Kitchen-sink imports.** Importing an entire utility library for one function. Prefer tree-shakeable packages or copy the single function.
+- **Transitive dependency reliance.** Using a package that is only available because another package depends on it. Always add explicit dependencies for packages you import directly.
+
+## See Also
+
 ### Documentation Hub Pattern
 
 *Multi-collection knowledge base with llms.txt generation for AI-consumable documentation.*
@@ -4717,19 +5558,19 @@ The documentation hub pattern embodies several [core principles](/principles):
 
 These are architectural patterns distilled from real platform builds. Each pattern represents hard-won decisions about how to structure codebases, split data responsibilities, enforce security, and maintain auditability.
 
-**Architecture Patterns** are genuinely project-agnostic — they apply regardless of repository structure, framework choice, or team size. **Monorepo Patterns** are transferable across monorepo projects but assume a pnpm workspaces + Turborepo setup. If your project uses a different structure, the architecture patterns still apply; adapt the monorepo patterns to your context or skip them.
+## Start Here
 
-## Quick Reference
+## Architecture Patterns
 
-| Pattern | Description |
-| --- | --- |
-| [Data Architecture](/platform/data-architecture) | Split transactional data (relational DB) from editorial content (headless CMS) by purpose. |
-| [Auth & Row-Level Security](/platform/auth-rls) | JWT custom claims with database-level RLS policies for defense-in-depth authorization. |
-| [Audit-First Architecture](/platform/audit-first) | Append-only event tables that capture every state transition for full history and compliance. |
-| [Documentation Hub](/platform/documentation-hub) | Multi-collection knowledge base with llms.txt generation for AI-consumable documentation. |
-| [Monorepo Architecture](/platform/monorepo) | pnpm workspaces + Turborepo for shared-code platform builds with consistent tooling. |
-| [Three-Application Model](/platform/three-app-model) | Admin portal, public site, and internal wiki deployed independently from a shared codebase. |
-| [Scaffolding-First Approach](/platform/scaffolding-first) | Complete all infrastructure and external service setup before writing any feature code. |
+Project-agnostic patterns that apply regardless of repository structure, framework choice, or team size.
+
+## Monorepo Patterns
+
+Transferable across monorepo projects. Assumes pnpm workspaces + Turborepo.
+
+## Bootstrapping
+
+Actionable guides for getting a project off the ground.
 
 ## How to Use These Patterns
 
@@ -4757,6 +5598,8 @@ A monorepo houses all platform applications and shared packages in a single repo
 - You want a single PR to update a shared component and every app that uses it.
 
 ## Repository Structure
+
+> For the CLI commands that create this structure, see [Bootstrap Commands](/platform/bootstrap-commands).
 
 ```
 platform/
@@ -4791,6 +5634,8 @@ Shared code lives in `packages/`. Each package is a self-contained module with a
 Directories like `supabase/` and `sanity/` sit at the root level. They contain configuration, schemas, and migrations for external services. They are not npm packages — they have their own CLIs and deployment workflows.
 
 ## Tooling
+
+> See the [Dependency Catalogue](/platform/dependency-catalogue) for the full list of recommended packages.
 
 ### pnpm Workspaces
 
@@ -5012,6 +5857,8 @@ Each service is tested in isolation before moving on. If a service doesn't work 
 
 ### Phase 2: Monorepo Scaffold
 
+> For the executable CLI commands for this phase, see [Bootstrap Commands](/platform/bootstrap-commands).
+
 With external services verified, build the repository structure:
 
 - Initialize the monorepo with pnpm workspaces and Turborepo.
@@ -5021,6 +5868,8 @@ With external services verified, build the repository structure:
 - Verify that `pnpm install`, `pnpm turbo build`, and `pnpm turbo dev` all work.
 
 ### Phase 3: Design System Foundation
+
+> For recommended packages, see the [Dependency Catalogue](/platform/dependency-catalogue).
 
 Before any feature UI, establish the design system:
 
@@ -5127,6 +5976,113 @@ Stakeholders test in UAT. Issues found in UAT are fixed before production deploy
 | Features last | Every feature builds on verified, tested infrastructure. |
 
 The scaffolding-first approach is slower at the start and dramatically faster in the middle and end. The total build time is shorter because there is no rework from foundation-level surprises.
+
+### Stack Decisions
+
+*Record technology choices and their rationale before writing code.*
+
+Every project makes technology choices. Most teams make them implicitly — someone picks a tool, everyone else follows, and six months later nobody remembers why. Stack decisions makes these choices explicit and reversible by documenting them upfront.
+
+## Why This Matters
+
+Implicit choices create three problems:
+
+1. **New team members can't understand the reasoning.** They see the tool but not the trade-off that led to it.
+2. **Revisiting decisions is impossible.** Without recorded rationale, every discussion starts from scratch.
+3. **Inconsistency creeps in.** Different developers make different assumptions, leading to multiple tools solving the same problem.
+
+Recording stack decisions takes minutes. Debugging the consequences of unrecorded decisions takes days.
+
+## Decision Categories
+
+### Package Manager
+
+| Option | Strengths | Best For |
+| --- | --- | --- |
+| pnpm | Fast installs, disk-efficient, strict dependency resolution, native workspace support | Monorepos, teams that want strict correctness |
+| npm | Zero setup (ships with Node.js), largest ecosystem familiarity | Single-repo projects, teams new to Node.js |
+| yarn | Plug'n'Play for zero-install, good workspace support | Projects that need offline installs |
+
+### Build System
+
+| Option | Strengths | Best For |
+| --- | --- | --- |
+| Turborepo | Simple configuration, fast caching, understands dependency graph | pnpm monorepos with multiple apps |
+| Nx | Rich plugin ecosystem, computation caching, affected-based testing | Large teams, enterprise monorepos |
+| None | No overhead | Single-app, single-package projects |
+
+### Framework
+
+| Option | Strengths | Best For |
+| --- | --- | --- |
+| Next.js | Server-side rendering, API routes, image optimization, mature ecosystem | Full-stack web applications |
+| Vite + React | Fast dev server, minimal config, lean output | Prototypes, SPAs, admin tools |
+| Astro | Content-first, minimal JS by default, island architecture | Marketing sites, documentation |
+
+### Language Configuration
+
+| Option | Strengths | Best For |
+| --- | --- | --- |
+| TypeScript (strict) | Maximum type safety, catches bugs at compile time | Any project that will be maintained |
+| TypeScript (relaxed) | Faster onboarding, fewer type gymnastics | Quick prototypes, exploration |
+| JavaScript | No compilation step, lower barrier to entry | Scripts, simple tools |
+
+### Styling
+
+| Option | Strengths | Best For |
+| --- | --- | --- |
+| CSS Custom Properties | Native browser support, runtime theming, design token friendly | Design system projects, multi-theme apps |
+| Tailwind CSS | Rapid prototyping, consistent spacing/color scales, small output | Marketing sites, content-heavy pages |
+| CSS Modules | Scoped by default, no runtime cost, familiar syntax | Component libraries, apps with complex layouts |
+
+### Testing
+
+| Option | Strengths | Best For |
+| --- | --- | --- |
+| Vitest | Fast, ESM-native, compatible with Vite config | Vite-based projects, modern codebases |
+| Jest | Mature ecosystem, extensive mocking, widespread familiarity | Next.js projects, teams with existing Jest tests |
+| Playwright | Cross-browser E2E, reliable selectors, built-in test generator | User journey testing, critical flows |
+| Cypress | Interactive runner, time-travel debugging, component testing | Teams that prefer visual test development |
+
+## The ADR Template
+
+Use a lightweight Architecture Decision Record for each choice:
+
+```markdown
+## ADR: {Decision Title}
+
+**Status:** Accepted | Superseded | Deprecated
+**Date:** {YYYY-MM-DD}
+
+### Context
+What is the situation? What forces are at play?
+
+### Decision
+What did we choose and why?
+
+### Consequences
+What becomes easier? What becomes harder?
+What are we explicitly accepting as a trade-off?
+```
+
+Keep ADRs in a `DECISIONS.md` file at the project root. Number them sequentially. When a decision is superseded, link to the replacement — don't delete the original.
+
+## Anti-Pattern: Implicit Choices
+
+Signs that stack decisions are missing:
+
+- Two different testing frameworks appear in the same repo.
+- A developer asks "why do we use X?" and nobody can answer.
+- A dependency is added that duplicates functionality already present.
+- The team debates the same tool choice in multiple PRs.
+
+The fix is always the same: write down the decision, even retroactively.
+
+## See Also
+
+- [Scaffolding-First Approach](/platform/scaffolding-first) — when to make these decisions in the project timeline
+- [Monorepo Architecture](/platform/monorepo) — how stack decisions shape repository structure
+- [Dependency Catalogue](/platform/dependency-catalogue) — curated package selections by category
 
 ### Three-Application Model
 

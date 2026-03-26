@@ -1,0 +1,102 @@
+---
+title: Dependency Catalogue
+description: Curated package selections grouped by purpose, with alternatives and usage guidance.
+---
+
+A curated list of packages grouped by purpose. Each entry reflects real project experience — packages that have proven reliable, well-maintained, and composable. This is a starting point, not a mandate.
+
+## Build and Tooling
+
+| Package | Purpose | When to Use | Alternative |
+| --- | --- | --- | --- |
+| `turbo` | Monorepo task orchestration and caching | Any multi-package repo | `nx` |
+| `typescript` | Type-safe JavaScript | Every project | — |
+| `eslint` | Code linting and static analysis | Every project | `biome` |
+| `prettier` | Code formatting | Every project | `biome` |
+| `husky` | Git hook management | Projects with pre-commit checks | `simple-git-hooks` |
+| `lint-staged` | Run linters on staged files only | Paired with husky | — |
+
+## Framework
+
+| Package | Purpose | When to Use | Alternative |
+| --- | --- | --- | --- |
+| `next` | Full-stack React framework | Web apps needing SSR, API routes, or ISR | `remix` |
+| `react` | UI component library | Any React-based project | `preact` (smaller bundle) |
+| `vite` | Dev server and build tool | SPAs, prototypes, Storybook | — |
+| `@vitejs/plugin-react` | React support for Vite | Vite + React projects | `@vitejs/plugin-react-swc` |
+
+## UI and Components
+
+| Package | Purpose | When to Use | Alternative |
+| --- | --- | --- | --- |
+| `@radix-ui/react-*` | Accessible, unstyled UI primitives | When you need accessible building blocks without opinionated styling | `@headlessui/react` |
+| `lucide-react` | Icon library (tree-shakeable SVGs) | Any project needing icons | `@phosphor-icons/react` |
+| `cva` | Class variance authority — variant management for className-based styling | Components with multiple visual variants | Hand-written conditional classNames |
+| `clsx` | Conditional className composition | Any project joining classNames | `cn` utility (clsx + tailwind-merge) |
+
+## Data and API
+
+| Package | Purpose | When to Use | Alternative |
+| --- | --- | --- | --- |
+| `zod` | Runtime schema validation and type inference | API boundaries, form validation, environment variable parsing | `valibot` (smaller bundle) |
+| `@supabase/supabase-js` | Supabase client (auth, database, storage, realtime) | Projects using Supabase | Direct `pg` client |
+| `@sanity/client` | Sanity CMS client | Projects using Sanity as editorial CMS | `contentlayer` |
+| `@tanstack/react-query` | Server state management with caching | Any app fetching remote data | `swr` |
+
+## Email
+
+| Package | Purpose | When to Use | Alternative |
+| --- | --- | --- | --- |
+| `resend` | Transactional email API | Projects needing reliable email delivery | `@sendgrid/mail` |
+| `@react-email/components` | React components for email templates | When emails need consistent branding and layout | `mjml` |
+
+## Charting and Visualization
+
+| Package | Purpose | When to Use | Alternative |
+| --- | --- | --- | --- |
+| `recharts` | Declarative React charts | Dashboards, reports, standard chart types | `@nivo/core` |
+| `d3` | Low-level data visualization | Custom visualizations, maps, complex interactions | `visx` (React + D3) |
+
+## Testing
+
+| Package | Purpose | When to Use | Alternative |
+| --- | --- | --- | --- |
+| `vitest` | Unit and integration testing | Vite-based projects | `jest` |
+| `@testing-library/react` | React component testing utilities | Any React test suite | `enzyme` (deprecated) |
+| `playwright` | Cross-browser E2E testing | Critical user journeys | `cypress` |
+| `msw` | API mocking via service workers | Tests and development with mock APIs | `nock` |
+
+## Animation
+
+| Package | Purpose | When to Use | Alternative |
+| --- | --- | --- | --- |
+| `gsap` | High-performance animation library | Complex sequences, scroll-driven animations, timeline control | `anime.js` |
+| `framer-motion` | Declarative React animation | Component transitions, layout animations, gestures | `react-spring` |
+
+## Versioning Policy
+
+<Callout type="info">
+**Pin major versions.** Use `^` (caret) ranges in `package.json` to allow patch and minor updates while preventing breaking changes. Run `pnpm outdated` monthly.
+</Callout>
+
+- Update regularly. Apply minor/patch updates in a dedicated PR with a passing CI build.
+- Audit before adding. Before adding a new dependency, check: Is there already a package in the repo that does this? Is the package actively maintained? What is the bundle size impact?
+
+<Callout type="error">
+**Lock files are sacred.** Always commit `pnpm-lock.yaml` (or equivalent). Never delete it to "fix" install issues — investigate the root cause.
+</Callout>
+
+## Anti-Patterns
+
+- **Duplicate functionality.** Two packages solving the same problem (e.g., both `axios` and `fetch` wrappers).
+- **Abandoned packages.** Dependencies with no updates in 12+ months and open security advisories.
+- **Kitchen-sink imports.** Importing an entire utility library for one function. Prefer tree-shakeable packages or copy the single function.
+- **Transitive dependency reliance.** Using a package that is only available because another package depends on it. Always add explicit dependencies for packages you import directly.
+
+## See Also
+
+<Cards>
+  <Card title="Stack Decisions" description="Record and justify technology choices" href="/platform/stack-decisions" />
+  <Card title="Bootstrap Commands" description="CLI sequences for installing these packages" href="/platform/bootstrap-commands" />
+  <Card title="Monorepo Architecture" description="How packages are organized in a multi-app repo" href="/platform/monorepo" />
+</Cards>

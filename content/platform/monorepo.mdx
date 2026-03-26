@@ -16,6 +16,8 @@ A monorepo houses all platform applications and shared packages in a single repo
 
 ## Repository Structure
 
+> For the CLI commands that create this structure, see [Bootstrap Commands](/platform/bootstrap-commands).
+
 ```
 platform/
 ├── apps/
@@ -49,6 +51,8 @@ Shared code lives in `packages/`. Each package is a self-contained module with a
 Directories like `supabase/` and `sanity/` sit at the root level. They contain configuration, schemas, and migrations for external services. They are not npm packages — they have their own CLIs and deployment workflows.
 
 ## Tooling
+
+> See the [Dependency Catalogue](/platform/dependency-catalogue) for the full list of recommended packages.
 
 ### pnpm Workspaces
 

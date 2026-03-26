@@ -1,0 +1,212 @@
+---
+title: Skills Catalogue
+description: A directory of available Claude skills with descriptions, trigger phrases, and usage guidance.
+---
+
+Skills are reusable instruction sets that Claude follows for specific workflows. Instead of re-explaining the same process each conversation, you invoke a skill and the agent follows a tested, consistent playbook.
+
+For how skills work and how to create them, see [Skill-Based Automation](/claude/skills-patterns).
+
+## Quick Start
+
+<Cards>
+  <Card title="start-issue" description="Pick up a GitHub issue with correct branching and conventions" href="#start-issue" />
+  <Card title="start-work" description="Begin new work that has no existing issue" href="#start-work" />
+  <Card title="add-domain" description="Add a new domain to Field Notes" href="#add-domain" />
+  <Card title="add-page" description="Add a new page to a Field Notes domain" href="#add-page" />
+  <Card title="review-uplift" description="Apply fixes for all review findings on a component" href="#review-uplift" />
+  <Card title="skill-creator" description="Create, edit, or evaluate skills" href="#skill-creator" />
+  <Card title="new-project" description="Bootstrap an entire project from scratch" href="#new-project" />
+  <Card title="new-figma-project" description="Scaffold a Figma design system file" href="#new-figma-project" />
+</Cards>
+
+## Available Skills
+
+### start-issue
+
+**Invoke:** `/start-issue` | **Status:** Available
+
+Bootstraps work on an existing GitHub issue. Creates a correctly named branch, sets up commit conventions, and establishes the PR workflow.
+
+**When to use it:** When you have a GitHub issue number and want to start coding.
+
+**What it asks you:** The issue number or URL.
+
+**What it produces:**
+- A branch with the correct prefix (`feat/`, `fix/`, `chore/`, etc.)
+- Commit messages following Conventional Commits format
+- A PR workflow with automated review first, then manual review
+
+---
+
+### start-work
+
+**Invoke:** `/start-work` | **Status:** Available
+
+Begins a new piece of work that does not have an existing GitHub issue. Captures context as a written brief, sets up the branch, and guides commits.
+
+**When to use it:** When starting from scratch — a new feature idea, a refactor, an experiment — without a formal issue.
+
+**What it asks you:** What you are trying to accomplish, the scope, and any constraints.
+
+**What it produces:**
+- A context brief documenting the work
+- A correctly named branch
+- Guided commit workflow
+
+---
+
+### add-domain
+
+**Invoke:** `/add-domain` | **Status:** Available
+
+Adds a new content domain to Field Notes following the full setup checklist.
+
+**When to use it:** When the knowledge base needs a new top-level section (e.g., a new discipline or topic area).
+
+**What it asks you:** The domain name and description.
+
+**What it produces:**
+- Source configuration in `source.config.ts`
+- Loader in `lib/source.ts`
+- Route files (`layout.tsx`, `page.tsx`)
+- Navigation link
+- Content directory with `meta.json` and `index.mdx`
+- Domain entry in the llms.txt generation script
+
+---
+
+### add-page
+
+**Invoke:** `/add-page` | **Status:** Available
+
+Adds a new page to an existing Field Notes domain.
+
+**When to use it:** When you want to add a new topic page to an existing domain.
+
+**What it asks you:** The domain, page title, and description.
+
+**What it produces:**
+- An `.mdx` file with correct frontmatter
+- Updated `meta.json` with the new page entry
+- Regenerated `llms.txt` and `llms-full.txt`
+
+---
+
+### review-uplift
+
+**Invoke:** `/review-uplift` | **Status:** Available
+
+Fetches all GitHub issues labelled `review-finding` for a specific component, groups fixes by file, sequences them respecting dependencies, and applies all changes in a single branch.
+
+**When to use it:** After a design system review has generated findings that need to be resolved.
+
+**What it asks you:** The component name.
+
+**What it produces:**
+- A branch with all fixes applied
+- Commits grouped logically by file
+- A PR ready for review
+
+---
+
+### skill-creator
+
+**Invoke:** `/skill-creator` | **Status:** Available
+
+Creates new skills, modifies existing skills, runs evaluations to test them, and benchmarks performance.
+
+**When to use it:** When you need to encode a new workflow as a reusable skill, improve an existing skill, or verify a skill works correctly.
+
+**What it asks you:** What the skill should do, or which existing skill to modify.
+
+**What it produces:**
+- A `SKILL.md` file with name, description, triggers, and instructions
+- Evaluation results if testing was requested
+- Performance benchmarks if optimisation was requested
+
+---
+
+### new-project
+
+**Invoke:** `/new-project` | **Status:** Planned
+
+<Callout type="warn">
+This skill is planned but not yet available. See [Bootstrap Commands](/platform/bootstrap-commands) for the manual sequence.
+</Callout>
+
+Bootstraps a complete project from an empty directory to a running CI pipeline. Walks through an interview phase to gather decisions, then executes scaffolding phases.
+
+**When to use it:** When starting a brand new project — creating the repo, setting up the monorepo, wiring the first app.
+
+**What it will ask you:**
+- Project name and scope
+- Package manager preference
+- Framework choice
+- Monorepo vs single-repo
+- External services needed
+- Design system scope
+- Whether a Figma project is needed
+
+**What it will produce:**
+- A fully scaffolded repository following [Bootstrap Commands](/platform/bootstrap-commands)
+- CLAUDE.md and AI context configured
+- CI pipeline ready
+- Living documents initialised
+
+---
+
+### new-figma-project
+
+**Invoke:** `/new-figma-project` | **Status:** Planned
+
+<Callout type="warn">
+This skill is planned but not yet available. See [Figma Documentation Rules](/design-system/figma-documentation-rules) for the manual conventions.
+</Callout>
+
+Scaffolds a Figma design system file with standard pages, token collections, and documentation structure using Figma MCP tools.
+
+**When to use it:** When setting up a new Figma file for a design system, whether as part of a new project or adding design tooling to an existing one.
+
+**What it will ask you:**
+- Project name
+- Colour palette or brand colour
+- Typography (heading and body font families)
+- Breakpoint targets and root font sizes
+- Component scope
+
+**What it will produce:**
+- Standard documentation pages (Cover, Colour, Typography, Spacing, Border Radius, Components)
+- Token collections (3 primitive + 3 semantic)
+- Reusable documentation components (Header, Token Row, Section Header)
+- Variable-bound swatches on all token pages
+
+## Installing Skills
+
+Skills live at `~/.claude/skills/{skill-name}/SKILL.md`. To use a skill:
+
+<Steps>
+
+### Ensure the skill directory exists
+
+Check that `~/.claude/skills/{skill-name}/SKILL.md` is present with valid content.
+
+### Invoke the skill
+
+Type `/{skill-name}` in a Claude Code conversation.
+
+### Follow the prompts
+
+The agent reads the skill file and follows its instructions, asking you questions as needed.
+
+</Steps>
+
+Skills are portable — you can copy a skill directory between machines or share it with teammates. The skill's `SKILL.md` contains everything the agent needs.
+
+## See Also
+
+<Cards>
+  <Card title="Skill-Based Automation" description="How skills work, when to create them, and structural best practices" href="/claude/skills-patterns" />
+  <Card title="Workflow Architectures" description="How skills compose with agents and commands" href="/claude/workflow-architectures" />
+  <Card title="Claude Code Setup" description="Setting up the AI agent environment" href="/claude/claude-code-setup" />
+</Cards>

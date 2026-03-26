@@ -7,11 +7,23 @@ When starting a new project, this sequence ties together the patterns documented
 
 ## The Bootstrap Sequence
 
+### Step 0: Make Stack Decisions
+
+Before creating any files, decide on the technology stack. Record each choice with its rationale so the team can revisit decisions later without starting from scratch.
+
+Key decisions: package manager, build system, framework, TypeScript strictness, styling approach, testing tools.
+
+[Read Stack Decisions](/platform/stack-decisions)
+
 ### Step 1: Set Up Project Structure
 
 Create the canonical directory structure from the [Delivery Framework](/principles/delivery-framework) — living documents at the root, sprint records in `docs/`, and a `_meta/PROJECT_CONTEXT.md` describing the project's purpose, users, and constraints.
 
 Optionally set up [Project Squad](/principles/project-squad) personas and commands for structured sprint execution.
+
+Once the structure is in place, run the scaffold commands to install tooling and wire up the workspace.
+
+[Read Bootstrap Commands](/platform/bootstrap-commands)
 
 ### Step 2: Connect to Field Notes
 
@@ -68,8 +80,10 @@ Copy this checklist into your project kickoff document:
 ```markdown
 ## Project Bootstrap
 
+- [ ] Make stack decisions and record in DECISIONS.md
 - [ ] Write `_meta/PROJECT_CONTEXT.md`
 - [ ] Set up Delivery Framework directory structure
+- [ ] Run bootstrap commands (scaffold, tooling, workspace)
 - [ ] Add Field Notes llms-full.txt URL to CLAUDE.md
 - [ ] Configure Claude Code (CLAUDE.md, rules, first-try test)
 - [ ] Set up git conventions (branch prefixes, commit format)

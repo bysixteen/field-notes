@@ -8,7 +8,7 @@ const domains = [
     title: 'Design System',
     description:
       'Multi-dimensional token model, composition rules, naming conventions, and constraints.',
-    pages: 16,
+    pages: 18,
     icon: (
       <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>
     ),
@@ -28,7 +28,7 @@ const domains = [
     title: 'Claude & AI',
     description:
       'Context engineering, CLAUDE.md playbook, Claude Code setup, workflow architectures, and skill-based automation.',
-    pages: 8,
+    pages: 9,
     icon: (
       <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 8V4H8"/><rect width="16" height="12" x="4" y="8" rx="2"/><path d="M2 14h2"/><path d="M20 14h2"/><path d="M15 13v2"/><path d="M9 13v2"/></svg>
     ),
@@ -38,7 +38,7 @@ const domains = [
     title: 'Platform',
     description:
       'Architecture patterns, monorepo structure, data and auth, documentation hub.',
-    pages: 19,
+    pages: 11,
     icon: (
       <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect width="18" height="18" x="3" y="3" rx="2"/><path d="M3 9h18"/><path d="M9 21V9"/></svg>
     ),
@@ -73,6 +73,30 @@ export default function HomePage() {
               <p className="text-fd-muted-foreground text-sm mt-1.5 flex-1">
                 {d.description}
               </p>
+            </Link>
+          ))}
+        </div>
+
+        <h2 className="text-2xl font-bold mb-6 mt-16">I need to...</h2>
+
+        <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">
+          {[
+            { href: '/principles/new-project-checklist', label: 'Start a new project', desc: 'Bootstrap sequence from zero to running CI' },
+            { href: '/claude/claude-code-setup', label: 'Set up Claude Code', desc: 'CLAUDE.md, rules, hooks, and sessions' },
+            { href: '/platform/bootstrap-commands', label: 'Get the CLI commands', desc: 'Copy-paste scaffolding sequences' },
+            { href: '/claude/skills-catalogue', label: 'Find a skill', desc: 'Browse available automation skills' },
+            { href: '/design-system/model', label: 'Understand the token model', desc: 'Six orthogonal dimensions explained' },
+            { href: '/design-system/figma-documentation-rules', label: 'Document in Figma', desc: 'Rules for token pages and components' },
+            { href: '/platform/dependency-catalogue', label: 'Choose packages', desc: 'Curated picks grouped by purpose' },
+            { href: '/platform/stack-decisions', label: 'Record a tech decision', desc: 'ADR template and trade-off tables' },
+          ].map((q) => (
+            <Link
+              key={q.href}
+              href={q.href}
+              className="flex flex-col rounded-lg border bg-fd-card p-4 transition-colors hover:bg-fd-accent"
+            >
+              <span className="font-medium text-sm">{q.label}</span>
+              <span className="text-fd-muted-foreground text-xs mt-1">{q.desc}</span>
             </Link>
           ))}
         </div>

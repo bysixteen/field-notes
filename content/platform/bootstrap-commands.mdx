@@ -1,0 +1,313 @@
+---
+title: Bootstrap Commands
+description: Executable CLI sequences for each scaffolding phase, from empty directory to running CI.
+---
+
+This page provides the executable CLI commands for each phase of the [Scaffolding-First Approach](/platform/scaffolding-first). That page explains the why; this page provides the how.
+
+<Callout type="info">
+All commands use `{project-name}` as a placeholder. Replace it with your actual project name in kebab-case.
+</Callout>
+
+<Steps>
+
+### Phase 0: Repository
+
+Create the repository and make the first commit.
+
+```bash
+# Create and clone the repo
+gh repo create {project-name} --private --clone
+cd {project-name}
+
+# Create .gitignore
+cat > .gitignore << 'EOF'
+node_modules/
+.next/
+dist/
+.turbo/
+.env
+.env.local
+.DS_Store
+EOF
+
+# Initial commit
+git add .gitignore
+git commit -m "chore: initial commit"
+```
+
+<Callout type="success">
+**Done when:** Repository exists on GitHub. `git log` shows one commit.
+</Callout>
+
+### Phase 1: Monorepo Scaffold
+
+Set up the workspace structure, package manager, and shared tooling.
+
+```bash
+# Initialize root package
+pnpm init
+
+# Install workspace tooling
+pnpm add -D turbo typescript eslint prettier husky lint-staged
+
+# Create workspace configuration
+cat > pnpm-workspace.yaml << 'EOF'
+packages:
+  - "apps/*"
+  - "packages/*"
+EOF
+
+# Create Turborepo configuration
+cat > turbo.json << 'EOF'
+{
+  "$schema": "https://turbo.build/schema.json",
+  "pipeline": {
+    "build": {
+      "dependsOn": ["^build"],
+      "outputs": [".next/**", "dist/**"]
+    },
+    "lint": {},
+    "typecheck": {
+      "dependsOn": ["^build"]
+    },
+    "dev": {
+      "cache": false,
+      "persistent": true
+    }
+  }
+}
+EOF
+
+# Create directory structure
+mkdir -p apps packages
+
+# Create shared TypeScript configuration
+cat > tsconfig.base.json << 'EOF'
+{
+  "compilerOptions": {
+    "strict": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "moduleResolution": "bundler",
+    "module": "ESNext",
+    "target": "ES2022",
+    "lib": ["ES2022", "DOM", "DOM.Iterable"],
+    "jsx": "react-jsx",
+    "declaration": true,
+    "declarationMap": true,
+    "sourceMap": true
+  }
+}
+EOF
+
+# Set up pre-commit hooks
+pnpm exec husky init
+echo 'pnpm exec lint-staged' > .husky/pre-commit
+```
+
+Add lint-staged configuration to the root `package.json`:
+
+```json
+{
+  "lint-staged": {
+    "*.{ts,tsx}": ["eslint --fix", "prettier --write"],
+    "*.{json,md,mdx,yaml}": ["prettier --write"]
+  }
+}
+```
+
+<Callout type="success">
+**Done when:** `pnpm install` succeeds. `pnpm turbo build` passes (with no apps, it completes with zero tasks).
+</Callout>
+
+### Phase 2: AI Context
+
+Set up the AI agent configuration so agents can work in the repo from day one.
+
+```bash
+# Create CLAUDE.md
+cat > CLAUDE.md << 'EOF'
+# {project-name}
+
+## Commands
+
+- `pnpm install` — install all dependencies
+- `pnpm turbo build` — build all packages and apps
+- `pnpm turbo dev` — start all dev servers
+- `pnpm turbo lint` — lint all packages
+- `pnpm turbo typecheck` — type-check all packages
+
+## Structure
+
+Monorepo using pnpm workspaces + Turborepo.
+
+- `apps/` — deployable applications
+- `packages/` — shared libraries (import via `@{project-name}/package-name`)
+
+## Git
+
+- Branch prefixes: `feat/`, `fix/`, `docs/`, `refactor/`, `chore/`
+- Commits: Conventional Commits — `type(scope): description`
+
+## Reference
+
+See https://bysixteen.github.io/field-notes/llms-full.txt for design engineering patterns.
+EOF
+
+# Create rules directory
+mkdir -p .claude/rules
+```
+
+<Callout type="success">
+**Done when:** A fresh AI agent can clone the repo, read `CLAUDE.md`, and run `pnpm install && pnpm turbo build` on the first try.
+</Callout>
+
+### Phase 3: First Application
+
+Scaffold the first application and wire it into the workspace.
+
+<Tabs items={["Next.js", "Vite + React"]}>
+<Tab value="Next.js">
+
+```bash
+pnpm create next-app apps/web --typescript --eslint --tailwind --app --src-dir --no-import-alias
+```
+
+</Tab>
+<Tab value="Vite + React">
+
+```bash
+pnpm create vite apps/web --template react-ts
+```
+
+</Tab>
+</Tabs>
+
+After scaffolding, update the app's `package.json` name to use the workspace scope:
+
+```json
+{
+  "name": "@{project-name}/web"
+}
+```
+
+<Callout type="success">
+**Done when:** `pnpm install` resolves workspace dependencies. `pnpm turbo dev` starts the app.
+</Callout>
+
+### Phase 4: Design System Package
+
+Create a shared design system package that apps import from.
+
+```bash
+# Create package directory
+mkdir -p packages/design-system/src
+
+# Initialize package
+cat > packages/design-system/package.json << 'EOF'
+{
+  "name": "@{project-name}/design-system",
+  "version": "0.0.0",
+  "main": "./src/index.ts",
+  "types": "./src/index.ts",
+  "scripts": {
+    "build": "tsc",
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint src/"
+  }
+}
+EOF
+
+# Create TypeScript configuration
+cat > packages/design-system/tsconfig.json << 'EOF'
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "outDir": "dist",
+    "rootDir": "src"
+  },
+  "include": ["src"]
+}
+EOF
+
+# Create barrel export
+cat > packages/design-system/src/index.ts << 'EOF'
+// Design system entry point
+// Export tokens, components, and utilities from here
+EOF
+```
+
+Add the dependency to your app:
+
+```bash
+cd apps/web
+pnpm add @{project-name}/design-system@workspace:*
+cd ../..
+```
+
+<Callout type="success">
+**Done when:** The app can `import {} from '@{project-name}/design-system'` and build successfully.
+</Callout>
+
+### Phase 5: CI Pipeline
+
+Add GitHub Actions to run checks on every pull request.
+
+```bash
+mkdir -p .github/workflows
+
+cat > .github/workflows/ci.yml << 'EOF'
+name: CI
+on:
+  pull_request:
+    branches: [main]
+
+jobs:
+  checks:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v2
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'pnpm'
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm turbo lint typecheck
+EOF
+```
+
+<Callout type="success">
+**Done when:** Push a branch, open a PR. The CI workflow triggers and passes.
+</Callout>
+
+</Steps>
+
+## Full Verification Checklist
+
+After completing all phases, verify the entire stack:
+
+```markdown
+- [ ] `git log` shows commits for each phase
+- [ ] `pnpm install` succeeds with no warnings
+- [ ] `pnpm turbo build` builds all packages and apps
+- [ ] `pnpm turbo dev` starts the dev server
+- [ ] `pnpm turbo lint` passes
+- [ ] `pnpm turbo typecheck` passes
+- [ ] CLAUDE.md is accurate and complete
+- [ ] A fresh clone + `pnpm install` + `pnpm turbo build` works
+- [ ] PR to main triggers CI and passes
+```
+
+## See Also
+
+<Cards>
+  <Card title="Scaffolding-First Approach" description="The principles behind this sequence" href="/platform/scaffolding-first" />
+  <Card title="Stack Decisions" description="Record why you chose each tool" href="/platform/stack-decisions" />
+  <Card title="Dependency Catalogue" description="Package selections by category" href="/platform/dependency-catalogue" />
+  <Card title="Monorepo Architecture" description="The repository structure these commands create" href="/platform/monorepo" />
+</Cards>

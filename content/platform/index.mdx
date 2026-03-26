@@ -5,19 +5,44 @@ description: Transferable architectural patterns for building platforms.
 
 These are architectural patterns distilled from real platform builds. Each pattern represents hard-won decisions about how to structure codebases, split data responsibilities, enforce security, and maintain auditability.
 
-**Architecture Patterns** are genuinely project-agnostic — they apply regardless of repository structure, framework choice, or team size. **Monorepo Patterns** are transferable across monorepo projects but assume a pnpm workspaces + Turborepo setup. If your project uses a different structure, the architecture patterns still apply; adapt the monorepo patterns to your context or skip them.
+## Start Here
 
-## Quick Reference
+<Cards>
+  <Card title="New Project Checklist" description="Bootstrap sequence from zero to running CI" href="/principles/new-project-checklist" />
+  <Card title="Bootstrap Commands" description="Copy-paste CLI sequences for every scaffolding phase" href="/platform/bootstrap-commands" />
+  <Card title="Stack Decisions" description="Record technology choices before writing code" href="/platform/stack-decisions" />
+</Cards>
 
-| Pattern | Description |
-| --- | --- |
-| [Data Architecture](/platform/data-architecture) | Split transactional data (relational DB) from editorial content (headless CMS) by purpose. |
-| [Auth & Row-Level Security](/platform/auth-rls) | JWT custom claims with database-level RLS policies for defense-in-depth authorization. |
-| [Audit-First Architecture](/platform/audit-first) | Append-only event tables that capture every state transition for full history and compliance. |
-| [Documentation Hub](/platform/documentation-hub) | Multi-collection knowledge base with llms.txt generation for AI-consumable documentation. |
-| [Monorepo Architecture](/platform/monorepo) | pnpm workspaces + Turborepo for shared-code platform builds with consistent tooling. |
-| [Three-Application Model](/platform/three-app-model) | Admin portal, public site, and internal wiki deployed independently from a shared codebase. |
-| [Scaffolding-First Approach](/platform/scaffolding-first) | Complete all infrastructure and external service setup before writing any feature code. |
+## Architecture Patterns
+
+Project-agnostic patterns that apply regardless of repository structure, framework choice, or team size.
+
+<Cards>
+  <Card title="Data Architecture" description="Split transactional data from editorial content by purpose" href="/platform/data-architecture" />
+  <Card title="Auth & Row-Level Security" description="JWT custom claims with database-level RLS policies" href="/platform/auth-rls" />
+  <Card title="Audit-First Architecture" description="Append-only event tables for full history and compliance" href="/platform/audit-first" />
+  <Card title="Documentation Hub" description="Multi-collection knowledge base with llms.txt generation" href="/platform/documentation-hub" />
+</Cards>
+
+## Monorepo Patterns
+
+Transferable across monorepo projects. Assumes pnpm workspaces + Turborepo.
+
+<Cards>
+  <Card title="Monorepo Architecture" description="Shared-code platform builds with consistent tooling" href="/platform/monorepo" />
+  <Card title="Three-Application Model" description="Admin, public site, and wiki from a shared codebase" href="/platform/three-app-model" />
+  <Card title="Scaffolding-First Approach" description="Infrastructure and services before any feature code" href="/platform/scaffolding-first" />
+</Cards>
+
+## Bootstrapping
+
+Actionable guides for getting a project off the ground.
+
+<Cards>
+  <Card title="Stack Decisions" description="ADR templates and technology trade-off tables" href="/platform/stack-decisions" />
+  <Card title="Dependency Catalogue" description="Curated package selections by category" href="/platform/dependency-catalogue" />
+  <Card title="Bootstrap Commands" description="Executable CLI sequences from empty directory to CI" href="/platform/bootstrap-commands" />
+</Cards>
 
 ## How to Use These Patterns
 
