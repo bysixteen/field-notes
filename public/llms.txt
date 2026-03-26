@@ -4,6 +4,53 @@
 
 This is a personal knowledge hub covering design systems, engineering principles, AI workflows, and platform architecture patterns.
 
+## Claude & AI Workflows
+
+Context engineering, CLAUDE.md playbook, Claude Code setup, workflow architectures, skill-based automation.
+
+- [Agent Efficiency Research](/claude/agent-efficiency): Reconciled findings from studies on AGENTS.md file impact.
+- [Claude Code Setup](/claude/claude-code-setup): Practical guide for configuring Claude Code on a new project — CLAUDE.md, rules, hooks, and session management.
+- [The CLAUDE.md Playbook](/claude/claude-md-playbook): How to write effective CLAUDE.md files — minimal, human-curated, and evolving.
+- [Context Engineering](/claude/context-engineering): Strategies for curating the optimal set of tokens during LLM inference — the discipline that replaced prompt engineering.
+- [Claude & AI Workflows](/claude): Patterns for working effectively with AI coding agents — from context engineering to workflow architectures.
+- [Research to Validation Pathway](/claude/research-to-validation): A five-step pathway connecting prototypes to source research.
+- [Skills Catalogue](/claude/skills-catalogue): A directory of available Claude skills with descriptions, trigger phrases, and usage guidance.
+- [Skill-Based Automation](/claude/skills-patterns): Patterns for creating reusable Claude skills to automate repetitive workflows.
+- [Workflow Architectures](/claude/workflow-architectures): Survey of proven Claude workflow patterns — from simple skill invocation to multi-agent orchestration.
+
+## Principles & Frameworks
+
+Core principles, delivery approach, synthesis and validation methodology.
+
+- [Answer First](/principles/answer-first): Every document must have the conclusion in the first body section. Never bury the lead.
+- [Clarity, Attribution, Reversibility, Consistency](/principles/clarity-attribution-reversibility-consistency): The four pillars of validation for any prototype or feature. Every piece of work must pass all four checks.
+- [Compounding Engineering](/principles/compounding-engineering): Build guidance from real mistakes, not upfront speculation. Let documentation grow organically from actual needs.
+- [The Delivery Framework](/principles/delivery-framework): A project-agnostic operating system for design and delivery — auditing, repo structure, sprints, teams, and journeys.
+- [Dissent is a Feature](/principles/dissent-as-feature): Structurally encourage and document dissent to prevent groupthink and preserve overruled concerns for future reference.
+- [Distill, Don't Repeat](/principles/distill-dont-repeat): The output of a sprint is synthesized knowledge, not raw artifacts. Create living documents that serve as the single source of truth.
+- [Principles & Frameworks](/principles): Core principles and operating frameworks distilled from real project work, designed to compound across every engagement.
+- [Journey Mapping Template](/principles/journey-template): Reusable structure for mapping any part of a system from user need to validated outcome.
+- [New Project Checklist](/principles/new-project-checklist): Bootstrap sequence using Field Notes, the Delivery Framework, and llms.txt.
+- [Project Squad](/principles/project-squad): The portable toolkit that implements the Delivery Framework — personas, sprints, workshops, and living documents.
+- [Synthesis & Validation Framework](/principles/synthesis-validation): Three-artifact model and four-pillar validation for preventing context burn.
+- [Verification Over Instruction](/principles/verification-over-instruction): Give AI a way to verify its work rather than a long list of instructions. Success conditions beat specifications.
+
+## Platform Patterns
+
+Monorepo architecture, data patterns, auth and RLS, bootstrapping.
+
+- [Audit-First Architecture](/platform/audit-first): Append-only event tables for complete state transition history.
+- [Auth & Row-Level Security](/platform/auth-rls): JWT custom claims, RLS policies, and middleware route protection.
+- [Bootstrap Commands](/platform/bootstrap-commands): Executable CLI sequences for each scaffolding phase, from empty directory to running CI.
+- [Data Architecture Patterns](/platform/data-architecture): Splitting transactional and editorial data across purpose-built services.
+- [Dependency Catalogue](/platform/dependency-catalogue): Curated package selections grouped by purpose, with alternatives and usage guidance.
+- [Documentation Hub Pattern](/platform/documentation-hub): Multi-collection knowledge base with llms.txt generation for AI-consumable documentation.
+- [Platform Patterns](/platform): Transferable architectural patterns for building platforms.
+- [Monorepo Architecture](/platform/monorepo): pnpm workspaces + Turborepo for shared-code platform builds.
+- [Scaffolding-First Approach](/platform/scaffolding-first): External services and AI context before any feature code.
+- [Stack Decisions](/platform/stack-decisions): Record technology choices and their rationale before writing code.
+- [Three-Application Model](/platform/three-app-model): Admin, public site, and wiki from a shared codebase — one platform, three faces.
+
 ## Design System
 
 Multi-dimensional token model, composition rules, naming conventions, and constraints.
@@ -41,50 +88,3 @@ Multi-dimensional token model, composition rules, naming conventions, and constr
 - [Primitives](/design-system/token-chain/primitives): Layer 1 — raw values that are theme-aware but never used directly in components.
 - [Resolver](/design-system/token-chain/resolver): Layer 4 — runtime engine that resolves multi-dimensional token combinations.
 - [Semantics](/design-system/token-chain/semantics): Layer 2 — purpose-driven aliases that describe what a value means, not its raw appearance.
-
-## Principles & Frameworks
-
-Core principles, the Delivery Framework, synthesis and validation methodology.
-
-- [Answer First](/principles/answer-first): Every document must have the conclusion in the first body section. Never bury the lead.
-- [Clarity, Attribution, Reversibility, Consistency](/principles/clarity-attribution-reversibility-consistency): The four pillars of validation for any prototype or feature. Every piece of work must pass all four checks.
-- [Compounding Engineering](/principles/compounding-engineering): Build guidance from real mistakes, not upfront speculation. Let documentation grow organically from actual needs.
-- [The Delivery Framework](/principles/delivery-framework): A project-agnostic operating system for design and delivery — auditing, repo structure, sprints, teams, and journeys.
-- [Dissent is a Feature](/principles/dissent-as-feature): Structurally encourage and document dissent to prevent groupthink and preserve overruled concerns for future reference.
-- [Distill, Don't Repeat](/principles/distill-dont-repeat): The output of a sprint is synthesized knowledge, not raw artifacts. Create living documents that serve as the single source of truth.
-- [Principles & Frameworks](/principles): Core principles and operating frameworks distilled from real project work, designed to compound across every engagement.
-- [Journey Mapping Template](/principles/journey-template): Reusable structure for mapping any part of a system from user need to validated outcome.
-- [New Project Checklist](/principles/new-project-checklist): Bootstrap sequence using Field Notes, the Delivery Framework, and llms.txt.
-- [Project Squad](/principles/project-squad): The portable toolkit that implements the Delivery Framework — personas, sprints, workshops, and living documents.
-- [Synthesis & Validation Framework](/principles/synthesis-validation): Three-artifact model and four-pillar validation for preventing context burn.
-- [Verification Over Instruction](/principles/verification-over-instruction): Give AI a way to verify its work rather than a long list of instructions. Success conditions beat specifications.
-
-## Claude & AI Workflows
-
-Context engineering, CLAUDE.md playbook, Claude Code setup, workflow architectures, skill-based automation.
-
-- [Agent Efficiency Research](/claude/agent-efficiency): Reconciled findings from studies on AGENTS.md file impact.
-- [Claude Code Setup](/claude/claude-code-setup): Practical guide for configuring Claude Code on a new project — CLAUDE.md, rules, hooks, and session management.
-- [The CLAUDE.md Playbook](/claude/claude-md-playbook): How to write effective CLAUDE.md files — minimal, human-curated, and evolving.
-- [Context Engineering](/claude/context-engineering): Strategies for curating the optimal set of tokens during LLM inference — the discipline that replaced prompt engineering.
-- [Claude & AI Workflows](/claude): Patterns for working effectively with AI coding agents — from context engineering to workflow architectures.
-- [Research to Validation Pathway](/claude/research-to-validation): A five-step pathway connecting prototypes to source research.
-- [Skills Catalogue](/claude/skills-catalogue): A directory of available Claude skills with descriptions, trigger phrases, and usage guidance.
-- [Skill-Based Automation](/claude/skills-patterns): Patterns for creating reusable Claude skills to automate repetitive workflows.
-- [Workflow Architectures](/claude/workflow-architectures): Survey of proven Claude workflow patterns — from simple skill invocation to multi-agent orchestration.
-
-## Platform Patterns
-
-Monorepo architecture, data patterns, auth and RLS, scaffolding-first approach.
-
-- [Audit-First Architecture](/platform/audit-first): Append-only event tables for complete state transition history.
-- [Auth & Row-Level Security](/platform/auth-rls): JWT custom claims, RLS policies, and middleware route protection.
-- [Bootstrap Commands](/platform/bootstrap-commands): Executable CLI sequences for each scaffolding phase, from empty directory to running CI.
-- [Data Architecture Patterns](/platform/data-architecture): Splitting transactional and editorial data across purpose-built services.
-- [Dependency Catalogue](/platform/dependency-catalogue): Curated package selections grouped by purpose, with alternatives and usage guidance.
-- [Documentation Hub Pattern](/platform/documentation-hub): Multi-collection knowledge base with llms.txt generation for AI-consumable documentation.
-- [Platform Patterns](/platform): Transferable architectural patterns for building platforms.
-- [Monorepo Architecture](/platform/monorepo): pnpm workspaces + Turborepo for shared-code platform builds.
-- [Scaffolding-First Approach](/platform/scaffolding-first): External services and AI context before any feature code.
-- [Stack Decisions](/platform/stack-decisions): Record technology choices and their rationale before writing code.
-- [Three-Application Model](/platform/three-app-model): Admin, public site, and wiki from a shared codebase — one platform, three faces.

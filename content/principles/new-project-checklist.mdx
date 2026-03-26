@@ -27,12 +27,12 @@ Once the structure is in place, run the scaffold commands to install tooling and
 
 ### Step 2: Connect to Field Notes
 
-Add the Field Notes URL to your project's `CLAUDE.md` so AI agents have instant access to all documented patterns:
+Add the Field Notes index to your project's `CLAUDE.md` so AI agents can look up specific patterns as needed. Use the index, not the full dump — agents fetch individual pages when relevant rather than loading 65 pages into context at once:
 
 ```markdown
 ## Reference
 
-See https://bysixteen.github.io/field-notes/llms-full.txt for design engineering patterns.
+See https://bysixteen.github.io/field-notes/llms.txt for design engineering pattern index.
 ```
 
 [Read the Documentation Hub Pattern](/platform/documentation-hub)
@@ -84,7 +84,7 @@ Copy this checklist into your project kickoff document:
 - [ ] Write `_meta/PROJECT_CONTEXT.md`
 - [ ] Set up Delivery Framework directory structure
 - [ ] Run bootstrap commands (scaffold, tooling, workspace)
-- [ ] Add Field Notes llms-full.txt URL to CLAUDE.md
+- [ ] Add Field Notes llms.txt index URL to CLAUDE.md
 - [ ] Configure Claude Code (CLAUDE.md, rules, first-try test)
 - [ ] Set up git conventions (branch prefixes, commit format)
 - [ ] Choose architecture patterns from Platform domain

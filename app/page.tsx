@@ -4,26 +4,6 @@ import { baseOptions } from '@/lib/layout.shared';
 
 const domains = [
   {
-    href: '/design-system',
-    title: 'Design System',
-    description:
-      'Multi-dimensional token model, composition rules, naming conventions, and constraints.',
-    pages: 18,
-    icon: (
-      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>
-    ),
-  },
-  {
-    href: '/principles',
-    title: 'Principles',
-    description:
-      'Core principles, Delivery Framework, Project Squad toolkit, synthesis and validation.',
-    pages: 12,
-    icon: (
-      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
-    ),
-  },
-  {
     href: '/claude',
     title: 'Claude & AI',
     description:
@@ -34,13 +14,33 @@ const domains = [
     ),
   },
   {
+    href: '/principles',
+    title: 'Principles',
+    description:
+      'Core principles, delivery approach, synthesis and validation.',
+    pages: 12,
+    icon: (
+      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+    ),
+  },
+  {
     href: '/platform',
     title: 'Platform',
     description:
-      'Architecture patterns, monorepo structure, data and auth, documentation hub.',
+      'Architecture patterns, monorepo structure, data and auth, bootstrapping.',
     pages: 11,
     icon: (
       <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect width="18" height="18" x="3" y="3" rx="2"/><path d="M3 9h18"/><path d="M9 21V9"/></svg>
+    ),
+  },
+  {
+    href: '/design-system',
+    title: 'Design System',
+    description:
+      'Multi-dimensional token model, composition rules, naming conventions, and constraints.',
+    pages: 18,
+    icon: (
+      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>
     ),
   },
 ];
@@ -104,10 +104,10 @@ export default function HomePage() {
         <div className="mt-16 rounded-xl border bg-fd-card p-6">
           <h2 className="text-lg font-semibold mb-2">For AI Agents</h2>
           <p className="text-fd-muted-foreground text-sm mb-4">
-            Add this to any project&apos;s <code className="text-xs bg-fd-accent px-1.5 py-0.5 rounded">CLAUDE.md</code> to give agents access to all documented patterns:
+            Add this to any project&apos;s <code className="text-xs bg-fd-accent px-1.5 py-0.5 rounded">CLAUDE.md</code> to give agents access to documented patterns. Use the index — agents fetch specific pages as needed rather than loading everything at once:
           </p>
           <pre className="bg-fd-accent rounded-lg p-4 text-sm overflow-x-auto">
-            <code>See https://bysixteen.github.io/field-notes/llms-full.txt for design engineering patterns</code>
+            <code>See https://bysixteen.github.io/field-notes/llms.txt for design engineering pattern index</code>
           </pre>
         </div>
       </div>
