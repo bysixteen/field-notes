@@ -1,0 +1,168 @@
+---
+title: Testing Strategy
+description: A three-layer testing approach for design system components — unit, accessibility, and visual regression.
+---
+
+Design system components use a three-layer testing strategy. Each layer catches different categories of defects. All three layers together provide confidence that a component works correctly, is accessible, and looks right.
+
+## The Three Layers
+
+```
+Layer 1: Unit Tests        — Component contract (inputs → outputs)
+Layer 2: Accessibility     — Automated WCAG checks via axe-core
+Layer 3: Visual Regression — Screenshot comparison across states
+```
+
+## Layer 1: Unit Tests
+
+Unit tests verify the component contract — that inputs produce the expected host attributes, outputs fire correctly, and slots render in the right positions.
+
+### What to test
+
+| Concern | Test pattern |
+|---------|-------------|
+| Input → host attribute mapping | Set `sentiment="warning"`, assert `data-sentiment="warning"` on host |
+| Default values | Render with no props, assert all defaults applied |
+| Disabled state | Set `state="disabled"`, verify click handler doesn't fire |
+| Slot rendering | Pass `leadingIcon`, verify it renders in the prefix container |
+| Event emission | Click button, verify `onClick` callback called with event |
+| Conditional rendering | Verify slot containers only render when content is provided |
+
+### What NOT to test
+
+| Don't test | Why |
+|------------|-----|
+| Token resolution output | That's the token system's job, not the component's |
+| Specific colour values | Tokens change — test that the right variable is applied, not its value |
+| Internal implementation details | Test the public API, not the internals |
+| Framework behaviour | React/Next.js rendering, hook internals |
+
+### Example
+
+```tsx
+import { render, screen, fireEvent } from '@testing-library/react';
+import { Button } from './Button';
+
+describe('Button', () => {
+  it('applies default dimension values', () => {
+    const { container } = render(<Button>Click me</Button>);
+    const button = container.firstChild as HTMLElement;
+    expect(button.dataset.emphasis).toBe('high');
+    expect(button.dataset.sentiment).toBe('neutral');
+    expect(button.dataset.size).toBe('md');
+    expect(button.dataset.state).toBe('rest');
+  });
+
+  it('does not fire onClick when disabled', () => {
+    const onClick = jest.fn();
+    render(<Button state="disabled" onClick={onClick}>Click</Button>);
+    fireEvent.click(screen.getByRole('button'));
+    expect(onClick).not.toHaveBeenCalled();
+  });
+
+  it('renders leading icon when provided', () => {
+    render(<Button leadingIcon={<span data-testid="icon" />}>Click</Button>);
+    expect(screen.getByTestId('icon')).toBeInTheDocument();
+  });
+});
+```
+
+## Layer 2: Accessibility Automation
+
+Automated accessibility checks catch a subset of WCAG violations — roughly 30–40% of all possible issues. The rest requires manual review (see [Accessibility Audit](/design-system/accessibility-audit)).
+
+### jest-axe for unit tests
+
+```tsx
+import { render } from '@testing-library/react';
+import { axe, toHaveNoViolations } from 'jest-axe';
+import { Button } from './Button';
+
+expect.extend(toHaveNoViolations);
+
+it('has no accessibility violations', async () => {
+  const { container } = render(<Button>Submit</Button>);
+  const results = await axe(container);
+  expect(results).toHaveNoViolations();
+});
+```
+
+### @axe-core/playwright for integration tests
+
+```tsx
+import { test, expect } from '@playwright/test';
+import AxeBuilder from '@axe-core/playwright';
+
+test('Button page has no a11y violations', async ({ page }) => {
+  await page.goto('/storybook/iframe.html?id=components-button--default');
+  const results = await new AxeBuilder({ page }).analyze();
+  expect(results.violations).toEqual([]);
+});
+```
+
+### What automated checks cover
+
+| Automatable (jest-axe / axe-core) | Requires manual review |
+|-----------------------------------|----------------------|
+| Missing alt text (A01) | Colour-only state communication (A08) |
+| Missing form labels (A03) | Correct heading hierarchy in context (A11) |
+| Missing button/link names (A02) | APG keyboard pattern compliance (A19) |
+| Colour contrast ratios | Focus restoration behaviour (A16) |
+| Positive tabindex (A12) | Touch target spacing (A09b) |
+| aria-hidden on focusable (A13) | Drag alternatives (A25) |
+| Viewport zoom lock (A18) | Content reflow at 320px (A27) |
+
+## Layer 3: Visual Regression
+
+Visual regression testing catches unintended visual changes by comparing screenshots across commits. Use Storybook + Chromatic, or Storybook + Playwright screenshots.
+
+### What to snapshot
+
+| Snapshot type | Covers |
+|--------------|--------|
+| All sentiments at each emphasis level | Colour token correctness |
+| All programmatic states (disabled, resolving) | State token correctness |
+| All sizes | Scale token correctness |
+| Dark and light themes | Theme token switching |
+| With and without slot content | Conditional rendering layout |
+
+### Storybook + Playwright approach
+
+```tsx
+import { test, expect } from '@playwright/test';
+
+const SENTIMENTS = ['neutral', 'warning', 'highlight', 'success', 'error'];
+const EMPHASES = ['high', 'medium', 'low'];
+
+for (const sentiment of SENTIMENTS) {
+  for (const emphasis of EMPHASES) {
+    test(`Button ${sentiment}/${emphasis}`, async ({ page }) => {
+      await page.goto(
+        `/storybook/iframe.html?id=components-button--default&args=sentiment:${sentiment};emphasis:${emphasis}`
+      );
+      await expect(page.locator('.ds-button')).toHaveScreenshot(
+        `button-${sentiment}-${emphasis}.png`
+      );
+    });
+  }
+}
+```
+
+## Coverage by Bracket
+
+Different component brackets need different testing depth:
+
+| Bracket | Unit | Accessibility | Visual |
+|---------|:----:|:------------:|:------:|
+| B1 Display (badge, icon) | Inputs + defaults | jest-axe | All sentiments |
+| B2 Interactive (button, toggle) | Inputs + events + disabled | jest-axe + keyboard | Sentiments × emphases × states |
+| B3 Form (input, select) | Inputs + validation + value binding | jest-axe + label association | States + error states |
+| B4 Composite (accordion, card) | Sub-component integration | jest-axe + keyboard navigation | Expanded/collapsed + all sentiments |
+| B5 Data (table, stat) | Data rendering + sorting | jest-axe + table semantics | With data + empty state |
+| B6 Overlay (dialog, popover) | Open/close + focus trap + restoration | jest-axe + focus management | Open state + backdrop |
+
+## See Also
+
+- [Accessibility Audit](/design-system/accessibility-audit) — the full WCAG 2.2 AA audit framework
+- [Component Scaffolding](/design-system/component-scaffolding) — testing as part of the scaffold workflow
+- [Storybook Documentation Rules](/design-system/storybook-documentation-rules) — how to document components in Storybook

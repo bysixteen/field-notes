@@ -4,6 +4,805 @@
 
 ---
 
+## Principles & Frameworks
+
+Core principles, delivery approach, synthesis and validation methodology.
+
+### Answer First
+
+*Every document must have the conclusion in the first body section. Never bury the lead.*
+
+## The Principle
+
+Every document must have the conclusion in the **first body section**. Never bury the lead.
+
+Based on Barbara Minto's **Pyramid Principle** (McKinsey, 1960s): start with the answer, then provide supporting arguments, then the detail. This page applies that principle to all project documentation.
+
+This applies to sprint outputs, decision logs, status reports, technical analyses, and all other forms of documentation. The reader should know the answer, recommendation, or conclusion before they encounter any supporting detail.
+
+## Why This Matters
+
+Most documents are structured as narratives: background, analysis, discussion, and finally the conclusion. This structure optimizes for the writer's thought process, not the reader's needs.
+
+The cost is significant:
+
+- **Executives and stakeholders** do not have time to read to the end. If the conclusion is on page 5, they will make decisions based on incomplete information from page 1.
+- **AI assistants** processing documents for synthesis perform dramatically better when the key information is at the top. Context windows are finite, and the most important content should occupy the most privileged position.
+- **Future team members** searching through decision logs need to quickly determine whether a document is relevant. A clear answer at the top enables rapid scanning.
+- **The author themselves**, returning to a document weeks later, benefits from immediate re-orientation.
+
+## The Structure
+
+Every document should follow this pattern:
+
+```
+# Title
+
+## Answer / Recommendation / Decision
+[The conclusion, stated clearly and completely]
+
+## Context
+[Why this question arose, what prompted the analysis]
+
+## Analysis
+[The detailed supporting work]
+
+## Alternatives Considered
+[What else was evaluated and why it was rejected]
+
+## Appendix
+[Raw data, extended analysis, supplementary material]
+```
+
+The reader who stops after the first section has the answer. The reader who continues gets the supporting rationale. The reader who reaches the appendix gets the full depth.
+
+## Application Examples
+
+### Decision Log Entry
+
+Instead of:
+
+> We evaluated three state management approaches for the dashboard feature. Redux offers a mature ecosystem but adds significant boilerplate. Zustand provides a simpler API but has a smaller community. Jotai uses an atomic model that...
+> [three paragraphs later]
+> ...therefore we chose Zustand.
+
+Write:
+
+> **Decision**: Use Zustand for dashboard state management.
+>
+> **Rationale**: Simpler API than Redux with sufficient capability for our use case. Atomic state management (Jotai) was considered but rejected due to team unfamiliarity.
+
+### Sprint Output
+
+Instead of:
+
+> During Sprint 4, the team focused on the onboarding flow. We conducted user testing with 8 participants and found that...
+> [two pages later]
+> ...the key finding is that users cannot complete onboarding without help.
+
+Write:
+
+> **Key Finding**: Users cannot complete onboarding without assistance. 6 of 8 test participants required intervention to finish the flow.
+>
+> **Sprint 4 focused on the onboarding flow.** User testing with 8 participants revealed critical usability gaps...
+
+## The Test
+
+Open any document produced by the team. Read only the first section. Do you know:
+
+1. What the document is about?
+2. What the conclusion or recommendation is?
+3. Whether you need to read further?
+
+If any answer is no, the document needs restructuring.
+
+### Compounding Engineering
+
+*Build guidance from real mistakes, not upfront speculation. Let documentation grow organically from actual needs.*
+
+## The Principle
+
+Don't pre-populate guidance. Let it grow based on real needs.
+
+When something is done incorrectly, add the correction to documentation. This is the opposite of writing a comprehensive guide upfront. The knowledge base is built from **real mistakes and their solutions**, not from anticipated problems that may never occur.
+
+## Why This Matters
+
+Upfront documentation has two fundamental problems:
+
+1. **It solves the wrong problems.** The issues you anticipate before starting are rarely the issues you actually encounter. A 30-page style guide written before the first line of code addresses hypothetical concerns while missing the real ones.
+
+2. **Nobody reads it.** Comprehensive guides are written once and ignored forever. They are too long to consume, too abstract to apply, and too static to stay relevant.
+
+Compounding engineering solves both problems by building documentation from the ground up, one real correction at a time.
+
+## The Practice
+
+The canonical example is `CLAUDE.md` (or any equivalent project-level instruction file for AI-assisted development):
+
+1. **Start with almost nothing.** The initial file contains only the most basic project setup information.
+2. **When a mistake happens, add the correction.** If the AI generates a component using the wrong import path, add the correct import path to the file. If a team member misuses an API, document the correct usage.
+3. **Each correction prevents the same mistake from recurring.** The next time the AI (or a human) encounters the same situation, the guidance is there.
+4. **The file grows organically.** After a few sprints, it contains exactly the guidance the project actually needs — no more, no less.
+
+This pattern applies beyond AI instruction files:
+
+- **Code review checklists** that grow from actual review feedback
+- **Testing guidelines** that grow from actual bugs found in production
+- **Architectural decision records** that grow from actual decisions made
+- **Onboarding documents** that grow from actual questions asked by new team members
+
+## The Compounding Effect
+
+Each correction added to the knowledge base has a compounding return:
+
+- **First occurrence**: The mistake happens, time is spent fixing it, the correction is documented
+- **Every subsequent occurrence**: The mistake is prevented entirely, or caught immediately
+
+Over the life of a project, a well-maintained compounding knowledge base saves orders of magnitude more time than it costs to maintain. The key is discipline — every correction must be captured at the moment it is discovered, not deferred to a "documentation sprint" that never happens.
+
+## Anti-Patterns
+
+- **The Big Bang Guide**: Writing comprehensive documentation before work begins. Most of it will be wrong or irrelevant.
+- **The Oral Tradition**: Correcting mistakes verbally but never writing them down. The same mistakes recur when team members change.
+- **The Perfection Trap**: Refusing to add a correction because "the documentation isn't well-organized yet." A messy but accurate knowledge base beats an elegant but empty one.
+- **The Deferred Update**: Noting that documentation should be updated but not doing it immediately. The correction will be forgotten.
+
+### Dissent is a Feature
+
+*Structurally encourage and document dissent to prevent groupthink and preserve overruled concerns for future reference.*
+
+## The Principle
+
+Structurally encourage and document dissent. Assign a **Mandatory Challenger** role to ensure that assumptions are always tested. All significant dissenting opinions are recorded in a **dissent register**, preventing groupthink and preserving overruled concerns for future reference.
+
+## Why This Matters
+
+Teams naturally converge on consensus. This is efficient for execution but dangerous for decision-making. Without structural mechanisms to surface disagreement, teams fall into predictable failure modes:
+
+- **Groupthink**: Everyone agrees because disagreement feels socially costly
+- **Authority bias**: Junior team members defer to senior ones even when they see problems
+- **Momentum bias**: Once a direction is chosen, the cost of changing course feels too high, so concerns are suppressed
+- **Survivorship bias**: Only the decisions that worked are remembered; the warnings that were ignored are forgotten
+
+## The Practice
+
+### The Mandatory Challenger
+
+In any structured review or decision-making session, one team member is assigned the role of **Mandatory Challenger**. Their job is to:
+
+- Argue against the proposed direction, even if they personally agree with it
+- Identify the weakest assumptions in the current plan
+- Propose at least one credible alternative
+- Articulate the scenario in which the current plan fails
+
+This role rotates. It is not a personality trait — it is a structural function. By making challenge a formal responsibility, it removes the social cost of disagreement.
+
+### The Dissent Register
+
+Every significant dissenting opinion is recorded in the project's decision log with the following structure:
+
+| Field | Description |
+|---|---|
+| **Decision ID** | Reference to the decision being challenged |
+| **Dissenting View** | The alternative position or concern |
+| **Raised By** | Who raised the concern (role, not necessarily name) |
+| **Rationale** | Why this concern has merit |
+| **Resolution** | How the concern was addressed — accepted, mitigated, or overruled |
+| **Overrule Rationale** | If overruled, why the team chose to proceed anyway |
+| **Review Trigger** | Conditions under which this dissent should be revisited |
+
+### Why Record Overruled Concerns?
+
+Overruled concerns are not dead. They are **dormant**. Recording them serves three purposes:
+
+1. **Future validation**: If the overruled concern proves correct later, the team can trace back to the original warning and learn from the pattern
+2. **Accountability**: The rationale for overruling is preserved, preventing revisionist history
+3. **Onboarding**: New team members can understand not just what was decided, but what was considered and rejected, and why
+
+## Integration with Sprint Workflow
+
+- **Sprint planning**: Review the dissent register from the previous sprint. Have any review triggers been activated?
+- **Sprint review**: The Mandatory Challenger presents the strongest counterargument to the sprint's key decisions
+- **Retrospective**: Identify any dissent that was suppressed or not captured, and add it to the register
+
+## Anti-Patterns
+
+- **Performative Challenge**: The Mandatory Challenger raises trivial objections to fulfill the role without engaging substantively. The role requires genuine intellectual effort.
+- **Dissent Without Documentation**: Concerns are raised in meetings but not recorded. They are effectively lost.
+- **Punishment for Dissent**: Team members who raise uncomfortable concerns are sidelined or labeled as "negative." This kills the mechanism entirely.
+- **Permanent Overrule**: A concern is overruled once and never revisited, even when circumstances change.
+
+### Principles & Frameworks
+
+*Core principles and operating frameworks distilled from real project work, designed to compound across every engagement.*
+
+These are not theoretical guidelines. They are principles distilled from real project delivery — patterns that emerged from mistakes made, lessons learned, and workflows that proved their worth across multiple engagements. Each one compounds: the more consistently they are applied, the more value they generate over time.
+
+## Core Principles
+
+| Principle | Summary |
+|---|---|
+| [Compounding Engineering](/principles/compounding-engineering) | Build guidance from real mistakes, not upfront speculation. Let documentation grow organically from actual needs. |
+| [Verification Over Instruction](/principles/verification-over-instruction) | Give AI a way to verify its work rather than a long list of instructions. Success conditions beat specifications. |
+| [Dissent is a Feature](/principles/dissent-as-feature) | Structurally encourage and document dissent. Record overruled concerns for future reference. |
+| [Answer First](/principles/answer-first) | Every document must have the conclusion in the first body section. Never bury the lead. |
+
+## Frameworks
+
+### Synthesis & Validation
+
+Living document templates (DECISIONS.md, PERSONAS.md, PRINCIPLES.md), sprint synthesis workflow, four-pillar validation (Clarity, Attribution, Reversibility, Consistency), PAGE-TREE pattern, and PR checklists.
+
+[Read Synthesis & Validation](/principles/synthesis-validation)
+
+### Journey Mapping Template
+
+A reusable structure for mapping any part of a system from user need to validated outcome, including a complete markdown template.
+
+[Read the Journey Mapping Template](/principles/journey-template)
+
+### New Project Checklist
+
+The step-by-step bootstrap sequence that ties together Field Notes patterns into a single startup workflow — from stack decisions through first sprint.
+
+[Read the New Project Checklist](/principles/new-project-checklist)
+
+### Journey Mapping Template
+
+*Reusable structure for mapping any part of a system from user need to validated outcome.*
+
+A journey map traces a user's path through the system from an initial need to a resolved outcome. It connects individual features into a coherent narrative and exposes gaps, friction points, and opportunities that are invisible when features are designed in isolation.
+
+## The Journey Map Structure
+
+Every journey map contains six sections:
+
+### 1. Context
+
+A brief description of who the user is, what triggers the journey, and what success looks like.
+
+### 2. Journey Table
+
+The step-by-step path through the system, including:
+
+- **Step number and name**
+- **User action**: What the user does
+- **System response**: What the system does in response
+- **Touchpoint**: The specific page, component, or notification involved
+- **Emotional state**: The user's likely emotional state at this step (confident, uncertain, frustrated, satisfied)
+- **Failure mode**: What could go wrong at this step
+- **Recovery**: How the system helps the user recover from failure
+
+### 3. Critical Moments
+
+The 2-4 steps where the journey is most likely to succeed or fail. These are the points that deserve the most design attention and testing.
+
+### 4. Validation Checklist
+
+The four-pillar validation applied specifically to this journey's critical moments.
+
+### 5. Open Questions
+
+Unresolved questions about the journey that need research, testing, or stakeholder input to answer.
+
+### 6. Linked Artifacts
+
+References to related decisions, personas, principles, and page-tree entries.
+
+## Full Markdown Template
+
+```markdown
+# Journey: [Journey Name]
+
+**ID**: JOURNEY-[NNN]
+**Persona**: [Link to persona in PERSONAS.md]
+**Trigger**: [What initiates this journey]
+**Success Outcome**: [What "done" looks like for the user]
+**Last Updated**: YYYY-MM-DD
+**Status**: Draft | In Review | Validated
+
+## Context
+
+[2-3 sentences describing the scenario. Who is the user?
+What do they need? What are the constraints?]
+
+## Journey
+
+| Step | User Action | System Response | Touchpoint | Emotional State | Failure Mode | Recovery |
+|---|---|---|---|---|---|---|
+| 1. [Name] | [What user does] | [What system does] | [Page/component] | [Emotion] | [What could go wrong] | [How to recover] |
+| 2. [Name] | | | | | | |
+| 3. [Name] | | | | | | |
+| 4. [Name] | | | | | | |
+| 5. [Name] | | | | | | |
+
+## Critical Moments
+
+### Critical Moment 1: [Step N — Name]
+- **Why this matters**: [Why this step is make-or-break]
+- **Design priority**: [What to focus on]
+- **Testing approach**: [How to validate this step works]
+
+### Critical Moment 2: [Step N — Name]
+- **Why this matters**: [...]
+- **Design priority**: [...]
+- **Testing approach**: [...]
+
+## Validation Checklist
+
+### Clarity
+- [ ] Each step's purpose is obvious to the user
+- [ ] Progress through the journey is visible
+- [ ] The user always knows what to do next
+
+### Attribution
+- [ ] Any data shown during the journey has a clear source
+- [ ] Recommendations or suggestions explain their basis
+
+### Reversibility
+- [ ] The user can go back to any previous step
+- [ ] Partial progress is saved automatically
+- [ ] The user can abandon the journey without penalty
+
+### Consistency
+- [ ] Each step follows the application's established patterns
+- [ ] Terminology is consistent throughout the journey
+- [ ] Visual treatment matches the design system
+
+## Open Questions
+
+- [ ] [Question 1]
+- [ ] [Question 2]
+- [ ] [Question 3]
+
+## Linked Artifacts
+
+- **Decisions**: [DEC-NNN, DEC-NNN]
+- **Principles**: [PRIN-NNN]
+- **Page Tree**: [Routes involved in this journey]
+- **Sprint**: [Sprint(s) that addressed this journey]
+```
+
+## Worked Example (Skeleton)
+
+A brief skeleton showing the template applied to a "sign-up to onboarded" journey:
+
+| Step | User Action | Touchpoint | Failure Mode | Recovery |
+|---|---|---|---|---|
+| 1. Discovery | Arrives at landing page | Landing page | Value prop unclear | A/B test headlines |
+| 2. Sign-up | Clicks "Start Free Trial" | Sign-up form | Form too long | Reduce to essential fields |
+| 3. Verification | Clicks email link | Email | Email not received | Resend option, magic link |
+| 4. First action | Completes guided core feature | Core feature page | Guidance insufficient | Quick-start + detailed options |
+
+**Critical moments:** Step 2 (highest-intent, friction = abandonment) and Step 4 (the "aha moment" — time-to-value predicts retention).
+
+### New Project Checklist
+
+*Bootstrap sequence using Field Notes and llms.txt to get a new project running.*
+
+When starting a new project, this sequence ties together the patterns documented across Field Notes into a single bootstrap workflow. Each step links to the relevant documentation.
+
+## The Bootstrap Sequence
+
+### Step 0: Make Stack Decisions
+
+Before creating any files, decide on the technology stack. Record each choice with its rationale so the team can revisit decisions later without starting from scratch.
+
+Key decisions: package manager, build system, framework, TypeScript strictness, styling approach, testing tools.
+
+[Read Stack Decisions](/platform/stack-decisions)
+
+### Step 1: Set Up Project Structure
+
+Create a directory structure with living documents at the root (`DECISIONS.md`, `PERSONAS.md`, `PRINCIPLES.md`, `CLAUDE.md`), sprint records in `docs/`, and a `_meta/PROJECT_CONTEXT.md` describing the project's purpose, users, and constraints.
+
+See [Synthesis & Validation](/principles/synthesis-validation) for living document templates.
+
+Once the structure is in place, run the scaffold commands to install tooling and wire up the workspace.
+
+[Read Bootstrap Commands](/platform/bootstrap-commands)
+
+### Step 2: Connect to Field Notes
+
+Add the Field Notes index to your project's `CLAUDE.md` so AI agents can look up specific patterns as needed. Use the index, not the full dump — agents fetch individual pages when relevant rather than loading everything into context at once:
+
+```markdown
+## Reference
+
+See https://bysixteen.github.io/field-notes/llms.txt for design engineering pattern index.
+```
+
+[Read the Documentation Hub Pattern](/platform/documentation-hub)
+
+### Step 3: Configure Claude Code
+
+Set up your AI agent configuration following the [Claude Code Setup](/claude/claude-code-setup) guide:
+
+- Create `CLAUDE.md` at project root (under 150 lines)
+- Add build/test/lint commands and git conventions
+- Create `.claude/rules/` for file-type-specific conventions
+- Test: can a fresh agent clone and run tests on first try?
+
+### Step 4: Choose Architecture Patterns
+
+Review the [Platform Patterns](/platform) domain. Key decisions:
+
+- **Data**: Will you split transactional and editorial data? → [Data Architecture](/platform/data-architecture)
+- **Auth**: Do you need row-level security? → [Auth & RLS](/platform/auth-rls)
+- **Audit**: Do you need state transition history? → [Audit-First](/platform/audit-first)
+- **Structure**: Monorepo or single-repo? → [Monorepo Architecture](/platform/monorepo)
+
+### Step 5: Audit Your Inputs
+
+For greenfield projects there is no codebase to audit — instead, audit the inputs that will shape the project: design briefs, requirements documents, stakeholder assumptions, competitive analysis, and any prior research. For existing projects, also audit the codebase.
+
+Document findings in `docs/audit/gap-analysis.md`. Map each gap to a concrete remediation action.
+
+### Step 6: Run the First Sprint
+
+Target the highest-priority user journey. The first sprint produces the first real entries in DECISIONS.md, PERSONAS.md, and PRINCIPLES.md — transforming them from empty templates into living documents.
+
+### Step 7: Start Compounding
+
+After the first sprint, living documents are no longer empty templates. Let `CLAUDE.md` grow from real corrections, not predictions.
+
+[Read about Compounding Engineering](/principles/compounding-engineering)
+
+## Quick Reference
+
+Copy this checklist into your project kickoff document:
+
+```markdown
+## Project Bootstrap
+
+- [ ] Make stack decisions and record in DECISIONS.md
+- [ ] Write `_meta/PROJECT_CONTEXT.md`
+- [ ] Set up directory structure with living documents at root
+- [ ] Run bootstrap commands (scaffold, tooling, workspace)
+- [ ] Add Field Notes llms.txt index URL to CLAUDE.md
+- [ ] Configure Claude Code (CLAUDE.md, rules, first-try test)
+- [ ] Set up git conventions (branch prefixes, commit format)
+- [ ] Choose architecture patterns from Platform domain
+- [ ] Audit inputs (briefs, designs, requirements, assumptions)
+- [ ] Run first sprint targeting highest-priority journey
+- [ ] Update living documents (DECISIONS, PERSONAS, PRINCIPLES)
+```
+
+### Synthesis & Validation
+
+*Living document templates, sprint synthesis workflow, four-pillar validation, PAGE-TREE, and PR checklists.*
+
+This framework has two parts: a **Sprint Synthesis Framework** that prevents context burn by distilling sprint outputs into living documents, and a **Validation Framework** that ensures every piece of work meets a consistent quality bar.
+
+## Part A: Sprint Synthesis
+
+### Distill, Don't Repeat
+
+The raw artifacts of a sprint — meeting notes, Slack threads, Figma explorations, code spikes, user testing recordings — are inputs, not outputs. The output is the **synthesized knowledge** captured in three canonical artifacts.
+
+If you find yourself re-reading raw sprint material to answer a question, the synthesis has failed.
+
+Every project suffers from **context burn** — the gradual loss of institutional knowledge as raw artifacts pile up. A team that finishes a sprint with 47 documents, 12 recordings, and 200 Slack messages has not created knowledge. They have created noise. The cost is concrete: onboarding slows down, decisions can't be traced, AI assistants can't consume sprawling histories, and sprint planning starts from scratch.
+
+**The test:** Can someone who missed the entire sprint read only the three living documents and be fully caught up? If the answer is no, the synthesis is incomplete. If yes, the raw artifacts can be archived.
+
+**Anti-patterns to avoid:**
+- **The Archive Trap** — saving everything "just in case" without synthesizing
+- **The Summary Email** — writing a summary but not updating the canonical documents
+- **The Fresh Start** — beginning each sprint from scratch instead of building on living documents
+
+### The Three Artifacts
+
+#### 1. DECISIONS.md
+
+The canonical record of every significant decision made during the project.
+
+**Template:**
+
+```markdown
+# Decisions Log
+
+## DEC-[NNN]: [Decision Title]
+
+**Date**: YYYY-MM-DD
+**Sprint**: [Sprint number or name]
+**Status**: Accepted | Superseded by DEC-[NNN] | Reverted
+
+### Context
+[1-2 paragraphs explaining why this decision was needed.]
+
+### Decision
+[Clear, unambiguous statement of what was decided.]
+
+### Alternatives Considered
+1. **[Alternative A]**: [Brief description]
+   - Pros: [Why this was attractive]
+   - Cons: [Why this was rejected]
+
+### Consequences
+- [Expected positive outcomes]
+- [Expected negative outcomes or trade-offs]
+
+### Dissent
+[Record any dissenting opinions. If none, state "None recorded."]
+
+### Review Trigger
+[Conditions under which this decision should be revisited.]
+```
+
+**Rules:**
+- Decisions are **append-only**. Never delete a decision — supersede it.
+- Every decision must record alternatives considered.
+- The dissent field is mandatory. "None recorded" is acceptable; blank is not.
+
+#### 2. PERSONAS.md
+
+The canonical record of the team's understanding of its users.
+
+**Template:**
+
+```markdown
+# Personas
+
+## Persona: [Descriptive Name]
+
+**Role**: [Job title, function, or user type]
+**Last Updated**: YYYY-MM-DD
+**Confidence**: High | Medium | Low
+**Source**: [Sprint N user testing | Stakeholder interview | Domain research]
+
+### Goal
+[Primary objective when using the system. One sentence.]
+
+### Context
+[Environment, constraints, tools, frequency of interaction.]
+
+### Pain Points
+- [Frustration 1]
+- [Frustration 2]
+
+### Success Metric
+[How this persona measures whether the system helped them.]
+
+### Open Questions
+- [Things we still do not know about this persona]
+```
+
+**Rules:**
+- Personas are **refined over time**, not rewritten. Update the date and adjust confidence as new information arrives.
+- "High" = validated through user research. "Medium" = stakeholder input. "Low" = assumptions.
+- Open questions drive future research. No open questions means the team has stopped learning.
+
+#### 3. PRINCIPLES.md
+
+The canonical record of design and engineering principles validated through project work.
+
+**Template:**
+
+```markdown
+# Design & Engineering Principles
+
+## PRIN-[NNN]: [Principle Name]
+
+**Status**: Proposed | Validated | Retired
+**Source**: [Sprint N retrospective | User testing | Technical discovery]
+
+### Statement
+[The principle in one clear sentence.]
+
+### Rationale
+[Why this principle matters. What failure mode does it prevent?]
+
+### Example
+[A concrete example of the principle applied correctly.]
+
+### Counter-Example
+[What happens when this principle is violated.]
+```
+
+**Rules:**
+- New principles start as "Proposed" and are promoted to "Validated" after confirmation through sprint work.
+- Retired principles are kept with a note explaining why.
+- The counter-example field is mandatory — a principle without one is too abstract.
+
+### Sprint Synthesis Workflow
+
+At the end of every sprint (or at natural breakpoints):
+
+1. **Gather raw material** — collect all sprint artifacts
+2. **Extract decisions** — add each to DECISIONS.md
+3. **Update personas** — incorporate new insights, adjust confidence
+4. **Validate principles** — promote confirmed principles, retire disproven ones
+5. **Archive raw material** — it has served its purpose
+6. **Run the context burn test** — can someone who missed the sprint catch up from the living documents alone?
+
+## Part B: Validation Framework
+
+### The Four Pillars
+
+Every piece of delivered work — a design, a prototype, a feature — must be validated against four pillars.
+
+| Pillar | Core Question | Test |
+|---|---|---|
+| **Clarity** | Is the purpose and state immediately obvious? | Show the screen to someone with no context for 5 seconds. Can they tell you what it does? |
+| **Attribution** | Can every piece of data be traced to its source? | Point to any data on screen. Can you trace it to its source in 30 seconds? |
+| **Reversibility** | Can the user undo any action? | Perform every action. Can each be undone? If not, was the user warned? |
+| **Consistency** | Does the work follow established patterns? | Find two similar features. Do they look and behave the same way? |
+
+Apply these at design review, PR review, QA, and retrospectives.
+
+### Validation Checklist
+
+```markdown
+## Validation: [Feature/Component Name]
+
+### Clarity
+- [ ] Purpose is immediately obvious without explanation
+- [ ] All states are explicitly handled (loading, empty, error, success)
+- [ ] Primary action is visually dominant
+- [ ] Labels and microcopy are unambiguous
+
+### Attribution
+- [ ] Data sources are visible or accessible
+- [ ] Timestamps show data freshness
+- [ ] AI-generated content is labeled as such
+- [ ] Calculations can be verified by the user
+
+### Reversibility
+- [ ] Destructive actions require confirmation
+- [ ] Undo is available for common actions
+- [ ] Soft delete is used where appropriate
+- [ ] Navigation does not lose unsaved work
+
+### Consistency
+- [ ] Visual patterns match the design system
+- [ ] Interaction patterns match similar features
+- [ ] Terminology matches the glossary
+- [ ] Error handling follows the established format
+```
+
+## Implementation Guide
+
+### Step 1: Initialize Artifacts
+
+Create `DECISIONS.md`, `PERSONAS.md`, and `PRINCIPLES.md` at the project root using the templates above. Populate with whatever is known, even if confidence is low. Mark initial entries as "Pre-Sprint" or "Assumed."
+
+### Step 2: Establish the Synthesis Ritual
+
+Allocate dedicated time (2-4 hours) at the end of every sprint for synthesis. Without a protected time block, synthesis will be deferred indefinitely and context burn will set in.
+
+### Step 3: Integrate Validation into Workflow
+
+Add the four-pillar checklist to your PR template. During design reviews, ground critique in the pillars ("the primary action fails the clarity check") rather than subjective feedback ("I don't like the layout").
+
+## The PAGE-TREE Pattern
+
+The PAGE-TREE is a structural map of every page and state in the application. It prevents duplicate work and ensures complete coverage.
+
+```markdown
+# PAGE-TREE
+
+## /dashboard
+- **Purpose**: Primary landing page after login
+- **States**: Loading, Empty (new user), Populated, Error
+- **Key Components**: MetricCards, ActivityFeed, QuickActions
+- **Journey**: Onboarding (step 3), Core Workflow (step 1)
+- **Status**: Implemented | In Progress | Planned
+```
+
+Each entry maps a route to its purpose, states, components, journey connections, and implementation status. Update whenever pages are added or changed.
+
+## PR Validation Checklist
+
+Every pull request must pass this checklist before merge:
+
+```markdown
+## PR Validation
+
+### Four Pillars
+- [ ] **Clarity**: UI purpose and state are immediately obvious
+- [ ] **Attribution**: All data can be traced to its source
+- [ ] **Reversibility**: All actions can be undone (or are gated)
+- [ ] **Consistency**: Patterns match established conventions
+
+### Technical
+- [ ] Tests pass (`npm test`)
+- [ ] Build succeeds (`npm run build`)
+- [ ] No lint errors (`npm run lint`)
+- [ ] Accessibility audit passes
+- [ ] Responsive behavior verified (mobile, tablet, desktop)
+
+### Documentation
+- [ ] DECISIONS.md updated (if a decision was made)
+- [ ] PERSONAS.md updated (if user understanding changed)
+- [ ] PRINCIPLES.md updated (if a principle was validated or discovered)
+- [ ] PAGE-TREE updated (if pages were added or changed)
+- [ ] CLAUDE.md updated (if a new correction was needed)
+```
+
+### Verification Over Instruction
+
+*Give AI a way to verify its work rather than a long list of instructions. Success conditions beat specifications.*
+
+## The Principle
+
+Give the AI a way to **verify its work**. This is more effective than giving it a long list of instructions.
+
+Providing a clear success condition dramatically improves the quality of the final result. A verifiable outcome lets the AI self-correct, iterate, and converge on the right answer — something that even the most detailed specification cannot guarantee.
+
+## Why This Matters
+
+Instructions are inherently ambiguous. No matter how carefully you write them, there are edge cases, implicit assumptions, and contextual details that get lost. The longer the instruction set, the more likely the AI is to miss or misinterpret a critical detail.
+
+Verification, by contrast, is binary. Either the work passes the check or it does not. This clarity eliminates entire categories of miscommunication.
+
+## Verification Methods
+
+### Test Suites
+
+The most robust form of verification. If the desired behavior can be expressed as a test, write the test first and let the AI write the implementation.
+
+```
+"Write a function that passes these tests"
+```
+
+is vastly more effective than:
+
+```
+"Write a function that takes a list of users,
+filters out inactive ones, groups them by role,
+and returns a sorted summary object"
+```
+
+The test suite encodes the exact expected behavior, including edge cases, error handling, and output format.
+
+### Browser Testing
+
+For UI work, give the AI access to browser-based verification:
+
+- **Visual regression tests**: Does the rendered output match the expected screenshot?
+- **Accessibility audits**: Does the page pass automated accessibility checks?
+- **Interaction tests**: Do clicks, form submissions, and navigation work as expected?
+
+### Bash Validation
+
+For build and infrastructure tasks, simple bash commands serve as verification:
+
+- `npm run build` exits with code 0
+- `npm run lint` produces no errors
+- `curl localhost:3000/api/health` returns 200
+- The output file exists and contains the expected structure
+
+### Data Verification
+
+For data processing tasks, verify the output rather than the process:
+
+- Row counts match expectations
+- Required fields are non-null
+- Aggregate values fall within expected ranges
+- Output schema matches the specification
+
+## The Pattern
+
+1. **Define the success condition first.** Before describing the work, describe what "done" looks like in verifiable terms.
+2. **Make verification automated.** If the AI can run the verification itself, it can iterate without human intervention.
+3. **Keep instructions minimal.** Once the verification is in place, the instructions can be brief. The AI will figure out the approach through iteration.
+
+## Example
+
+Instead of this (instruction-heavy):
+
+> Build a responsive card component using our design system tokens. It should have a header with a title and subtitle, a body area for content, and a footer with action buttons. Use the `space-4` token for padding, `radius-md` for border radius, and `shadow-sm` for the box shadow. The header should use `text-lg` for the title and `text-sm text-muted` for the subtitle. Make sure it works on mobile with a single-column layout.
+
+Try this (verification-focused):
+
+> Build a responsive card component. Here is a screenshot of the expected result at desktop and mobile widths. The component should pass the existing Storybook visual regression test and the accessibility audit. Run `npm test -- --grep "Card"` to verify.
+
+The second version is shorter, less ambiguous, and self-verifying.
+
+---
+
 ## Claude & AI Workflows
 
 Context engineering, CLAUDE.md playbook, Claude Code setup, workflow architectures, skill-based automation.
@@ -1137,808 +1936,108 @@ Start simple. A single skill handles most repeatable tasks. Add the agent layer 
 
 ---
 
-## Principles & Frameworks
-
-Core principles, delivery approach, synthesis and validation methodology.
-
-### Answer First
-
-*Every document must have the conclusion in the first body section. Never bury the lead.*
-
-## The Principle
-
-Every document must have the conclusion in the **first body section**. Never bury the lead.
-
-Based on Barbara Minto's **Pyramid Principle** (McKinsey, 1960s): start with the answer, then provide supporting arguments, then the detail. This page applies that principle to all project documentation.
-
-This applies to sprint outputs, decision logs, status reports, technical analyses, and all other forms of documentation. The reader should know the answer, recommendation, or conclusion before they encounter any supporting detail.
-
-## Why This Matters
-
-Most documents are structured as narratives: background, analysis, discussion, and finally the conclusion. This structure optimizes for the writer's thought process, not the reader's needs.
-
-The cost is significant:
-
-- **Executives and stakeholders** do not have time to read to the end. If the conclusion is on page 5, they will make decisions based on incomplete information from page 1.
-- **AI assistants** processing documents for synthesis perform dramatically better when the key information is at the top. Context windows are finite, and the most important content should occupy the most privileged position.
-- **Future team members** searching through decision logs need to quickly determine whether a document is relevant. A clear answer at the top enables rapid scanning.
-- **The author themselves**, returning to a document weeks later, benefits from immediate re-orientation.
-
-## The Structure
-
-Every document should follow this pattern:
-
-```
-# Title
-
-## Answer / Recommendation / Decision
-[The conclusion, stated clearly and completely]
-
-## Context
-[Why this question arose, what prompted the analysis]
-
-## Analysis
-[The detailed supporting work]
-
-## Alternatives Considered
-[What else was evaluated and why it was rejected]
-
-## Appendix
-[Raw data, extended analysis, supplementary material]
-```
-
-The reader who stops after the first section has the answer. The reader who continues gets the supporting rationale. The reader who reaches the appendix gets the full depth.
-
-## Application Examples
-
-### Decision Log Entry
-
-Instead of:
-
-> We evaluated three state management approaches for the dashboard feature. Redux offers a mature ecosystem but adds significant boilerplate. Zustand provides a simpler API but has a smaller community. Jotai uses an atomic model that...
-> [three paragraphs later]
-> ...therefore we chose Zustand.
-
-Write:
-
-> **Decision**: Use Zustand for dashboard state management.
->
-> **Rationale**: Simpler API than Redux with sufficient capability for our use case. Atomic state management (Jotai) was considered but rejected due to team unfamiliarity.
-
-### Sprint Output
-
-Instead of:
-
-> During Sprint 4, the team focused on the onboarding flow. We conducted user testing with 8 participants and found that...
-> [two pages later]
-> ...the key finding is that users cannot complete onboarding without help.
-
-Write:
-
-> **Key Finding**: Users cannot complete onboarding without assistance. 6 of 8 test participants required intervention to finish the flow.
->
-> **Sprint 4 focused on the onboarding flow.** User testing with 8 participants revealed critical usability gaps...
-
-## The Test
-
-Open any document produced by the team. Read only the first section. Do you know:
-
-1. What the document is about?
-2. What the conclusion or recommendation is?
-3. Whether you need to read further?
-
-If any answer is no, the document needs restructuring.
-
-### Compounding Engineering
-
-*Build guidance from real mistakes, not upfront speculation. Let documentation grow organically from actual needs.*
-
-## The Principle
-
-Don't pre-populate guidance. Let it grow based on real needs.
-
-When something is done incorrectly, add the correction to documentation. This is the opposite of writing a comprehensive guide upfront. The knowledge base is built from **real mistakes and their solutions**, not from anticipated problems that may never occur.
-
-## Why This Matters
-
-Upfront documentation has two fundamental problems:
-
-1. **It solves the wrong problems.** The issues you anticipate before starting are rarely the issues you actually encounter. A 30-page style guide written before the first line of code addresses hypothetical concerns while missing the real ones.
-
-2. **Nobody reads it.** Comprehensive guides are written once and ignored forever. They are too long to consume, too abstract to apply, and too static to stay relevant.
-
-Compounding engineering solves both problems by building documentation from the ground up, one real correction at a time.
-
-## The Practice
-
-The canonical example is `CLAUDE.md` (or any equivalent project-level instruction file for AI-assisted development):
-
-1. **Start with almost nothing.** The initial file contains only the most basic project setup information.
-2. **When a mistake happens, add the correction.** If the AI generates a component using the wrong import path, add the correct import path to the file. If a team member misuses an API, document the correct usage.
-3. **Each correction prevents the same mistake from recurring.** The next time the AI (or a human) encounters the same situation, the guidance is there.
-4. **The file grows organically.** After a few sprints, it contains exactly the guidance the project actually needs — no more, no less.
-
-This pattern applies beyond AI instruction files:
-
-- **Code review checklists** that grow from actual review feedback
-- **Testing guidelines** that grow from actual bugs found in production
-- **Architectural decision records** that grow from actual decisions made
-- **Onboarding documents** that grow from actual questions asked by new team members
-
-## The Compounding Effect
-
-Each correction added to the knowledge base has a compounding return:
-
-- **First occurrence**: The mistake happens, time is spent fixing it, the correction is documented
-- **Every subsequent occurrence**: The mistake is prevented entirely, or caught immediately
-
-Over the life of a project, a well-maintained compounding knowledge base saves orders of magnitude more time than it costs to maintain. The key is discipline — every correction must be captured at the moment it is discovered, not deferred to a "documentation sprint" that never happens.
-
-## Anti-Patterns
-
-- **The Big Bang Guide**: Writing comprehensive documentation before work begins. Most of it will be wrong or irrelevant.
-- **The Oral Tradition**: Correcting mistakes verbally but never writing them down. The same mistakes recur when team members change.
-- **The Perfection Trap**: Refusing to add a correction because "the documentation isn't well-organized yet." A messy but accurate knowledge base beats an elegant but empty one.
-- **The Deferred Update**: Noting that documentation should be updated but not doing it immediately. The correction will be forgotten.
-
-### Dissent is a Feature
-
-*Structurally encourage and document dissent to prevent groupthink and preserve overruled concerns for future reference.*
-
-## The Principle
-
-Structurally encourage and document dissent. Assign a **Mandatory Challenger** role to ensure that assumptions are always tested. All significant dissenting opinions are recorded in a **dissent register**, preventing groupthink and preserving overruled concerns for future reference.
-
-## Why This Matters
-
-Teams naturally converge on consensus. This is efficient for execution but dangerous for decision-making. Without structural mechanisms to surface disagreement, teams fall into predictable failure modes:
-
-- **Groupthink**: Everyone agrees because disagreement feels socially costly
-- **Authority bias**: Junior team members defer to senior ones even when they see problems
-- **Momentum bias**: Once a direction is chosen, the cost of changing course feels too high, so concerns are suppressed
-- **Survivorship bias**: Only the decisions that worked are remembered; the warnings that were ignored are forgotten
-
-## The Practice
-
-### The Mandatory Challenger
-
-In any structured review or decision-making session, one team member is assigned the role of **Mandatory Challenger**. Their job is to:
-
-- Argue against the proposed direction, even if they personally agree with it
-- Identify the weakest assumptions in the current plan
-- Propose at least one credible alternative
-- Articulate the scenario in which the current plan fails
-
-This role rotates. It is not a personality trait — it is a structural function. By making challenge a formal responsibility, it removes the social cost of disagreement.
-
-### The Dissent Register
-
-Every significant dissenting opinion is recorded in the project's decision log with the following structure:
-
-| Field | Description |
-|---|---|
-| **Decision ID** | Reference to the decision being challenged |
-| **Dissenting View** | The alternative position or concern |
-| **Raised By** | Who raised the concern (role, not necessarily name) |
-| **Rationale** | Why this concern has merit |
-| **Resolution** | How the concern was addressed — accepted, mitigated, or overruled |
-| **Overrule Rationale** | If overruled, why the team chose to proceed anyway |
-| **Review Trigger** | Conditions under which this dissent should be revisited |
-
-### Why Record Overruled Concerns?
-
-Overruled concerns are not dead. They are **dormant**. Recording them serves three purposes:
-
-1. **Future validation**: If the overruled concern proves correct later, the team can trace back to the original warning and learn from the pattern
-2. **Accountability**: The rationale for overruling is preserved, preventing revisionist history
-3. **Onboarding**: New team members can understand not just what was decided, but what was considered and rejected, and why
-
-## Integration with Sprint Workflow
-
-- **Sprint planning**: Review the dissent register from the previous sprint. Have any review triggers been activated?
-- **Sprint review**: The Mandatory Challenger presents the strongest counterargument to the sprint's key decisions
-- **Retrospective**: Identify any dissent that was suppressed or not captured, and add it to the register
-
-## Anti-Patterns
-
-- **Performative Challenge**: The Mandatory Challenger raises trivial objections to fulfill the role without engaging substantively. The role requires genuine intellectual effort.
-- **Dissent Without Documentation**: Concerns are raised in meetings but not recorded. They are effectively lost.
-- **Punishment for Dissent**: Team members who raise uncomfortable concerns are sidelined or labeled as "negative." This kills the mechanism entirely.
-- **Permanent Overrule**: A concern is overruled once and never revisited, even when circumstances change.
-
-### Principles & Frameworks
-
-*Core principles and operating frameworks distilled from real project work, designed to compound across every engagement.*
-
-These are not theoretical guidelines. They are principles distilled from real project delivery — patterns that emerged from mistakes made, lessons learned, and workflows that proved their worth across multiple engagements. Each one compounds: the more consistently they are applied, the more value they generate over time.
-
-## Core Principles
-
-| Principle | Summary |
-|---|---|
-| [Compounding Engineering](/principles/compounding-engineering) | Build guidance from real mistakes, not upfront speculation. Let documentation grow organically from actual needs. |
-| [Verification Over Instruction](/principles/verification-over-instruction) | Give AI a way to verify its work rather than a long list of instructions. Success conditions beat specifications. |
-| [Dissent is a Feature](/principles/dissent-as-feature) | Structurally encourage and document dissent. Record overruled concerns for future reference. |
-| [Answer First](/principles/answer-first) | Every document must have the conclusion in the first body section. Never bury the lead. |
-
-## Frameworks
-
-### Synthesis & Validation
-
-Living document templates (DECISIONS.md, PERSONAS.md, PRINCIPLES.md), sprint synthesis workflow, four-pillar validation (Clarity, Attribution, Reversibility, Consistency), PAGE-TREE pattern, and PR checklists.
-
-[Read Synthesis & Validation](/principles/synthesis-validation)
-
-### Journey Mapping Template
-
-A reusable structure for mapping any part of a system from user need to validated outcome, including a complete markdown template.
-
-[Read the Journey Mapping Template](/principles/journey-template)
-
-### New Project Checklist
-
-The step-by-step bootstrap sequence that ties together Field Notes patterns into a single startup workflow — from stack decisions through first sprint.
-
-[Read the New Project Checklist](/principles/new-project-checklist)
-
-### Journey Mapping Template
-
-*Reusable structure for mapping any part of a system from user need to validated outcome.*
-
-A journey map traces a user's path through the system from an initial need to a resolved outcome. It connects individual features into a coherent narrative and exposes gaps, friction points, and opportunities that are invisible when features are designed in isolation.
-
-## The Journey Map Structure
-
-Every journey map contains six sections:
-
-### 1. Context
-
-A brief description of who the user is, what triggers the journey, and what success looks like.
-
-### 2. Journey Table
-
-The step-by-step path through the system, including:
-
-- **Step number and name**
-- **User action**: What the user does
-- **System response**: What the system does in response
-- **Touchpoint**: The specific page, component, or notification involved
-- **Emotional state**: The user's likely emotional state at this step (confident, uncertain, frustrated, satisfied)
-- **Failure mode**: What could go wrong at this step
-- **Recovery**: How the system helps the user recover from failure
-
-### 3. Critical Moments
-
-The 2-4 steps where the journey is most likely to succeed or fail. These are the points that deserve the most design attention and testing.
-
-### 4. Validation Checklist
-
-The four-pillar validation applied specifically to this journey's critical moments.
-
-### 5. Open Questions
-
-Unresolved questions about the journey that need research, testing, or stakeholder input to answer.
-
-### 6. Linked Artifacts
-
-References to related decisions, personas, principles, and page-tree entries.
-
-## Full Markdown Template
-
-```markdown
-# Journey: [Journey Name]
-
-**ID**: JOURNEY-[NNN]
-**Persona**: [Link to persona in PERSONAS.md]
-**Trigger**: [What initiates this journey]
-**Success Outcome**: [What "done" looks like for the user]
-**Last Updated**: YYYY-MM-DD
-**Status**: Draft | In Review | Validated
-
-## Context
-
-[2-3 sentences describing the scenario. Who is the user?
-What do they need? What are the constraints?]
-
-## Journey
-
-| Step | User Action | System Response | Touchpoint | Emotional State | Failure Mode | Recovery |
-|---|---|---|---|---|---|---|
-| 1. [Name] | [What user does] | [What system does] | [Page/component] | [Emotion] | [What could go wrong] | [How to recover] |
-| 2. [Name] | | | | | | |
-| 3. [Name] | | | | | | |
-| 4. [Name] | | | | | | |
-| 5. [Name] | | | | | | |
-
-## Critical Moments
-
-### Critical Moment 1: [Step N — Name]
-- **Why this matters**: [Why this step is make-or-break]
-- **Design priority**: [What to focus on]
-- **Testing approach**: [How to validate this step works]
-
-### Critical Moment 2: [Step N — Name]
-- **Why this matters**: [...]
-- **Design priority**: [...]
-- **Testing approach**: [...]
-
-## Validation Checklist
-
-### Clarity
-- [ ] Each step's purpose is obvious to the user
-- [ ] Progress through the journey is visible
-- [ ] The user always knows what to do next
-
-### Attribution
-- [ ] Any data shown during the journey has a clear source
-- [ ] Recommendations or suggestions explain their basis
-
-### Reversibility
-- [ ] The user can go back to any previous step
-- [ ] Partial progress is saved automatically
-- [ ] The user can abandon the journey without penalty
-
-### Consistency
-- [ ] Each step follows the application's established patterns
-- [ ] Terminology is consistent throughout the journey
-- [ ] Visual treatment matches the design system
-
-## Open Questions
-
-- [ ] [Question 1]
-- [ ] [Question 2]
-- [ ] [Question 3]
-
-## Linked Artifacts
-
-- **Decisions**: [DEC-NNN, DEC-NNN]
-- **Principles**: [PRIN-NNN]
-- **Page Tree**: [Routes involved in this journey]
-- **Sprint**: [Sprint(s) that addressed this journey]
-```
-
-## Worked Example (Skeleton)
-
-A brief skeleton showing the template applied to a "sign-up to onboarded" journey:
-
-| Step | User Action | Touchpoint | Failure Mode | Recovery |
-|---|---|---|---|---|
-| 1. Discovery | Arrives at landing page | Landing page | Value prop unclear | A/B test headlines |
-| 2. Sign-up | Clicks "Start Free Trial" | Sign-up form | Form too long | Reduce to essential fields |
-| 3. Verification | Clicks email link | Email | Email not received | Resend option, magic link |
-| 4. First action | Completes guided core feature | Core feature page | Guidance insufficient | Quick-start + detailed options |
-
-**Critical moments:** Step 2 (highest-intent, friction = abandonment) and Step 4 (the "aha moment" — time-to-value predicts retention).
-
-### New Project Checklist
-
-*Bootstrap sequence using Field Notes and llms.txt to get a new project running.*
-
-When starting a new project, this sequence ties together the patterns documented across Field Notes into a single bootstrap workflow. Each step links to the relevant documentation.
-
-## The Bootstrap Sequence
-
-### Step 0: Make Stack Decisions
-
-Before creating any files, decide on the technology stack. Record each choice with its rationale so the team can revisit decisions later without starting from scratch.
-
-Key decisions: package manager, build system, framework, TypeScript strictness, styling approach, testing tools.
-
-[Read Stack Decisions](/platform/stack-decisions)
-
-### Step 1: Set Up Project Structure
-
-Create a directory structure with living documents at the root (`DECISIONS.md`, `PERSONAS.md`, `PRINCIPLES.md`, `CLAUDE.md`), sprint records in `docs/`, and a `_meta/PROJECT_CONTEXT.md` describing the project's purpose, users, and constraints.
-
-See [Synthesis & Validation](/principles/synthesis-validation) for living document templates.
-
-Once the structure is in place, run the scaffold commands to install tooling and wire up the workspace.
-
-[Read Bootstrap Commands](/platform/bootstrap-commands)
-
-### Step 2: Connect to Field Notes
-
-Add the Field Notes index to your project's `CLAUDE.md` so AI agents can look up specific patterns as needed. Use the index, not the full dump — agents fetch individual pages when relevant rather than loading everything into context at once:
-
-```markdown
-## Reference
-
-See https://bysixteen.github.io/field-notes/llms.txt for design engineering pattern index.
-```
-
-[Read the Documentation Hub Pattern](/platform/documentation-hub)
-
-### Step 3: Configure Claude Code
-
-Set up your AI agent configuration following the [Claude Code Setup](/claude/claude-code-setup) guide:
-
-- Create `CLAUDE.md` at project root (under 150 lines)
-- Add build/test/lint commands and git conventions
-- Create `.claude/rules/` for file-type-specific conventions
-- Test: can a fresh agent clone and run tests on first try?
-
-### Step 4: Choose Architecture Patterns
-
-Review the [Platform Patterns](/platform) domain. Key decisions:
-
-- **Data**: Will you split transactional and editorial data? → [Data Architecture](/platform/data-architecture)
-- **Auth**: Do you need row-level security? → [Auth & RLS](/platform/auth-rls)
-- **Audit**: Do you need state transition history? → [Audit-First](/platform/audit-first)
-- **Structure**: Monorepo or single-repo? → [Monorepo Architecture](/platform/monorepo)
-
-### Step 5: Audit Your Inputs
-
-For greenfield projects there is no codebase to audit — instead, audit the inputs that will shape the project: design briefs, requirements documents, stakeholder assumptions, competitive analysis, and any prior research. For existing projects, also audit the codebase.
-
-Document findings in `docs/audit/gap-analysis.md`. Map each gap to a concrete remediation action.
-
-### Step 6: Run the First Sprint
-
-Target the highest-priority user journey. The first sprint produces the first real entries in DECISIONS.md, PERSONAS.md, and PRINCIPLES.md — transforming them from empty templates into living documents.
-
-### Step 7: Start Compounding
-
-After the first sprint, living documents are no longer empty templates. Let `CLAUDE.md` grow from real corrections, not predictions.
-
-[Read about Compounding Engineering](/principles/compounding-engineering)
-
-## Quick Reference
-
-Copy this checklist into your project kickoff document:
-
-```markdown
-## Project Bootstrap
-
-- [ ] Make stack decisions and record in DECISIONS.md
-- [ ] Write `_meta/PROJECT_CONTEXT.md`
-- [ ] Set up directory structure with living documents at root
-- [ ] Run bootstrap commands (scaffold, tooling, workspace)
-- [ ] Add Field Notes llms.txt index URL to CLAUDE.md
-- [ ] Configure Claude Code (CLAUDE.md, rules, first-try test)
-- [ ] Set up git conventions (branch prefixes, commit format)
-- [ ] Choose architecture patterns from Platform domain
-- [ ] Audit inputs (briefs, designs, requirements, assumptions)
-- [ ] Run first sprint targeting highest-priority journey
-- [ ] Update living documents (DECISIONS, PERSONAS, PRINCIPLES)
-```
-
-### Synthesis & Validation
-
-*Living document templates, sprint synthesis workflow, four-pillar validation, PAGE-TREE, and PR checklists.*
-
-This framework has two parts: a **Sprint Synthesis Framework** that prevents context burn by distilling sprint outputs into living documents, and a **Validation Framework** that ensures every piece of work meets a consistent quality bar.
-
-## Part A: Sprint Synthesis
-
-### Distill, Don't Repeat
-
-The raw artifacts of a sprint — meeting notes, Slack threads, Figma explorations, code spikes, user testing recordings — are inputs, not outputs. The output is the **synthesized knowledge** captured in three canonical artifacts.
-
-If you find yourself re-reading raw sprint material to answer a question, the synthesis has failed.
-
-Every project suffers from **context burn** — the gradual loss of institutional knowledge as raw artifacts pile up. A team that finishes a sprint with 47 documents, 12 recordings, and 200 Slack messages has not created knowledge. They have created noise. The cost is concrete: onboarding slows down, decisions can't be traced, AI assistants can't consume sprawling histories, and sprint planning starts from scratch.
-
-**The test:** Can someone who missed the entire sprint read only the three living documents and be fully caught up? If the answer is no, the synthesis is incomplete. If yes, the raw artifacts can be archived.
-
-**Anti-patterns to avoid:**
-- **The Archive Trap** — saving everything "just in case" without synthesizing
-- **The Summary Email** — writing a summary but not updating the canonical documents
-- **The Fresh Start** — beginning each sprint from scratch instead of building on living documents
-
-### The Three Artifacts
-
-#### 1. DECISIONS.md
-
-The canonical record of every significant decision made during the project.
-
-**Template:**
-
-```markdown
-# Decisions Log
-
-## DEC-[NNN]: [Decision Title]
-
-**Date**: YYYY-MM-DD
-**Sprint**: [Sprint number or name]
-**Status**: Accepted | Superseded by DEC-[NNN] | Reverted
-
-### Context
-[1-2 paragraphs explaining why this decision was needed.]
-
-### Decision
-[Clear, unambiguous statement of what was decided.]
-
-### Alternatives Considered
-1. **[Alternative A]**: [Brief description]
-   - Pros: [Why this was attractive]
-   - Cons: [Why this was rejected]
-
-### Consequences
-- [Expected positive outcomes]
-- [Expected negative outcomes or trade-offs]
-
-### Dissent
-[Record any dissenting opinions. If none, state "None recorded."]
-
-### Review Trigger
-[Conditions under which this decision should be revisited.]
-```
-
-**Rules:**
-- Decisions are **append-only**. Never delete a decision — supersede it.
-- Every decision must record alternatives considered.
-- The dissent field is mandatory. "None recorded" is acceptable; blank is not.
-
-#### 2. PERSONAS.md
-
-The canonical record of the team's understanding of its users.
-
-**Template:**
-
-```markdown
-# Personas
-
-## Persona: [Descriptive Name]
-
-**Role**: [Job title, function, or user type]
-**Last Updated**: YYYY-MM-DD
-**Confidence**: High | Medium | Low
-**Source**: [Sprint N user testing | Stakeholder interview | Domain research]
-
-### Goal
-[Primary objective when using the system. One sentence.]
-
-### Context
-[Environment, constraints, tools, frequency of interaction.]
-
-### Pain Points
-- [Frustration 1]
-- [Frustration 2]
-
-### Success Metric
-[How this persona measures whether the system helped them.]
-
-### Open Questions
-- [Things we still do not know about this persona]
-```
-
-**Rules:**
-- Personas are **refined over time**, not rewritten. Update the date and adjust confidence as new information arrives.
-- "High" = validated through user research. "Medium" = stakeholder input. "Low" = assumptions.
-- Open questions drive future research. No open questions means the team has stopped learning.
-
-#### 3. PRINCIPLES.md
-
-The canonical record of design and engineering principles validated through project work.
-
-**Template:**
-
-```markdown
-# Design & Engineering Principles
-
-## PRIN-[NNN]: [Principle Name]
-
-**Status**: Proposed | Validated | Retired
-**Source**: [Sprint N retrospective | User testing | Technical discovery]
-
-### Statement
-[The principle in one clear sentence.]
-
-### Rationale
-[Why this principle matters. What failure mode does it prevent?]
-
-### Example
-[A concrete example of the principle applied correctly.]
-
-### Counter-Example
-[What happens when this principle is violated.]
-```
-
-**Rules:**
-- New principles start as "Proposed" and are promoted to "Validated" after confirmation through sprint work.
-- Retired principles are kept with a note explaining why.
-- The counter-example field is mandatory — a principle without one is too abstract.
-
-### Sprint Synthesis Workflow
-
-At the end of every sprint (or at natural breakpoints):
-
-1. **Gather raw material** — collect all sprint artifacts
-2. **Extract decisions** — add each to DECISIONS.md
-3. **Update personas** — incorporate new insights, adjust confidence
-4. **Validate principles** — promote confirmed principles, retire disproven ones
-5. **Archive raw material** — it has served its purpose
-6. **Run the context burn test** — can someone who missed the sprint catch up from the living documents alone?
-
-## Part B: Validation Framework
-
-### The Four Pillars
-
-Every piece of delivered work — a design, a prototype, a feature — must be validated against four pillars.
-
-| Pillar | Core Question | Test |
-|---|---|---|
-| **Clarity** | Is the purpose and state immediately obvious? | Show the screen to someone with no context for 5 seconds. Can they tell you what it does? |
-| **Attribution** | Can every piece of data be traced to its source? | Point to any data on screen. Can you trace it to its source in 30 seconds? |
-| **Reversibility** | Can the user undo any action? | Perform every action. Can each be undone? If not, was the user warned? |
-| **Consistency** | Does the work follow established patterns? | Find two similar features. Do they look and behave the same way? |
-
-Apply these at design review, PR review, QA, and retrospectives.
-
-### Validation Checklist
-
-```markdown
-## Validation: [Feature/Component Name]
-
-### Clarity
-- [ ] Purpose is immediately obvious without explanation
-- [ ] All states are explicitly handled (loading, empty, error, success)
-- [ ] Primary action is visually dominant
-- [ ] Labels and microcopy are unambiguous
-
-### Attribution
-- [ ] Data sources are visible or accessible
-- [ ] Timestamps show data freshness
-- [ ] AI-generated content is labeled as such
-- [ ] Calculations can be verified by the user
-
-### Reversibility
-- [ ] Destructive actions require confirmation
-- [ ] Undo is available for common actions
-- [ ] Soft delete is used where appropriate
-- [ ] Navigation does not lose unsaved work
-
-### Consistency
-- [ ] Visual patterns match the design system
-- [ ] Interaction patterns match similar features
-- [ ] Terminology matches the glossary
-- [ ] Error handling follows the established format
-```
-
-## Implementation Guide
-
-### Step 1: Initialize Artifacts
-
-Create `DECISIONS.md`, `PERSONAS.md`, and `PRINCIPLES.md` at the project root using the templates above. Populate with whatever is known, even if confidence is low. Mark initial entries as "Pre-Sprint" or "Assumed."
-
-### Step 2: Establish the Synthesis Ritual
-
-Allocate dedicated time (2-4 hours) at the end of every sprint for synthesis. Without a protected time block, synthesis will be deferred indefinitely and context burn will set in.
-
-### Step 3: Integrate Validation into Workflow
-
-Add the four-pillar checklist to your PR template. During design reviews, ground critique in the pillars ("the primary action fails the clarity check") rather than subjective feedback ("I don't like the layout").
-
-## The PAGE-TREE Pattern
-
-The PAGE-TREE is a structural map of every page and state in the application. It prevents duplicate work and ensures complete coverage.
-
-```markdown
-# PAGE-TREE
-
-## /dashboard
-- **Purpose**: Primary landing page after login
-- **States**: Loading, Empty (new user), Populated, Error
-- **Key Components**: MetricCards, ActivityFeed, QuickActions
-- **Journey**: Onboarding (step 3), Core Workflow (step 1)
-- **Status**: Implemented | In Progress | Planned
-```
-
-Each entry maps a route to its purpose, states, components, journey connections, and implementation status. Update whenever pages are added or changed.
-
-## PR Validation Checklist
-
-Every pull request must pass this checklist before merge:
-
-```markdown
-## PR Validation
-
-### Four Pillars
-- [ ] **Clarity**: UI purpose and state are immediately obvious
-- [ ] **Attribution**: All data can be traced to its source
-- [ ] **Reversibility**: All actions can be undone (or are gated)
-- [ ] **Consistency**: Patterns match established conventions
-
-### Technical
-- [ ] Tests pass (`npm test`)
-- [ ] Build succeeds (`npm run build`)
-- [ ] No lint errors (`npm run lint`)
-- [ ] Accessibility audit passes
-- [ ] Responsive behavior verified (mobile, tablet, desktop)
-
-### Documentation
-- [ ] DECISIONS.md updated (if a decision was made)
-- [ ] PERSONAS.md updated (if user understanding changed)
-- [ ] PRINCIPLES.md updated (if a principle was validated or discovered)
-- [ ] PAGE-TREE updated (if pages were added or changed)
-- [ ] CLAUDE.md updated (if a new correction was needed)
-```
-
-### Verification Over Instruction
-
-*Give AI a way to verify its work rather than a long list of instructions. Success conditions beat specifications.*
-
-## The Principle
-
-Give the AI a way to **verify its work**. This is more effective than giving it a long list of instructions.
-
-Providing a clear success condition dramatically improves the quality of the final result. A verifiable outcome lets the AI self-correct, iterate, and converge on the right answer — something that even the most detailed specification cannot guarantee.
-
-## Why This Matters
-
-Instructions are inherently ambiguous. No matter how carefully you write them, there are edge cases, implicit assumptions, and contextual details that get lost. The longer the instruction set, the more likely the AI is to miss or misinterpret a critical detail.
-
-Verification, by contrast, is binary. Either the work passes the check or it does not. This clarity eliminates entire categories of miscommunication.
-
-## Verification Methods
-
-### Test Suites
-
-The most robust form of verification. If the desired behavior can be expressed as a test, write the test first and let the AI write the implementation.
-
-```
-"Write a function that passes these tests"
-```
-
-is vastly more effective than:
-
-```
-"Write a function that takes a list of users,
-filters out inactive ones, groups them by role,
-and returns a sorted summary object"
-```
-
-The test suite encodes the exact expected behavior, including edge cases, error handling, and output format.
-
-### Browser Testing
-
-For UI work, give the AI access to browser-based verification:
-
-- **Visual regression tests**: Does the rendered output match the expected screenshot?
-- **Accessibility audits**: Does the page pass automated accessibility checks?
-- **Interaction tests**: Do clicks, form submissions, and navigation work as expected?
-
-### Bash Validation
-
-For build and infrastructure tasks, simple bash commands serve as verification:
-
-- `npm run build` exits with code 0
-- `npm run lint` produces no errors
-- `curl localhost:3000/api/health` returns 200
-- The output file exists and contains the expected structure
-
-### Data Verification
-
-For data processing tasks, verify the output rather than the process:
-
-- Row counts match expectations
-- Required fields are non-null
-- Aggregate values fall within expected ranges
-- Output schema matches the specification
-
-## The Pattern
-
-1. **Define the success condition first.** Before describing the work, describe what "done" looks like in verifiable terms.
-2. **Make verification automated.** If the AI can run the verification itself, it can iterate without human intervention.
-3. **Keep instructions minimal.** Once the verification is in place, the instructions can be brief. The AI will figure out the approach through iteration.
-
-## Example
-
-Instead of this (instruction-heavy):
-
-> Build a responsive card component using our design system tokens. It should have a header with a title and subtitle, a body area for content, and a footer with action buttons. Use the `space-4` token for padding, `radius-md` for border radius, and `shadow-sm` for the box shadow. The header should use `text-lg` for the title and `text-sm text-muted` for the subtitle. Make sure it works on mobile with a single-column layout.
-
-Try this (verification-focused):
-
-> Build a responsive card component. Here is a screenshot of the expected result at desktop and mobile widths. The component should pass the existing Storybook visual regression test and the accessibility audit. Run `npm test -- --grep "Card"` to verify.
-
-The second version is shorter, less ambiguous, and self-verifying.
-
----
-
 ## Platform Patterns
 
 Monorepo architecture, data patterns, auth and RLS, bootstrapping.
+
+### ADR Template
+
+*Architecture Decision Record format for documenting technical decisions with context, options, and consequences.*
+
+An Architecture Decision Record (ADR) captures a significant technical decision — the context that led to it, the options considered, and the consequences accepted. ADRs are the project's institutional memory for "why did we do it this way?"
+
+## When to Write an ADR
+
+Write an ADR when:
+- Choosing between competing approaches (framework, library, pattern)
+- Making a decision that constrains future choices
+- Reversing or superseding a previous decision
+- The team disagrees and needs a settled resolution
+
+Don't write an ADR for:
+- Implementation details that can be read from the code
+- Decisions that are trivially reversible
+- Style preferences already covered by linters
+
+## File Naming
+
+```
+architecture/decisions/
+├── 0001-repository-structure.md
+├── 0002-authentication-approach.md
+├── 0003-css-token-pattern.md
+└── 0004-state-management.md
+```
+
+Zero-padded four-digit prefix. Sequential. Never renumber. Superseded ADRs keep their original number.
+
+## Template
+
+```markdown
+# ADR-{NNNN}: {Decision Title}
+
+**Status:** proposed | accepted | superseded by ADR-{NNNN} | deprecated
+**Date:** {YYYY-MM-DD}
+**Deciders:** {names}
+
+## Context
+
+What is the issue that we're seeing that is motivating this decision?
+What are the forces at play (technical, business, team)?
+
+## Decision
+
+What is the change that we're proposing and/or doing?
+
+## Options Considered
+
+### Option A: {name}
+
+{Description}
+
+| Pros | Cons |
+|------|------|
+| ... | ... |
+
+### Option B: {name}
+
+{Description}
+
+| Pros | Cons |
+|------|------|
+| ... | ... |
+
+## Consequences
+
+What becomes easier or more difficult because of this decision?
+
+### Positive
+- ...
+
+### Negative
+- ...
+
+### Neutral
+- ...
+
+## Supersedes
+
+{If this replaces a previous ADR, link it: "Supersedes ADR-0003"}
+```
+
+## ADR Discipline
+
+From practice across real projects:
+
+- **A healthy reversal rate is ~20%.** If no ADRs are ever superseded, either the team isn't revisiting decisions or isn't recording enough of them. If the reversal rate is much higher, decisions may be made too hastily.
+- **Status is a living field.** Update it when circumstances change — an accepted ADR that gets reversed should link to the new ADR that supersedes it.
+- **Keep the context section honest.** Record the actual forces at play, including team constraints and deadlines. "We chose X because we had two weeks" is a valid context.
+- **Trade-off tables are mandatory.** Every option must have explicit pros and cons. A decision without trade-offs wasn't a real decision — it was a default.
+
+## See Also
+
+- [Stack Decisions](/platform/stack-decisions) — recording technology choices
+- [New Project Checklist](/principles/new-project-checklist) — when to write initial ADRs
 
 ### Audit-First Architecture
 
@@ -3792,6 +3891,198 @@ The three-app model works best when the audiences are genuinely different and th
 
 Multi-dimensional token model, composition rules, naming conventions, and constraints.
 
+### Accessibility Audit
+
+*A bracket-based WCAG 2.2 AA audit framework for design system components with 30 rules and scored output.*
+
+This framework classifies components into brackets (B1–B6) and applies WCAG 2.2 AA rules selectively based on each bracket's accessibility surface area. The result is a scored audit with actionable fix-oriented output.
+
+## Component Brackets
+
+Classify the component by working through these questions top-to-bottom. Stop at the first match. If ambiguous, use the higher bracket.
+
+| Bracket | Name | Classification question |
+|---------|------|------------------------|
+| B6 | Overlay | Does it render above the page flow and require focus management? (dialog, drawer, tooltip, popover, sheet) |
+| B4 | Composite | Does it compose multiple interactive sub-components? (accordion, card with actions, data table with controls) |
+| B3 | Form | Is it a controlled input or form-level wrapper? (input, select, textarea, checkbox, radio, field) |
+| B2 | Interactive | Does it respond to user interaction as a single unit? (button, toggle, chip, tab strip, pagination) |
+| B5 | Data | Does it display structured data without interactive controls? (table, avatar, stat, timeline) |
+| B1 | Display | Is it purely presentational with no interaction? (badge, icon, label, separator, spinner, skeleton) |
+
+A component with an action button (e.g., a toast with a dismiss button) is B4 Composite, not B1 Display — the presence of any interactive sub-component elevates the bracket.
+
+## Scoring
+
+```
+Score = 100 − (CRITICAL × 10) − (SERIOUS × 5) − (MODERATE × 2)
+Minimum score: 0
+```
+
+| Score | Verdict |
+|-------|---------|
+| ≥ 90 | Merge-ready |
+| 70–89 | Warrants attention before merge |
+| < 70 | Requires remediation before merge |
+
+## Rules by Severity
+
+### CRITICAL — Merge blocked (−10 per finding)
+
+Any CRITICAL finding halts the review. These rules exist because violations make the component completely unusable for assistive technology users.
+
+**A01 — Image missing alt text** (WCAG 1.1.1) — `<img>` without `alt` attribute.
+
+**A02 — Icon-only button/link missing accessible name** (WCAG 4.1.2) — Button or link containing only an icon with no `aria-label`.
+
+**A03 — Form control without label** (WCAG 1.3.1) — Input, select, or textarea without an associated label, `aria-label`, or `aria-labelledby`.
+
+**A04 — Click on non-interactive element** (WCAG 2.1.1) — Click handler on a `<div>` or `<span>` without `role`, `tabindex="0"`, and keyboard handler. Better fix: use a native `<button>`.
+
+**A05 — Anchor without href** (WCAG 2.1.1) — `<a>` using click handler without `href`. If not navigation, use a `<button>`.
+
+**A18 — Viewport zoom lock** (WCAG 1.4.4) — `user-scalable=no` or `maximum-scale=1` in viewport meta.
+
+**A19 — WAI-ARIA APG pattern violation** (WCAG 2.1.1, 4.1.2) — Component implements a recognized widget pattern but deviates from APG keyboard interaction or ARIA roles.
+
+**A20 — Overlay missing focus trap** (WCAG 2.1.2) — B6 overlay without focus containment.
+
+**A21 — Visible label not in accessible name** (WCAG 2.5.3) — Element's visible text is not contained in its computed accessible name. Breaks voice control.
+
+### SERIOUS — Should fix before merge (−5 per finding)
+
+**A06 — Focus outline removed** (WCAG 2.4.7) — `outline: none` without a `:focus-visible` replacement.
+
+**A07 — Click without keyboard handler** (WCAG 2.1.1) — Interactive element with click but no keyboard handler. Native `<button>` and `<a href>` are exempt.
+
+**A08 — Colour-only state communication** (WCAG 1.4.1) — Status indicated only by colour with no icon, text label, or pattern alongside.
+
+**A13 — aria-hidden on focusable element** (WCAG 4.1.2) — `aria-hidden="true"` on an element that can receive focus.
+
+**A16 — Dialog missing focus restoration** (WCAG 2.4.3) — B6 overlay that doesn't restore focus to trigger on close.
+
+**A17 — Mobile input font-size below 16px** (WCAG 1.4.4) — Input styled below 16px triggers iOS auto-zoom.
+
+**A22 — Dynamic status without live region** (WCAG 4.1.3) — Status message rendered without `aria-live` or `role="status"`.
+
+**A23 — Tooltip not dismissible** (WCAG 1.4.13) — Tooltip that can't be dismissed with Escape.
+
+**A24 — Focus obscured by sticky element** (WCAG 2.4.11) — Focused element hidden behind sticky/fixed headers.
+
+**A25 — Drag-only interaction** (WCAG 2.5.7) — Drag-dependent functionality with no single-pointer alternative.
+
+### MODERATE — Address in follow-up (−2 per finding)
+
+**A09 — Target size below 44×44px** (WCAG 2.5.5 AAA) — Aspirational, not AA requirement.
+
+**A09b — Target size below 24px** (WCAG 2.5.8 AA) — Below AA minimum floor. SERIOUS if spacing between targets is insufficient.
+
+**A10 — Role without tabindex** (WCAG 4.1.2) — Interactive role but missing `tabindex="0"`.
+
+**A11 — Skipped heading levels** (WCAG 1.3.1) — `<h1>` followed by `<h3>` with no `<h2>`.
+
+**A12 — Positive tabindex** (WCAG 2.4.3) — `tabindex` value greater than 0.
+
+**A14 — Table without caption** (WCAG 1.3.1) — `<table>` without `<caption>` or `aria-label`.
+
+**A15 — Live region issues** (WCAG 4.1.3) — Unused live region, or low-impact status without announcement.
+
+**A26 — Missing autocomplete** (WCAG 1.3.5) — Personal data input without `autocomplete` attribute.
+
+**A27 — Horizontal scroll at 320px** (WCAG 1.4.10) — Component causes horizontal scrolling at 320px viewport width.
+
+**A28 — Text spacing override breaks layout** (WCAG 1.4.12) — Fixed-height containers clip content when text spacing is overridden.
+
+**A29 — Auth cognitive function test** (WCAG 3.3.8) — Auth requiring CAPTCHA with no alternative.
+
+**A30 — Viewport max-scale 1–2** (WCAG 1.4.4) — Partial zoom restriction (less severe than A18).
+
+## Bracket × Rule Matrix
+
+| Rule | B1 | B2 | B3 | B4 | B5 | B6 |
+|------|:--:|:--:|:--:|:--:|:--:|:--:|
+| A01 (alt text) | ✓ | ✓ | | ✓ | ✓ | |
+| A02 (icon button label) | | ✓ | | ✓ | | ✓ |
+| A03 (form label) | | | ✓ | | | |
+| A04 (click non-interactive) | | ✓ | ✓ | ✓ | ✓ | ✓ |
+| A05 (anchor no href) | | ✓ | | ✓ | | ✓ |
+| A06 (focus outline) | | ✓ | ✓ | ✓ | | ✓ |
+| A07 (click no keyboard) | | ✓ | ✓ | ✓ | ✓ | ✓ |
+| A08 (colour-only) | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ |
+| A09 (target 44px) | | ✓ | ✓ | ✓ | | ✓ |
+| A10 (role no tabindex) | | ✓ | ✓ | ✓ | | ✓ |
+| A11 (heading levels) | ✓ | | | ✓ | ✓ | |
+| A12 (positive tabindex) | | ✓ | ✓ | ✓ | | ✓ |
+| A13 (aria-hidden focus) | | ✓ | ✓ | ✓ | ✓ | ✓ |
+| A14 (table caption) | | | | | ✓ | |
+| A15 (live region) | | ✓ | ✓ | ✓ | ✓ | ✓ |
+| A16 (focus restoration) | | | | | | ✓ |
+| A17 (mobile font-size) | | | ✓ | | | |
+| A18 (viewport zoom) | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ |
+| A19 (APG pattern) | | ✓ | ✓ | ✓ | | ✓ |
+| A20 (focus trap) | | | | | | ✓ |
+| A21 (label in name) | | ✓ | ✓ | ✓ | | ✓ |
+| A22 (status live) | | | ✓ | ✓ | ✓ | ✓ |
+| A23 (tooltip dismiss) | | ✓ | ✓ | | | ✓ |
+| A24 (focus obscured) | | | | ✓ | | ✓ |
+| A25 (drag alternative) | | | | ✓ | ✓ | |
+| A26 (autocomplete) | | | ✓ | | | |
+| A27 (reflow 320px) | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ |
+| A28 (text spacing) | ✓ | | ✓ | ✓ | ✓ | |
+| A29 (auth cognitive) | | | ✓ | | | |
+| A30 (viewport scale) | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ |
+
+## Audit Workflow
+
+1. **Identify the bracket** — classify using the table above
+2. **Apply rules by bracket** — only check rules marked ✓ for the bracket, CRITICAL first
+3. **Check APG compliance** — for B2/B3/B4/B6 widgets, verify keyboard interaction matches the WAI-ARIA APG spec
+4. **Calculate score** — apply the scoring formula
+5. **Produce report** — use the output format below
+
+## Report Format
+
+```
+═══════════════════════════════════════
+ACCESSIBILITY AUDIT: {ComponentName}
+Bracket: {B1–B6}
+Standard: WCAG 2.2 AA
+═══════════════════════════════════════
+
+STRUCTURAL ACCESSIBILITY  ·  {summary}
+───────────────────────────────────────
+[CRITICAL] A03 · input.tsx:14
+  <input> without associated label
+  Fix: Add aria-label="Search" to the input
+
+KEYBOARD & FOCUS  ·  ✓ pass
+
+═══════════════════════════════════════
+SUMMARY
+  Critical:  1
+  Serious:   0
+  Moderate:  0
+  Score:     90/100
+  Verdict:   WARRANTS ATTENTION
+═══════════════════════════════════════
+```
+
+## React Accessibility Libraries
+
+| Library | Use for |
+|---------|---------|
+| `react-aria` (Adobe) | Hooks for accessible components — handles keyboard, focus, ARIA |
+| `@radix-ui/react-*` | Unstyled accessible primitives (dialog, popover, tabs, etc.) |
+| `@headlessui/react` | Tailwind-oriented accessible components |
+| `jest-axe` | Automated axe-core checks in unit tests |
+| `@axe-core/playwright` | Automated a11y checks in integration tests |
+
+## See Also
+
+- [HTML Semantics](/design-system/html-semantics) — choosing the right elements and ARIA attributes
+- [Testing Strategy](/design-system/testing-strategy) — automated a11y testing in the test pyramid
+- [Component API](/design-system/component-api) — how component inputs map to dimensions
+
 ### Flat Architecture
 
 *Single-layer CSS custom properties for LLM-mediated workflows.*
@@ -4027,6 +4318,359 @@ The size scale (`xs` through `xl`) controls both a component's outer footprint a
 Typical systems name every combination. That works at first, but the list grows fast, names lose meaning, and changes ripple everywhere.
 
 The dimensional model asks a few clear questions instead. The answers combine automatically, the system stays small as it grows, and everyone on the team can make confident decisions without memorising a glossary of variant names.
+
+### Component API
+
+*How to define the consumer-facing contract of a design system component — inputs, types, defaults, and slots.*
+
+A component API has exactly four categories of input. Button is the canonical example — every other component is a subset or extension of this shape.
+
+```
+Dimension inputs  →  which token collection mode to activate
+Content inputs    →  text and values the component renders
+Slot inputs       →  optional content areas (icons, badges, avatars)
+Event outputs     →  interactions communicated back to the parent
+```
+
+Dimensions compose independently. Changing `sentiment` does not affect `size`. The valid state space is their **product**, not their sum — a Button with 3 emphasis × 6 sentiment × 5 size modes has 90 working combinations automatically, because modes resolve at runtime rather than being pre-combined.
+
+```
+Additive (wrong):       3 + 6 + 5 = 14 things to define
+Multiplicative (right): 3 × 6 × 5 = 90 combinations, all free
+```
+
+Adding one new sentiment mode costs one token value — not a new variant branch.
+
+## The Three Rules
+
+**Enums, not booleans.** Every dimension input is a string enum, even with only two options today. A boolean can never grow without a breaking change. Booleans also create parallel state channels — if `state` and `loading` can both be set, what happens when `state='disabled'` and `loading=true`? Enums eliminate the ambiguity.
+
+**Every input has a default.** A bare `` must render sensibly without any attributes. The default is always the most neutral, common-case value.
+
+**Names describe the dimension, not the visual.** `emphasis: 'high'` survives a redesign. `isPrimary: true` does not. Name the concept, not the current treatment.
+
+## Canonical Example: Button
+
+Button is the reference point. Every other component API is derived by asking: which of these dimensions does this component need, and what content/slots does it add?
+
+### Types
+
+```tsx
+type ButtonState     = 'rest' | 'hover' | 'active' | 'disabled' | 'resolving' | 'pending';
+type ButtonEmphasis  = 'high' | 'medium' | 'low';
+type ButtonSentiment = 'neutral' | 'warning' | 'highlight' | 'new' | 'success' | 'error';
+type ButtonSize      = 'xs' | 'sm' | 'md' | 'lg' | 'xl';
+```
+
+### React Component
+
+```tsx
+interface ButtonProps {
+  state?: ButtonState;
+  emphasis?: ButtonEmphasis;
+  sentiment?: ButtonSentiment;
+  size?: ButtonSize;
+  leadingIcon?: React.ReactNode;
+  trailingIcon?: React.ReactNode;
+  onClick?: (event: React.MouseEvent) => void;
+  children: React.ReactNode;
+}
+
+function Button({
+  state = 'rest',
+  emphasis = 'high',
+  sentiment = 'neutral',
+  size = 'md',
+  leadingIcon,
+  trailingIcon,
+  onClick,
+  children,
+}: ButtonProps) {
+  const isDisabled = state === 'disabled';
+
+  return (
+    <button
+      data-state={state}
+      data-emphasis={emphasis}
+      data-sentiment={sentiment}
+      data-size={size}
+      disabled={isDisabled}
+      onClick={isDisabled ? undefined : onClick}
+    >
+      {leadingIcon && (
+        <span className="button__prefix" aria-hidden="true">{leadingIcon}</span>
+      )}
+      <span className="button__label">{children}</span>
+      {trailingIcon && (
+        <span className="button__suffix" aria-hidden="true">{trailingIcon}</span>
+      )}
+    </button>
+  );
+}
+```
+
+## Dimension Vocabulary
+
+Use these exact values. Do not invent synonyms.
+
+| Dimension | Standard modes | Include when |
+|---|---|---|
+| `state` | `rest` `hover` `active` `selected` `disabled` `resolving` `pending` | Component is interactive |
+| `emphasis` | `high` `medium` `low` | Multiple visual weights exist |
+| `sentiment` | `neutral` `warning` `highlight` `new` `success` `error` | Conveys communicative meaning |
+| `size` | `xs` `sm` `md` `lg` `xl` | Has size variants |
+| `structure` | *(no input — always applied)* | Never expose as a prop |
+
+**State + Emphasis are paired.** Interactive components almost always need both.
+
+**Loading is a state mode.** `state='resolving'` — not a separate `loading` boolean.
+
+## Slot Patterns
+
+**Same component type every time → conditional rendering**
+
+The icon slot is either present or absent. Conditional rendering prevents ghost padding from empty wrappers.
+
+```tsx
+{leadingIcon && (
+  <span className="button__prefix" aria-hidden="true">{leadingIcon}</span>
+)}
+```
+
+**Different component types → polymorphic slot**
+
+```tsx
+interface CardProps {
+  leading?: React.ReactNode;  // Icon, Avatar, or Checkbox
+  trailing?: React.ReactNode;
+}
+```
+
+| Slot name | Position | Pattern |
+|---|---|---|
+| `leadingIcon` / `prefix` | Before label | Conditional — Icon only |
+| `trailingIcon` / `suffix` | After label | Conditional — Icon only |
+| `leading` | Start of layout | Polymorphic — mixed types |
+| `trailing` | End of layout | Polymorphic — mixed types |
+| `header` / `footer` | Top / bottom | Polymorphic — mixed types |
+
+## Extrapolating to Other Components
+
+Start from Button and ask: which dimensions does this component need, what content does it render, what slots does it have, and does the layer structure ever change?
+
+**If the layer structure changes between options → that is a variant (separate component), not a mode.** Avatar with image vs initials vs icon has different child layers — three variants. Button with different sentiments has the same layers — one component, multiple modes.
+
+| Component | Dimensions | Dropped | Additions |
+|---|---|---|---|
+| Badge | `sentiment`, `size` (xs–lg) | `state`, `emphasis` | `text: string` |
+| IconButton | `state`, `emphasis`, `sentiment`, `size` | — | Icon is required content, no label |
+| Chip | `state`, `emphasis`, `sentiment`, `size` | — | `closeable?: boolean` |
+| Input | `state`, `size` | `emphasis` | `label`, `placeholder`, `value`; `leading`/`trailing` slots |
+| Alert | `sentiment` | `state`, `emphasis`, `size` | `title`, `description`; `leading` slot; `actions` slot |
+| Select | `state`, `size` | `emphasis` | Composite — parent owns dimensions, `SelectItem` owns `value` |
+
+For composite components: the **parent owns all dimension inputs** and propagates them to children. Children own only their content inputs.
+
+## Decision Tree
+
+```
+New condition (loading, pending, selected)?
+  → Mode on `state` — not a new input
+
+New visual weight (outlined, ghost, subtle)?
+  → Mode on `emphasis` — not a new input
+
+Layer structure changes between options?
+  → Variant → separate component
+
+Content (label, text, placeholder, value)?
+  → String prop with default ''
+
+Slot presence (icon, close button)?
+  → Optional React.ReactNode prop
+
+None of the above?
+  → New enum input. Name the dimension. Provide a default.
+```
+
+## Audit Checklist
+
+| Check | Violation | Fix |
+|---|---|---|
+| Type is `boolean` for a dimension | Raw boolean | Change to string union type |
+| No default | Missing default | Add — most neutral/common value |
+| Name is visual (`isPrimary`, `isGhost`) | Visual naming | Rename to dimension (`emphasis`) |
+| Mode values non-standard (`'small'`, `'1'`) | Wrong modes | Use canonical vocabulary above |
+| Dimension on child that parent controls | Misplaced ownership | Move to parent, propagate down |
+| `loading` as separate boolean | Parallel channel | Merge into `state='resolving'` |
+
+## See Also
+
+- [The Dimensional Model](/design-system/model) — the five dimensions explained
+- [Composition Rules](/design-system/composition) — how dimensions combine across parent and child
+- [Component Scaffolding](/design-system/component-scaffolding) — the full scaffold workflow
+
+### Component Scaffolding
+
+*The workflow for scaffolding a new design system component — from dimension decisions through file generation to visual iteration.*
+
+Scaffolding a component follows a fixed sequence: decide dimensions, define types, generate files, add ARIA, iterate visually, then test.
+
+## Step 1: Decide Dimensions
+
+Use the [Component API](/design-system/component-api) dimension vocabulary. Ask these questions:
+
+| Question | If yes → | Dimension |
+|----------|----------|-----------|
+| Is it interactive? | Add state + emphasis | `state`, `emphasis` |
+| Does it convey meaning? | Add sentiment | `sentiment` |
+| Does it have size variants? | Add size | `size` |
+
+Every component gets a **structure** dimension implicitly — the fixed skeleton of border radius, font family, and gap values. This is never exposed as a prop.
+
+## Step 2: Define Types
+
+Create a types file with union types for each dimension:
+
+```tsx
+// button.types.ts
+export type ButtonState     = 'rest' | 'hover' | 'active' | 'disabled' | 'resolving';
+export type ButtonEmphasis  = 'high' | 'medium' | 'low';
+export type ButtonSentiment = 'neutral' | 'warning' | 'highlight' | 'new' | 'success' | 'error';
+export type ButtonSize      = 'xs' | 'sm' | 'md' | 'lg' | 'xl';
+```
+
+Rules:
+- Only include types for dimensions the component actually uses
+- Use the exact canonical mode values
+- Never use `'default'`, `'small'`, `'large'`, or numeric steps for size
+
+## Step 3: Generate Files
+
+| File | Purpose |
+|------|---------|
+| `component.tsx` | React component with props interface |
+| `component.types.ts` | Type unions for every dimension |
+| `component.css` (or `.scss`) | Styles using CSS custom properties |
+| `component.stories.tsx` | Storybook stories covering all dimensions |
+| `component.test.tsx` | Unit tests for inputs, outputs, ARIA |
+| `index.ts` | Public barrel export |
+
+### Component file pattern
+
+```tsx
+
+interface ButtonProps {
+  state?: ButtonState;
+  emphasis?: ButtonEmphasis;
+  sentiment?: ButtonSentiment;
+  size?: ButtonSize;
+  leadingIcon?: React.ReactNode;
+  trailingIcon?: React.ReactNode;
+  onClick?: (event: React.MouseEvent) => void;
+  children: React.ReactNode;
+}
+
+export function Button({
+  state = 'rest',
+  emphasis = 'high',
+  sentiment = 'neutral',
+  size = 'md',
+  leadingIcon,
+  trailingIcon,
+  onClick,
+  children,
+}: ButtonProps) {
+  const isDisabled = state === 'disabled';
+
+  return (
+    <button
+      className="ds-button"
+      data-state={state}
+      data-emphasis={emphasis}
+      data-sentiment={sentiment}
+      data-size={size}
+      disabled={isDisabled}
+      aria-disabled={isDisabled || undefined}
+      onClick={isDisabled ? undefined : onClick}
+    >
+      {leadingIcon && (
+        <span className="ds-button__prefix" aria-hidden="true">{leadingIcon}</span>
+      )}
+      <span className="ds-button__label">{children}</span>
+      {trailingIcon && (
+        <span className="ds-button__suffix" aria-hidden="true">{trailingIcon}</span>
+      )}
+    </button>
+  );
+}
+```
+
+## Step 4: Add ARIA
+
+Choose ARIA attributes based on the component type:
+
+| Component type | `role` | Key attributes |
+|---------------|--------|----------------|
+| Button / action | `button` | `aria-label`, `aria-disabled`, `aria-pressed` (toggle) |
+| Link | `link` | `aria-label`, `aria-current` (active nav) |
+| Status display | `status` | `aria-live="polite"`, `aria-label` |
+| Alert / notification | `alert` | `aria-live="assertive"`, `aria-atomic="true"` |
+| Form input | — (native) | `aria-invalid`, `aria-describedby`, `aria-required` |
+| Dialog / modal | `dialog` | `aria-modal="true"`, `aria-labelledby` |
+| Tab | `tab` | `aria-selected`, `aria-controls` |
+| Progress | `progressbar` | `aria-valuenow`, `aria-valuemin`, `aria-valuemax` |
+
+Always include:
+- `aria-label` or visible label association
+- `aria-disabled` on disabled interactive elements
+- Focus management with `:focus-visible` styling
+
+## Step 5: Visual Iteration
+
+After scaffolding, iterate on token values visually in Storybook or a dev environment:
+
+1. Open the component with default token values
+2. Adjust token values — background, foreground, border colours per dimension
+3. Test emphasis/sentiment combinations visually
+4. Verify size scale feels proportional
+5. Check state transitions (hover, active, disabled)
+6. Validate contrast ratios meet WCAG AA (4.5:1 text, 3:1 UI)
+
+### Visual Iteration Checklist
+
+- [ ] All emphasis levels render with distinct visual weight
+- [ ] All sentiment colours are distinguishable (not just by hue — check luminance)
+- [ ] Size scale maintains visual proportion (text, padding, icon sizing)
+- [ ] Disabled state is visually distinct but not invisible
+- [ ] Hover/active states provide clear feedback
+- [ ] Focus ring is visible on all background colours
+- [ ] Dark and light themes both work
+- [ ] Reduced motion preference is respected
+- [ ] Touch targets meet WCAG 2.2 minimum (44×44px for `md` and above)
+
+## Step 6: Test
+
+See [Testing Strategy](/design-system/testing-strategy) for the three-layer approach.
+
+## Size Scale Reference
+
+| Mode | Height | Padding X | Gap | Touch target |
+|------|--------|-----------|-----|-------------|
+| `xs` | 24px | 6px | 4px | Below minimum — use sparingly |
+| `sm` | 32px | 10px | 6px | Below minimum — dense interfaces |
+| `md` | 40px | 14px | 8px | Meets 44px with padding — **default** |
+| `lg` | 48px | 18px | 10px | Meets WCAG 2.2 minimum |
+| `xl` | 56px | 22px | 12px | Hero / prominent CTAs |
+
+Default is always `'md'`.
+
+## See Also
+
+- [Component API](/design-system/component-api) — the input design rules
+- [CSS Authoring Rules](/design-system/css-authoring-rules) — how to write the stylesheet
+- [HTML Semantics](/design-system/html-semantics) — choosing the right elements
+- [Accessibility Audit](/design-system/accessibility-audit) — verifying WCAG compliance
 
 ### Composition
 
@@ -4522,6 +5166,188 @@ Key guardrails:
 5. Sentiment flows down; emphasis does not
 6. Never set emphasis on a container
 
+### CSS Authoring Rules
+
+*Opinionated rules for writing component stylesheets in a design system — section order, token consumption, and seven non-negotiables.*
+
+These rules govern how component stylesheets consume tokens. Every rule here was settled through explicit debate — there are no soft preferences.
+
+## The Mental Model
+
+A component stylesheet does exactly three things:
+
+1. **Reads CSS custom properties** written by the token system
+2. **Declares structural invariants** the token system never touches
+3. **Activates the right variable** based on interaction state
+
+The stylesheet never resolves tokens, never owns dimensional variants, and never positions a component in its parent context.
+
+## The Seven Non-Negotiables
+
+### 1. BEM modifiers are structural only
+
+Dimensional variants — `emphasis`, `sentiment`, `state`, `size` — are **never BEM modifiers**. They arrive as CSS custom properties via `data-*` attributes. BEM modifiers describe layout or structural changes that the token system does not own.
+
+```css
+/* ✅ Structural — token system doesn't own this */
+.button--full-width { inline-size: 100%; }
+.card--media-top    { flex-direction: column; }
+
+/* ❌ Dimensional variant as BEM modifier */
+.button--primary { background: var(--color-primary); }
+.button--large   { block-size: 48px; }
+```
+
+### 2. Section order is enforced
+
+Every component stylesheet follows this exact section order:
+
+```css
+/* ─── 1. Host — layout invariants */
+/* ─── 2. Rest state — token reads */
+/* ─── 3. Interactive states — pseudo-classes with :not() guards */
+/* ─── 4. Programmatic states — data-attribute selectors */
+/* ─── 5. Slot containers — rest state only */
+/* ─── 6. Child elements — label, icon, sub-elements */
+/* ─── 7. Motion — bare transition declarations */
+```
+
+A property in the wrong section is a blocking violation. The section order makes components auditable without running the code.
+
+**Decision tree — which section?**
+
+```
+Is it display, flex/grid layout, overflow, or cursor?
+├── YES → §1 Host
+└── NO → Does it read a --component-*-rest token?
+    ├── YES → §2 Rest state
+    └── NO → Is it triggered by :hover, :active, or :focus-visible?
+        ├── YES → §3 Interactive states
+        └── NO → Is it triggered by a data-* attribute?
+            ├── YES → §4 Programmatic states
+            └── NO → Is it on a BEM __element?
+                ├── YES → §5 Slot containers / §6 Child elements
+                └── NO → Is it a transition?
+                    ├── YES → §7 Motion
+                    └── NO → Re-evaluate placement
+```
+
+### 3. Pseudo-classes always carry :not() guards
+
+Every interactive pseudo-class must guard against all programmatic states:
+
+```css
+.button:hover:not([data-disabled]):not([data-resolving]) {
+  background: var(--button-bg-hover);
+  border-color: var(--button-border-hover);
+  color: var(--button-fg-hover);
+}
+```
+
+### 4. Focus ring uses a component focus-offset token
+
+Never read the global `--ring-offset-2` directly. Use a component-scoped token that defaults to the global:
+
+```css
+.button:focus-visible {
+  outline: var(--ring-width-2) solid var(--border-focus-ring);
+  outline-offset: var(--button-focus-offset, var(--ring-offset-2));
+}
+```
+
+This allows components with unique shapes (pills, circles) to adjust their focus offset without global changes.
+
+### 5. No margin on components
+
+Components never set their own margin. Spacing between components is the parent's responsibility. This prevents conflicting margin models and makes layout composition predictable.
+
+```css
+/* ❌ Component owns its own spacing */
+.card { margin-bottom: 16px; }
+
+/* ✅ Parent owns spacing */
+.card-list { display: flex; flex-direction: column; gap: var(--size-16); }
+```
+
+### 6. Logical properties over physical
+
+Use `inline-size` not `width`, `block-size` not `height`, `padding-inline` not `padding-left/right`. This supports RTL layouts without duplication.
+
+```css
+/* ❌ Physical */
+.button { padding-left: 14px; padding-right: 14px; }
+
+/* ✅ Logical */
+.button { padding-inline: var(--size-14); }
+```
+
+### 7. will-change requires justification
+
+Never add `will-change` speculatively. It consumes GPU memory and can actually harm performance when overused. Only add it when you have measured a specific animation jank and the property is the fix.
+
+```css
+/* ❌ Speculative */
+.card { will-change: transform, opacity; }
+
+/* ✅ Justified — measured jank on card flip animation */
+.card--flipping { will-change: transform; }
+```
+
+## Token Ownership
+
+| Owns | Doesn't own |
+|------|-------------|
+| Structural invariants (display, flex direction, overflow) | Colour values (background, foreground, border colour) |
+| Transition declarations | Dimensional variants (size, emphasis, sentiment) |
+| BEM structural modifiers | External spacing (margin) |
+| Focus ring shape | Token resolution |
+
+## @layer Cascade Order
+
+When using CSS `@layer`, define the cascade:
+
+```css
+@layer reset, tokens, structure, components, utilities;
+```
+
+- `reset` — normalize/reset styles
+- `tokens` — CSS custom property declarations
+- `structure` — layout primitives (grid, stack, cluster)
+- `components` — component-specific styles
+- `utilities` — overrides (visually-hidden, sr-only)
+
+## CSS-in-JS Adaptation
+
+These rules apply regardless of styling approach:
+
+| Rule | CSS Modules | styled-components | Tailwind |
+|------|------------|-------------------|----------|
+| No dimensional BEM modifiers | Use `data-*` selectors | Use `data-*` props | Use `data-[sentiment=warning]:` |
+| Section order | Enforce in file structure | Enforce in template literal | Group by concern |
+| :not() guards | Same syntax | Same in template literal | Use `not-data-[disabled]:hover:` |
+| No margin | Same rule | Same rule | Avoid `m-*` on components |
+| Logical properties | Same syntax | Same syntax | Use `ps-*`, `pe-*`, `is-*` |
+
+## Reduced Motion
+
+Always wrap animation and transition in a reduced-motion check:
+
+```css
+@media (prefers-reduced-motion: reduce) {
+  .component {
+    transition: none;
+    animation: none;
+  }
+}
+```
+
+## See Also
+
+- [Token Audit](/design-system/token-audit) — verifying token cascade integrity
+- [Component Scaffolding](/design-system/component-scaffolding) — the full scaffold workflow
+- [HTML Semantics](/design-system/html-semantics) — choosing the right elements
+- [Token Transform Pipeline](/design-system/token-transform-pipeline) — how tokens become CSS custom properties
+
 ### Figma Documentation Rules
 
 *Best practices for documenting design tokens and components inside Figma files.*
@@ -4628,7 +5454,225 @@ A Figma documentation page is complete when:
 - [ ] Font families are loaded and rendering correctly
 - [ ] A screenshot of the page has been reviewed for visual accuracy
 
+## Figma Variable Structure
+
+How to organise Figma Variable collections to support the dimensional model.
+
+### Collections per Dimension
+
+Each dimension gets its own variable collection. This keeps the collection list navigable and makes it clear which tokens belong to which concern.
+
+| Collection | Modes | Token types | Example variables |
+|------------|-------|-------------|-------------------|
+| Primitive Colour | Dark, Light | COLOR | `colors/brand-dark/500`, `colors/neutral/100` |
+| Semantic Colour | Value | COLOR | `background/brand/rest`, `fg/primary` |
+| Sentiment.Component | One per sentiment value | COLOR | `emphasis high/background colors/s-h-rest` |
+| Emphasis.Component | One per emphasis level | COLOR | `background/rest`, `foreground/hover` |
+| State.Component | One per state | COLOR + BOOLEAN | `background`, `foreground`, `spinnerVisible` |
+| Size.Component | One per size | FLOAT | `root/fixed-height`, `root/padding-x` |
+| Structure.Component | Single mode | FLOAT + STRING | `root/radius`, `type/font-family` |
+
+### Mode Naming
+
+Mode names use the exact vocabulary from the [Component API](/design-system/component-api):
+- Sentiment modes: `neutral`, `warning`, `highlight`, `new`, `success`, `error`
+- Emphasis modes: `high`, `medium`, `low`
+- State modes: `rest`, `hover`, `active`, `disabled`, `resolving`
+- Size modes: `xs`, `sm`, `md`, `lg`, `xl`
+
+### Cascade Direction
+
+Colour collections alias upward through the cascade:
+
+```
+State.Button[hover].background
+  → aliases → Emphasis.Button[high].background/hover
+    → aliases → Sentiment.Button[neutral].high/bg/hover
+      → aliases → Semantic Colour[Value].bg/brand/hover
+        → aliases → Primitive Colour[Dark].brand-dark/400
+```
+
+Every alias link must be a `VARIABLE_ALIAS` reference in Figma, not a hardcoded value. This ensures theme switching and sentiment changes propagate automatically.
+
+### Dual-File Pattern
+
+For larger systems, split into two Figma files:
+1. **Token file** — all variable collections, no component designs
+2. **Component file** — component designs that consume variables from the token file via library publishing
+
+This keeps the token file lightweight and allows token changes to propagate to all component files via library updates.
+
 ## See Also
+
+### HTML Semantics
+
+*Rules for choosing native HTML elements and ARIA attributes in design system components.*
+
+Native HTML elements first. ARIA only when no native element fits the interaction pattern. This is not a preference — it's the first rule of ARIA: "If you can use a native HTML element with the semantics and behaviour you require already built in, do so."
+
+## Link vs Button Decision Tree
+
+```
+Does activating it navigate to a new URL?
+├── YES → <a href="...">
+│   Does it open in a new tab?
+│   └── YES → <a href="..." target="_blank" rel="noopener noreferrer">
+└── NO → Does it submit a form?
+    ├── YES → <button type="submit">
+    └── NO → <button type="button">
+```
+
+Common mistakes:
+- `<a>` with `onClick` and no `href` — use `<button>` instead
+- `<div onClick>` — use `<button>` instead
+- `<button>` wrapping a link — nest `<a>` inside, or choose one
+
+## Container Semantics
+
+| Element | Use when | Not for |
+|---------|----------|---------|
+| `<article>` | Self-contained content that makes sense out of context (card, comment, blog post) | Layout wrappers |
+| `<section>` | Thematic grouping of content with a heading | Generic containers |
+| `<div>` | No semantic meaning needed — pure layout | Content with meaning |
+| `<aside>` | Tangentially related content (sidebar, callout) | Primary content |
+| `<main>` | Dominant content of the page (one per page) | Nested sections |
+| `<header>` | Introductory content for its nearest sectioning ancestor | Page-level only (it's not) |
+| `<footer>` | Footer for its nearest sectioning ancestor | Page-level only (it's not) |
+| `<nav>` | Major navigation block | Every list of links |
+
+## Navigation vs Menu
+
+These are different widgets with different keyboard models:
+
+| Pattern | Element/Role | Keyboard model | Use for |
+|---------|-------------|----------------|---------|
+| Navigation | `<nav>` with `<a>` links | Tab between links | Site navigation, breadcrumbs, pagination |
+| Menu | `role="menu"` with `role="menuitem"` | Arrow keys between items, Tab exits | Action menus, context menus, dropdowns of actions |
+
+**Do not use `role="menu"` for navigation.** A menu widget expects arrow-key navigation and confuses screen reader users when used for site links.
+
+## Dialog Patterns
+
+Prefer the native `<dialog>` element:
+
+```html
+<dialog aria-labelledby="dialog-title">
+  <h2 id="dialog-title">Confirm deletion</h2>
+  <p>This action cannot be undone.</p>
+  <button type="button">Cancel</button>
+  <button type="button">Delete</button>
+</dialog>
+```
+
+Native `<dialog>` provides:
+- Built-in `showModal()` / `close()` API
+- Backdrop via `::backdrop` pseudo-element
+- Focus trapping (in `showModal()` mode)
+- Escape key to close
+- Correct `role="dialog"` and `aria-modal="true"` implicitly
+
+When native `<dialog>` isn't available (e.g., custom positioning needs), add manually:
+- `role="dialog"` and `aria-modal="true"`
+- Focus trap (first focusable element on open)
+- Focus restoration (return to trigger on close)
+- Escape key handler
+
+## Form Semantics
+
+| Element | Required for |
+|---------|-------------|
+| `<label>` | Every visible input — use `htmlFor` (React) pointing to input `id` |
+| `<fieldset>` + `<legend>` | Groups of related inputs (radio group, address fields) |
+| `aria-describedby` | Help text, error messages, format hints |
+| `aria-invalid` | Invalid form controls |
+| `aria-required` | Required fields (alongside the `required` attribute) |
+
+```html
+<div>
+  <label htmlFor="email">Email address</label>
+  <input
+    id="email"
+    type="email"
+    required
+    aria-required="true"
+    aria-describedby="email-hint email-error"
+    aria-invalid={hasError || undefined}
+  />
+  <span id="email-hint">We'll never share your email.</span>
+  {hasError && <span id="email-error" role="alert">Please enter a valid email.</span>}
+</div>
+```
+
+## Common ARIA Patterns
+
+### Toggle / Switch
+
+```html
+<button
+  role="switch"
+  aria-checked={isOn}
+  onClick={toggle}
+>
+  Dark mode
+</button>
+```
+
+Native `<button>` with `role="switch"` is exempt from keyboard handler rules — the browser fires `click` on Space and Enter for all native buttons.
+
+### Tabs
+
+```html
+<div role="tablist" aria-label="Settings">
+  <button role="tab" aria-selected={activeTab === 0} aria-controls="panel-0">General</button>
+  <button role="tab" aria-selected={activeTab === 1} aria-controls="panel-1">Advanced</button>
+</div>
+<div role="tabpanel" id="panel-0" aria-labelledby="tab-0">
+  {/* Panel content */}
+</div>
+```
+
+Keyboard: Arrow keys move between tabs, Tab moves into the panel.
+
+### Disclosure / Accordion
+
+```html
+<button aria-expanded={isOpen} aria-controls="content-1">
+  Section title
+</button>
+<div id="content-1" role="region" aria-labelledby="trigger-1" hidden={!isOpen}>
+  {/* Expandable content */}
+</div>
+```
+
+### Live Regions
+
+```html
+<!-- Polite: announced after current speech finishes -->
+<div role="status" aria-live="polite">
+  {statusMessage}
+</div>
+
+<!-- Assertive: interrupts current speech -->
+<div role="alert" aria-live="assertive">
+  {errorMessage}
+</div>
+```
+
+## Rules Summary
+
+1. **Use native elements first** — `<button>`, `<a>`, `<input>`, `<dialog>`, `<details>`
+2. **Don't add ARIA to override native semantics** — `<button role="link">` is wrong; use `<a>`
+3. **Every interactive element needs a keyboard path** — focusable, operable, visible focus indicator
+4. **Every image needs alt text** — informative images get descriptive text, decorative images get `alt=""`
+5. **Every form control needs a label** — visible `<label>`, `aria-label`, or `aria-labelledby`
+6. **Don't use `tabindex > 0`** — it breaks the natural tab order
+7. **Use `aria-hidden="true"` only on non-focusable elements** — never hide something that can receive focus
+
+## See Also
+
+- [Accessibility Audit](/design-system/accessibility-audit) — the full WCAG 2.2 AA audit framework
+- [Component API](/design-system/component-api) — how component inputs map to dimensions
+- [Component Scaffolding](/design-system/component-scaffolding) — ARIA reference in the scaffold workflow
 
 ### Token Approach Guide
 
@@ -5328,11 +6372,513 @@ A Storybook documentation page is complete when:
 - [ ] Page uses fullscreen layout without horizontal overflow
 - [ ] Breakpoint scaling table is included where applicable
 
+## Story Organization Hierarchy
+
+Organize the Storybook sidebar into a clear information architecture using slash-separated titles:
+
+```
+Welcome
+Getting Started
+Foundations
+  ├── Colours
+  ├── Typography
+  ├── Spacing & Grid
+  ├── Shape & Radius
+  └── Icons
+Components
+  ├── Atoms (Button, Input, Badge)
+  ├── Molecules (Form Field, Card)
+  └── Organisms (Form, Navigation)
+Concepts (project-specific explorations)
+Patterns (cross-component guidelines)
+Token Reference
+```
+
+Define this order explicitly in `preview.tsx` via `storySort`:
+
+```tsx
+parameters: {
+  options: {
+    storySort: {
+      order: [
+        'Welcome',
+        'Getting Started',
+        'Foundations', ['Colours', 'Typography', 'Spacing & Grid', 'Shape & Radius', 'Icons'],
+        'Components', ['Atoms', 'Molecules', 'Organisms'],
+        'Concepts',
+        'Patterns',
+        'Token Reference',
+      ],
+    },
+  },
+}
+```
+
+Unlisted items sort alphabetically after defined groups.
+
+## Autodocs vs MDX
+
+Use both formats — each for what it does best:
+
+| Use Autodocs for | Use MDX for |
+|-----------------|-------------|
+| Component API pages (automatic from props) | Foundations (colours, typography, spacing) |
+| Args tables and story listings | Cross-component patterns and guidelines |
+| Single-component reference | Narrative content and design principles |
+
+**Autodocs** generates component documentation from your code with zero effort — props tables, story previews, and controls. Enable per-component with `tags: ['autodocs']` in the story meta.
+
+**MDX** gives full control for pages that need custom layout, multiple components, or prose-heavy content. Use `` to position MDX pages in the sidebar.
+
+## CSF3 Format
+
+All stories should use Component Story Format 3 (CSF3) with TypeScript:
+
+```tsx
+
+const meta = {
+  title: 'Components/Atoms/Button',
+  component: Button,
+  parameters: { layout: 'centered' },
+  argTypes: {
+    sentiment: {
+      control: 'select',
+      options: ['neutral', 'warning', 'highlight', 'new', 'positive'],
+      table: { category: 'Dimensions' },
+    },
+    emphasis: {
+      control: 'select',
+      options: ['high', 'medium', 'low'],
+      table: { category: 'Dimensions' },
+    },
+    size: {
+      control: 'select',
+      options: ['xs', 'sm', 'md', 'lg', 'xl'],
+      table: { category: 'Dimensions' },
+    },
+    onClick: {
+      action: 'clicked',
+      table: { category: 'Events' },
+    },
+  },
+} satisfies Meta<typeof Button>;
+
+export default meta;
+type Story = StoryObj<typeof meta>;
+
+export const Primary: Story = {
+  args: { sentiment: 'neutral', emphasis: 'high', children: 'Submit' },
+};
+```
+
+Group `argTypes` into categories: **Dimensions**, **Content**, **Events**. This maps directly to the [Component API](/design-system/component-api) input categories.
+
+## Token-Map as Single Source of Truth
+
+Export all token data from a central `token-map.ts` file. Stories import these arrays and render tables programmatically — when tokens change, documentation updates automatically.
+
+```tsx
+// token-map.ts
+export interface DimensionalToken {
+  figmaPath: string;
+  cssProperty: string;
+  rem: number;
+}
+
+export const SPACING_TOKENS: DimensionalToken[] = [
+  { figmaPath: 'size/4', cssProperty: '--size-4', rem: 0.25 },
+  { figmaPath: 'size/8', cssProperty: '--size-8', rem: 0.5 },
+  { figmaPath: 'size/16', cssProperty: '--size-16', rem: 1 },
+];
+
+export function remToPx(rem: number, rootPx: number): number {
+  return rem * rootPx;
+}
+```
+
+Stories loop over the array rather than hardcoding values:
+
+```tsx
+export const Default: Story = {
+  render: () => (
+    
+  ),
+};
+```
+
+This eliminates drift between the token source and its documentation.
+
+## Essential Addons
+
+| Addon | Purpose |
+|-------|---------|
+| `@storybook/addon-docs` | Autodocs + MDX support |
+| `@storybook/addon-a11y` | WCAG audits via axe-core on every story |
+| `@storybook/addon-viewport` | Responsive breakpoint testing |
+| `@storybook/addon-interactions` | Visual interaction testing with `play()` functions |
+| `storybook-design-token` | Automatic token visualization from CSS/JSON |
+| `storybook-addon-designs` | Embed Figma frames alongside stories |
+
+Minimal setup in `.storybook/main.ts`:
+
+```ts
+addons: [
+  '@storybook/addon-docs',
+  '@storybook/addon-a11y',
+  '@storybook/addon-viewport',
+  '@storybook/addon-interactions',
+]
+```
+
+Add `storybook-design-token` and `storybook-addon-designs` when Figma integration is active.
+
+## Global Decorator for Theming
+
+Wrap all stories in a themed container so theme switching works project-wide without per-story boilerplate:
+
+```tsx
+// preview.tsx
+decorators: [
+  (Story, context) => {
+    const theme = context.globals.theme ?? 'light';
+    return (
+      <div
+        data-theme={theme}
+        style={{
+          background: 'var(--surface-background)',
+          color: 'var(--text-primary)',
+          padding: '2rem',
+          fontFamily: 'var(--type-family-text)',
+        }}
+      >
+        
+      </div>
+    );
+  },
+],
+globalTypes: {
+  theme: {
+    description: 'Global theme',
+    toolbar: {
+      title: 'Theme',
+      items: [
+        { value: 'light', icon: 'sun', title: 'Light' },
+        { value: 'dark', icon: 'moon', title: 'Dark' },
+      ],
+    },
+  },
+},
+```
+
+CSS variables resolve based on the `data-theme` attribute. Every story automatically responds to theme changes.
+
+## Shared docStyles Pattern
+
+Centralise typography and layout constants in a `docStyles.ts` file. All documentation pages import from this single source:
+
+```ts
+// helpers/docStyles.ts
+export const pageTitle = { fontSize: 'var(--type-size-heading-02)', fontWeight: 600 };
+export const h2 = { fontSize: 'var(--type-size-small)', textTransform: 'uppercase' as const, letterSpacing: '0.5px', borderBottom: '1px solid var(--border-default)', paddingBottom: 8 };
+export const td = { padding: 8, borderBottom: '1px solid var(--border-subtle)', fontFamily: 'var(--type-family-text)' };
+export const tdMono = { ...td, fontFamily: 'var(--type-family-mono)' };
+export const section = { marginBottom: 48 };
+```
+
+This ensures every documentation page uses the same heading scale, table styles, and spacing — even when different people author different pages.
+
 ## See Also
 
 - [Figma Documentation Rules](/design-system/figma-documentation-rules) — the equivalent rules for Figma files
 - [The Token Chain](/design-system/token-chain) — how tokens flow from primitives to components
 - [Naming Conventions](/design-system/naming) — how tokens are named across the system
+- [Component API](/design-system/component-api) — how component inputs map to story argTypes
+
+### Testing Strategy
+
+*A three-layer testing approach for design system components — unit, accessibility, and visual regression.*
+
+Design system components use a three-layer testing strategy. Each layer catches different categories of defects. All three layers together provide confidence that a component works correctly, is accessible, and looks right.
+
+## The Three Layers
+
+```
+Layer 1: Unit Tests        — Component contract (inputs → outputs)
+Layer 2: Accessibility     — Automated WCAG checks via axe-core
+Layer 3: Visual Regression — Screenshot comparison across states
+```
+
+## Layer 1: Unit Tests
+
+Unit tests verify the component contract — that inputs produce the expected host attributes, outputs fire correctly, and slots render in the right positions.
+
+### What to test
+
+| Concern | Test pattern |
+|---------|-------------|
+| Input → host attribute mapping | Set `sentiment="warning"`, assert `data-sentiment="warning"` on host |
+| Default values | Render with no props, assert all defaults applied |
+| Disabled state | Set `state="disabled"`, verify click handler doesn't fire |
+| Slot rendering | Pass `leadingIcon`, verify it renders in the prefix container |
+| Event emission | Click button, verify `onClick` callback called with event |
+| Conditional rendering | Verify slot containers only render when content is provided |
+
+### What NOT to test
+
+| Don't test | Why |
+|------------|-----|
+| Token resolution output | That's the token system's job, not the component's |
+| Specific colour values | Tokens change — test that the right variable is applied, not its value |
+| Internal implementation details | Test the public API, not the internals |
+| Framework behaviour | React/Next.js rendering, hook internals |
+
+### Example
+
+```tsx
+
+describe('Button', () => {
+  it('applies default dimension values', () => {
+    const { container } = render();
+    const button = container.firstChild as HTMLElement;
+    expect(button.dataset.emphasis).toBe('high');
+    expect(button.dataset.sentiment).toBe('neutral');
+    expect(button.dataset.size).toBe('md');
+    expect(button.dataset.state).toBe('rest');
+  });
+
+  it('does not fire onClick when disabled', () => {
+    const onClick = jest.fn();
+    render();
+    fireEvent.click(screen.getByRole('button'));
+    expect(onClick).not.toHaveBeenCalled();
+  });
+
+  it('renders leading icon when provided', () => {
+    render(}>Click</Button>);
+    expect(screen.getByTestId('icon')).toBeInTheDocument();
+  });
+});
+```
+
+## Layer 2: Accessibility Automation
+
+Automated accessibility checks catch a subset of WCAG violations — roughly 30–40% of all possible issues. The rest requires manual review (see [Accessibility Audit](/design-system/accessibility-audit)).
+
+### jest-axe for unit tests
+
+```tsx
+
+expect.extend(toHaveNoViolations);
+
+it('has no accessibility violations', async () => {
+  const { container } = render();
+  const results = await axe(container);
+  expect(results).toHaveNoViolations();
+});
+```
+
+### @axe-core/playwright for integration tests
+
+```tsx
+
+test('Button page has no a11y violations', async ({ page }) => {
+  await page.goto('/storybook/iframe.html?id=components-button--default');
+  const results = await new AxeBuilder({ page }).analyze();
+  expect(results.violations).toEqual([]);
+});
+```
+
+### What automated checks cover
+
+| Automatable (jest-axe / axe-core) | Requires manual review |
+|-----------------------------------|----------------------|
+| Missing alt text (A01) | Colour-only state communication (A08) |
+| Missing form labels (A03) | Correct heading hierarchy in context (A11) |
+| Missing button/link names (A02) | APG keyboard pattern compliance (A19) |
+| Colour contrast ratios | Focus restoration behaviour (A16) |
+| Positive tabindex (A12) | Touch target spacing (A09b) |
+| aria-hidden on focusable (A13) | Drag alternatives (A25) |
+| Viewport zoom lock (A18) | Content reflow at 320px (A27) |
+
+## Layer 3: Visual Regression
+
+Visual regression testing catches unintended visual changes by comparing screenshots across commits. Use Storybook + Chromatic, or Storybook + Playwright screenshots.
+
+### What to snapshot
+
+| Snapshot type | Covers |
+|--------------|--------|
+| All sentiments at each emphasis level | Colour token correctness |
+| All programmatic states (disabled, resolving) | State token correctness |
+| All sizes | Scale token correctness |
+| Dark and light themes | Theme token switching |
+| With and without slot content | Conditional rendering layout |
+
+### Storybook + Playwright approach
+
+```tsx
+
+const SENTIMENTS = ['neutral', 'warning', 'highlight', 'success', 'error'];
+const EMPHASES = ['high', 'medium', 'low'];
+
+for (const sentiment of SENTIMENTS) {
+  for (const emphasis of EMPHASES) {
+    test(`Button ${sentiment}/${emphasis}`, async ({ page }) => {
+      await page.goto(
+        `/storybook/iframe.html?id=components-button--default&args=sentiment:${sentiment};emphasis:${emphasis}`
+      );
+      await expect(page.locator('.ds-button')).toHaveScreenshot(
+        `button-${sentiment}-${emphasis}.png`
+      );
+    });
+  }
+}
+```
+
+## Coverage by Bracket
+
+Different component brackets need different testing depth:
+
+| Bracket | Unit | Accessibility | Visual |
+|---------|:----:|:------------:|:------:|
+| B1 Display (badge, icon) | Inputs + defaults | jest-axe | All sentiments |
+| B2 Interactive (button, toggle) | Inputs + events + disabled | jest-axe + keyboard | Sentiments × emphases × states |
+| B3 Form (input, select) | Inputs + validation + value binding | jest-axe + label association | States + error states |
+| B4 Composite (accordion, card) | Sub-component integration | jest-axe + keyboard navigation | Expanded/collapsed + all sentiments |
+| B5 Data (table, stat) | Data rendering + sorting | jest-axe + table semantics | With data + empty state |
+| B6 Overlay (dialog, popover) | Open/close + focus trap + restoration | jest-axe + focus management | Open state + backdrop |
+
+## See Also
+
+- [Accessibility Audit](/design-system/accessibility-audit) — the full WCAG 2.2 AA audit framework
+- [Component Scaffolding](/design-system/component-scaffolding) — testing as part of the scaffold workflow
+- [Storybook Documentation Rules](/design-system/storybook-documentation-rules) — how to document components in Storybook
+
+### Token Audit
+
+*How to audit component tokens for cascade integrity, hardcoded values, and structural correctness.*
+
+A token audit verifies that component tokens follow the resolution chain correctly — no broken aliases, no hardcoded values, no missing layers. Run this audit whenever creating, reviewing, or inheriting a component's token collections.
+
+## Severity Tiers
+
+| Severity | When | Policy |
+|----------|------|--------|
+| **BLOCKING** | Cascade broken (colour track) | Stop. Must fix before handoff. |
+| **WARNING** | Propagation gap (structural track) | Flag. Should fix, doesn't block. |
+| **INFO** | Noted but not broken | Informational only. |
+
+## BLOCKING Rules — Colour Cascade
+
+The colour cascade flows bottom-up: **Sentiment → Emphasis → State**. Each layer must alias the one below. A raw colour value at any layer breaks the cascade — theme switching, sentiment changes, and emphasis overrides all silently fail.
+
+### Rule 1: State layer — no raw colours
+
+Every COLOR token in the State collection must alias an Emphasis token. If you find a hex value, RGB value, or primitive colour reference in State, the cascade is broken.
+
+```
+✅ State.Button[hover].background → Emphasis.Button[high].background/hover
+❌ State.Button[hover].background → #1a2b3c
+```
+
+### Rule 2: Emphasis layer — no raw colours
+
+Every COLOR token in Emphasis must alias a Sentiment token.
+
+```
+✅ Emphasis.Button[high].background/rest → Sentiment.Button[neutral].high/bg/rest
+❌ Emphasis.Button[high].background/rest → primitive/blue/500
+```
+
+### Rule 3: Sentiment layer — no raw colours
+
+Every COLOR token in Sentiment must alias a Semantic Colour token.
+
+```
+✅ Sentiment.Button[neutral].high/bg/rest → Semantic.Color[Value].bg/brand/rest
+❌ Sentiment.Button[neutral].high/bg/rest → #0d1f2d
+```
+
+## WARNING Rules — Structural Track
+
+### Rule 4: Structure spacing → must alias Size
+
+Padding, gap, height, and width tokens in the Structure collection should alias Size tokens, not contain raw pixel values. This ensures size mode changes propagate.
+
+### Rule 5: Structure typography → must alias Semantic Typography
+
+Font family, weight, and size in Structure should alias Semantic Typography tokens.
+
+### Rule 6: Structure radius → must alias Semantic Scale
+
+Border radius values should alias Semantic Scale tokens. Exception: `999` for pill shapes is acceptable as a raw value.
+
+## Hardcoded Value Detection
+
+When auditing, search for these patterns:
+
+| Pattern | Indicates |
+|---------|-----------|
+| `#` followed by 3–8 hex characters | Hardcoded hex colour |
+| `rgb(` or `rgba(` or `hsl(` | Hardcoded colour function |
+| Pixel values in colour collections | Wrong token type (FLOAT in COLOR slot) |
+| Direct primitive references in State/Emphasis | Skipped cascade layer |
+| `transparent` as a fallback | Silent failure — token is missing |
+
+## Bottom-Up Build Order
+
+When building a new component's token collections, create them in this order. Alias targets must exist before references.
+
+1. **Sentiment** collection → alias from Semantic Colour
+2. **Emphasis** collection → alias from Sentiment
+3. **State** collection → alias from Emphasis
+4. **Structure** collection → alias from Semantic Scale/Typography
+5. **Size** collection → raw FLOAT values
+
+After creating all collections, run the audit against every rule above. Then validate by tracing one State leaf token all the way to a Primitive Colour raw value — the chain should pass through every layer.
+
+## Naming Conventions
+
+| Scope | Pattern | Example |
+|-------|---------|---------|
+| Collection | `{Type}.{Component}` | `State.Button`, `Emphasis.Badge` |
+| Colour tokens | `{element}/{property}` | `background/rest`, `foreground/hover` |
+| Structure tokens | `{sub-element}/{css-property}` | `root/padding-left`, `root/radius` |
+
+## Audit Output Format
+
+```
+═══════════════════════════════════════
+TOKEN AUDIT: {ComponentName}
+Collections examined: {list}
+═══════════════════════════════════════
+
+BLOCKING
+─────────
+[Rule 1] State.Button[hover].background
+  Found: #1a2b3c (raw hex)
+  Expected: alias → Emphasis.Button[high].background/hover
+
+WARNING
+─────────
+[Rule 4] Structure.Button.root/padding-left
+  Found: 14 (raw float)
+  Expected: alias → Size.Button[md].root/padding-left
+
+═══════════════════════════════════════
+SUMMARY
+  Blocking: 1
+  Warning:  1
+  Info:     0
+  Verdict:  NEEDS FIX (blocking issues found)
+═══════════════════════════════════════
+```
+
+## See Also
+
+- [The Token Chain](/design-system/token-chain) — how tokens flow from primitives to components
+- [Token Transform Pipeline](/design-system/token-transform-pipeline) — how tokens move from Figma to CSS
+- [The Dimensional Model](/design-system/model) — the five dimensions explained
 
 ### Component Slots
 
@@ -5566,3 +7112,157 @@ Always pair foreground and background tokens from the **same family and emphasis
 - Use semantic tokens in components, not primitives
 - Reference primitives via `var()` when defining new semantics
 - Paired semantic tokens should meet accessibility contrast requirements — do not mix families
+
+### Token Transform Pipeline
+
+*How design tokens move from Figma Variables to CSS custom properties through a four-stage pipeline.*
+
+The token transform pipeline converts Figma Variables into consumable CSS custom properties. This is a custom pipeline — not Style Dictionary or Token Studio — built to handle the dimensional model's alias chains and multi-mode resolution.
+
+## Pipeline Overview
+
+```
+Stage 1: Export     Figma Variables API → JSON
+Stage 2: Transform  JSON → parsed token collections with resolved aliases
+Stage 3: Validate   Check alias chains, detect broken references
+Stage 4: Publish    Generate CSS custom properties per category
+```
+
+## Stage 1: Export
+
+Figma's Variables API exports collections as JSON. Each collection contains variables grouped by modes (e.g., dark/light for colours, sm/md/lg for sizes).
+
+The export preserves:
+- Variable names and their hierarchical paths
+- Alias references (`VARIABLE_ALIAS` type pointing to another variable)
+- Raw values (hex colours, floats, strings)
+- Mode structures per collection
+
+## Stage 2: Transform
+
+The transformer processes the raw JSON through several steps:
+
+### Colour Transform: sRGB → OKLCH
+
+All colour values are converted from Figma's sRGB (0–1 range) to OKLCH for perceptually uniform colour manipulation:
+
+```
+Figma RGB (0-1) → Linear RGB → XYZ → OKLab → OKLCH
+```
+
+OKLCH provides:
+- Perceptually uniform lightness (L) — useful for generating accessible contrast pairs
+- Hue (H) that remains stable across lightness changes
+- Chroma (C) that represents colourfulness without hue shifts
+
+Edge cases: pure black maps to `oklch(0 0 0)`, pure white to `oklch(1 0 0)`.
+
+### Number Transform: px → rem
+
+Pixel values convert to rem using a base of 16px. Exceptions kept unitless:
+- `font-weight` (e.g., 400, 600)
+- `opacity` (e.g., 0.5)
+- `z-index` (e.g., 100)
+- `duration` (converted to ms)
+- `border-weight` (kept in px for sub-pixel rendering)
+
+### Alias Resolution
+
+`VARIABLE_ALIAS` references are recursively resolved. The resolver walks alias chains until it reaches a raw value, building a lookup map that connects every token to its ultimate source.
+
+## Stage 3: Validate
+
+Before generating output, the pipeline validates:
+- Every alias reference points to an existing variable
+- No circular alias chains
+- Colour tokens in component collections alias semantic tokens (not primitives directly)
+- Mode counts match across related collections
+
+Validation failures produce clear error messages with the broken alias path.
+
+## Stage 4: Publish
+
+The pipeline generates separate CSS files per category:
+
+| File | Content |
+|------|---------|
+| `colors.css` | Colour tokens with dark/light mode via `@media (prefers-color-scheme)` |
+| `scale.css` | Spacing, radii, shadows, z-index, opacity, borders |
+| `typography.css` | Font families, sizes, weights, line heights, letter spacing |
+| `semantics.css` | Semantic aliases that reference the above |
+
+### CSS Variable Naming
+
+Figma variable paths map to CSS custom property names:
+
+| Figma path | CSS variable |
+|------------|-------------|
+| `colors/brand-dark/500` | `--colors-brand-dark-500` |
+| `size/16` | `--size-16` |
+| `font-size/14` | `--font-size-14` |
+| `background/brand/rest` | `--color-bg-brand-rest` |
+
+The convention: slash-separated Figma paths become hyphen-separated CSS names, with a category prefix where needed for clarity.
+
+## Pattern A vs Pattern B
+
+There are two valid approaches for consuming tokens in components. **Pick one per project — never mix them.**
+
+### Pattern A: Direct CSS Custom Properties
+
+Components read CSS custom properties directly. Multi-dimensional modes switch via `[data-*]` attribute selectors on the host element.
+
+```css
+/* Size via data attribute */
+[data-size='md'] .button {
+  height: 40px;
+  padding: 0 var(--size-14);
+}
+
+/* Sentiment × Emphasis compound selector */
+[data-sentiment='warning'][data-emphasis='high'] .button {
+  background: var(--color-bg-warning-rest);
+  color: var(--fg-inverse);
+}
+```
+
+**Pros:** Zero runtime cost, CSS cascade handles mode switching, works with any framework, debuggable in DevTools.
+
+**Cons:** Compound selectors can become verbose with many dimension combinations.
+
+### Pattern B: Runtime Resolver
+
+A TypeScript service resolves the dimensional combination at render time and writes CSS custom properties to the component's style attribute.
+
+```tsx
+const styles = {
+  '--button-bg-rest': resolveToken('Button', 'background', {
+    sentiment: 'warning',
+    emphasis: 'high',
+    state: 'rest',
+  }),
+};
+```
+
+**Pros:** Handles complex fallback chains, can resolve tokens from multiple sources, flexible for dynamic theming.
+
+**Cons:** Runtime overhead on every render, harder to debug, framework-specific implementation.
+
+### Decision
+
+| Factor | Pattern A | Pattern B |
+|--------|-----------|-----------|
+| Performance | No JS overhead | Re-computation on prop change |
+| Debugging | Inspect in DevTools | Trace through resolver code |
+| Framework coupling | None — pure CSS | Tied to framework lifecycle |
+| Complexity ceiling | High selector count for many dimensions | Manageable with any dimension count |
+| Recommended for | Most projects | Projects with 6+ active dimensions per component |
+
+**The rule: choose one, commit to it.** Mixing patterns in one project creates two incompatible naming/consumption conventions and doubles the cognitive load for every developer.
+
+## See Also
+
+- [Token Audit](/design-system/token-audit) — how to verify token cascade integrity
+- [The Token Chain](/design-system/token-chain) — how tokens flow from primitives to components
+- [Naming Conventions](/design-system/naming) — how tokens are named across the system
+- [Figma Documentation Rules](/design-system/figma-documentation-rules) — Figma variable structure and naming

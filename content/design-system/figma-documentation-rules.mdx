@@ -121,6 +121,54 @@ A Figma documentation page is complete when:
 - [ ] Font families are loaded and rendering correctly
 - [ ] A screenshot of the page has been reviewed for visual accuracy
 
+## Figma Variable Structure
+
+How to organise Figma Variable collections to support the dimensional model.
+
+### Collections per Dimension
+
+Each dimension gets its own variable collection. This keeps the collection list navigable and makes it clear which tokens belong to which concern.
+
+| Collection | Modes | Token types | Example variables |
+|------------|-------|-------------|-------------------|
+| Primitive Colour | Dark, Light | COLOR | `colors/brand-dark/500`, `colors/neutral/100` |
+| Semantic Colour | Value | COLOR | `background/brand/rest`, `fg/primary` |
+| Sentiment.Component | One per sentiment value | COLOR | `emphasis high/background colors/s-h-rest` |
+| Emphasis.Component | One per emphasis level | COLOR | `background/rest`, `foreground/hover` |
+| State.Component | One per state | COLOR + BOOLEAN | `background`, `foreground`, `spinnerVisible` |
+| Size.Component | One per size | FLOAT | `root/fixed-height`, `root/padding-x` |
+| Structure.Component | Single mode | FLOAT + STRING | `root/radius`, `type/font-family` |
+
+### Mode Naming
+
+Mode names use the exact vocabulary from the [Component API](/design-system/component-api):
+- Sentiment modes: `neutral`, `warning`, `highlight`, `new`, `success`, `error`
+- Emphasis modes: `high`, `medium`, `low`
+- State modes: `rest`, `hover`, `active`, `disabled`, `resolving`
+- Size modes: `xs`, `sm`, `md`, `lg`, `xl`
+
+### Cascade Direction
+
+Colour collections alias upward through the cascade:
+
+```
+State.Button[hover].background
+  → aliases → Emphasis.Button[high].background/hover
+    → aliases → Sentiment.Button[neutral].high/bg/hover
+      → aliases → Semantic Colour[Value].bg/brand/hover
+        → aliases → Primitive Colour[Dark].brand-dark/400
+```
+
+Every alias link must be a `VARIABLE_ALIAS` reference in Figma, not a hardcoded value. This ensures theme switching and sentiment changes propagate automatically.
+
+### Dual-File Pattern
+
+For larger systems, split into two Figma files:
+1. **Token file** — all variable collections, no component designs
+2. **Component file** — component designs that consume variables from the token file via library publishing
+
+This keeps the token file lightweight and allows token changes to propagate to all component files via library updates.
+
 ## See Also
 
 <Cards>

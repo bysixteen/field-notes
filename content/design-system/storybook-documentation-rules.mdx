@@ -139,8 +139,228 @@ A Storybook documentation page is complete when:
 - [ ] Page uses fullscreen layout without horizontal overflow
 - [ ] Breakpoint scaling table is included where applicable
 
+## Story Organization Hierarchy
+
+Organize the Storybook sidebar into a clear information architecture using slash-separated titles:
+
+```
+Welcome
+Getting Started
+Foundations
+  ├── Colours
+  ├── Typography
+  ├── Spacing & Grid
+  ├── Shape & Radius
+  └── Icons
+Components
+  ├── Atoms (Button, Input, Badge)
+  ├── Molecules (Form Field, Card)
+  └── Organisms (Form, Navigation)
+Concepts (project-specific explorations)
+Patterns (cross-component guidelines)
+Token Reference
+```
+
+Define this order explicitly in `preview.tsx` via `storySort`:
+
+```tsx
+parameters: {
+  options: {
+    storySort: {
+      order: [
+        'Welcome',
+        'Getting Started',
+        'Foundations', ['Colours', 'Typography', 'Spacing & Grid', 'Shape & Radius', 'Icons'],
+        'Components', ['Atoms', 'Molecules', 'Organisms'],
+        'Concepts',
+        'Patterns',
+        'Token Reference',
+      ],
+    },
+  },
+}
+```
+
+Unlisted items sort alphabetically after defined groups.
+
+## Autodocs vs MDX
+
+Use both formats — each for what it does best:
+
+| Use Autodocs for | Use MDX for |
+|-----------------|-------------|
+| Component API pages (automatic from props) | Foundations (colours, typography, spacing) |
+| Args tables and story listings | Cross-component patterns and guidelines |
+| Single-component reference | Narrative content and design principles |
+
+**Autodocs** generates component documentation from your code with zero effort — props tables, story previews, and controls. Enable per-component with `tags: ['autodocs']` in the story meta.
+
+**MDX** gives full control for pages that need custom layout, multiple components, or prose-heavy content. Use `<Meta title="Foundations/Colours" />` to position MDX pages in the sidebar.
+
+## CSF3 Format
+
+All stories should use Component Story Format 3 (CSF3) with TypeScript:
+
+```tsx
+import type { Meta, StoryObj } from '@storybook/react';
+import { Button } from './Button';
+
+const meta = {
+  title: 'Components/Atoms/Button',
+  component: Button,
+  parameters: { layout: 'centered' },
+  argTypes: {
+    sentiment: {
+      control: 'select',
+      options: ['neutral', 'warning', 'highlight', 'new', 'positive'],
+      table: { category: 'Dimensions' },
+    },
+    emphasis: {
+      control: 'select',
+      options: ['high', 'medium', 'low'],
+      table: { category: 'Dimensions' },
+    },
+    size: {
+      control: 'select',
+      options: ['xs', 'sm', 'md', 'lg', 'xl'],
+      table: { category: 'Dimensions' },
+    },
+    onClick: {
+      action: 'clicked',
+      table: { category: 'Events' },
+    },
+  },
+} satisfies Meta<typeof Button>;
+
+export default meta;
+type Story = StoryObj<typeof meta>;
+
+export const Primary: Story = {
+  args: { sentiment: 'neutral', emphasis: 'high', children: 'Submit' },
+};
+```
+
+Group `argTypes` into categories: **Dimensions**, **Content**, **Events**. This maps directly to the [Component API](/design-system/component-api) input categories.
+
+## Token-Map as Single Source of Truth
+
+Export all token data from a central `token-map.ts` file. Stories import these arrays and render tables programmatically — when tokens change, documentation updates automatically.
+
+```tsx
+// token-map.ts
+export interface DimensionalToken {
+  figmaPath: string;
+  cssProperty: string;
+  rem: number;
+}
+
+export const SPACING_TOKENS: DimensionalToken[] = [
+  { figmaPath: 'size/4', cssProperty: '--size-4', rem: 0.25 },
+  { figmaPath: 'size/8', cssProperty: '--size-8', rem: 0.5 },
+  { figmaPath: 'size/16', cssProperty: '--size-16', rem: 1 },
+];
+
+export function remToPx(rem: number, rootPx: number): number {
+  return rem * rootPx;
+}
+```
+
+Stories loop over the array rather than hardcoding values:
+
+```tsx
+export const Default: Story = {
+  render: () => (
+    <DocPage>
+      <TokenTable tokens={SPACING_TOKENS} />
+    </DocPage>
+  ),
+};
+```
+
+This eliminates drift between the token source and its documentation.
+
+## Essential Addons
+
+| Addon | Purpose |
+|-------|---------|
+| `@storybook/addon-docs` | Autodocs + MDX support |
+| `@storybook/addon-a11y` | WCAG audits via axe-core on every story |
+| `@storybook/addon-viewport` | Responsive breakpoint testing |
+| `@storybook/addon-interactions` | Visual interaction testing with `play()` functions |
+| `storybook-design-token` | Automatic token visualization from CSS/JSON |
+| `storybook-addon-designs` | Embed Figma frames alongside stories |
+
+Minimal setup in `.storybook/main.ts`:
+
+```ts
+addons: [
+  '@storybook/addon-docs',
+  '@storybook/addon-a11y',
+  '@storybook/addon-viewport',
+  '@storybook/addon-interactions',
+]
+```
+
+Add `storybook-design-token` and `storybook-addon-designs` when Figma integration is active.
+
+## Global Decorator for Theming
+
+Wrap all stories in a themed container so theme switching works project-wide without per-story boilerplate:
+
+```tsx
+// preview.tsx
+decorators: [
+  (Story, context) => {
+    const theme = context.globals.theme ?? 'light';
+    return (
+      <div
+        data-theme={theme}
+        style={{
+          background: 'var(--surface-background)',
+          color: 'var(--text-primary)',
+          padding: '2rem',
+          fontFamily: 'var(--type-family-text)',
+        }}
+      >
+        <Story />
+      </div>
+    );
+  },
+],
+globalTypes: {
+  theme: {
+    description: 'Global theme',
+    toolbar: {
+      title: 'Theme',
+      items: [
+        { value: 'light', icon: 'sun', title: 'Light' },
+        { value: 'dark', icon: 'moon', title: 'Dark' },
+      ],
+    },
+  },
+},
+```
+
+CSS variables resolve based on the `data-theme` attribute. Every story automatically responds to theme changes.
+
+## Shared docStyles Pattern
+
+Centralise typography and layout constants in a `docStyles.ts` file. All documentation pages import from this single source:
+
+```ts
+// helpers/docStyles.ts
+export const pageTitle = { fontSize: 'var(--type-size-heading-02)', fontWeight: 600 };
+export const h2 = { fontSize: 'var(--type-size-small)', textTransform: 'uppercase' as const, letterSpacing: '0.5px', borderBottom: '1px solid var(--border-default)', paddingBottom: 8 };
+export const td = { padding: 8, borderBottom: '1px solid var(--border-subtle)', fontFamily: 'var(--type-family-text)' };
+export const tdMono = { ...td, fontFamily: 'var(--type-family-mono)' };
+export const section = { marginBottom: 48 };
+```
+
+This ensures every documentation page uses the same heading scale, table styles, and spacing — even when different people author different pages.
+
 ## See Also
 
 - [Figma Documentation Rules](/design-system/figma-documentation-rules) — the equivalent rules for Figma files
 - [The Token Chain](/design-system/token-chain) — how tokens flow from primitives to components
 - [Naming Conventions](/design-system/naming) — how tokens are named across the system
+- [Component API](/design-system/component-api) — how component inputs map to story argTypes

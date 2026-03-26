@@ -1,0 +1,126 @@
+---
+title: Token Audit
+description: How to audit component tokens for cascade integrity, hardcoded values, and structural correctness.
+---
+
+A token audit verifies that component tokens follow the resolution chain correctly — no broken aliases, no hardcoded values, no missing layers. Run this audit whenever creating, reviewing, or inheriting a component's token collections.
+
+## Severity Tiers
+
+| Severity | When | Policy |
+|----------|------|--------|
+| **BLOCKING** | Cascade broken (colour track) | Stop. Must fix before handoff. |
+| **WARNING** | Propagation gap (structural track) | Flag. Should fix, doesn't block. |
+| **INFO** | Noted but not broken | Informational only. |
+
+## BLOCKING Rules — Colour Cascade
+
+The colour cascade flows bottom-up: **Sentiment → Emphasis → State**. Each layer must alias the one below. A raw colour value at any layer breaks the cascade — theme switching, sentiment changes, and emphasis overrides all silently fail.
+
+### Rule 1: State layer — no raw colours
+
+Every COLOR token in the State collection must alias an Emphasis token. If you find a hex value, RGB value, or primitive colour reference in State, the cascade is broken.
+
+```
+✅ State.Button[hover].background → Emphasis.Button[high].background/hover
+❌ State.Button[hover].background → #1a2b3c
+```
+
+### Rule 2: Emphasis layer — no raw colours
+
+Every COLOR token in Emphasis must alias a Sentiment token.
+
+```
+✅ Emphasis.Button[high].background/rest → Sentiment.Button[neutral].high/bg/rest
+❌ Emphasis.Button[high].background/rest → primitive/blue/500
+```
+
+### Rule 3: Sentiment layer — no raw colours
+
+Every COLOR token in Sentiment must alias a Semantic Colour token.
+
+```
+✅ Sentiment.Button[neutral].high/bg/rest → Semantic.Color[Value].bg/brand/rest
+❌ Sentiment.Button[neutral].high/bg/rest → #0d1f2d
+```
+
+## WARNING Rules — Structural Track
+
+### Rule 4: Structure spacing → must alias Size
+
+Padding, gap, height, and width tokens in the Structure collection should alias Size tokens, not contain raw pixel values. This ensures size mode changes propagate.
+
+### Rule 5: Structure typography → must alias Semantic Typography
+
+Font family, weight, and size in Structure should alias Semantic Typography tokens.
+
+### Rule 6: Structure radius → must alias Semantic Scale
+
+Border radius values should alias Semantic Scale tokens. Exception: `999` for pill shapes is acceptable as a raw value.
+
+## Hardcoded Value Detection
+
+When auditing, search for these patterns:
+
+| Pattern | Indicates |
+|---------|-----------|
+| `#` followed by 3–8 hex characters | Hardcoded hex colour |
+| `rgb(` or `rgba(` or `hsl(` | Hardcoded colour function |
+| Pixel values in colour collections | Wrong token type (FLOAT in COLOR slot) |
+| Direct primitive references in State/Emphasis | Skipped cascade layer |
+| `transparent` as a fallback | Silent failure — token is missing |
+
+## Bottom-Up Build Order
+
+When building a new component's token collections, create them in this order. Alias targets must exist before references.
+
+1. **Sentiment** collection → alias from Semantic Colour
+2. **Emphasis** collection → alias from Sentiment
+3. **State** collection → alias from Emphasis
+4. **Structure** collection → alias from Semantic Scale/Typography
+5. **Size** collection → raw FLOAT values
+
+After creating all collections, run the audit against every rule above. Then validate by tracing one State leaf token all the way to a Primitive Colour raw value — the chain should pass through every layer.
+
+## Naming Conventions
+
+| Scope | Pattern | Example |
+|-------|---------|---------|
+| Collection | `{Type}.{Component}` | `State.Button`, `Emphasis.Badge` |
+| Colour tokens | `{element}/{property}` | `background/rest`, `foreground/hover` |
+| Structure tokens | `{sub-element}/{css-property}` | `root/padding-left`, `root/radius` |
+
+## Audit Output Format
+
+```
+═══════════════════════════════════════
+TOKEN AUDIT: {ComponentName}
+Collections examined: {list}
+═══════════════════════════════════════
+
+BLOCKING
+─────────
+[Rule 1] State.Button[hover].background
+  Found: #1a2b3c (raw hex)
+  Expected: alias → Emphasis.Button[high].background/hover
+
+WARNING
+─────────
+[Rule 4] Structure.Button.root/padding-left
+  Found: 14 (raw float)
+  Expected: alias → Size.Button[md].root/padding-left
+
+═══════════════════════════════════════
+SUMMARY
+  Blocking: 1
+  Warning:  1
+  Info:     0
+  Verdict:  NEEDS FIX (blocking issues found)
+═══════════════════════════════════════
+```
+
+## See Also
+
+- [The Token Chain](/design-system/token-chain) — how tokens flow from primitives to components
+- [Token Transform Pipeline](/design-system/token-transform-pipeline) — how tokens move from Figma to CSS
+- [The Dimensional Model](/design-system/model) — the five dimensions explained

@@ -1,0 +1,99 @@
+---
+title: ADR Template
+description: Architecture Decision Record format for documenting technical decisions with context, options, and consequences.
+---
+
+An Architecture Decision Record (ADR) captures a significant technical decision — the context that led to it, the options considered, and the consequences accepted. ADRs are the project's institutional memory for "why did we do it this way?"
+
+## When to Write an ADR
+
+Write an ADR when:
+- Choosing between competing approaches (framework, library, pattern)
+- Making a decision that constrains future choices
+- Reversing or superseding a previous decision
+- The team disagrees and needs a settled resolution
+
+Don't write an ADR for:
+- Implementation details that can be read from the code
+- Decisions that are trivially reversible
+- Style preferences already covered by linters
+
+## File Naming
+
+```
+architecture/decisions/
+├── 0001-repository-structure.md
+├── 0002-authentication-approach.md
+├── 0003-css-token-pattern.md
+└── 0004-state-management.md
+```
+
+Zero-padded four-digit prefix. Sequential. Never renumber. Superseded ADRs keep their original number.
+
+## Template
+
+```markdown
+# ADR-{NNNN}: {Decision Title}
+
+**Status:** proposed | accepted | superseded by ADR-{NNNN} | deprecated
+**Date:** {YYYY-MM-DD}
+**Deciders:** {names}
+
+## Context
+
+What is the issue that we're seeing that is motivating this decision?
+What are the forces at play (technical, business, team)?
+
+## Decision
+
+What is the change that we're proposing and/or doing?
+
+## Options Considered
+
+### Option A: {name}
+
+{Description}
+
+| Pros | Cons |
+|------|------|
+| ... | ... |
+
+### Option B: {name}
+
+{Description}
+
+| Pros | Cons |
+|------|------|
+| ... | ... |
+
+## Consequences
+
+What becomes easier or more difficult because of this decision?
+
+### Positive
+- ...
+
+### Negative
+- ...
+
+### Neutral
+- ...
+
+## Supersedes
+
+{If this replaces a previous ADR, link it: "Supersedes ADR-0003"}
+```
+
+## ADR Discipline
+
+From practice across real projects:
+
+- **A healthy reversal rate is ~20%.** If no ADRs are ever superseded, either the team isn't revisiting decisions or isn't recording enough of them. If the reversal rate is much higher, decisions may be made too hastily.
+- **Status is a living field.** Update it when circumstances change — an accepted ADR that gets reversed should link to the new ADR that supersedes it.
+- **Keep the context section honest.** Record the actual forces at play, including team constraints and deadlines. "We chose X because we had two weeks" is a valid context.
+- **Trade-off tables are mandatory.** Every option must have explicit pros and cons. A decision without trade-offs wasn't a real decision — it was a default.
+
+## See Also
+
+- [Stack Decisions](/platform/stack-decisions) — recording technology choices
+- [New Project Checklist](/principles/new-project-checklist) — when to write initial ADRs

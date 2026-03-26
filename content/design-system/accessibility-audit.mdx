@@ -1,0 +1,192 @@
+---
+title: Accessibility Audit
+description: A bracket-based WCAG 2.2 AA audit framework for design system components with 30 rules and scored output.
+---
+
+This framework classifies components into brackets (B1–B6) and applies WCAG 2.2 AA rules selectively based on each bracket's accessibility surface area. The result is a scored audit with actionable fix-oriented output.
+
+## Component Brackets
+
+Classify the component by working through these questions top-to-bottom. Stop at the first match. If ambiguous, use the higher bracket.
+
+| Bracket | Name | Classification question |
+|---------|------|------------------------|
+| B6 | Overlay | Does it render above the page flow and require focus management? (dialog, drawer, tooltip, popover, sheet) |
+| B4 | Composite | Does it compose multiple interactive sub-components? (accordion, card with actions, data table with controls) |
+| B3 | Form | Is it a controlled input or form-level wrapper? (input, select, textarea, checkbox, radio, field) |
+| B2 | Interactive | Does it respond to user interaction as a single unit? (button, toggle, chip, tab strip, pagination) |
+| B5 | Data | Does it display structured data without interactive controls? (table, avatar, stat, timeline) |
+| B1 | Display | Is it purely presentational with no interaction? (badge, icon, label, separator, spinner, skeleton) |
+
+A component with an action button (e.g., a toast with a dismiss button) is B4 Composite, not B1 Display — the presence of any interactive sub-component elevates the bracket.
+
+## Scoring
+
+```
+Score = 100 − (CRITICAL × 10) − (SERIOUS × 5) − (MODERATE × 2)
+Minimum score: 0
+```
+
+| Score | Verdict |
+|-------|---------|
+| ≥ 90 | Merge-ready |
+| 70–89 | Warrants attention before merge |
+| < 70 | Requires remediation before merge |
+
+## Rules by Severity
+
+### CRITICAL — Merge blocked (−10 per finding)
+
+Any CRITICAL finding halts the review. These rules exist because violations make the component completely unusable for assistive technology users.
+
+**A01 — Image missing alt text** (WCAG 1.1.1) — `<img>` without `alt` attribute.
+
+**A02 — Icon-only button/link missing accessible name** (WCAG 4.1.2) — Button or link containing only an icon with no `aria-label`.
+
+**A03 — Form control without label** (WCAG 1.3.1) — Input, select, or textarea without an associated label, `aria-label`, or `aria-labelledby`.
+
+**A04 — Click on non-interactive element** (WCAG 2.1.1) — Click handler on a `<div>` or `<span>` without `role`, `tabindex="0"`, and keyboard handler. Better fix: use a native `<button>`.
+
+**A05 — Anchor without href** (WCAG 2.1.1) — `<a>` using click handler without `href`. If not navigation, use a `<button>`.
+
+**A18 — Viewport zoom lock** (WCAG 1.4.4) — `user-scalable=no` or `maximum-scale=1` in viewport meta.
+
+**A19 — WAI-ARIA APG pattern violation** (WCAG 2.1.1, 4.1.2) — Component implements a recognized widget pattern but deviates from APG keyboard interaction or ARIA roles.
+
+**A20 — Overlay missing focus trap** (WCAG 2.1.2) — B6 overlay without focus containment.
+
+**A21 — Visible label not in accessible name** (WCAG 2.5.3) — Element's visible text is not contained in its computed accessible name. Breaks voice control.
+
+### SERIOUS — Should fix before merge (−5 per finding)
+
+**A06 — Focus outline removed** (WCAG 2.4.7) — `outline: none` without a `:focus-visible` replacement.
+
+**A07 — Click without keyboard handler** (WCAG 2.1.1) — Interactive element with click but no keyboard handler. Native `<button>` and `<a href>` are exempt.
+
+**A08 — Colour-only state communication** (WCAG 1.4.1) — Status indicated only by colour with no icon, text label, or pattern alongside.
+
+**A13 — aria-hidden on focusable element** (WCAG 4.1.2) — `aria-hidden="true"` on an element that can receive focus.
+
+**A16 — Dialog missing focus restoration** (WCAG 2.4.3) — B6 overlay that doesn't restore focus to trigger on close.
+
+**A17 — Mobile input font-size below 16px** (WCAG 1.4.4) — Input styled below 16px triggers iOS auto-zoom.
+
+**A22 — Dynamic status without live region** (WCAG 4.1.3) — Status message rendered without `aria-live` or `role="status"`.
+
+**A23 — Tooltip not dismissible** (WCAG 1.4.13) — Tooltip that can't be dismissed with Escape.
+
+**A24 — Focus obscured by sticky element** (WCAG 2.4.11) — Focused element hidden behind sticky/fixed headers.
+
+**A25 — Drag-only interaction** (WCAG 2.5.7) — Drag-dependent functionality with no single-pointer alternative.
+
+### MODERATE — Address in follow-up (−2 per finding)
+
+**A09 — Target size below 44×44px** (WCAG 2.5.5 AAA) — Aspirational, not AA requirement.
+
+**A09b — Target size below 24px** (WCAG 2.5.8 AA) — Below AA minimum floor. SERIOUS if spacing between targets is insufficient.
+
+**A10 — Role without tabindex** (WCAG 4.1.2) — Interactive role but missing `tabindex="0"`.
+
+**A11 — Skipped heading levels** (WCAG 1.3.1) — `<h1>` followed by `<h3>` with no `<h2>`.
+
+**A12 — Positive tabindex** (WCAG 2.4.3) — `tabindex` value greater than 0.
+
+**A14 — Table without caption** (WCAG 1.3.1) — `<table>` without `<caption>` or `aria-label`.
+
+**A15 — Live region issues** (WCAG 4.1.3) — Unused live region, or low-impact status without announcement.
+
+**A26 — Missing autocomplete** (WCAG 1.3.5) — Personal data input without `autocomplete` attribute.
+
+**A27 — Horizontal scroll at 320px** (WCAG 1.4.10) — Component causes horizontal scrolling at 320px viewport width.
+
+**A28 — Text spacing override breaks layout** (WCAG 1.4.12) — Fixed-height containers clip content when text spacing is overridden.
+
+**A29 — Auth cognitive function test** (WCAG 3.3.8) — Auth requiring CAPTCHA with no alternative.
+
+**A30 — Viewport max-scale 1–2** (WCAG 1.4.4) — Partial zoom restriction (less severe than A18).
+
+## Bracket × Rule Matrix
+
+| Rule | B1 | B2 | B3 | B4 | B5 | B6 |
+|------|:--:|:--:|:--:|:--:|:--:|:--:|
+| A01 (alt text) | ✓ | ✓ | | ✓ | ✓ | |
+| A02 (icon button label) | | ✓ | | ✓ | | ✓ |
+| A03 (form label) | | | ✓ | | | |
+| A04 (click non-interactive) | | ✓ | ✓ | ✓ | ✓ | ✓ |
+| A05 (anchor no href) | | ✓ | | ✓ | | ✓ |
+| A06 (focus outline) | | ✓ | ✓ | ✓ | | ✓ |
+| A07 (click no keyboard) | | ✓ | ✓ | ✓ | ✓ | ✓ |
+| A08 (colour-only) | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ |
+| A09 (target 44px) | | ✓ | ✓ | ✓ | | ✓ |
+| A10 (role no tabindex) | | ✓ | ✓ | ✓ | | ✓ |
+| A11 (heading levels) | ✓ | | | ✓ | ✓ | |
+| A12 (positive tabindex) | | ✓ | ✓ | ✓ | | ✓ |
+| A13 (aria-hidden focus) | | ✓ | ✓ | ✓ | ✓ | ✓ |
+| A14 (table caption) | | | | | ✓ | |
+| A15 (live region) | | ✓ | ✓ | ✓ | ✓ | ✓ |
+| A16 (focus restoration) | | | | | | ✓ |
+| A17 (mobile font-size) | | | ✓ | | | |
+| A18 (viewport zoom) | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ |
+| A19 (APG pattern) | | ✓ | ✓ | ✓ | | ✓ |
+| A20 (focus trap) | | | | | | ✓ |
+| A21 (label in name) | | ✓ | ✓ | ✓ | | ✓ |
+| A22 (status live) | | | ✓ | ✓ | ✓ | ✓ |
+| A23 (tooltip dismiss) | | ✓ | ✓ | | | ✓ |
+| A24 (focus obscured) | | | | ✓ | | ✓ |
+| A25 (drag alternative) | | | | ✓ | ✓ | |
+| A26 (autocomplete) | | | ✓ | | | |
+| A27 (reflow 320px) | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ |
+| A28 (text spacing) | ✓ | | ✓ | ✓ | ✓ | |
+| A29 (auth cognitive) | | | ✓ | | | |
+| A30 (viewport scale) | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ |
+
+## Audit Workflow
+
+1. **Identify the bracket** — classify using the table above
+2. **Apply rules by bracket** — only check rules marked ✓ for the bracket, CRITICAL first
+3. **Check APG compliance** — for B2/B3/B4/B6 widgets, verify keyboard interaction matches the WAI-ARIA APG spec
+4. **Calculate score** — apply the scoring formula
+5. **Produce report** — use the output format below
+
+## Report Format
+
+```
+═══════════════════════════════════════
+ACCESSIBILITY AUDIT: {ComponentName}
+Bracket: {B1–B6}
+Standard: WCAG 2.2 AA
+═══════════════════════════════════════
+
+STRUCTURAL ACCESSIBILITY  ·  {summary}
+───────────────────────────────────────
+[CRITICAL] A03 · input.tsx:14
+  <input> without associated label
+  Fix: Add aria-label="Search" to the input
+
+KEYBOARD & FOCUS  ·  ✓ pass
+
+═══════════════════════════════════════
+SUMMARY
+  Critical:  1
+  Serious:   0
+  Moderate:  0
+  Score:     90/100
+  Verdict:   WARRANTS ATTENTION
+═══════════════════════════════════════
+```
+
+## React Accessibility Libraries
+
+| Library | Use for |
+|---------|---------|
+| `react-aria` (Adobe) | Hooks for accessible components — handles keyboard, focus, ARIA |
+| `@radix-ui/react-*` | Unstyled accessible primitives (dialog, popover, tabs, etc.) |
+| `@headlessui/react` | Tailwind-oriented accessible components |
+| `jest-axe` | Automated axe-core checks in unit tests |
+| `@axe-core/playwright` | Automated a11y checks in integration tests |
+
+## See Also
+
+- [HTML Semantics](/design-system/html-semantics) — choosing the right elements and ARIA attributes
+- [Testing Strategy](/design-system/testing-strategy) — automated a11y testing in the test pyramid
+- [Component API](/design-system/component-api) — how component inputs map to dimensions

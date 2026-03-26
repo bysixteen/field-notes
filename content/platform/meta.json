@@ -13,6 +13,8 @@
     "data-architecture",
     "auth-rls",
     "audit-first",
-    "documentation-hub"
+    "documentation-hub",
+    "---Governance---",
+    "adr-template"
   ]
 }

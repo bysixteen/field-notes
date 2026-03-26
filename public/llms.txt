@@ -4,6 +4,19 @@
 
 This is a personal knowledge hub covering design systems, engineering principles, AI workflows, and platform architecture patterns.
 
+## Principles & Frameworks
+
+Core principles, delivery approach, synthesis and validation methodology.
+
+- [Answer First](/principles/answer-first): Every document must have the conclusion in the first body section. Never bury the lead.
+- [Compounding Engineering](/principles/compounding-engineering): Build guidance from real mistakes, not upfront speculation. Let documentation grow organically from actual needs.
+- [Dissent is a Feature](/principles/dissent-as-feature): Structurally encourage and document dissent to prevent groupthink and preserve overruled concerns for future reference.
+- [Principles & Frameworks](/principles): Core principles and operating frameworks distilled from real project work, designed to compound across every engagement.
+- [Journey Mapping Template](/principles/journey-template): Reusable structure for mapping any part of a system from user need to validated outcome.
+- [New Project Checklist](/principles/new-project-checklist): Bootstrap sequence using Field Notes and llms.txt to get a new project running.
+- [Synthesis & Validation](/principles/synthesis-validation): Living document templates, sprint synthesis workflow, four-pillar validation, PAGE-TREE, and PR checklists.
+- [Verification Over Instruction](/principles/verification-over-instruction): Give AI a way to verify its work rather than a long list of instructions. Success conditions beat specifications.
+
 ## Claude & AI Workflows
 
 Context engineering, CLAUDE.md playbook, Claude Code setup, workflow architectures, skill-based automation.
@@ -18,23 +31,11 @@ Context engineering, CLAUDE.md playbook, Claude Code setup, workflow architectur
 - [Skill-Based Automation](/claude/skills-patterns): Patterns for creating reusable Claude skills to automate repetitive workflows.
 - [Workflow Architectures](/claude/workflow-architectures): Survey of proven Claude workflow patterns — from simple skill invocation to multi-agent orchestration.
 
-## Principles & Frameworks
-
-Core principles, delivery approach, synthesis and validation methodology.
-
-- [Answer First](/principles/answer-first): Every document must have the conclusion in the first body section. Never bury the lead.
-- [Compounding Engineering](/principles/compounding-engineering): Build guidance from real mistakes, not upfront speculation. Let documentation grow organically from actual needs.
-- [Dissent is a Feature](/principles/dissent-as-feature): Structurally encourage and document dissent to prevent groupthink and preserve overruled concerns for future reference.
-- [Principles & Frameworks](/principles): Core principles and operating frameworks distilled from real project work, designed to compound across every engagement.
-- [Journey Mapping Template](/principles/journey-template): Reusable structure for mapping any part of a system from user need to validated outcome.
-- [New Project Checklist](/principles/new-project-checklist): Bootstrap sequence using Field Notes and llms.txt to get a new project running.
-- [Synthesis & Validation](/principles/synthesis-validation): Living document templates, sprint synthesis workflow, four-pillar validation, PAGE-TREE, and PR checklists.
-- [Verification Over Instruction](/principles/verification-over-instruction): Give AI a way to verify its work rather than a long list of instructions. Success conditions beat specifications.
-
 ## Platform Patterns
 
 Monorepo architecture, data patterns, auth and RLS, bootstrapping.
 
+- [ADR Template](/platform/adr-template): Architecture Decision Record format for documenting technical decisions with context, options, and consequences.
 - [Audit-First Architecture](/platform/audit-first): Append-only event tables for complete state transition history.
 - [Auth & Row-Level Security](/platform/auth-rls): JWT custom claims, RLS policies, and middleware route protection.
 - [Bootstrap Commands](/platform/bootstrap-commands): Executable CLI sequences for each scaffolding phase, from empty directory to running CI.
@@ -51,10 +52,13 @@ Monorepo architecture, data patterns, auth and RLS, bootstrapping.
 
 Multi-dimensional token model, composition rules, naming conventions, and constraints.
 
+- [Accessibility Audit](/design-system/accessibility-audit): A bracket-based WCAG 2.2 AA audit framework for design system components with 30 rules and scored output.
 - [Flat Architecture](/design-system/approaches/flat): Single-layer CSS custom properties for LLM-mediated workflows.
 - [Approaches](/design-system/approaches): When to use the full layered architecture vs flat tokens.
 - [Layered Architecture](/design-system/approaches/layered): The full four-layer token chain for enterprise and multi-brand systems.
 - [Why Dimensional](/design-system/approaches/why-dimensional): A plain-language explanation of how the dimensional model compares to typical design systems — and why it works better.
+- [Component API](/design-system/component-api): How to define the consumer-facing contract of a design system component — inputs, types, defaults, and slots.
+- [Component Scaffolding](/design-system/component-scaffolding): The workflow for scaffolding a new design system component — from dimension decisions through file generation to visual iteration.
 - [Composition](/design-system/composition): The checklist and rules for composing components with the dimensional model.
 - [Sentiment + Emphasis](/design-system/composition/sentiment-emphasis): The relationship between what a component says and how loudly it says it.
 - [Spacing & Gestalt](/design-system/composition/spacing-gestalt): Spatial distance encodes semantic distance — the three spacing tiers.
@@ -63,7 +67,9 @@ Multi-dimensional token model, composition rules, naming conventions, and constr
 - [Accessibility](/design-system/constraints/accessibility): Touch targets, focus rings, contrast, and reduced motion requirements.
 - [Dos and Don'ts](/design-system/constraints/dos-and-donts): Practical rules for using tokens correctly in components and layouts.
 - [Constraints & Rules](/design-system/constraints): Guardrails for working with the token system.
+- [CSS Authoring Rules](/design-system/css-authoring-rules): Opinionated rules for writing component stylesheets in a design system — section order, token consumption, and seven non-negotiables.
 - [Figma Documentation Rules](/design-system/figma-documentation-rules): Best practices for documenting design tokens and components inside Figma files.
+- [HTML Semantics](/design-system/html-semantics): Rules for choosing native HTML elements and ARIA attributes in design system components.
 - [Token Approach Guide](/design-system): A living methodology for multi-dimensional design token systems.
 - [Emphasis](/design-system/model/emphasis): How loudly a component communicates — the visual weight and intensity of its signal.
 - [The Dimensional Model](/design-system/model): Every component is the product of up to five independent, orthogonal dimensions.
@@ -77,8 +83,11 @@ Multi-dimensional token model, composition rules, naming conventions, and constr
 - [Primitive Naming](/design-system/naming/primitives): The --{category}-{name} pattern for raw token values.
 - [Semantic Naming](/design-system/naming/semantics): The --{element}-{variant}-{state} pattern for purpose-driven tokens.
 - [Storybook Documentation Rules](/design-system/storybook-documentation-rules): Best practices for documenting design systems in Storybook with consistent structure and components.
+- [Testing Strategy](/design-system/testing-strategy): A three-layer testing approach for design system components — unit, accessibility, and visual regression.
+- [Token Audit](/design-system/token-audit): How to audit component tokens for cascade integrity, hardcoded values, and structural correctness.
 - [Component Slots](/design-system/token-chain/component-slots): Layer 3 — named openings inside a component's variable collections.
 - [The Token Chain](/design-system/token-chain): All visual values flow through a strict four-layer resolution chain.
 - [Primitives](/design-system/token-chain/primitives): Layer 1 — raw values that are theme-aware but never used directly in components.
 - [Resolver](/design-system/token-chain/resolver): Layer 4 — runtime engine that resolves multi-dimensional token combinations.
 - [Semantics](/design-system/token-chain/semantics): Layer 2 — purpose-driven aliases that describe what a value means, not its raw appearance.
+- [Token Transform Pipeline](/design-system/token-transform-pipeline): How design tokens move from Figma Variables to CSS custom properties through a four-stage pipeline.
