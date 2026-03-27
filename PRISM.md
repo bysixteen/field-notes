@@ -1,0 +1,200 @@
+# PRISM — Figma MCP Bridge Interface Definition
+
+Interface contract for PRISM, the bridge between local design-token tooling and Figma via the Model Context Protocol (MCP). This document defines the connection protocol, payload schemas for push/pull operations, and tool discovery requirements.
+
+Downstream dependents: Sub-Plan D (Token Transform Pipeline docs), Sub-Plan G (Push/Pull sync scripts).
+
+---
+
+## Connection Protocol
+
+PRISM communicates with Figma through an MCP server exposed over one of two transports:
+
+| Transport | Detail |
+|-----------|--------|
+| **STDIO** | Default. The MCP client spawns the server process and communicates over stdin/stdout. |
+| **Local HTTP** | Optional. Server listens on `http://localhost:3055` (port 3055 by default). |
+
+### Configuration
+
+All connection details are read from the `.mcp.json` file located in the project root. Scripts and tools MUST NOT hardcode server commands, URLs, or Figma file IDs — everything is resolved at runtime from this file.
+
+```jsonc
+// .mcp.json (example structure — values are project-specific)
+{
+  "mcpServers": {
+    "figma": {
+      "command": "npx",
+      "args": ["-y", "figma-mcp-server"],
+      "env": {
+        "FIGMA_ACCESS_TOKEN": "<token>"
+      }
+    }
+  },
+  "figma": {
+    "fileId": "<file-id>"
+  }
+}
+```
+
+Key rules:
+- `fileId` is always read from `.mcp.json` at runtime — never embedded in scripts or documentation examples.
+- The server entry under `mcpServers` determines which command to spawn (STDIO) or which URL to connect to (HTTP).
+
+---
+
+## Push Tokens Payload Schema
+
+Pushes locally-generated token collections into Figma as variables.
+
+**Tool:** discovered at runtime (canonical name: `push_tokens` or equivalent — see [Tool Discovery](#tool-discovery-requirement)).
+
+### Request Payload
+
+```json
+{
+  "fileId": "<from .mcp.json>",
+  "collections": [
+    {
+      "name": "Primitives",
+      "modes": ["Light", "Dark"],
+      "variables": [
+        {
+          "name": "sky-50",
+          "type": "COLOR",
+          "valuesByMode": {
+            "Light": "#f0f9ff",
+            "Dark": "#082f49"
+          }
+        },
+        {
+          "name": "sky-100",
+          "type": "COLOR",
+          "valuesByMode": {
+            "Light": "#e0f2fe",
+            "Dark": "#0c4a6e"
+          }
+        }
+      ]
+    }
+  ]
+}
+```
+
+### Field Reference
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `fileId` | `string` | Figma file ID — resolved from `.mcp.json` at runtime. |
+| `collections` | `array` | One or more variable collections to push. |
+| `collections[].name` | `string` | Collection name in Figma (e.g., `"Primitives"`, `"Anchors"`). |
+| `collections[].modes` | `string[]` | Mode names the collection supports (e.g., `["Light", "Dark"]`). |
+| `collections[].variables` | `array` | Variables to create or update within the collection. |
+| `variables[].name` | `string` | Variable name. Use Radix-style 50–1000 numbering for scales. |
+| `variables[].type` | `string` | Variable type: `"COLOR"`, `"FLOAT"`, `"STRING"`, or `"BOOLEAN"`. |
+| `variables[].valuesByMode` | `object` | Map of mode name to value. Keys must match `modes` array. |
+
+---
+
+## Pull Anchors Payload Schema
+
+Pulls variable values back from Figma — typically anchor tokens set by designers.
+
+**Tool:** discovered at runtime (canonical name: `pull_variables` or equivalent — see [Tool Discovery](#tool-discovery-requirement)).
+
+### Request Payload
+
+```json
+{
+  "fileId": "<from .mcp.json>",
+  "collection": "Anchors"
+}
+```
+
+### Response Payload (expected shape)
+
+```json
+{
+  "collection": "Anchors",
+  "modes": ["Light", "Dark"],
+  "variables": [
+    {
+      "name": "accent",
+      "type": "COLOR",
+      "valuesByMode": {
+        "Light": "#2563eb",
+        "Dark": "#60a5fa"
+      }
+    }
+  ]
+}
+```
+
+### Field Reference
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `fileId` | `string` | Figma file ID — resolved from `.mcp.json` at runtime. |
+| `collection` | `string` | Name of the collection to pull (e.g., `"Anchors"`). |
+
+The response shape mirrors the push schema's `collections[]` entry, making round-trip operations straightforward.
+
+---
+
+## Tool Discovery Requirement
+
+MCP servers may expose tools under different names depending on version or configuration. Scripts MUST NOT assume fixed tool names. Instead, every script that interacts with PRISM must include a **preflight tool-discovery step**.
+
+### Discovery Protocol
+
+1. **List available tools** before executing any operation:
+   ```bash
+   manus-mcp-cli tool list --server figma-mcp
+   ```
+2. **Log the discovered tools** so operators can audit what is available:
+   ```
+   [PRISM] Discovered tools: create_variables, get_variables, set_variable_value, ...
+   ```
+3. **Match against required capabilities** — map canonical operation names to whatever the server exposes.
+
+### Dynamic Tool-Name Mapping
+
+Scripts must maintain a mapping table of canonical operations to discovered tool names. If the MCP server exposes `create_variables` instead of `push_tokens`, the script maps accordingly.
+
+```
+Canonical Operation    → Discovered Tool Name
+─────────────────────────────────────────────
+push_tokens            → (resolved at runtime)
+pull_variables         → (resolved at runtime)
+```
+
+**Implementation pattern (pseudocode):**
+
+```
+tools = mcp.listTools(server: "figma-mcp")
+
+PUSH_TOOL = tools.find(name matches /push|create|set.*variable/)
+PULL_TOOL = tools.find(name matches /pull|get.*variable/)
+
+if (!PUSH_TOOL || !PULL_TOOL) {
+  abort("Required tools not found. Available: " + tools.map(t => t.name))
+}
+```
+
+Key rules:
+- Never call a tool by a hardcoded name without first verifying it exists.
+- If a required tool is not found, abort with a clear error listing available tools.
+- Log the resolved mapping at the start of every run for debuggability.
+
+---
+
+## Summary
+
+| Aspect | Detail |
+|--------|--------|
+| Transport | MCP over STDIO (default) or local HTTP (:3055) |
+| Configuration | `.mcp.json` in project root |
+| Push | Send token collections with modes and typed values |
+| Pull | Retrieve a named collection's variables and mode values |
+| Tool names | Discovered at runtime — never hardcoded |
+| File IDs | Always from `.mcp.json` — never hardcoded |
