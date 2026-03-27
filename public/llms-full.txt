@@ -7559,3 +7559,187 @@ Validation failures produce clear error messages with the broken alias path. See
 - [Colour Scale](/design-system/model/color-scale) — the 12-step ramp structure
 - [Naming Conventions](/design-system/naming) — token naming across layers
 - [Token Audit](/design-system/token-audit) — cascade integrity verification
+
+### Figma Sync Scripts
+
+*Push and pull design tokens between local tooling and Figma via the PRISM MCP bridge.*
+
+## Overview
+
+Two shell scripts synchronise design tokens with Figma through the [PRISM](/design-system/prism) MCP bridge:
+
+| Script | Direction | Purpose |
+|--------|-----------|---------|
+| `figma-push.sh` | Local → Figma | Push generated token collections into Figma as variables |
+| `figma-pull.sh` | Figma → Local | Pull anchor colours from Figma into `packages/ui/anchors.json` |
+
+Both scripts read connection configuration from `.mcp.json` at the project root and discover MCP tool names at runtime — nothing is hardcoded.
+
+---
+
+## Prerequisites
+
+- **jq** — JSON processor (`brew install jq`)
+- **manus-mcp-cli** — MCP client CLI for tool discovery and invocation
+- **.mcp.json** — project-root config file containing Figma file ID and MCP server settings
+
+### `.mcp.json` structure
+
+```jsonc
+{
+  "mcpServers": {
+    "figma": {
+      "command": "npx",
+      "args": ["-y", "figma-mcp-server"],
+      "env": { "FIGMA_ACCESS_TOKEN": "<token>" }
+    }
+  },
+  "figma": {
+    "fileId": "<file-id>"
+  }
+}
+```
+
+---
+
+## figma-push.sh
+
+Pushes locally-generated token JSON to Figma as variable collections.
+
+### Usage
+
+```bash
+# Push from a file
+./scripts/figma-push.sh tokens.json
+
+# Push from stdin
+cat tokens.json | ./scripts/figma-push.sh
+
+# Dry run — show preflight checks and payload without sending
+./scripts/figma-push.sh --dry-run tokens.json
+```
+
+### Input format
+
+The input JSON must follow the PRISM push payload schema. The script injects `fileId` automatically from `.mcp.json`.
+
+```json
+{
+  "collections": [
+    {
+      "name": "Primitives",
+      "modes": ["Light", "Dark"],
+      "variables": [
+        {
+          "name": "sky-50",
+          "type": "COLOR",
+          "valuesByMode": {
+            "Light": "#f0f9ff",
+            "Dark": "#082f49"
+          }
+        }
+      ]
+    }
+  ]
+}
+```
+
+### Preflight checks
+
+Before pushing, the script verifies:
+
+1. `jq` is installed
+2. `.mcp.json` exists and contains `figma.fileId`
+3. `manus-mcp-cli` is available
+4. MCP server is reachable (via tool discovery)
+5. A push-capable tool exists on the server
+
+If any check fails the script exits with a descriptive error.
+
+---
+
+## figma-pull.sh
+
+Pulls anchor colour tokens from Figma and writes them to `packages/ui/anchors.json`.
+
+### Usage
+
+```bash
+# Pull anchors from Figma
+./scripts/figma-pull.sh
+
+# Dry run — show preflight checks without pulling
+./scripts/figma-pull.sh --dry-run
+```
+
+### Output
+
+The script writes exclusively to `packages/ui/anchors.json`. It never modifies `.ts` source files. The output follows the PRISM pull response schema:
+
+```json
+{
+  "collection": "Anchors",
+  "modes": ["Light", "Dark"],
+  "variables": [
+    {
+      "name": "accent",
+      "type": "COLOR",
+      "valuesByMode": {
+        "Light": "#2563eb",
+        "Dark": "#60a5fa"
+      }
+    }
+  ]
+}
+```
+
+### Preflight checks
+
+Before pulling, the script verifies:
+
+1. `jq` is installed
+2. `.mcp.json` exists and contains `figma.fileId`
+3. `manus-mcp-cli` is available
+4. MCP server is reachable (via tool discovery)
+5. A pull-capable tool exists on the server
+
+---
+
+## Tool discovery
+
+Both scripts follow the PRISM tool discovery protocol. Before executing any operation they run:
+
+```bash
+manus-mcp-cli tool list --server figma-mcp
+```
+
+The discovered tools are logged and matched against expected patterns:
+
+| Canonical operation | Match patterns |
+|---------------------|----------------|
+| `push_tokens` | `push_tokens`, `create_variables`, `set_variable_value` |
+| `pull_variables` | `pull_variables`, `get_variables`, `get_variable` |
+
+If no matching tool is found the script aborts with the full list of available tools for debugging.
+
+---
+
+## Error handling
+
+All errors are prefixed with `[PRISM]` for easy identification in logs.
+
+| Error | Cause | Resolution |
+|-------|-------|------------|
+| `jq is required but not found` | jq not installed | `brew install jq` |
+| `.mcp.json not found` | Missing config file | Create `.mcp.json` at project root |
+| `figma.fileId not set` | Config missing file ID | Add `figma.fileId` to `.mcp.json` |
+| `Failed to list tools` | MCP server unreachable | Check server is running and `.mcp.json` config |
+| `No push/pull-capable tool found` | Server missing expected tools | Verify MCP server version and capabilities |
+| `Input is not valid JSON` | Malformed token file | Validate input with `jq . tokens.json` |
+
+---
+
+## See also
+
+- [Token Transform Pipeline](/design-system/token-transform-pipeline) — generates the token JSON that `figma-push.sh` consumes
+- [Token Audit](/design-system/token-audit) — validates token integrity before pushing
