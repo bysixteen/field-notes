@@ -18,22 +18,22 @@ This study measured the impact of including an `AGENTS.md` file on AI coding age
 
 The study's conclusion was straightforward: providing agents with a context file that describes the project, its conventions, and its structure leads to measurably better outcomes.
 
-### Study 2: Authorship Determines Value
+### Community Finding: Authorship Determines Value
 
-**Source:** Referenced by Theo (YouTube / X)
+**Source:** Popularised by Theo (t3.gg, YouTube / X) — no peer-reviewed paper exists; treat as community-reported finding, not verified research.
 
-This study introduced a critical variable that the first study did not isolate: **who wrote the context file**. The results diverged sharply based on authorship:
+This finding introduced a critical variable that the first study did not isolate: **who wrote the context file**. The results diverged sharply based on authorship:
 
-- **LLM-generated context files:** Performance decreased by **3%**, while token costs increased by **20%**. The agent spent more tokens processing information that was either redundant (things it could discover on its own) or subtly misleading (plausible-sounding but imprecise descriptions of the codebase).
-- **Human-written context files:** Performance improved by **4%**. The agent benefited from concise, accurate pointers to information it could not easily discover through code exploration alone.
+- **LLM-generated context files:** Performance decreased by **~3%**, while token costs increased by **~20%**. The agent spent more tokens processing information that was either redundant (things it could discover on its own) or subtly misleading (plausible-sounding but imprecise descriptions of the codebase).
+- **Human-written context files:** Performance improved by **~4%**. The agent benefited from concise, accurate pointers to information it could not easily discover through code exploration alone.
 
 ## The Contradiction
 
-At first glance, these studies appear to disagree. Study 1 says context files help. Study 2 says they can hurt.
+At first glance, these findings appear to disagree. The verified study says context files help. The community finding says they can hurt.
 
 ## The Reconciliation
 
-The studies are not contradictory — they are measuring different things. Study 1 demonstrated that the *concept* of a context file is sound. Study 2 demonstrated that the *implementation* matters enormously.
+The findings are not contradictory — they are measuring different things. The verified study demonstrated that the *concept* of a context file is sound. The community finding demonstrated that the *implementation* matters enormously.
 
 The reconciled finding is:
 
@@ -47,9 +47,9 @@ This is not a subtle distinction. The difference between a human-written file (+
 
 The data is clear that having a context file is better than not having one. Do not skip it. But do not let it grow unchecked.
 
-### Aim for fewer than 60 lines
+### Keep it concise
 
-Every line in the file costs tokens on every agent invocation. Lines that provide genuine, non-discoverable context earn their cost back through faster, more accurate task completion. Lines that restate the obvious consume tokens without providing value. The threshold of roughly 60 lines is a practical guideline — short enough to remain focused, long enough to cover essentials and accumulated corrections.
+Every line in the file costs tokens on every agent invocation. Lines that provide genuine, non-discoverable context earn their cost back through faster, more accurate task completion. Lines that restate the obvious consume tokens without providing value. Anthropic's guidance is qualitative: keep it focused. As an editorial recommendation, aim for the shortest file that covers essentials and accumulated corrections — typically well under 100 lines.
 
 ### Focus on non-discoverable information
 

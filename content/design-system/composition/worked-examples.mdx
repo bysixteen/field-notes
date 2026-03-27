@@ -69,7 +69,7 @@ All buttons use `size="sm"` because they're in a data table (compact layout). Th
 A new feature is being promoted on the dashboard.
 
 ```tsx
-<card sentiment="new" emphasis="high" size="md" density="relaxed">
+<card sentiment="new" emphasis="high" size="md">
   <badge sentiment="new" emphasis="high">New</badge>
   <heading>Analytics Dashboard</heading>
   <text>Track your usage patterns with real-time charts.</text>
@@ -79,7 +79,7 @@ A new feature is being promoted on the dashboard.
 </card>
 ```
 
-The card uses `new` sentiment (recently added), `relaxed` density (content-focused, not data-dense), and the action button uses `highlight` (recommended action).
+The card uses `new` sentiment (recently added) and the action button uses `highlight` (recommended action).
 
 ## Applying the Checklist
 
@@ -89,6 +89,5 @@ For any composition, walk through:
 2. **How urgently?** → Assign emphasis
 3. **Semantically coherent?** → Validate the combination
 4. **What scale?** → Assign size
-5. **What environment?** → Assign density
-6. **Spacing tier?** → Apply tight/medium/loose
-7. **Coherent hierarchy?** → Check the postmodern balance
+5. **Spacing tier?** → Apply tight/medium/loose
+6. **Coherent hierarchy?** → Check the postmodern balance

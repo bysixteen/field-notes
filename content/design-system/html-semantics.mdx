@@ -1,0 +1,170 @@
+---
+title: HTML Semantics
+description: Rules for choosing native HTML elements and ARIA attributes in design system components.
+---
+
+Native HTML elements first. ARIA only when no native element fits the interaction pattern. This is not a preference — it's the first rule of ARIA: "If you can use a native HTML element with the semantics and behaviour you require already built in, do so."
+
+## Link vs Button Decision Tree
+
+```
+Does activating it navigate to a new URL?
+├── YES → <a href="...">
+│   Does it open in a new tab?
+│   └── YES → <a href="..." target="_blank" rel="noopener noreferrer">
+└── NO → Does it submit a form?
+    ├── YES → <button type="submit">
+    └── NO → <button type="button">
+```
+
+Common mistakes:
+- `<a>` with `onClick` and no `href` — use `<button>` instead
+- `<div onClick>` — use `<button>` instead
+- `<button>` wrapping a link — nest `<a>` inside, or choose one
+
+## Container Semantics
+
+| Element | Use when | Not for |
+|---------|----------|---------|
+| `<article>` | Self-contained content that makes sense out of context (card, comment, blog post) | Layout wrappers |
+| `<section>` | Thematic grouping of content with a heading | Generic containers |
+| `<div>` | No semantic meaning needed — pure layout | Content with meaning |
+| `<aside>` | Tangentially related content (sidebar, callout) | Primary content |
+| `<main>` | Dominant content of the page (one per page) | Nested sections |
+| `<header>` | Introductory content for its nearest sectioning ancestor | Page-level only (it's not) |
+| `<footer>` | Footer for its nearest sectioning ancestor | Page-level only (it's not) |
+| `<nav>` | Major navigation block | Every list of links |
+
+## Navigation vs Menu
+
+These are different widgets with different keyboard models:
+
+| Pattern | Element/Role | Keyboard model | Use for |
+|---------|-------------|----------------|---------|
+| Navigation | `<nav>` with `<a>` links | Tab between links | Site navigation, breadcrumbs, pagination |
+| Menu | `role="menu"` with `role="menuitem"` | Arrow keys between items, Tab exits | Action menus, context menus, dropdowns of actions |
+
+**Do not use `role="menu"` for navigation.** A menu widget expects arrow-key navigation and confuses screen reader users when used for site links.
+
+## Dialog Patterns
+
+Prefer the native `<dialog>` element:
+
+```html
+<dialog aria-labelledby="dialog-title">
+  <h2 id="dialog-title">Confirm deletion</h2>
+  <p>This action cannot be undone.</p>
+  <button type="button">Cancel</button>
+  <button type="button">Delete</button>
+</dialog>
+```
+
+Native `<dialog>` provides:
+- Built-in `showModal()` / `close()` API
+- Backdrop via `::backdrop` pseudo-element
+- Focus trapping (in `showModal()` mode)
+- Escape key to close
+- Correct `role="dialog"` and `aria-modal="true"` implicitly
+
+When native `<dialog>` isn't available (e.g., custom positioning needs), add manually:
+- `role="dialog"` and `aria-modal="true"`
+- Focus trap (first focusable element on open)
+- Focus restoration (return to trigger on close)
+- Escape key handler
+
+## Form Semantics
+
+| Element | Required for |
+|---------|-------------|
+| `<label>` | Every visible input — use `htmlFor` (React) pointing to input `id` |
+| `<fieldset>` + `<legend>` | Groups of related inputs (radio group, address fields) |
+| `aria-describedby` | Help text, error messages, format hints |
+| `aria-invalid` | Invalid form controls |
+| `aria-required` | Required fields (alongside the `required` attribute) |
+
+```html
+<div>
+  <label htmlFor="email">Email address</label>
+  <input
+    id="email"
+    type="email"
+    required
+    aria-required="true"
+    aria-describedby="email-hint email-error"
+    aria-invalid={hasError || undefined}
+  />
+  <span id="email-hint">We'll never share your email.</span>
+  {hasError && <span id="email-error" role="alert">Please enter a valid email.</span>}
+</div>
+```
+
+## Common ARIA Patterns
+
+### Toggle / Switch
+
+```html
+<button
+  role="switch"
+  aria-checked={isOn}
+  onClick={toggle}
+>
+  Dark mode
+</button>
+```
+
+Native `<button>` with `role="switch"` is exempt from keyboard handler rules — the browser fires `click` on Space and Enter for all native buttons.
+
+### Tabs
+
+```html
+<div role="tablist" aria-label="Settings">
+  <button role="tab" aria-selected={activeTab === 0} aria-controls="panel-0">General</button>
+  <button role="tab" aria-selected={activeTab === 1} aria-controls="panel-1">Advanced</button>
+</div>
+<div role="tabpanel" id="panel-0" aria-labelledby="tab-0">
+  {/* Panel content */}
+</div>
+```
+
+Keyboard: Arrow keys move between tabs, Tab moves into the panel.
+
+### Disclosure / Accordion
+
+```html
+<button aria-expanded={isOpen} aria-controls="content-1">
+  Section title
+</button>
+<div id="content-1" role="region" aria-labelledby="trigger-1" hidden={!isOpen}>
+  {/* Expandable content */}
+</div>
+```
+
+### Live Regions
+
+```html
+<!-- Polite: announced after current speech finishes -->
+<div role="status" aria-live="polite">
+  {statusMessage}
+</div>
+
+<!-- Assertive: interrupts current speech -->
+<div role="alert" aria-live="assertive">
+  {errorMessage}
+</div>
+```
+
+## Rules Summary
+
+1. **Use native elements first** — `<button>`, `<a>`, `<input>`, `<dialog>`, `<details>`
+2. **Don't add ARIA to override native semantics** — `<button role="link">` is wrong; use `<a>`
+3. **Every interactive element needs a keyboard path** — focusable, operable, visible focus indicator
+4. **Every image needs alt text** — informative images get descriptive text, decorative images get `alt=""`
+5. **Every form control needs a label** — visible `<label>`, `aria-label`, or `aria-labelledby`
+6. **Don't use `tabindex > 0`** — it breaks the natural tab order
+7. **Use `aria-hidden="true"` only on non-focusable elements** — never hide something that can receive focus
+
+## See Also
+
+- [Accessibility Audit](/design-system/accessibility-audit) — the full WCAG 2.2 AA audit framework
+- [Component API](/design-system/component-api) — how component inputs map to dimensions
+- [Component Scaffolding](/design-system/component-scaffolding) — ARIA reference in the scaffold workflow

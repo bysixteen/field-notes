@@ -1,0 +1,107 @@
+---
+title: Stack Decisions
+description: Record technology choices and their rationale before writing code.
+---
+
+Every project makes technology choices. Most teams make them implicitly — someone picks a tool, everyone else follows, and six months later nobody remembers why. Stack decisions makes these choices explicit and reversible by documenting them upfront.
+
+## Why This Matters
+
+Implicit choices create three problems:
+
+1. **New team members can't understand the reasoning.** They see the tool but not the trade-off that led to it.
+2. **Revisiting decisions is impossible.** Without recorded rationale, every discussion starts from scratch.
+3. **Inconsistency creeps in.** Different developers make different assumptions, leading to multiple tools solving the same problem.
+
+Recording stack decisions takes minutes. Debugging the consequences of unrecorded decisions takes days.
+
+## Decision Categories
+
+### Package Manager
+
+| Option | Strengths | Best For |
+| --- | --- | --- |
+| pnpm | Fast installs, disk-efficient, strict dependency resolution, native workspace support | Monorepos, teams that want strict correctness |
+| npm | Zero setup (ships with Node.js), largest ecosystem familiarity | Single-repo projects, teams new to Node.js |
+| yarn | Plug'n'Play for zero-install, good workspace support | Projects that need offline installs |
+
+### Build System
+
+| Option | Strengths | Best For |
+| --- | --- | --- |
+| Turborepo | Simple configuration, fast caching, understands dependency graph | pnpm monorepos with multiple apps |
+| Nx | Rich plugin ecosystem, computation caching, affected-based testing | Large teams, enterprise monorepos |
+| None | No overhead | Single-app, single-package projects |
+
+### Framework
+
+| Option | Strengths | Best For |
+| --- | --- | --- |
+| Next.js | Server-side rendering, API routes, image optimization, mature ecosystem | Full-stack web applications |
+| Vite + React | Fast dev server, minimal config, lean output | Prototypes, SPAs, admin tools |
+| Astro | Content-first, minimal JS by default, island architecture | Marketing sites, documentation |
+
+### Language Configuration
+
+| Option | Strengths | Best For |
+| --- | --- | --- |
+| TypeScript (strict) | Maximum type safety, catches bugs at compile time | Any project that will be maintained |
+| TypeScript (relaxed) | Faster onboarding, fewer type gymnastics | Quick prototypes, exploration |
+| JavaScript | No compilation step, lower barrier to entry | Scripts, simple tools |
+
+### Styling
+
+| Option | Strengths | Best For |
+| --- | --- | --- |
+| CSS Custom Properties | Native browser support, runtime theming, design token friendly | Design system projects, multi-theme apps |
+| Tailwind CSS | Rapid prototyping, consistent spacing/color scales, small output | Marketing sites, content-heavy pages |
+| CSS Modules | Scoped by default, no runtime cost, familiar syntax | Component libraries, apps with complex layouts |
+
+### Testing
+
+| Option | Strengths | Best For |
+| --- | --- | --- |
+| Vitest | Fast, ESM-native, compatible with Vite config | Vite-based projects, modern codebases |
+| Jest | Mature ecosystem, extensive mocking, widespread familiarity | Next.js projects, teams with existing Jest tests |
+| Playwright | Cross-browser E2E, reliable selectors, built-in test generator | User journey testing, critical flows |
+| Cypress | Interactive runner, time-travel debugging, component testing | Teams that prefer visual test development |
+
+## The ADR Template
+
+Use a lightweight Architecture Decision Record for each choice:
+
+```markdown
+## ADR: {Decision Title}
+
+**Status:** Accepted | Superseded | Deprecated
+**Date:** {YYYY-MM-DD}
+
+### Context
+What is the situation? What forces are at play?
+
+### Decision
+What did we choose and why?
+
+### Consequences
+What becomes easier? What becomes harder?
+What are we explicitly accepting as a trade-off?
+```
+
+Keep ADRs in a `DECISIONS.md` file at the project root. Number them sequentially. When a decision is superseded, link to the replacement — don't delete the original.
+
+## Anti-Pattern: Implicit Choices
+
+Signs that stack decisions are missing:
+
+- Two different testing frameworks appear in the same repo.
+- A developer asks "why do we use X?" and nobody can answer.
+- A dependency is added that duplicates functionality already present.
+- The team debates the same tool choice in multiple PRs.
+
+The fix is always the same: write down the decision, even retroactively.
+
+## See Also
+
+- [Scaffolding-First Approach](/platform/scaffolding-first) — when to make these decisions in the project timeline
+- [Monorepo Architecture](/platform/monorepo) — how stack decisions shape repository structure
+- [Dependency Catalogue](/platform/dependency-catalogue) — curated package selections by category

@@ -11,6 +11,19 @@
     "---Implementation---",
     "naming",
     "approaches",
-    "constraints"
+    "constraints",
+    "---Component Patterns---",
+    "component-api",
+    "component-scaffolding",
+    "html-semantics",
+    "accessibility-audit",
+    "css-authoring-rules",
+    "testing-strategy",
+    "---Token Pipeline---",
+    "token-transform-pipeline",
+    "token-audit",
+    "---Documentation Standards---",
+    "figma-documentation-rules",
+    "storybook-documentation-rules"
   ]
 }

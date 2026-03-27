@@ -1,0 +1,154 @@
+---
+title: Token Transform Pipeline
+description: How design tokens move from Figma Variables to CSS custom properties through a four-stage pipeline.
+---
+
+The token transform pipeline converts Figma Variables into consumable CSS custom properties. This is a custom pipeline — not Style Dictionary or Token Studio — built to handle the dimensional model's alias chains and multi-mode resolution.
+
+## Pipeline Overview
+
+```
+Stage 1: Export     Figma Variables API → JSON
+Stage 2: Transform  JSON → parsed token collections with resolved aliases
+Stage 3: Validate   Check alias chains, detect broken references
+Stage 4: Publish    Generate CSS custom properties per category
+```
+
+## Stage 1: Export
+
+Figma's Variables API exports collections as JSON. Each collection contains variables grouped by modes (e.g., dark/light for colours, sm/md/lg for sizes).
+
+The export preserves:
+- Variable names and their hierarchical paths
+- Alias references (`VARIABLE_ALIAS` type pointing to another variable)
+- Raw values (hex colours, floats, strings)
+- Mode structures per collection
+
+## Stage 2: Transform
+
+The transformer processes the raw JSON through several steps:
+
+### Colour Transform: sRGB → OKLCH
+
+All colour values are converted from Figma's sRGB (0–1 range) to OKLCH for perceptually uniform colour manipulation:
+
+```
+Figma RGB (0-1) → Linear RGB → XYZ → OKLab → OKLCH
+```
+
+OKLCH provides:
+- Perceptually uniform lightness (L) — useful for generating accessible contrast pairs
+- Hue (H) that remains stable across lightness changes
+- Chroma (C) that represents colourfulness without hue shifts
+
+Edge cases: pure black maps to `oklch(0 0 0)`, pure white to `oklch(1 0 0)`.
+
+### Number Transform: px → rem
+
+Pixel values convert to rem using a base of 16px. Exceptions kept unitless:
+- `font-weight` (e.g., 400, 600)
+- `opacity` (e.g., 0.5)
+- `z-index` (e.g., 100)
+- `duration` (converted to ms)
+- `border-weight` (kept in px for sub-pixel rendering)
+
+### Alias Resolution
+
+`VARIABLE_ALIAS` references are recursively resolved. The resolver walks alias chains until it reaches a raw value, building a lookup map that connects every token to its ultimate source.
+
+## Stage 3: Validate
+
+Before generating output, the pipeline validates:
+- Every alias reference points to an existing variable
+- No circular alias chains
+- Colour tokens in component collections alias semantic tokens (not primitives directly)
+- Mode counts match across related collections
+
+Validation failures produce clear error messages with the broken alias path.
+
+## Stage 4: Publish
+
+The pipeline generates separate CSS files per category:
+
+| File | Content |
+|------|---------|
+| `colors.css` | Colour tokens with dark/light mode via `@media (prefers-color-scheme)` |
+| `scale.css` | Spacing, radii, shadows, z-index, opacity, borders |
+| `typography.css` | Font families, sizes, weights, line heights, letter spacing |
+| `semantics.css` | Semantic aliases that reference the above |
+
+### CSS Variable Naming
+
+Figma variable paths map to CSS custom property names:
+
+| Figma path | CSS variable |
+|------------|-------------|
+| `colors/brand-dark/500` | `--colors-brand-dark-500` |
+| `size/16` | `--size-16` |
+| `font-size/14` | `--font-size-14` |
+| `background/brand/rest` | `--color-bg-brand-rest` |
+
+The convention: slash-separated Figma paths become hyphen-separated CSS names, with a category prefix where needed for clarity.
+
+## Pattern A vs Pattern B
+
+There are two valid approaches for consuming tokens in components. **Pick one per project — never mix them.**
+
+### Pattern A: Direct CSS Custom Properties
+
+Components read CSS custom properties directly. Multi-dimensional modes switch via `[data-*]` attribute selectors on the host element.
+
+```css
+/* Size via data attribute */
+[data-size='md'] .button {
+  height: 40px;
+  padding: 0 var(--size-14);
+}
+
+/* Sentiment × Emphasis compound selector */
+[data-sentiment='warning'][data-emphasis='high'] .button {
+  background: var(--color-bg-warning-rest);
+  color: var(--fg-inverse);
+}
+```
+
+**Pros:** Zero runtime cost, CSS cascade handles mode switching, works with any framework, debuggable in DevTools.
+
+**Cons:** Compound selectors can become verbose with many dimension combinations.
+
+### Pattern B: Runtime Resolver
+
+A TypeScript service resolves the dimensional combination at render time and writes CSS custom properties to the component's style attribute.
+
+```tsx
+const styles = {
+  '--button-bg-rest': resolveToken('Button', 'background', {
+    sentiment: 'warning',
+    emphasis: 'high',
+    state: 'rest',
+  }),
+};
+```
+
+**Pros:** Handles complex fallback chains, can resolve tokens from multiple sources, flexible for dynamic theming.
+
+**Cons:** Runtime overhead on every render, harder to debug, framework-specific implementation.
+
+### Decision
+
+| Factor | Pattern A | Pattern B |
+|--------|-----------|-----------|
+| Performance | No JS overhead | Re-computation on prop change |
+| Debugging | Inspect in DevTools | Trace through resolver code |
+| Framework coupling | None — pure CSS | Tied to framework lifecycle |
+| Complexity ceiling | High selector count for many dimensions | Manageable with any dimension count |
+| Recommended for | Most projects | Projects with 6+ active dimensions per component |
+
+**The rule: choose one, commit to it.** Mixing patterns in one project creates two incompatible naming/consumption conventions and doubles the cognitive load for every developer.
+
+## See Also
+
+- [Token Audit](/design-system/token-audit) — how to verify token cascade integrity
+- [The Token Chain](/design-system/token-chain) — how tokens flow from primitives to components
+- [Naming Conventions](/design-system/naming) — how tokens are named across the system
+- [Figma Documentation Rules](/design-system/figma-documentation-rules) — Figma variable structure and naming

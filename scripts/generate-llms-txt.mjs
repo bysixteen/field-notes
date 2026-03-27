@@ -16,10 +16,10 @@ const CONTENT_DIR = join(ROOT, 'content');
 const PUBLIC_DIR = join(ROOT, 'public');
 
 const DOMAINS = [
-  { dir: 'design-system', title: 'Design System', description: 'Multi-dimensional token model, composition rules, naming conventions, and constraints.' },
-  { dir: 'principles', title: 'Principles & Frameworks', description: 'Core principles, the Delivery Framework, synthesis and validation methodology.' },
+  { dir: 'principles', title: 'Principles & Frameworks', description: 'Core principles, delivery approach, synthesis and validation methodology.' },
   { dir: 'claude', title: 'Claude & AI Workflows', description: 'Context engineering, CLAUDE.md playbook, Claude Code setup, workflow architectures, skill-based automation.' },
-  { dir: 'platform', title: 'Platform Patterns', description: 'Monorepo architecture, data patterns, auth and RLS, scaffolding-first approach.' },
+  { dir: 'platform', title: 'Platform Patterns', description: 'Monorepo architecture, data patterns, auth and RLS, bootstrapping.' },
+  { dir: 'design-system', title: 'Design System', description: 'Multi-dimensional token model, composition rules, naming conventions, and constraints.' },
 ];
 
 async function findMdxFiles(dir) {

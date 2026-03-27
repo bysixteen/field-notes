@@ -1,0 +1,191 @@
+---
+title: Component API
+description: How to define the consumer-facing contract of a design system component — inputs, types, defaults, and slots.
+---
+
+A component API has exactly four categories of input. Button is the canonical example — every other component is a subset or extension of this shape.
+
+```
+Dimension inputs  →  which token collection mode to activate
+Content inputs    →  text and values the component renders
+Slot inputs       →  optional content areas (icons, badges, avatars)
+Event outputs     →  interactions communicated back to the parent
+```
+
+Dimensions compose independently. Changing `sentiment` does not affect `size`. The valid state space is their **product**, not their sum — a Button with 3 emphasis × 6 sentiment × 5 size modes has 90 working combinations automatically, because modes resolve at runtime rather than being pre-combined.
+
+```
+Additive (wrong):       3 + 6 + 5 = 14 things to define
+Multiplicative (right): 3 × 6 × 5 = 90 combinations, all free
+```
+
+Adding one new sentiment mode costs one token value — not a new variant branch.
+
+## The Three Rules
+
+**Enums, not booleans.** Every dimension input is a string enum, even with only two options today. A boolean can never grow without a breaking change. Booleans also create parallel state channels — if `state` and `loading` can both be set, what happens when `state='disabled'` and `loading=true`? Enums eliminate the ambiguity.
+
+**Every input has a default.** A bare `<Button />` must render sensibly without any attributes. The default is always the most neutral, common-case value.
+
+**Names describe the dimension, not the visual.** `emphasis: 'high'` survives a redesign. `isPrimary: true` does not. Name the concept, not the current treatment.
+
+## Canonical Example: Button
+
+Button is the reference point. Every other component API is derived by asking: which of these dimensions does this component need, and what content/slots does it add?
+
+### Types
+
+```tsx
+type ButtonState     = 'rest' | 'hover' | 'active' | 'disabled' | 'resolving' | 'pending';
+type ButtonEmphasis  = 'high' | 'medium' | 'low';
+type ButtonSentiment = 'neutral' | 'warning' | 'highlight' | 'new' | 'success' | 'error';
+type ButtonSize      = 'xs' | 'sm' | 'md' | 'lg' | 'xl';
+```
+
+### React Component
+
+```tsx
+interface ButtonProps {
+  state?: ButtonState;
+  emphasis?: ButtonEmphasis;
+  sentiment?: ButtonSentiment;
+  size?: ButtonSize;
+  leadingIcon?: React.ReactNode;
+  trailingIcon?: React.ReactNode;
+  onClick?: (event: React.MouseEvent) => void;
+  children: React.ReactNode;
+}
+
+function Button({
+  state = 'rest',
+  emphasis = 'high',
+  sentiment = 'neutral',
+  size = 'md',
+  leadingIcon,
+  trailingIcon,
+  onClick,
+  children,
+}: ButtonProps) {
+  const isDisabled = state === 'disabled';
+
+  return (
+    <button
+      data-state={state}
+      data-emphasis={emphasis}
+      data-sentiment={sentiment}
+      data-size={size}
+      disabled={isDisabled}
+      onClick={isDisabled ? undefined : onClick}
+    >
+      {leadingIcon && (
+        <span className="button__prefix" aria-hidden="true">{leadingIcon}</span>
+      )}
+      <span className="button__label">{children}</span>
+      {trailingIcon && (
+        <span className="button__suffix" aria-hidden="true">{trailingIcon}</span>
+      )}
+    </button>
+  );
+}
+```
+
+## Dimension Vocabulary
+
+Use these exact values. Do not invent synonyms.
+
+| Dimension | Standard modes | Include when |
+|---|---|---|
+| `state` | `rest` `hover` `active` `selected` `disabled` `resolving` `pending` | Component is interactive |
+| `emphasis` | `high` `medium` `low` | Multiple visual weights exist |
+| `sentiment` | `neutral` `warning` `highlight` `new` `success` `error` | Conveys communicative meaning |
+| `size` | `xs` `sm` `md` `lg` `xl` | Has size variants |
+| `structure` | *(no input — always applied)* | Never expose as a prop |
+
+**State + Emphasis are paired.** Interactive components almost always need both.
+
+**Loading is a state mode.** `state='resolving'` — not a separate `loading` boolean.
+
+## Slot Patterns
+
+**Same component type every time → conditional rendering**
+
+The icon slot is either present or absent. Conditional rendering prevents ghost padding from empty wrappers.
+
+```tsx
+{leadingIcon && (
+  <span className="button__prefix" aria-hidden="true">{leadingIcon}</span>
+)}
+```
+
+**Different component types → polymorphic slot**
+
+```tsx
+interface CardProps {
+  leading?: React.ReactNode;  // Icon, Avatar, or Checkbox
+  trailing?: React.ReactNode;
+}
+```
+
+| Slot name | Position | Pattern |
+|---|---|---|
+| `leadingIcon` / `prefix` | Before label | Conditional — Icon only |
+| `trailingIcon` / `suffix` | After label | Conditional — Icon only |
+| `leading` | Start of layout | Polymorphic — mixed types |
+| `trailing` | End of layout | Polymorphic — mixed types |
+| `header` / `footer` | Top / bottom | Polymorphic — mixed types |
+
+## Extrapolating to Other Components
+
+Start from Button and ask: which dimensions does this component need, what content does it render, what slots does it have, and does the layer structure ever change?
+
+**If the layer structure changes between options → that is a variant (separate component), not a mode.** Avatar with image vs initials vs icon has different child layers — three variants. Button with different sentiments has the same layers — one component, multiple modes.
+
+| Component | Dimensions | Dropped | Additions |
+|---|---|---|---|
+| Badge | `sentiment`, `size` (xs–lg) | `state`, `emphasis` | `text: string` |
+| IconButton | `state`, `emphasis`, `sentiment`, `size` | — | Icon is required content, no label |
+| Chip | `state`, `emphasis`, `sentiment`, `size` | — | `closeable?: boolean` |
+| Input | `state`, `size` | `emphasis` | `label`, `placeholder`, `value`; `leading`/`trailing` slots |
+| Alert | `sentiment` | `state`, `emphasis`, `size` | `title`, `description`; `leading` slot; `actions` slot |
+| Select | `state`, `size` | `emphasis` | Composite — parent owns dimensions, `SelectItem` owns `value` |
+
+For composite components: the **parent owns all dimension inputs** and propagates them to children. Children own only their content inputs.
+
+## Decision Tree
+
+```
+New condition (loading, pending, selected)?
+  → Mode on `state` — not a new input
+
+New visual weight (outlined, ghost, subtle)?
+  → Mode on `emphasis` — not a new input
+
+Layer structure changes between options?
+  → Variant → separate component
+
+Content (label, text, placeholder, value)?
+  → String prop with default ''
+
+Slot presence (icon, close button)?
+  → Optional React.ReactNode prop
+
+None of the above?
+  → New enum input. Name the dimension. Provide a default.
+```
+
+## Audit Checklist
+
+| Check | Violation | Fix |
+|---|---|---|
+| Type is `boolean` for a dimension | Raw boolean | Change to string union type |
+| No default | Missing default | Add — most neutral/common value |
+| Name is visual (`isPrimary`, `isGhost`) | Visual naming | Rename to dimension (`emphasis`) |
+| Mode values non-standard (`'small'`, `'1'`) | Wrong modes | Use canonical vocabulary above |
+| Dimension on child that parent controls | Misplaced ownership | Move to parent, propagate down |
+| `loading` as separate boolean | Parallel channel | Merge into `state='resolving'` |
+
+## See Also
+
+- [The Dimensional Model](/design-system/model) — the five dimensions explained
+- [Composition Rules](/design-system/composition) — how dimensions combine across parent and child
+- [Component Scaffolding](/design-system/component-scaffolding) — the full scaffold workflow

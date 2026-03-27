@@ -1,0 +1,163 @@
+---
+title: Component Scaffolding
+description: The workflow for scaffolding a new design system component — from dimension decisions through file generation to visual iteration.
+---
+
+Scaffolding a component follows a fixed sequence: decide dimensions, define types, generate files, add ARIA, iterate visually, then test.
+
+## Step 1: Decide Dimensions
+
+Use the [Component API](/design-system/component-api) dimension vocabulary. Ask these questions:
+
+| Question | If yes → | Dimension |
+|----------|----------|-----------|
+| Is it interactive? | Add state + emphasis | `state`, `emphasis` |
+| Does it convey meaning? | Add sentiment | `sentiment` |
+| Does it have size variants? | Add size | `size` |
+
+Every component gets a **structure** dimension implicitly — the fixed skeleton of border radius, font family, and gap values. This is never exposed as a prop.
+
+## Step 2: Define Types
+
+Create a types file with union types for each dimension:
+
+```tsx
+// button.types.ts
+export type ButtonState     = 'rest' | 'hover' | 'active' | 'disabled' | 'resolving';
+export type ButtonEmphasis  = 'high' | 'medium' | 'low';
+export type ButtonSentiment = 'neutral' | 'warning' | 'highlight' | 'new' | 'success' | 'error';
+export type ButtonSize      = 'xs' | 'sm' | 'md' | 'lg' | 'xl';
+```
+
+Rules:
+- Only include types for dimensions the component actually uses
+- Use the exact canonical mode values
+- Never use `'default'`, `'small'`, `'large'`, or numeric steps for size
+
+## Step 3: Generate Files
+
+| File | Purpose |
+|------|---------|
+| `component.tsx` | React component with props interface |
+| `component.types.ts` | Type unions for every dimension |
+| `component.css` (or `.scss`) | Styles using CSS custom properties |
+| `component.stories.tsx` | Storybook stories covering all dimensions |
+| `component.test.tsx` | Unit tests for inputs, outputs, ARIA |
+| `index.ts` | Public barrel export |
+
+### Component file pattern
+
+```tsx
+import type { ButtonEmphasis, ButtonSentiment, ButtonSize, ButtonState } from './button.types';
+
+interface ButtonProps {
+  state?: ButtonState;
+  emphasis?: ButtonEmphasis;
+  sentiment?: ButtonSentiment;
+  size?: ButtonSize;
+  leadingIcon?: React.ReactNode;
+  trailingIcon?: React.ReactNode;
+  onClick?: (event: React.MouseEvent) => void;
+  children: React.ReactNode;
+}
+
+export function Button({
+  state = 'rest',
+  emphasis = 'high',
+  sentiment = 'neutral',
+  size = 'md',
+  leadingIcon,
+  trailingIcon,
+  onClick,
+  children,
+}: ButtonProps) {
+  const isDisabled = state === 'disabled';
+
+  return (
+    <button
+      className="ds-button"
+      data-state={state}
+      data-emphasis={emphasis}
+      data-sentiment={sentiment}
+      data-size={size}
+      disabled={isDisabled}
+      aria-disabled={isDisabled || undefined}
+      onClick={isDisabled ? undefined : onClick}
+    >
+      {leadingIcon && (
+        <span className="ds-button__prefix" aria-hidden="true">{leadingIcon}</span>
+      )}
+      <span className="ds-button__label">{children}</span>
+      {trailingIcon && (
+        <span className="ds-button__suffix" aria-hidden="true">{trailingIcon}</span>
+      )}
+    </button>
+  );
+}
+```
+
+## Step 4: Add ARIA
+
+Choose ARIA attributes based on the component type:
+
+| Component type | `role` | Key attributes |
+|---------------|--------|----------------|
+| Button / action | `button` | `aria-label`, `aria-disabled`, `aria-pressed` (toggle) |
+| Link | `link` | `aria-label`, `aria-current` (active nav) |
+| Status display | `status` | `aria-live="polite"`, `aria-label` |
+| Alert / notification | `alert` | `aria-live="assertive"`, `aria-atomic="true"` |
+| Form input | — (native) | `aria-invalid`, `aria-describedby`, `aria-required` |
+| Dialog / modal | `dialog` | `aria-modal="true"`, `aria-labelledby` |
+| Tab | `tab` | `aria-selected`, `aria-controls` |
+| Progress | `progressbar` | `aria-valuenow`, `aria-valuemin`, `aria-valuemax` |
+
+Always include:
+- `aria-label` or visible label association
+- `aria-disabled` on disabled interactive elements
+- Focus management with `:focus-visible` styling
+
+## Step 5: Visual Iteration
+
+After scaffolding, iterate on token values visually in Storybook or a dev environment:
+
+1. Open the component with default token values
+2. Adjust token values — background, foreground, border colours per dimension
+3. Test emphasis/sentiment combinations visually
+4. Verify size scale feels proportional
+5. Check state transitions (hover, active, disabled)
+6. Validate contrast ratios meet WCAG AA (4.5:1 text, 3:1 UI)
+
+### Visual Iteration Checklist
+
+- [ ] All emphasis levels render with distinct visual weight
+- [ ] All sentiment colours are distinguishable (not just by hue — check luminance)
+- [ ] Size scale maintains visual proportion (text, padding, icon sizing)
+- [ ] Disabled state is visually distinct but not invisible
+- [ ] Hover/active states provide clear feedback
+- [ ] Focus ring is visible on all background colours
+- [ ] Dark and light themes both work
+- [ ] Reduced motion preference is respected
+- [ ] Touch targets meet WCAG 2.2 minimum (44×44px for `md` and above)
+
+## Step 6: Test
+
+See [Testing Strategy](/design-system/testing-strategy) for the three-layer approach.
+
+## Size Scale Reference
+
+| Mode | Height | Padding X | Gap | Touch target |
+|------|--------|-----------|-----|-------------|
+| `xs` | 24px | 6px | 4px | Below minimum — use sparingly |
+| `sm` | 32px | 10px | 6px | Below minimum — dense interfaces |
+| `md` | 40px | 14px | 8px | Meets 44px with padding — **default** |
+| `lg` | 48px | 18px | 10px | Meets WCAG 2.2 minimum |
+| `xl` | 56px | 22px | 12px | Hero / prominent CTAs |
+
+Default is always `'md'`.
+
+## See Also
+
+- [Component API](/design-system/component-api) — the input design rules
+- [CSS Authoring Rules](/design-system/css-authoring-rules) — how to write the stylesheet
+- [HTML Semantics](/design-system/html-semantics) — choosing the right elements
+- [Accessibility Audit](/design-system/accessibility-audit) — verifying WCAG compliance

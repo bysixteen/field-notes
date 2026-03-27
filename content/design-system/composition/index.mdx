@@ -11,9 +11,8 @@ Answer these questions **in order** before composing any component:
 2. **How urgently must the user receive this?** → Assign `emphasis`
 3. **Is this combination semantically coherent?** → Validate against the [sentiment-emphasis relationship](/design-system/composition/sentiment-emphasis)
 4. **What physical scale is appropriate?** → Assign `size`
-5. **What environment is this placed in?** → Assign `density`
-6. **What spacing tier separates this from adjacent elements?** → Apply [spacing tiers](/design-system/composition/spacing-gestalt)
-7. **Does the overall composition read as a coherent hierarchy?** → Validate the postmodern balance
+5. **What spacing tier separates this from adjacent elements?** → Apply [spacing tiers](/design-system/composition/spacing-gestalt)
+6. **Does the overall composition read as a coherent hierarchy?** → Validate the postmodern balance
 
 **State is never answered here.** It is always runtime.
 
@@ -26,8 +25,7 @@ These rules must be validated at composition time. The resolver does not enforce
 3. **Only declared sentiments are valid.** Do not improvise sentiments outside the manifest.
 4. **State is never set manually.** State is always runtime. Never pass a static state prop.
 5. **Sentiment flows down; emphasis does not.** A container's sentiment may influence its children, but emphasis is always set per-component.
-6. **Never set emphasis on a container.** Containers provide context (sentiment, density); emphasis belongs on the action or content elements within.
-7. **Density is inherited, not composed.** A parent sets density for the region; children inherit it. Do not set density on individual child components.
+6. **Never set emphasis on a container.** Containers provide context (sentiment); emphasis belongs on the action or content elements within.
 
 ## The Postmodern Balance
 

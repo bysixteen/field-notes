@@ -16,6 +16,8 @@ A monorepo houses all platform applications and shared packages in a single repo
 
 ## Repository Structure
 
+> For the CLI commands that create this structure, see [Bootstrap Commands](/platform/bootstrap-commands).
+
 ```
 platform/
 ├── apps/
@@ -50,6 +52,8 @@ Directories like `supabase/` and `sanity/` sit at the root level. They contain c
 
 ## Tooling
 
+> See the [Dependency Catalogue](/platform/dependency-catalogue) for the full list of recommended packages.
+
 ### pnpm Workspaces
 
 pnpm workspaces manage dependencies across all packages and apps. The `pnpm-workspace.yaml` file defines which directories participate:
@@ -81,7 +85,7 @@ Turborepo orchestrates builds, linting, and type-checking across the monorepo. I
 ```json
 {
   "$schema": "https://turbo.build/schema.json",
-  "pipeline": {
+  "tasks": {
     "build": {
       "dependsOn": ["^build"],
       "outputs": [".next/**", "dist/**"]

@@ -2,18 +2,14 @@
   "title": "Principles & Frameworks",
   "pages": [
     "index",
+    "---Getting Started---",
+    "new-project-checklist",
+    "synthesis-validation",
+    "journey-template",
     "---Core Principles---",
-    "distill-dont-repeat",
-    "clarity-attribution-reversibility-consistency",
     "compounding-engineering",
     "verification-over-instruction",
     "dissent-as-feature",
-    "answer-first",
-    "---Frameworks---",
-    "delivery-framework",
-    "project-squad",
-    "synthesis-validation",
-    "journey-template",
-    "new-project-checklist"
+    "answer-first"
   ]
 }

@@ -1,17 +1,26 @@
 ---
-title: "Synthesis & Validation Framework"
-description: "Three-artifact model and four-pillar validation for preventing context burn."
+title: "Synthesis & Validation"
+description: "Living document templates, sprint synthesis workflow, four-pillar validation, PAGE-TREE, and PR checklists."
 ---
 
-This framework has two parts: a **Sprint Synthesis Framework** that prevents context burn by distilling sprint outputs into living documents, and a **Generic Validation Framework** that ensures every piece of work meets a consistent quality bar.
+This framework has two parts: a **Sprint Synthesis Framework** that prevents context burn by distilling sprint outputs into living documents, and a **Validation Framework** that ensures every piece of work meets a consistent quality bar.
 
-## Part A: Sprint Synthesis Framework
+## Part A: Sprint Synthesis
 
-### Core Principle: Distill, Don't Repeat
+### Distill, Don't Repeat
 
 The raw artifacts of a sprint — meeting notes, Slack threads, Figma explorations, code spikes, user testing recordings — are inputs, not outputs. The output is the **synthesized knowledge** captured in three canonical artifacts.
 
 If you find yourself re-reading raw sprint material to answer a question, the synthesis has failed.
+
+Every project suffers from **context burn** — the gradual loss of institutional knowledge as raw artifacts pile up. A team that finishes a sprint with 47 documents, 12 recordings, and 200 Slack messages has not created knowledge. They have created noise. The cost is concrete: onboarding slows down, decisions can't be traced, AI assistants can't consume sprawling histories, and sprint planning starts from scratch.
+
+**The test:** Can someone who missed the entire sprint read only the three living documents and be fully caught up? If the answer is no, the synthesis is incomplete. If yes, the raw artifacts can be archived.
+
+**Anti-patterns to avoid:**
+- **The Archive Trap** — saving everything "just in case" without synthesizing
+- **The Summary Email** — writing a summary but not updating the canonical documents
+- **The Fresh Start** — beginning each sprint from scratch instead of building on living documents
 
 ### The Three Artifacts
 
@@ -31,8 +40,7 @@ The canonical record of every significant decision made during the project.
 **Status**: Accepted | Superseded by DEC-[NNN] | Reverted
 
 ### Context
-[1-2 paragraphs explaining why this decision was needed.
-What problem or question prompted it?]
+[1-2 paragraphs explaining why this decision was needed.]
 
 ### Decision
 [Clear, unambiguous statement of what was decided.]
@@ -42,30 +50,21 @@ What problem or question prompted it?]
    - Pros: [Why this was attractive]
    - Cons: [Why this was rejected]
 
-2. **[Alternative B]**: [Brief description]
-   - Pros: [Why this was attractive]
-   - Cons: [Why this was rejected]
-
 ### Consequences
 - [Expected positive outcomes]
 - [Expected negative outcomes or trade-offs]
-- [Technical debt incurred, if any]
 
 ### Dissent
-[Record any dissenting opinions. Include the role that raised
-the concern, their rationale, and how it was resolved.
-If no dissent was raised, state "None recorded."]
+[Record any dissenting opinions. If none, state "None recorded."]
 
 ### Review Trigger
-[Conditions under which this decision should be revisited.
-Example: "Revisit if user testing shows completion rate below 80%"
-or "Revisit at the start of Q3 planning."]
+[Conditions under which this decision should be revisited.]
 ```
 
 **Rules:**
-- Decisions are **append-only**. Never delete a decision. If a decision is reversed, add a new entry that supersedes it and update the status of the original.
-- Every decision must record alternatives considered. If no alternatives were discussed, the decision was not properly evaluated.
-- The dissent field is mandatory. "None recorded" is acceptable; a blank field is not.
+- Decisions are **append-only**. Never delete a decision — supersede it.
+- Every decision must record alternatives considered.
+- The dissent field is mandatory. "None recorded" is acceptable; blank is not.
 
 #### 2. PERSONAS.md
 
@@ -87,35 +86,23 @@ The canonical record of the team's understanding of its users.
 [Primary objective when using the system. One sentence.]
 
 ### Context
-[Environment in which they work. Constraints they operate under.
-Tools they currently use. Frequency of system interaction.]
-
-### Workflow
-1. [Step 1 of their typical workflow]
-2. [Step 2]
-3. [Step 3]
+[Environment, constraints, tools, frequency of interaction.]
 
 ### Pain Points
 - [Frustration 1]
 - [Frustration 2]
-- [Frustration 3]
 
 ### Success Metric
-[How this persona measures whether the system helped them.
-Should be concrete and observable.]
-
-### Representative Quote
-> "[A real or synthesized quote that captures their perspective]"
+[How this persona measures whether the system helped them.]
 
 ### Open Questions
 - [Things we still do not know about this persona]
-- [Assumptions that need validation]
 ```
 
 **Rules:**
-- Personas are **refined over time**, not rewritten. Update the "Last Updated" date and adjust the confidence level as new information is gathered.
-- Every persona must have a confidence rating. "High" means validated through direct user research. "Medium" means informed by stakeholder input. "Low" means based on assumptions.
-- Open questions drive future research. If a persona has no open questions, the team has stopped learning.
+- Personas are **refined over time**, not rewritten. Update the date and adjust confidence as new information arrives.
+- "High" = validated through user research. "Medium" = stakeholder input. "Low" = assumptions.
+- Open questions drive future research. No open questions means the team has stopped learning.
 
 #### 3. PRINCIPLES.md
 
@@ -129,59 +116,53 @@ The canonical record of design and engineering principles validated through proj
 ## PRIN-[NNN]: [Principle Name]
 
 **Status**: Proposed | Validated | Retired
-**Source**: [Sprint N retrospective | User testing finding | Technical discovery]
-**Last Updated**: YYYY-MM-DD
+**Source**: [Sprint N retrospective | User testing | Technical discovery]
 
 ### Statement
 [The principle in one clear sentence.]
 
 ### Rationale
-[Why this principle matters. What failure mode does it prevent?
-What quality does it ensure?]
+[Why this principle matters. What failure mode does it prevent?]
 
 ### Example
-[A concrete example of the principle applied correctly in this project.]
+[A concrete example of the principle applied correctly.]
 
 ### Counter-Example
-[A concrete example of what happens when this principle is violated.]
-
-### Validation
-[Evidence that supports this principle. Test results, user feedback,
-performance metrics, or team observations.]
+[What happens when this principle is violated.]
 ```
 
 **Rules:**
-- New principles start as "Proposed." They are promoted to "Validated" only after being confirmed through sprint work (user testing, production metrics, or team consensus after application).
-- Principles can be "Retired" if they are found to be wrong, no longer applicable, or superseded. Retired principles are kept in the document with a note explaining why.
-- The counter-example field is mandatory. A principle without a counter-example is too abstract to be useful.
+- New principles start as "Proposed" and are promoted to "Validated" after confirmation through sprint work.
+- Retired principles are kept with a note explaining why.
+- The counter-example field is mandatory — a principle without one is too abstract.
 
 ### Sprint Synthesis Workflow
 
-At the end of every sprint (or at natural breakpoints in continuous work):
+At the end of every sprint (or at natural breakpoints):
 
-1. **Gather raw material**: Collect all sprint artifacts — notes, recordings, designs, code, test results, Slack conversations
-2. **Extract decisions**: Identify every significant decision made. Add each to DECISIONS.md using the template
-3. **Update personas**: Incorporate any new user insights into PERSONAS.md. Adjust confidence levels. Add new open questions
-4. **Validate principles**: Promote any proposed principles that were confirmed. Add new principles discovered. Retire any that were disproven
-5. **Archive raw material**: Move raw artifacts to an archive folder. They have served their purpose
-6. **Run the context burn test**: Can someone who missed the sprint read only the three living documents and be fully caught up? If not, the synthesis is incomplete
+1. **Gather raw material** — collect all sprint artifacts
+2. **Extract decisions** — add each to DECISIONS.md
+3. **Update personas** — incorporate new insights, adjust confidence
+4. **Validate principles** — promote confirmed principles, retire disproven ones
+5. **Archive raw material** — it has served its purpose
+6. **Run the context burn test** — can someone who missed the sprint catch up from the living documents alone?
 
-## Part B: Generic Validation Framework
+## Part B: Validation Framework
 
 ### The Four Pillars
 
-Every piece of delivered work — a design, a prototype, a feature, a document — must be validated against four pillars.
+Every piece of delivered work — a design, a prototype, a feature — must be validated against four pillars.
 
-| Pillar | Core Question | Rationale | Example Checks |
-|---|---|---|---|
-| **Clarity** | Is the purpose and state immediately obvious? | Users should never guess what the system is doing or what action to take. Ambiguity creates support burden and reduces adoption. | Can a new user describe the screen's purpose within 5 seconds? Are all states (loading, empty, error, success) explicitly handled? Is the primary action visually dominant? |
-| **Attribution** | Can every piece of data be traced to its source? | Data without provenance is untrustworthy, especially AI-generated content. Attribution is often a regulatory requirement. | Does every metric show its source and freshness? Can AI-generated summaries be traced to underlying data? Are calculations reproducible from stated inputs? |
-| **Reversibility** | Can the user undo any action? | Fear of irreversible mistakes stifles exploration and slows adoption. Users need a safety net. | Do destructive actions require confirmation? Is soft delete used instead of hard delete? Can form submissions be edited after submission? Are there draft/publish workflows for content? |
-| **Consistency** | Does the work follow established patterns? | Inconsistency increases cognitive load, slows learning, and creates maintenance burden. | Do similar features use the same interaction patterns? Is terminology consistent across the application? Do error states follow the same format? Are spacing and sizing based on the design system tokens? |
+| Pillar | Core Question | Test |
+|---|---|---|
+| **Clarity** | Is the purpose and state immediately obvious? | Show the screen to someone with no context for 5 seconds. Can they tell you what it does? |
+| **Attribution** | Can every piece of data be traced to its source? | Point to any data on screen. Can you trace it to its source in 30 seconds? |
+| **Reversibility** | Can the user undo any action? | Perform every action. Can each be undone? If not, was the user warned? |
+| **Consistency** | Does the work follow established patterns? | Find two similar features. Do they look and behave the same way? |
+
+Apply these at design review, PR review, QA, and retrospectives.
 
 ### Validation Checklist
-
-For each piece of work under review, score each pillar:
 
 ```markdown
 ## Validation: [Feature/Component Name]
@@ -191,20 +172,17 @@ For each piece of work under review, score each pillar:
 - [ ] All states are explicitly handled (loading, empty, error, success)
 - [ ] Primary action is visually dominant
 - [ ] Labels and microcopy are unambiguous
-- [ ] No jargon or unexplained abbreviations
 
 ### Attribution
 - [ ] Data sources are visible or accessible
 - [ ] Timestamps show data freshness
 - [ ] AI-generated content is labeled as such
 - [ ] Calculations can be verified by the user
-- [ ] External data sources are cited
 
 ### Reversibility
 - [ ] Destructive actions require confirmation
 - [ ] Undo is available for common actions
 - [ ] Soft delete is used where appropriate
-- [ ] Draft states are available for complex inputs
 - [ ] Navigation does not lose unsaved work
 
 ### Consistency
@@ -212,25 +190,63 @@ For each piece of work under review, score each pillar:
 - [ ] Interaction patterns match similar features
 - [ ] Terminology matches the glossary
 - [ ] Error handling follows the established format
-- [ ] Layout follows the page template conventions
 ```
 
 ## Implementation Guide
 
 ### Step 1: Initialize Artifacts
 
-Create `DECISIONS.md`, `PERSONAS.md`, and `PRINCIPLES.md` at the project root using the templates above. Populate them with whatever is currently known, even if confidence is low. Mark initial entries clearly as "Pre-Sprint" or "Assumed" so they can be validated during the first sprint.
+Create `DECISIONS.md`, `PERSONAS.md`, and `PRINCIPLES.md` at the project root using the templates above. Populate with whatever is known, even if confidence is low. Mark initial entries as "Pre-Sprint" or "Assumed."
 
-### Step 2: Establish the Sprint Synthesis Ritual
+### Step 2: Establish the Synthesis Ritual
 
-At the end of every sprint, allocate dedicated time (typically 2-4 hours) for synthesis. This is not optional. Without a protected time block, synthesis will be deferred indefinitely and context burn will set in.
-
-Assign synthesis responsibility to the Sprint Lead, but involve the full team for extraction. Different team members will recall different decisions, insights, and concerns.
+Allocate dedicated time (2-4 hours) at the end of every sprint for synthesis. Without a protected time block, synthesis will be deferred indefinitely and context burn will set in.
 
 ### Step 3: Integrate Validation into Workflow
 
-Add the four-pillar validation checklist to the pull request template. Every PR that includes user-facing changes must include a completed checklist. Incomplete checklists block merge.
+Add the four-pillar checklist to your PR template. During design reviews, ground critique in the pillars ("the primary action fails the clarity check") rather than subjective feedback ("I don't like the layout").
 
-During design reviews, use the four pillars as the evaluation framework. Instead of subjective feedback ("I don't like the layout"), ground all critique in the pillars ("The primary action fails the clarity check — it is visually subordinate to the secondary action").
+## The PAGE-TREE Pattern
 
-Over time, the team will internalize the four pillars and apply them instinctively during creation, not just during review.
+The PAGE-TREE is a structural map of every page and state in the application. It prevents duplicate work and ensures complete coverage.
+
+```markdown
+# PAGE-TREE
+
+## /dashboard
+- **Purpose**: Primary landing page after login
+- **States**: Loading, Empty (new user), Populated, Error
+- **Key Components**: MetricCards, ActivityFeed, QuickActions
+- **Journey**: Onboarding (step 3), Core Workflow (step 1)
+- **Status**: Implemented | In Progress | Planned
+```
+
+Each entry maps a route to its purpose, states, components, journey connections, and implementation status. Update whenever pages are added or changed.
+
+## PR Validation Checklist
+
+Every pull request must pass this checklist before merge:
+
+```markdown
+## PR Validation
+
+### Four Pillars
+- [ ] **Clarity**: UI purpose and state are immediately obvious
+- [ ] **Attribution**: All data can be traced to its source
+- [ ] **Reversibility**: All actions can be undone (or are gated)
+- [ ] **Consistency**: Patterns match established conventions
+
+### Technical
+- [ ] Tests pass (`npm test`)
+- [ ] Build succeeds (`npm run build`)
+- [ ] No lint errors (`npm run lint`)
+- [ ] Accessibility audit passes
+- [ ] Responsive behavior verified (mobile, tablet, desktop)
+
+### Documentation
+- [ ] DECISIONS.md updated (if a decision was made)
+- [ ] PERSONAS.md updated (if user understanding changed)
+- [ ] PRINCIPLES.md updated (if a principle was validated or discovered)
+- [ ] PAGE-TREE updated (if pages were added or changed)
+- [ ] CLAUDE.md updated (if a new correction was needed)
+```

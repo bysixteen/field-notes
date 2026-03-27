@@ -21,24 +21,17 @@ Size answers: *how much space does this component occupy?*
 
 **Default:** `md`
 
-## Size vs Density
+## Why Not a Separate Density Dimension?
 
-These are **deliberately separated**. Collapsing them is a common design system mistake that creates inflexibility.
+Earlier iterations of this model included a sixth dimension — **Density** — to control internal spacing independently of Size. In practice, this distinction created more confusion than clarity. When a component "felt too big," teams consistently reached for Size rather than Density, and the two dimensions correlated so strongly that maintaining them separately added complexity without meaningful flexibility.
 
-- **Size** controls the component's **outer box** — the physical space it takes up in the layout
-- **Density** controls **how content is distributed** within that box
+This aligns with industry findings:
 
-They are fully orthogonal:
+- **Nathan Curtis (EightShapes):** Density and size correlate strongly in practice — separating them yields diminishing returns for most systems.
+- **Material Design 3:** Density adjustments are implemented as size reductions (smaller padding, shorter heights), not as an independent axis.
+- **Salt Design System (JP Morgan):** Treats density as an environment-level setting (high / medium / low / touch) that adjusts component sizing globally, rather than a per-component dimension.
 
-```tsx
-// Size and density vary independently
-<Button size="lg" density="default" />   // Big footprint, standard packing
-<Button size="lg" density="relaxed" />   // Big footprint, spacious packing
-<Button size="sm" density="default" />   // Compact footprint, standard packing
-<Button size="md" density="relaxed" />   // Standard footprint, spacious packing
-```
-
-See [Density vs Size](/design-system/composition/density-vs-size) for the full explanation.
+Size now absorbs the responsibility that Density was intended to fill. The `xs` through `xl` scale controls both the component's footprint and its internal spacing proportionally. For environment-level spacing adjustments (e.g., data-dense dashboards vs. content pages), use CSS custom properties or a layout context provider — not a per-component dimension.
 
 ## Accessibility
 

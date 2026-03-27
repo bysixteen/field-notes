@@ -1,0 +1,182 @@
+---
+title: CSS Authoring Rules
+description: Opinionated rules for writing component stylesheets in a design system — section order, token consumption, and seven non-negotiables.
+---
+
+These rules govern how component stylesheets consume tokens. Every rule here was settled through explicit debate — there are no soft preferences.
+
+## The Mental Model
+
+A component stylesheet does exactly three things:
+
+1. **Reads CSS custom properties** written by the token system
+2. **Declares structural invariants** the token system never touches
+3. **Activates the right variable** based on interaction state
+
+The stylesheet never resolves tokens, never owns dimensional variants, and never positions a component in its parent context.
+
+## The Seven Non-Negotiables
+
+### 1. BEM modifiers are structural only
+
+Dimensional variants — `emphasis`, `sentiment`, `state`, `size` — are **never BEM modifiers**. They arrive as CSS custom properties via `data-*` attributes. BEM modifiers describe layout or structural changes that the token system does not own.
+
+```css
+/* ✅ Structural — token system doesn't own this */
+.button--full-width { inline-size: 100%; }
+.card--media-top    { flex-direction: column; }
+
+/* ❌ Dimensional variant as BEM modifier */
+.button--primary { background: var(--color-primary); }
+.button--large   { block-size: 48px; }
+```
+
+### 2. Section order is enforced
+
+Every component stylesheet follows this exact section order:
+
+```css
+/* ─── 1. Host — layout invariants */
+/* ─── 2. Rest state — token reads */
+/* ─── 3. Interactive states — pseudo-classes with :not() guards */
+/* ─── 4. Programmatic states — data-attribute selectors */
+/* ─── 5. Slot containers — rest state only */
+/* ─── 6. Child elements — label, icon, sub-elements */
+/* ─── 7. Motion — bare transition declarations */
+```
+
+A property in the wrong section is a blocking violation. The section order makes components auditable without running the code.
+
+**Decision tree — which section?**
+
+```
+Is it display, flex/grid layout, overflow, or cursor?
+├── YES → §1 Host
+└── NO → Does it read a --component-*-rest token?
+    ├── YES → §2 Rest state
+    └── NO → Is it triggered by :hover, :active, or :focus-visible?
+        ├── YES → §3 Interactive states
+        └── NO → Is it triggered by a data-* attribute?
+            ├── YES → §4 Programmatic states
+            └── NO → Is it on a BEM __element?
+                ├── YES → §5 Slot containers / §6 Child elements
+                └── NO → Is it a transition?
+                    ├── YES → §7 Motion
+                    └── NO → Re-evaluate placement
+```
+
+### 3. Pseudo-classes always carry :not() guards
+
+Every interactive pseudo-class must guard against all programmatic states:
+
+```css
+.button:hover:not([data-disabled]):not([data-resolving]) {
+  background: var(--button-bg-hover);
+  border-color: var(--button-border-hover);
+  color: var(--button-fg-hover);
+}
+```
+
+### 4. Focus ring uses a component focus-offset token
+
+Never read the global `--ring-offset-2` directly. Use a component-scoped token that defaults to the global:
+
+```css
+.button:focus-visible {
+  outline: var(--ring-width-2) solid var(--border-focus-ring);
+  outline-offset: var(--button-focus-offset, var(--ring-offset-2));
+}
+```
+
+This allows components with unique shapes (pills, circles) to adjust their focus offset without global changes.
+
+### 5. No margin on components
+
+Components never set their own margin. Spacing between components is the parent's responsibility. This prevents conflicting margin models and makes layout composition predictable.
+
+```css
+/* ❌ Component owns its own spacing */
+.card { margin-bottom: 16px; }
+
+/* ✅ Parent owns spacing */
+.card-list { display: flex; flex-direction: column; gap: var(--size-16); }
+```
+
+### 6. Logical properties over physical
+
+Use `inline-size` not `width`, `block-size` not `height`, `padding-inline` not `padding-left/right`. This supports RTL layouts without duplication.
+
+```css
+/* ❌ Physical */
+.button { padding-left: 14px; padding-right: 14px; }
+
+/* ✅ Logical */
+.button { padding-inline: var(--size-14); }
+```
+
+### 7. will-change requires justification
+
+Never add `will-change` speculatively. It consumes GPU memory and can actually harm performance when overused. Only add it when you have measured a specific animation jank and the property is the fix.
+
+```css
+/* ❌ Speculative */
+.card { will-change: transform, opacity; }
+
+/* ✅ Justified — measured jank on card flip animation */
+.card--flipping { will-change: transform; }
+```
+
+## Token Ownership
+
+| Owns | Doesn't own |
+|------|-------------|
+| Structural invariants (display, flex direction, overflow) | Colour values (background, foreground, border colour) |
+| Transition declarations | Dimensional variants (size, emphasis, sentiment) |
+| BEM structural modifiers | External spacing (margin) |
+| Focus ring shape | Token resolution |
+
+## @layer Cascade Order
+
+When using CSS `@layer`, define the cascade:
+
+```css
+@layer reset, tokens, structure, components, utilities;
+```
+
+- `reset` — normalize/reset styles
+- `tokens` — CSS custom property declarations
+- `structure` — layout primitives (grid, stack, cluster)
+- `components` — component-specific styles
+- `utilities` — overrides (visually-hidden, sr-only)
+
+## CSS-in-JS Adaptation
+
+These rules apply regardless of styling approach:
+
+| Rule | CSS Modules | styled-components | Tailwind |
+|------|------------|-------------------|----------|
+| No dimensional BEM modifiers | Use `data-*` selectors | Use `data-*` props | Use `data-[sentiment=warning]:` |
+| Section order | Enforce in file structure | Enforce in template literal | Group by concern |
+| :not() guards | Same syntax | Same in template literal | Use `not-data-[disabled]:hover:` |
+| No margin | Same rule | Same rule | Avoid `m-*` on components |
+| Logical properties | Same syntax | Same syntax | Use `ps-*`, `pe-*`, `is-*` |
+
+## Reduced Motion
+
+Always wrap animation and transition in a reduced-motion check:
+
+```css
+@media (prefers-reduced-motion: reduce) {
+  .component {
+    transition: none;
+    animation: none;
+  }
+}
+```
+
+## See Also
+
+- [Token Audit](/design-system/token-audit) — verifying token cascade integrity
+- [Component Scaffolding](/design-system/component-scaffolding) — the full scaffold workflow
+- [HTML Semantics](/design-system/html-semantics) — choosing the right elements
+- [Token Transform Pipeline](/design-system/token-transform-pipeline) — how tokens become CSS custom properties
