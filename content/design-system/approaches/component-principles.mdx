@@ -1,0 +1,110 @@
+---
+title: Component Principles
+description: Single-responsibility, composition, and API design for design system components.
+---
+
+## Single Responsibility
+
+A component should have **one job and one reason to change**. When a component tries to handle multiple concerns — layout, data fetching, animation, validation — it becomes difficult to reuse, test, and maintain.
+
+| Signal | Likely problem |
+|--------|---------------|
+| Props list keeps growing | Component handles too many concerns |
+| Boolean props toggle entirely different UIs | Multiple components merged into one |
+| Changes in one area break unrelated behaviour | Responsibilities are coupled |
+
+A `Dialog` manages overlay visibility and focus trapping. It does not manage the form inside it, the data that form submits, or the toast that appears after submission. Each of those is a separate responsibility.
+
+## Composition over Configuration
+
+Prefer **small, focused components composed together** over large components controlled by configuration props.
+
+Configuration-heavy components front-load every use case into a single API. This creates combinatorial complexity — every new feature multiplies the prop surface.
+
+```jsx
+{/* Configuration approach — growing prop surface */}
+<Card
+  title="…"
+  subtitle="…"
+  image="/hero.jpg"
+  imagePosition="top"
+  actions={[{ label: "Save" }, { label: "Cancel" }]}
+  footer="…"
+/>
+```
+
+```jsx
+{/* Composition approach — flexible, explicit structure */}
+<Card>
+  <CardMedia src="/hero.jpg" />
+  <CardBody>
+    <CardTitle>…</CardTitle>
+    <CardSubtitle>…</CardSubtitle>
+  </CardBody>
+  <CardActions>
+    <Button>Save</Button>
+    <Button>Cancel</Button>
+  </CardActions>
+</Card>
+```
+
+Composition lets consumers assemble exactly the layout they need without the component anticipating every variation.
+
+## Separation of Concerns
+
+Components are cleaner when **structure, styling, and behaviour** remain distinct.
+
+| Concern | Responsibility | Typical location |
+|---------|---------------|-----------------|
+| Structure | Markup and DOM hierarchy | Component render logic |
+| Styling | Visual presentation | CSS / tokens / style props |
+| Behaviour | Interactions and state | Hooks, event handlers |
+
+Mixing these concerns creates components that are hard to restyle without changing logic, or hard to reuse in different visual contexts. A `Tabs` component manages keyboard navigation and active-panel state (behaviour) but delegates visual treatment to tokens and CSS (styling). Its markup structure is semantic and independent of both.
+
+## Props as a Public API
+
+A component's props are its **public contract**. Treat them with the same care as a library API:
+
+1. **Minimise the surface area.** Every prop is a commitment to support. Start small — it is easier to add a prop later than to remove one.
+2. **Use consistent naming.** Follow established conventions across the system. If one component uses `variant`, don't introduce `style` or `type` for the same concept elsewhere.
+3. **Prefer enumerated values over booleans.** A `size="small"` prop scales to `"medium"` and `"large"`. A `isSmall` boolean does not.
+4. **Avoid prop coupling.** If prop B only makes sense when prop A is set, the API may be trying to express two separate components.
+
+| Pattern | Problem | Alternative |
+|---------|---------|-------------|
+| `isLoading && isError` | Mutually exclusive states as independent booleans | `status="loading" \| "error" \| "idle"` |
+| `icon` + `iconPosition` | Coupled props | Slot or composition pattern |
+| `onClick` + `href` | Component is two things | Separate `Button` and `LinkButton` |
+
+## Slot Patterns and Compound Components
+
+Slots and compound components are **SRP applied to component architecture**.
+
+**Slots** let a parent component define placeholder regions that consumers fill with their own content:
+
+```jsx
+<PageHeader
+  title="Dashboard"
+  breadcrumb={<Breadcrumb items={trail} />}
+  actions={<Button>Export</Button>}
+/>
+```
+
+Each slot accepts a single concern. The parent handles layout; consumers provide content.
+
+**Compound components** split a complex UI into collaborating parts that share implicit state:
+
+```jsx
+<Select value={selected} onChange={setSelected}>
+  <SelectTrigger />
+  <SelectContent>
+    <SelectItem value="a">Option A</SelectItem>
+    <SelectItem value="b">Option B</SelectItem>
+  </SelectContent>
+</Select>
+```
+
+`Select` manages open/close state and the selected value. `SelectTrigger` handles the button. `SelectContent` handles the popover. `SelectItem` handles individual options. Each piece has one job, and they compose into a cohesive whole.
+
+Both patterns keep individual components focused while enabling complex UIs through assembly.
