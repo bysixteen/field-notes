@@ -92,4 +92,4 @@ Multi-dimensional token model, composition rules, naming conventions, and constr
 - [Primitives](/design-system/token-chain/primitives): Layer 1 — raw values that are theme-aware but never used directly in components.
 - [Resolver](/design-system/token-chain/resolver): Layer 4 — runtime engine that resolves multi-dimensional token combinations.
 - [Semantics](/design-system/token-chain/semantics): Layer 2 — purpose-driven aliases that describe what a value means, not its raw appearance.
-- [Token Transform Pipeline](/design-system/token-transform-pipeline): How design tokens move from Figma Variables to CSS custom properties through a four-stage pipeline.
+- [Token Transform Pipeline](/design-system/token-transform-pipeline): End-to-end pipeline from designer anchor choices through generation, layering, and output to CSS custom properties.

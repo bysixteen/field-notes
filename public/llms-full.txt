@@ -7427,72 +7427,85 @@ Always pair foreground and background tokens from the **same family and emphasis
 
 ### Token Transform Pipeline
 
-*How design tokens move from Figma Variables to CSS custom properties through a four-stage pipeline.*
+*End-to-end pipeline from designer anchor choices through generation, layering, and output to CSS custom properties.*
 
-The token transform pipeline converts Figma Variables into consumable CSS custom properties. This is a custom pipeline — not Style Dictionary or Token Studio — built to handle the dimensional model's alias chains and multi-mode resolution.
+The token transform pipeline traces how a designer's colour anchor choices become consumable CSS custom properties through six stages. This is a custom pipeline — not Style Dictionary or Token Studio — built to handle the dimensional model's alias chains and multi-mode resolution. Figma integration occurs at defined sync points between stages.
 
 ## Pipeline Overview
 
 ```
-Stage 1: Export     Figma Variables API → JSON
-Stage 2: Transform  JSON → parsed token collections with resolved aliases
-Stage 3: Validate   Check alias chains, detect broken references
-Stage 4: Publish    Generate CSS custom properties per category
+Anchors ──► generate-ramps.ts ──► Primitives ──► Semantics ──► Component Slots ──► CSS
+                 ▲        │
+                 │        ▼
+              Pull     Push        ◄── Figma Push/Pull sync
+                 │        │
+                 └── Figma ─┘
+                      ▲
+                      │
+                   PRISM            ◄── MCP bridge layer
 ```
 
-## Stage 1: Export
+The six stages form a single direction: each stage's output feeds the next. Figma Push/Pull and PRISM sit alongside the pipeline as integration points, not stages themselves.
 
-Figma's Variables API exports collections as JSON. Each collection contains variables grouped by modes (e.g., dark/light for colours, sm/md/lg for sizes).
+## Stage 1: Anchors
 
-The export preserves:
-- Variable names and their hierarchical paths
-- Alias references (`VARIABLE_ALIAS` type pointing to another variable)
-- Raw values (hex colours, floats, strings)
-- Mode structures per collection
+Designers choose anchor hex values and assign each to a step in the [12-step colour ramp](/design-system/model/color-scale). An anchor defines the hue and chroma that a given step should hit — the generator fills in the rest.
 
-## Stage 2: Transform
+A palette can have multiple anchors. When it does, hue interpolates between them using shortest-arc (circular) interpolation, keeping transitions smooth across the ramp.
 
-The transformer processes the raw JSON through several steps:
+See [Anchor Model](/design-system/token-chain/primitives#anchor-model) for the full specification.
 
-### Colour Transform: sRGB → OKLCH
+## Stage 2: generate-ramps.ts
 
-All colour values are converted from Figma's sRGB (0–1 range) to OKLCH for perceptually uniform colour manipulation:
+The generator script converts anchor definitions into complete primitive ramps:
 
-```
-Figma RGB (0-1) → Linear RGB → XYZ → OKLab → OKLCH
-```
+1. Parse anchor hex values into OKLCH
+2. Apply lightness targets per scheme (`LIGHTNESS_TARGETS_LIGHT`, `LIGHTNESS_TARGETS_DARK`)
+3. Interpolate hue between anchors (shortest-arc)
+4. Distribute chroma using a bell-curve (σ = 0.28)
+5. Gamut-map results back to sRGB
+6. Emit outputs in three formats: CSS custom properties, JSON, and Figma variable schemas
 
-OKLCH provides:
-- Perceptually uniform lightness (L) — useful for generating accessible contrast pairs
-- Hue (H) that remains stable across lightness changes
-- Chroma (C) that represents colourfulness without hue shifts
+The lightness targets are fixed arrays that define each step's L value. Light and dark schemes use approximate mirrors — step 50 is near-white in light mode, near-black in dark mode.
 
-Edge cases: pure black maps to `oklch(0 0 0)`, pure white to `oklch(1 0 0)`.
+See [Generation Pipeline](/design-system/token-chain/primitives#generation-pipeline) for the algorithm details.
 
-### Number Transform: px → rem
+## Stage 3: Primitives
 
-Pixel values convert to rem using a base of 16px. Exceptions kept unitless:
-- `font-weight` (e.g., 400, 600)
-- `opacity` (e.g., 0.5)
-- `z-index` (e.g., 100)
-- `duration` (converted to ms)
-- `border-weight` (kept in px for sub-pixel rendering)
+The generator's output: raw OKLCH colour values plus size, typography, and scale tokens. These are the lowest-level tokens in the system.
 
-### Alias Resolution
+- **Naming:** `--{category}-{name}` (e.g., `--colors-neutral-500`, `--size-16`)
+- **Theme-aware:** light and dark modes produce different values for the same token name
+- **Rule:** never reference primitives directly in component code — they exist only to feed semantic tokens
 
-`VARIABLE_ALIAS` references are recursively resolved. The resolver walks alias chains until it reaches a raw value, building a lookup map that connects every token to its ultimate source.
+See [Primitives](/design-system/token-chain/primitives) and [Primitive Naming](/design-system/naming/primitives).
 
-## Stage 3: Validate
+## Stage 4: Semantics
 
-Before generating output, the pipeline validates:
-- Every alias reference points to an existing variable
-- No circular alias chains
-- Colour tokens in component collections alias semantic tokens (not primitives directly)
-- Mode counts match across related collections
+Semantic tokens are purpose-driven aliases that map primitives to intent.
 
-Validation failures produce clear error messages with the broken alias path.
+- **Naming:** `--{element}-{variant}-{state}` (e.g., `--background-neutral-weaker-rest`, `--foreground-brand-hover`)
+- **Elements:** `page`, `foreground`, `background`, `border`, `overlay`, `space`, `radii`, `sizes`
+- **Pairing rule:** foreground and background tokens must come from the same family and emphasis level to guarantee accessible contrast
 
-## Stage 4: Publish
+Semantics insulate components from primitive changes. Swapping a brand palette only requires updating the semantic-to-primitive mapping — no component code changes.
+
+See [Semantics](/design-system/token-chain/semantics) and [Semantic Naming](/design-system/naming/semantics).
+
+## Stage 5: Component Slots
+
+Component slots are named openings inside a component's variable collections. Each slot declares which semantic token fills a role under a given combination of dimensions (sentiment, emphasis, state, size).
+
+The flow from design to code:
+
+1. Designer defines variable collections per component in Figma
+2. Transformer extracts collections into a component manifest
+3. Component publishes compiled slots
+4. Resolver reads slots at runtime, resolving the active dimensional combination to a concrete CSS value
+
+See [Component Slots](/design-system/token-chain/component-slots) and [Resolver](/design-system/token-chain/resolver).
+
+## Stage 6: CSS Output
 
 The pipeline generates separate CSS files per category:
 
@@ -7503,78 +7516,46 @@ The pipeline generates separate CSS files per category:
 | `typography.css` | Font families, sizes, weights, line heights, letter spacing |
 | `semantics.css` | Semantic aliases that reference the above |
 
-### CSS Variable Naming
-
-Figma variable paths map to CSS custom property names:
+Figma variable paths map to CSS custom property names — slashes become hyphens, with a category prefix where needed:
 
 | Figma path | CSS variable |
 |------------|-------------|
 | `colors/brand-dark/500` | `--colors-brand-dark-500` |
 | `size/16` | `--size-16` |
-| `font-size/14` | `--font-size-14` |
 | `background/brand/rest` | `--color-bg-brand-rest` |
 
-The convention: slash-separated Figma paths become hyphen-separated CSS names, with a category prefix where needed for clarity.
+## Integration Points
 
-## Pattern A vs Pattern B
+### Figma Push/Pull
 
-There are two valid approaches for consuming tokens in components. **Pick one per project — never mix them.**
+> Figma Push/Pull sync is documented separately in a dedicated sub-plan.
 
-### Pattern A: Direct CSS Custom Properties
+Push/Pull provides bidirectional sync between the local pipeline and Figma. **Pull** retrieves anchor definitions from Figma variable collections so `generate-ramps.ts` can consume them. **Push** writes the generated primitive values back into Figma as variables, keeping the file in sync with the pipeline output.
 
-Components read CSS custom properties directly. Multi-dimensional modes switch via `[data-*]` attribute selectors on the host element.
+### PRISM
 
-```css
-/* Size via data attribute */
-[data-size='md'] .button {
-  height: 40px;
-  padding: 0 var(--size-14);
-}
+> PRISM is documented separately. See the [PRISM interface definition](/design-system/prism) for the full spec.
 
-/* Sentiment × Emphasis compound selector */
-[data-sentiment='warning'][data-emphasis='high'] .button {
-  background: var(--color-bg-warning-rest);
-  color: var(--fg-inverse);
-}
-```
+PRISM is the MCP bridge layer that enables local scripts — including `generate-ramps.ts` and the push/pull sync — to read from and write to Figma files programmatically. It connects via STDIO or local HTTP and discovers available operations at runtime.
 
-**Pros:** Zero runtime cost, CSS cascade handles mode switching, works with any framework, debuggable in DevTools.
+## Validation
 
-**Cons:** Compound selectors can become verbose with many dimension combinations.
+At each stage boundary the pipeline validates alias integrity:
 
-### Pattern B: Runtime Resolver
+- Every alias reference points to an existing variable
+- No circular alias chains
+- Colour tokens in component collections alias semantic tokens, not primitives directly
+- Mode counts match across related collections
 
-A TypeScript service resolves the dimensional combination at render time and writes CSS custom properties to the component's style attribute.
-
-```tsx
-const styles = {
-  '--button-bg-rest': resolveToken('Button', 'background', {
-    sentiment: 'warning',
-    emphasis: 'high',
-    state: 'rest',
-  }),
-};
-```
-
-**Pros:** Handles complex fallback chains, can resolve tokens from multiple sources, flexible for dynamic theming.
-
-**Cons:** Runtime overhead on every render, harder to debug, framework-specific implementation.
-
-### Decision
-
-| Factor | Pattern A | Pattern B |
-|--------|-----------|-----------|
-| Performance | No JS overhead | Re-computation on prop change |
-| Debugging | Inspect in DevTools | Trace through resolver code |
-| Framework coupling | None — pure CSS | Tied to framework lifecycle |
-| Complexity ceiling | High selector count for many dimensions | Manageable with any dimension count |
-| Recommended for | Most projects | Projects with 6+ active dimensions per component |
-
-**The rule: choose one, commit to it.** Mixing patterns in one project creates two incompatible naming/consumption conventions and doubles the cognitive load for every developer.
+Validation failures produce clear error messages with the broken alias path. See [Token Audit](/design-system/token-audit) for the full cascade integrity methodology.
 
 ## See Also
 
-- [Token Audit](/design-system/token-audit) — how to verify token cascade integrity
-- [The Token Chain](/design-system/token-chain) — how tokens flow from primitives to components
-- [Naming Conventions](/design-system/naming) — how tokens are named across the system
-- [Figma Documentation Rules](/design-system/figma-documentation-rules) — Figma variable structure and naming
+- [The Token Chain](/design-system/token-chain) — full four-layer resolution chain
+- [Primitives](/design-system/token-chain/primitives) — anchor model, lightness ramps, generation pipeline
+- [Semantics](/design-system/token-chain/semantics) — purpose-driven alias rules
+- [Component Slots](/design-system/token-chain/component-slots) — slot definitions and manifest flow
+- [Resolver](/design-system/token-chain/resolver) — runtime multi-dimensional resolution
+- [Colour Scale](/design-system/model/color-scale) — the 12-step ramp structure
+- [Naming Conventions](/design-system/naming) — token naming across layers
+- [Token Audit](/design-system/token-audit) — cascade integrity verification
