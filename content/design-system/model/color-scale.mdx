@@ -1,0 +1,68 @@
+---
+title: Colour Scale
+description: The 12-step colour ramp (50–1000) and the UI role of each step.
+---
+
+## Definition
+
+Every sentiment palette is a **12-step ramp** numbered from 50 to 1000. The numbering follows a Radix-style convention where lower steps are subtler (backgrounds) and higher steps are bolder (text, solid fills). Each step has a defined role in the UI so that palettes remain consistent regardless of the underlying hue.
+
+## The 12 Steps
+
+| Step | Role | Typical usage |
+|------|------|---------------|
+| **50** | App background | Page canvas, layout backgrounds |
+| **100** | Subtle background | Card surfaces, secondary panels |
+| **200** | Element background | Default background for interactive elements |
+| **300** | Hovered element background | Hover state on element backgrounds |
+| **400** | Border — subtle | Dividers, soft separators |
+| **500** | Border — default | Input outlines, component borders |
+| **600** | Border — strong | Focus rings, emphasized outlines |
+| **700** | Solid background | Buttons, badges, filled controls |
+| **800** | Solid background — hover | Hover state on solid fills |
+| **900** | Text — low contrast | Placeholder text, captions, tertiary labels |
+| **950** | Text — default | Body copy, icons, secondary headings |
+| **1000** | Text — high contrast | Primary headings, high-emphasis foreground |
+
+> Steps 50–300 form the **background range**, 400–600 the **border range**, 700–800 the **solid range**, and 900–1000 the **text range**. This grouping holds across every sentiment palette.
+
+## Mapping to Semantic Tokens
+
+Colour-scale steps are **primitives** — they should never appear directly in component styles. Instead, semantic tokens reference specific steps and are the values components consume.
+
+The mapping follows this pattern:
+
+```
+Primitive         →  Semantic token
+─────────────────────────────────────────────────
+--colors-{sent}-100   →  --background-{sent}-rest
+--colors-{sent}-200   →  --background-{sent}-hover
+--colors-{sent}-500   →  --border-{sent}-rest
+--colors-{sent}-700   →  --background-{sent}-solid-rest
+--colors-{sent}-950   →  --foreground-{sent}-rest
+```
+
+The exact step each semantic token resolves to is defined in the semantic layer — see [Primitives](/design-system/token-chain/primitives) and [Semantics](/design-system/token-chain/semantics) for the full token chain.
+
+## Emphasis Shifts the Window
+
+The [Emphasis](/design-system/model/emphasis) dimension shifts which steps are selected. A `weaker` emphasis pulls from lighter steps within a range; a `strong` emphasis pulls from darker steps. The 12-step scale provides enough granularity for these shifts without requiring intermediate values.
+
+| Emphasis | Background step (approx.) | Border step (approx.) |
+|----------|--------------------------|----------------------|
+| `weaker` | 50–100 | 400 |
+| *(standard)* | 100–200 | 500 |
+| `strong` | 200–300 | 600 |
+
+## Dark Mode Inversion
+
+In dark mode the lightness values at each step are approximately mirrored — step 50 becomes the darkest value and step 1000 becomes the lightest. The step **numbers stay the same**, but the underlying lightness flips so that the same semantic tokens produce correct contrast in both modes.
+
+For the precise lightness targets in each scheme, see the [Primitives](/design-system/token-chain/primitives#lightness-ramps) page.
+
+## Design Guidance
+
+- **Use semantic tokens, not steps.** Components should never hard-code a step number.
+- **Respect the ranges.** A background token should resolve to the background range (50–300), not the text range.
+- **Test both modes.** Because lightness inverts, always verify contrast in light and dark schemes.
+- **Every palette shares the same structure.** Patterns learned on one sentiment transfer directly to all others.
