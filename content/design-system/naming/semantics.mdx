@@ -1,54 +1,65 @@
 ---
 title: Semantic Naming
-description: The --{element}-{variant}-{state} pattern for purpose-driven tokens.
+description: The --{element}-{qualifier} pattern for purpose-driven tokens.
 ---
 
 ## Pattern
 
-`--{element}-{variant}-{state}`
+`--{element}-{qualifier}`
+
+Semantic tokens describe **what a value is for**, not what it looks like. The element identifies the category; the qualifier narrows it to a specific role or intensity.
 
 ## Elements
 
-The first segment identifies the **type of surface or property**:
+| Element | Purpose | Examples |
+|---------|---------|----------|
+| `surface` | Page and component backgrounds | `--surface-background` |
+| `text` | Text and icon colours | `--text-primary`, `--text-secondary` |
+| `border` | Borders and dividers | `--border-default`, `--border-subtle` |
+| `type` | Typography properties | `--type-family-text`, `--type-size-heading-02` |
+| `space` | Spacing values | `--space-sm`, `--space-md` |
+| `radius` | Border radius values | `--radius-sm`, `--radius-md` |
+| `size` | Dimension values | `--size-4`, `--size-8` |
+| `action` | Interactive element colours | `--action-primary`, `--action-destructive` |
 
-| Element | Purpose |
-|---------|---------|
-| `page` | Full page backgrounds |
-| `foreground` | Text and icon colours |
-| `background` | Component and surface backgrounds |
-| `border` | Border and divider colours |
-| `overlay` | Modal and overlay backgrounds |
-| `space` | Spacing values |
-| `radii` | Border radius values |
-| `sizes` | Dimension values |
+## Qualifiers
 
-## Variant
+Qualifiers use **role-based** names that describe intensity or purpose:
 
-The middle segment combines the **colour family** and **emphasis level**:
-
-```css
---background-neutral-weaker-rest    /* neutral family, weaker emphasis */
---background-brand-rest             /* brand family, standard emphasis */
---border-neutral-strong-hover       /* neutral family, strong emphasis */
-```
-
-## State
-
-The final segment is always the **interactive state**:
-
-| State | Meaning |
-|-------|---------|
-| `rest` | Default idle |
-| `hover` | Pointer over |
-| `active` | Being clicked |
-| `inverted` | Inverted context |
-| `disabled` | Non-interactive |
+| Qualifier type | Values | Used with |
+|----------------|--------|-----------|
+| **Hierarchy** | `primary`, `secondary`, `tertiary` | `text`, `action` |
+| **Intensity** | `default`, `subtle`, `strong` | `border`, `surface` |
+| **Role** | `background`, `overlay`, `accent` | `surface` |
+| **Scale** | `sm`, `md`, `lg` or numeric (`4`, `8`, `16`) | `space`, `radius`, `size` |
+| **Named** | `text`, `mono`, `heading-02`, `small` | `type` |
 
 ## Full Examples
 
 ```css
---background-neutral-weaker-rest     /* lightest neutral bg, idle */
---foreground-brand-rest              /* brand-coloured text, idle */
---border-neutral-strong-hover        /* strong neutral border, hovered */
---background-warning-rest            /* warning background, idle */
+--surface-background         /* main page background */
+--text-primary               /* default body text */
+--text-secondary             /* de-emphasised text */
+--border-default             /* standard border */
+--border-subtle              /* lighter divider */
+--type-family-text           /* body font stack */
+--type-family-mono           /* code font stack */
+--type-size-heading-02       /* second-level heading size */
+--space-md                   /* medium spacing unit */
+--radius-md                  /* medium corner radius */
+--action-primary             /* primary interactive colour */
 ```
+
+## Relationship to Primitives
+
+Semantic tokens alias primitive tokens. The semantic name stays stable across themes; the underlying primitive value changes:
+
+```css
+/* Light theme */
+--text-primary: var(--colors-neutral-950);
+
+/* Dark theme */
+--text-primary: var(--colors-neutral-50);
+```
+
+Components always consume semantic tokens, never primitives directly.

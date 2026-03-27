@@ -1,0 +1,18 @@
+---
+title: Tooling
+description: Scripts, bridges, and automation that connect the design system to external tools.
+---
+
+Tooling bridges the gap between design decisions and running code. Each tool in this section automates a specific step in the token pipeline — syncing values between Figma and the codebase, discovering available MCP services, or scaffolding new components.
+
+## Available Tools
+
+| Tool | Direction | Purpose |
+|------|-----------|---------|
+| [Figma Sync](/design-system/tooling/figma-sync) | Push and Pull | Sync tokens between the codebase and Figma via MCP |
+
+## How Tools Connect
+
+All tooling communicates through MCP (Model Context Protocol). Scripts read connection details from `.mcp.json` in the project root and discover available tools at runtime — no hardcoded tool names or file IDs.
+
+See [PRISM interface definition](/design-system/prism) for the connection protocol and payload schemas that all tooling follows.
