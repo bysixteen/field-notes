@@ -22,6 +22,8 @@
     "---Token Pipeline---",
     "token-transform-pipeline",
     "token-audit",
+    "---Tooling---",
+    "tooling",
     "---Documentation Standards---",
     "figma-documentation-rules",
     "storybook-documentation-rules"
