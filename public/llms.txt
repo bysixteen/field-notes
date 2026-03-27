@@ -53,6 +53,7 @@ Monorepo architecture, data patterns, auth and RLS, bootstrapping.
 Multi-dimensional token model, composition rules, naming conventions, and constraints.
 
 - [Accessibility Audit](/design-system/accessibility-audit): A bracket-based WCAG 2.2 AA audit framework for design system components with 30 rules and scored output.
+- [Component Principles](/design-system/approaches/component-principles): Single-responsibility, composition, and API design for design system components.
 - [Flat Architecture](/design-system/approaches/flat): Single-layer CSS custom properties for LLM-mediated workflows.
 - [Approaches](/design-system/approaches): When to use the full layered architecture vs flat tokens.
 - [Layered Architecture](/design-system/approaches/layered): The full four-layer token chain for enterprise and multi-brand systems.

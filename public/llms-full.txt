@@ -4083,6 +4083,100 @@ SUMMARY
 - [Testing Strategy](/design-system/testing-strategy) — automated a11y testing in the test pyramid
 - [Component API](/design-system/component-api) — how component inputs map to dimensions
 
+### Component Principles
+
+*Single-responsibility, composition, and API design for design system components.*
+
+## Single Responsibility
+
+A component should have **one job and one reason to change**. When a component tries to handle multiple concerns — layout, data fetching, animation, validation — it becomes difficult to reuse, test, and maintain.
+
+| Signal | Likely problem |
+|--------|---------------|
+| Props list keeps growing | Component handles too many concerns |
+| Boolean props toggle entirely different UIs | Multiple components merged into one |
+| Changes in one area break unrelated behaviour | Responsibilities are coupled |
+
+A `Dialog` manages overlay visibility and focus trapping. It does not manage the form inside it, the data that form submits, or the toast that appears after submission. Each of those is a separate responsibility.
+
+## Composition over Configuration
+
+Prefer **small, focused components composed together** over large components controlled by configuration props.
+
+Configuration-heavy components front-load every use case into a single API. This creates combinatorial complexity — every new feature multiplies the prop surface.
+
+```jsx
+{/* Configuration approach — growing prop surface */}
+
+```
+
+```jsx
+{/* Composition approach — flexible, explicit structure */}
+
+    
+  </CardBody>
+  
+    
+  </CardActions>
+</Card>
+```
+
+Composition lets consumers assemble exactly the layout they need without the component anticipating every variation.
+
+## Separation of Concerns
+
+Components are cleaner when **structure, styling, and behaviour** remain distinct.
+
+| Concern | Responsibility | Typical location |
+|---------|---------------|-----------------|
+| Structure | Markup and DOM hierarchy | Component render logic |
+| Styling | Visual presentation | CSS / tokens / style props |
+| Behaviour | Interactions and state | Hooks, event handlers |
+
+Mixing these concerns creates components that are hard to restyle without changing logic, or hard to reuse in different visual contexts. A `Tabs` component manages keyboard navigation and active-panel state (behaviour) but delegates visual treatment to tokens and CSS (styling). Its markup structure is semantic and independent of both.
+
+## Props as a Public API
+
+A component's props are its **public contract**. Treat them with the same care as a library API:
+
+1. **Minimise the surface area.** Every prop is a commitment to support. Start small — it is easier to add a prop later than to remove one.
+2. **Use consistent naming.** Follow established conventions across the system. If one component uses `variant`, don't introduce `style` or `type` for the same concept elsewhere.
+3. **Prefer enumerated values over booleans.** A `size="small"` prop scales to `"medium"` and `"large"`. A `isSmall` boolean does not.
+4. **Avoid prop coupling.** If prop B only makes sense when prop A is set, the API may be trying to express two separate components.
+
+| Pattern | Problem | Alternative |
+|---------|---------|-------------|
+| `isLoading && isError` | Mutually exclusive states as independent booleans | `status="loading" \| "error" \| "idle"` |
+| `icon` + `iconPosition` | Coupled props | Slot or composition pattern |
+| `onClick` + `href` | Component is two things | Separate `Button` and `LinkButton` |
+
+## Slot Patterns and Compound Components
+
+Slots and compound components are **SRP applied to component architecture**.
+
+**Slots** let a parent component define placeholder regions that consumers fill with their own content:
+
+```jsx
+}
+  actions={}
+/>
+```
+
+Each slot accepts a single concern. The parent handles layout; consumers provide content.
+
+**Compound components** split a complex UI into collaborating parts that share implicit state:
+
+```jsx
+
+    
+  </SelectContent>
+</Select>
+```
+
+`Select` manages open/close state and the selected value. `SelectTrigger` handles the button. `SelectContent` handles the popover. `SelectItem` handles individual options. Each piece has one job, and they compose into a cohesive whole.
+
+Both patterns keep individual components focused while enabling complex UIs through assembly.
+
 ### Flat Architecture
 
 *Single-layer CSS custom properties for LLM-mediated workflows.*
@@ -6040,41 +6134,111 @@ Theme controls the overall **colour scheme** — light or dark mode. It is an en
 
 **Default:** project-dependent
 
-## Implementation
+## Theme as an Environmental Dimension
 
-Themes are typically applied via a data attribute on a container element:
+Unlike dimensions such as emphasis or sentiment, theme is not a property of individual components. It is an **environmental** setting — a context that surrounds components and influences how their tokens resolve.
+
+A button does not know whether it is in light or dark mode. It references semantic tokens, and the environment determines which concrete values those tokens return. This distinction keeps component code entirely theme-unaware.
+
+| Dimension type | Scope | Example |
+|----------------|-------|---------|
+| Component dimension | Single component instance | `emphasis`, `size` |
+| Environmental dimension | Region or entire app | `theme` |
+
+## Token Resolution
+
+Theme relies on a **two-layer token model**: primitives and semantics.
+
+**Primitives** are raw values scoped to a theme. They define the palette available in each mode:
 
 ```css
-[data-theme="dark"]  { /* dark mode tokens */ }
-[data-theme="light"] { /* light mode overrides */ }
+/* Light primitives */
+[data-theme="light"] {
+  --color-neutral-0: #ffffff;
+  --color-neutral-900: #111111;
+}
+
+/* Dark primitives */
+[data-theme="dark"] {
+  --color-neutral-0: #111111;
+  --color-neutral-900: #ffffff;
+}
 ```
 
-## How It Works
+**Semantic tokens** reference primitives via `var()`. They describe intent, not colour:
 
-Primitive tokens define different values per theme. Semantic tokens reference primitives via `var()` — when the primitive value changes with the theme, the semantic token automatically resolves to the new value. No component code changes needed.
+```css
+:root {
+  --color-surface: var(--color-neutral-0);
+  --color-text: var(--color-neutral-900);
+}
+```
+
+When the theme changes, primitive values swap. Semantic tokens automatically resolve to the new primitives through the CSS cascade — no additional logic required.
+
+| Layer | Role | Changes with theme? |
+|-------|------|---------------------|
+| Primitive | Defines raw colour values per mode | Yes |
+| Semantic | Describes purpose, references primitives | No |
+
+## Mode Structure in Figma
+
+Figma variable collections mirror this two-layer model. A **Primitives** collection contains raw colour values with modes for each theme:
+
+| Variable | Light | Dark |
+|----------|-------|------|
+| `neutral/0` | `#ffffff` | `#111111` |
+| `neutral/900` | `#111111` | `#ffffff` |
+
+A **Semantics** collection references primitives by alias. Because Figma resolves aliases per mode, switching a frame's mode from Light to Dark updates every semantic variable — exactly as `var()` resolution works in CSS.
+
+This parallel structure means designers and developers share the same mental model: one set of semantic names, two sets of underlying values.
+
+## Runtime Theme Switching
+
+Switching themes at runtime requires changing a single data attribute on a container element:
+
+```css
+[data-theme="dark"]  { /* dark primitive values */ }
+[data-theme="light"] { /* light primitive values */ }
+```
+
+```js
+// Toggle theme
+document.documentElement.dataset.theme =
+  document.documentElement.dataset.theme === "light" ? "dark" : "light";
+```
+
+Because semantic tokens reference primitives through `var()`, the CSS cascade handles the rest. No component re-renders, no conditional class logic, no theme prop drilling. Every component automatically reflects the new theme.
 
 ## Scoped Theming
 
-Because themes are applied via data attributes, they can be scoped to sections of the page:
+Because themes are applied via data attributes, they can be scoped to any section of the page. A container with a different `data-theme` value creates a localised theme boundary:
 
 ```html
 <body data-theme="light">
   <!-- Light theme content -->
   <aside data-theme="dark">
-    <!-- Dark sidebar -->
+    <!-- Dark sidebar — tokens resolve to dark primitives -->
   </aside>
 </body>
 ```
 
+Scoped theming works because CSS custom property inheritance respects the nearest ancestor. The `aside` and its descendants resolve primitives from the dark scope, while the rest of the page stays light.
+
+This enables patterns like dark navigation bars, inverted hero sections, or preview panels — all without duplicating component variants.
+
 ## Relationship with Other Dimensions
 
-Theme is independent of all other dimensions. A component can be:
+Theme is independent of all other dimensions. A component can combine any state, emphasis, sentiment, or size with any theme:
 
 ```
 Button[state=hover, emphasis=high, sentiment=warning, theme=dark]
 ```
 
-The theme dimension only affects which primitive values the semantic tokens resolve to.
+The theme dimension only affects which primitive values the semantic tokens resolve to. All other dimensions operate on the semantic layer and are unaffected by theme changes.
+
+This independence is what makes the dimensional model composable — adding a new theme does not require updating any component variant, only defining a new set of primitive values.
 
 ### Emphasis Scale
 
