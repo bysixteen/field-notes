@@ -5527,15 +5527,73 @@ Figma documentation pages should target one breakpoint — the primary design ta
 
 Other breakpoints are handled in code. The Figma documentation captures the design intent; responsive adaptation is an implementation concern.
 
-## Reusable Documentation Components
+## Documentation Component Set
 
-Create and publish these components for consistent documentation:
+All documentation pages use a shared set of `.documentation/*` components. These live in the Figma file under the `.documentation` namespace and are published as library components.
 
-- **Header** — project logo, page title, subtitle. Full-width, used on every documentation page.
-- **Token Row** — swatch + name + value, horizontal auto-layout with space-between alignment.
-- **Section Header** — title + description, vertical auto-layout.
+### `.documentation/Header`
 
-Publishing these as components ensures every documentation page uses the same structure and spacing.
+Component header used at the top of every component documentation page.
+
+- **Type:** Component, Auto Layout (Vertical)
+- **Properties:**
+  - `Title` (Text) — component name
+  - `Description` (Text) — one-line summary
+  - `Status Badge` (Boolean) — shows draft/ready status
+  - `Storybook Link` (Text) — URL to the component's Storybook page
+
+### `.documentation/Table`
+
+Prop table for documenting a component's API surface.
+
+- **Type:** Component, Auto Layout (Vertical, Fill/Hug)
+- **Structure:** Bold header row + instance slots for `.documentation/Table/Row`
+- **Usage:** One table per component. Add rows by inserting `.documentation/Table/Row` instances.
+
+### `.documentation/Table/Row`
+
+A single row in a prop table.
+
+- **Type:** Component, Auto Layout (Horizontal, Hug/Hug)
+- **Properties:**
+  - `Prop` (Text) — property name
+  - `Type` (Text) — type signature (e.g., `'neutral' | 'warning'`)
+  - `Default` (Text) — default value
+  - `Description` (Text) — what the prop controls
+
+### `.documentation/Anatomy`
+
+Visual breakdown of a component's internal structure.
+
+- **Type:** Component, Auto Layout (Vertical)
+- **Structure:** Image/Frame slot (component preview with callout markers) + Annotation list slot (numbered descriptions of each region)
+
+### `.documentation/DoAndDont`
+
+Side-by-side comparison of correct and incorrect usage.
+
+- **Type:** Component, Auto Layout (Horizontal)
+- **Structure:** Two equal-width frames. Left frame has a green bottom border (Do). Right frame has a red bottom border (Don't).
+- **Usage:** Place example instances or screenshots in each frame. Add a short caption below each.
+
+### `.documentation/Divider`
+
+Visual separator between documentation sections.
+
+- **Type:** Component, 1px height line, width Fill Container
+- **Colour:** `--border-subtle`
+
+### Assembling a Documentation Page
+
+A complete component documentation page follows this order:
+
+1. `.documentation/Header` — title, description, status, Storybook link
+2. `.documentation/Divider`
+3. `.documentation/Table` — all props documented
+4. `.documentation/Divider`
+5. `.documentation/Anatomy` — visual breakdown
+6. `.documentation/Divider`
+7. `.documentation/DoAndDont` — usage guidance
 
 ## Definition of Done
 

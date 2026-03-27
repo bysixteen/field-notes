@@ -4,4 +4,7 @@ node_modules/
 out/
 .env
 .env.local
-.context/
+# AI context — track plans and rules, ignore ephemeral/binary
+.context/notes.md
+.context/todos.md
+.context/attachments/
