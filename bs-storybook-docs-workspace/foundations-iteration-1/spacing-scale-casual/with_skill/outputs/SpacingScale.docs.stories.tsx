@@ -51,7 +51,7 @@ const TIER_DESCRIPTIONS: Record<Tier, string> = {
   loose: '24 px and above. Section padding, page margins, large vertical rhythm.',
 };
 
-const TIER_COLOURS: Record<Tier, string> = {
+const TIER_COLORS: Record<Tier, string> = {
   zero: '#94a3b8',
   micro: '#a78bfa',
   tight: '#38bdf8',
@@ -67,8 +67,8 @@ const ScaleBar: React.FC<{
   token: string;
   px: number;
   rem: string;
-  tierColour: string;
-}> = ({ token, px, rem, tierColour }) => (
+  tierColor: string;
+}> = ({ token, px, rem, tierColor }) => (
   <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 6 }}>
     <code
       style={{
@@ -86,7 +86,7 @@ const ScaleBar: React.FC<{
         width: `var(${token})`,
         minWidth: px === 0 ? 2 : undefined,
         height: 24,
-        backgroundColor: tierColour,
+        backgroundColor: tierColor,
         borderRadius: 4,
         transition: 'width 0.2s ease',
       }}
@@ -139,7 +139,7 @@ const TierSection: React.FC<{
           width: 12,
           height: 12,
           borderRadius: '50%',
-          backgroundColor: TIER_COLOURS[tier],
+          backgroundColor: TIER_COLORS[tier],
         }}
       />
       <h3 style={{ margin: 0, fontSize: 16, fontWeight: 600, textTransform: 'capitalize', color: '#f1f5f9' }}>
@@ -155,7 +155,7 @@ const TierSection: React.FC<{
         token={t.name}
         px={t.px}
         rem={t.rem}
-        tierColour={TIER_COLOURS[tier]}
+        tierColor={TIER_COLORS[tier]}
       />
     ))}
   </div>
@@ -195,7 +195,7 @@ export const Overview: Story = {
               token={t.name}
               px={t.px}
               rem={t.rem}
-              tierColour={TIER_COLOURS[t.tier]}
+              tierColor={TIER_COLORS[t.tier]}
             />
           ))}
         </div>
@@ -245,7 +245,7 @@ export const Scale: Story = {
                   minWidth: t.px === 0 ? 2 : undefined,
                   height: `var(${t.name})`,
                   minHeight: t.px === 0 ? 2 : undefined,
-                  backgroundColor: TIER_COLOURS[t.tier],
+                  backgroundColor: TIER_COLORS[t.tier],
                   borderRadius: 4,
                 }}
               />

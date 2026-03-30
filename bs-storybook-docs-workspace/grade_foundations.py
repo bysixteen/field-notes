@@ -93,9 +93,9 @@ def check(content, assertion):
 
     # No hardcoded hex
     if "no hardcoded hex" in a:
-        # Count hex colours in JSX (not in comments)
+        # Count hex colors in JSX (not in comments)
         hex_matches = re.findall(r"(?:background|color|border).*?#[0-9a-fA-F]{3,8}", content)
-        return len(hex_matches) <= 1, f"Found {len(hex_matches)} hardcoded hex colour values"
+        return len(hex_matches) <= 1, f"Found {len(hex_matches)} hardcoded hex color values"
 
     # Overview story
     if "overview story" in a:
@@ -222,7 +222,7 @@ def grade_run(eval_dir, run_type):
 
 
 def main():
-    evals = ["colour-primitives-full", "spacing-scale-casual", "typography-minimal"]
+    evals = ["color-primitives-full", "spacing-scale-casual", "typography-minimal"]
     run_types = ["with_skill", "without_skill"]
 
     for eval_name in evals:

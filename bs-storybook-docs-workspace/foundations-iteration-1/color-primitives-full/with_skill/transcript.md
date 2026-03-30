@@ -1,8 +1,8 @@
-# Transcript: Colour Primitives Storybook Documentation (with skill)
+# Transcript: Color Primitives Storybook Documentation (with skill)
 
 ## Task
 
-Generate a `ColourPrimitives.docs.stories.tsx` file documenting the colour primitives defined in `colors.css`, following the `bs-storybook-foundations` skill.
+Generate a `ColorPrimitives.docs.stories.tsx` file documenting the color primitives defined in `colors.css`, following the `bs-storybook-foundations` skill.
 
 ## Steps
 
@@ -36,7 +36,7 @@ Available helpers: `DocPage`, `TokenTable`, `Swatch`, `DemoBox`, `DosDonts`, `Fi
 
 ### 4. Generate the story file
 
-Created `ColourPrimitives.docs.stories.tsx` with the following stories:
+Created `ColorPrimitives.docs.stories.tsx` with the following stories:
 
 | Story | Purpose |
 |-------|---------|
@@ -53,7 +53,7 @@ Created `ColourPrimitives.docs.stories.tsx` with the following stories:
 ### 5. Validation against skill checklist
 
 - [x] Every CSS custom property from colors.css appears in a story (all 60 light tokens + 12 dark tokens)
-- [x] Colour swatches render via `var()`, not hardcoded hex
+- [x] Color swatches render via `var()`, not hardcoded hex
 - [x] Step roles match the 12-step ramp convention (50=App background through 1000=High-contrast text)
 - [x] Theme comparison shows light and dark side by side
 - [x] All imports from `stories/helpers/` resolve (DocPage, TokenTable, Swatch, DemoBox, Callout)
@@ -63,4 +63,4 @@ Created `ColourPrimitives.docs.stories.tsx` with the following stories:
 
 ## Output
 
-Single file: `ColourPrimitives.docs.stories.tsx`
+Single file: `ColorPrimitives.docs.stories.tsx`

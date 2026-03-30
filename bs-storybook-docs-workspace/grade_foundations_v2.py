@@ -69,8 +69,8 @@ def check(content, assertion):
         has_grid = "SwatchGrid" in content
         has_ramp = "TonalRamp" in content
         from_helpers = "stories/helpers" in content
-        any_colour = has_swatch or has_grid or has_ramp
-        return any_colour and from_helpers, f"Swatch={has_swatch}, SwatchGrid={has_grid}, TonalRamp={has_ramp}, helpers={from_helpers}"
+        any_color = has_swatch or has_grid or has_ramp
+        return any_color and from_helpers, f"Swatch={has_swatch}, SwatchGrid={has_grid}, TonalRamp={has_ramp}, helpers={from_helpers}"
 
     # Uses DocPage with Section and SectionHeading
     if "docpage" in a and "section" in a and "sectionheading" in a:
@@ -220,7 +220,7 @@ def grade_run(eval_dir, run_type):
 
 
 def main():
-    evals = ["colour-primitives-full", "spacing-scale-casual", "typography-minimal"]
+    evals = ["color-primitives-full", "spacing-scale-casual", "typography-minimal"]
     run_types = ["with_skill", "without_skill"]
 
     for eval_name in evals:

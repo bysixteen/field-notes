@@ -11,11 +11,11 @@
   },
   "runs": [
     {
-      "eval_id": 1, "eval_name": "colour-primitives-full", "configuration": "with_skill", "run_number": 1,
+      "eval_id": 1, "eval_name": "color-primitives-full", "configuration": "with_skill", "run_number": 1,
       "result": { "pass_rate": 1.0, "passed": 12, "failed": 0, "total": 12, "time_seconds": 117.8, "tokens": 25397, "tool_calls": 8, "errors": 0 }
     },
     {
-      "eval_id": 1, "eval_name": "colour-primitives-full", "configuration": "without_skill", "run_number": 1,
+      "eval_id": 1, "eval_name": "color-primitives-full", "configuration": "without_skill", "run_number": 1,
       "result": { "pass_rate": 0.92, "passed": 11, "failed": 1, "total": 12, "time_seconds": 123.9, "tokens": 29018, "tool_calls": 8, "errors": 0 }
     },
     {
@@ -55,7 +55,7 @@
   "notes": [
     "With-skill achieves 100% across all 3 evals — up from 91% in iteration 1",
     "The 'zero inline styles' assertion is now the strongest discriminator: with-skill passes all 3, baseline fails all 3 (12-19 inline style occurrences per baseline output)",
-    "Colour eval improved from tied (83/83) to clear win (100/92) — baseline still uses inline styles",
+    "Color eval improved from tied (83/83) to clear win (100/92) — baseline still uses inline styles",
     "Stroke weight tokens: with-skill now includes them (fixed from iteration 1), baseline still misses them",
     "With-skill is faster (-9.5s avg) and uses fewer tokens (-1530 avg) than baseline — likely because the skill provides clear structure so less exploration needed",
     "Typography baseline explicitly avoided helpers and used inline styles with 'as unknown as number' casts",

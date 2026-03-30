@@ -41,7 +41,7 @@
       "evidence": "Token data=False, token story=True"
     },
     {
-      "text": "Token categories include colour, spacing, typography, and structure",
+      "text": "Token categories include color, spacing, typography, and structure",
       "passed": false,
       "evidence": "All 4 categories present=False"
     },
@@ -71,9 +71,9 @@
       "evidence": "Dimensions=False, Content=False, Events=True"
     },
     {
-      "text": "No hardcoded colour or spacing values \u2014 all derived from source files",
+      "text": "No hardcoded color or spacing values \u2014 all derived from source files",
       "passed": true,
-      "evidence": "Found 0 hardcoded colour values in render code"
+      "evidence": "Found 0 hardcoded color values in render code"
     },
     {
       "text": "Structure dimension (standard, icon-only, split) has a corresponding story or is represented",

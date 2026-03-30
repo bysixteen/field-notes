@@ -70,21 +70,21 @@ const tiers = {
     label: 'Tight',
     description: 'Dense interfaces — data tables, toolbars, compact forms. Values 0 through 8px.',
     tokens: spacingTokens.filter((t) => t.px <= 8),
-    colour: '#ef4444',
+    color: '#ef4444',
   },
   medium: {
     label: 'Medium',
     description:
       'General-purpose layouts — cards, form fields, standard component internals. Values 10 through 24px.',
     tokens: spacingTokens.filter((t) => t.px >= 10 && t.px <= 24),
-    colour: '#f59e0b',
+    color: '#f59e0b',
   },
   loose: {
     label: 'Loose',
     description:
       'Breathing room — page sections, hero areas, generous whitespace. Values 28px and above.',
     tokens: spacingTokens.filter((t) => t.px >= 28),
-    colour: '#22c55e',
+    color: '#22c55e',
   },
 } as const;
 
@@ -117,8 +117,8 @@ const valueStyle: React.CSSProperties = {
 /** Single measured block representing one spacing token. */
 const MeasuredBlock: React.FC<{
   token: SpacingToken;
-  colour: string;
-}> = ({ token, colour }) => (
+  color: string;
+}> = ({ token, color }) => (
   <div
     style={{
       display: 'flex',
@@ -132,7 +132,7 @@ const MeasuredBlock: React.FC<{
       style={{
         width: `${token.px}px`,
         height: '1rem',
-        backgroundColor: colour,
+        backgroundColor: color,
         borderRadius: '2px',
         flexShrink: 0,
         minWidth: token.px === 0 ? '2px' : undefined,
@@ -150,8 +150,8 @@ const TierGroup: React.FC<{
   label: string;
   description: string;
   tokens: SpacingToken[];
-  colour: string;
-}> = ({ label, description, tokens, colour }) => (
+  color: string;
+}> = ({ label, description, tokens, color }) => (
   <section style={{ marginBottom: '2rem' }}>
     <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.25rem' }}>
       <div
@@ -159,7 +159,7 @@ const TierGroup: React.FC<{
           width: '0.75rem',
           height: '0.75rem',
           borderRadius: '50%',
-          backgroundColor: colour,
+          backgroundColor: color,
         }}
       />
       <h3 style={{ margin: 0, fontSize: '1.125rem', fontWeight: 600 }}>{label}</h3>
@@ -167,7 +167,7 @@ const TierGroup: React.FC<{
     <p style={{ margin: '0 0 0.75rem', fontSize: '0.875rem', color: '#6b7280' }}>{description}</p>
     <div style={{ display: 'flex', flexDirection: 'column', gap: '0.125rem' }}>
       {tokens.map((t) => (
-        <MeasuredBlock key={t.name} token={t} colour={colour} />
+        <MeasuredBlock key={t.name} token={t} color={color} />
       ))}
     </div>
   </section>

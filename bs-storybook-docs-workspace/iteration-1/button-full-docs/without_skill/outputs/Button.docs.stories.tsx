@@ -144,7 +144,7 @@ export const Default: Story = {
  * ## Sentiment
  *
  * The `sentiment` prop communicates intent or tone. Each value maps to a
- * distinct colour palette via design tokens.
+ * distinct color palette via design tokens.
  */
 export const Sentiments: Story = {
   render: () => (
@@ -329,7 +329,7 @@ export const Resolving: Story = {
     docs: {
       description: {
         story:
-          'When `state="resolving"`, the button becomes disabled, `aria-busy` is set to `true`, and an animated spinner appears over the content. The spinner uses `currentcolor` so it adapts to the active colour scheme.',
+          'When `state="resolving"`, the button becomes disabled, `aria-busy` is set to `true`, and an animated spinner appears over the content. The spinner uses `currentcolor` so it adapts to the active color scheme.',
       },
     },
   },

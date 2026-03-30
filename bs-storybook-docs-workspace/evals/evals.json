@@ -21,13 +21,13 @@
         "All 5 states appear in a States story (rest, hover, active, disabled, resolving)",
         "An AllCombinations story renders sentiment × emphasis matrix",
         "A TokenReference story with token array extracted from CSS custom properties",
-        "Token categories include colour, spacing, typography, and structure",
+        "Token categories include color, spacing, typography, and structure",
         "An Anatomy story with numbered elements matching JSX structure (root, prefix, label, suffix, spinner)",
         "A UsageGuidance story using DosDonts helper",
         "A DarkMode story showing light and dark side by side",
         "Imports use helpers from stories/helpers/ (DocPage, TokenTable, DosDonts, etc.)",
         "argTypes are grouped into Dimensions, Content, and Events categories",
-        "No hardcoded colour or spacing values — all derived from source files",
+        "No hardcoded color or spacing values — all derived from source files",
         "Structure dimension (standard, icon-only, split) has a corresponding story or is represented"
       ]
     },
@@ -53,7 +53,7 @@
         "Anatomy matches the JSX structure (btn root, btn__prefix, btn__label, btn__suffix, btn__spinner)",
         "Uses DosDonts helper for usage guidance",
         "Structure dimension is represented (standard, icon-only, split)",
-        "No hardcoded colour or spacing values"
+        "No hardcoded color or spacing values"
       ]
     },
     {

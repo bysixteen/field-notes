@@ -10,7 +10,7 @@ Two shell scripts synchronise design tokens with Figma through the [PRISM](/desi
 | Script | Direction | Purpose |
 |--------|-----------|---------|
 | `figma-push.sh` | Local → Figma | Push generated token collections into Figma as variables |
-| `figma-pull.sh` | Figma → Local | Pull anchor colours from Figma into `packages/ui/anchors.json` |
+| `figma-pull.sh` | Figma → Local | Pull anchor colors from Figma into `packages/ui/anchors.json` |
 
 Both scripts read connection configuration from `.mcp.json` at the project root and discover MCP tool names at runtime — nothing is hardcoded.
 
@@ -99,7 +99,7 @@ If any check fails the script exits with a descriptive error.
 
 ## figma-pull.sh
 
-Pulls anchor colour tokens from Figma and writes them to `packages/ui/anchors.json`.
+Pulls anchor color tokens from Figma and writes them to `packages/ui/anchors.json`.
 
 ### Usage
 

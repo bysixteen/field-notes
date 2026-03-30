@@ -99,10 +99,10 @@ const STRUCTURES: ButtonStructure[] = ['standard', 'icon-only', 'split'];
    ================================================================= */
 
 const BUTTON_TOKENS: DimensionalToken[] = [
-  // Colour
-  { figmaPath: 'button/colour/bg/rest', cssProperty: '--btn/colour/bg/rest', category: 'colour' },
-  { figmaPath: 'button/colour/fg/rest', cssProperty: '--btn/colour/fg/rest', category: 'colour' },
-  { figmaPath: 'button/colour/border/rest', cssProperty: '--btn/colour/border/rest', category: 'colour' },
+  // Color
+  { figmaPath: 'button/color/bg/rest', cssProperty: '--btn/color/bg/rest', category: 'color' },
+  { figmaPath: 'button/color/fg/rest', cssProperty: '--btn/color/fg/rest', category: 'color' },
+  { figmaPath: 'button/color/border/rest', cssProperty: '--btn/color/border/rest', category: 'color' },
   // Spacing
   { figmaPath: 'button/spacing/padding-x', cssProperty: '--btn/spacing/padding-x', category: 'spacing' },
   { figmaPath: 'button/spacing/padding-y', cssProperty: '--btn/spacing/padding-y', category: 'spacing' },
@@ -298,8 +298,8 @@ export const UsageGuidance: Story = {
           'Do not place multiple high-emphasis buttons side by side — demote secondary actions to medium or low.',
           'Do not use the disabled state as a substitute for form validation messaging.',
           'Do not omit aria-label on icon-only buttons — screen readers need a text equivalent.',
-          'Do not rely on colour alone to communicate sentiment — pair with clear label text.',
-          'Do not override token values with hardcoded colours or spacing.',
+          'Do not rely on color alone to communicate sentiment — pair with clear label text.',
+          'Do not override token values with hardcoded colors or spacing.',
         ]}
       />
     </DocPage>

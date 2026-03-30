@@ -22,7 +22,7 @@ This two-part structure keeps every page visually consistent and makes it immedi
 
 Token documentation uses tabular rows to display each token's swatch and metadata:
 
-- **Left side:** colour swatch (bound to the Figma variable) + bold token name.
+- **Left side:** color swatch (bound to the Figma variable) + bold token name.
 - **Right side:** hex value, right-aligned.
 - **Grouping:** rows are organised into sections by element — background, foreground, border, action, overlay, etc.
 - **Section headers:** each group has a title and optional description explaining the category.
@@ -57,7 +57,7 @@ Before scripting text nodes via plugins or MCP tools, verify that the font is lo
 
 When creating token documentation with bound swatches:
 
-- **Colour swatches:** use `setBoundVariableForPaint()` to bind fills to variables. This keeps documentation swatches live — when the variable value changes, the swatch updates automatically.
+- **Color swatches:** use `setBoundVariableForPaint()` to bind fills to variables. This keeps documentation swatches live — when the variable value changes, the swatch updates automatically.
 - **Corner radius:** bind per-corner radius properties (`topLeftRadius`, `topRightRadius`, etc.), not the shorthand `cornerRadius` property. The shorthand does not persist variable bindings correctly.
 - **All values in px:** Figma works exclusively in pixels. REM conversion happens in code, not in Figma. When documenting scale tokens, show the px value in Figma and note the REM equivalent in a separate column or annotation.
 
@@ -154,7 +154,7 @@ Side-by-side comparison of correct and incorrect usage.
 Visual separator between documentation sections.
 
 - **Type:** Component, 1px height line, width Fill Container
-- **Colour:** `--border-subtle`
+- **Color:** `--border-subtle`
 
 ### Assembling a Documentation Page
 
@@ -189,8 +189,8 @@ Each dimension gets its own variable collection. This keeps the collection list 
 
 | Collection | Modes | Token types | Example variables |
 |------------|-------|-------------|-------------------|
-| Primitive Colour | Dark, Light | COLOR | `colors/brand-dark/500`, `colors/neutral/100` |
-| Semantic Colour | Value | COLOR | `background/brand/rest`, `fg/primary` |
+| Primitive Color | Dark, Light | COLOR | `colors/brand-dark/500`, `colors/neutral/100` |
+| Semantic Color | Value | COLOR | `background/brand/rest`, `fg/primary` |
 | Sentiment.Component | One per sentiment value | COLOR | `emphasis high/background colors/s-h-rest` |
 | Emphasis.Component | One per emphasis level | COLOR | `background/rest`, `foreground/hover` |
 | State.Component | One per state | COLOR + BOOLEAN | `background`, `foreground`, `spinnerVisible` |
@@ -207,14 +207,14 @@ Mode names use the exact vocabulary from the [Component API](/design-system/comp
 
 ### Cascade Direction
 
-Colour collections alias upward through the cascade:
+Color collections alias upward through the cascade:
 
 ```
 State.Button[hover].background
   → aliases → Emphasis.Button[high].background/hover
     → aliases → Sentiment.Button[neutral].high/bg/hover
-      → aliases → Semantic Colour[Value].bg/brand/hover
-        → aliases → Primitive Colour[Dark].brand-dark/400
+      → aliases → Semantic Color[Value].bg/brand/hover
+        → aliases → Primitive Color[Dark].brand-dark/400
 ```
 
 Every alias link must be a `VARIABLE_ALIAS` reference in Figma, not a hardcoded value. This ensures theme switching and sentiment changes propagate automatically.

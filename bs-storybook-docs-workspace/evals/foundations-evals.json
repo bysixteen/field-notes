@@ -3,9 +3,9 @@
   "evals": [
     {
       "id": 1,
-      "name": "colour-primitives-full",
-      "prompt": "Generate Storybook documentation for our colour primitives. The CSS file is at bs-storybook-docs-workspace/evals/files/tokens/colors.css. We use OKLCH with a 12-step ramp per palette. Include all palettes (neutral, brand, red, amber, green), step roles, and a dark theme comparison. Use the helpers from stories/helpers/.",
-      "expected_output": "A ColourPrimitives.docs.stories.tsx with swatch grids for each palette, step role annotations, and a theme comparison story",
+      "name": "color-primitives-full",
+      "prompt": "Generate Storybook documentation for our color primitives. The CSS file is at bs-storybook-docs-workspace/evals/files/tokens/colors.css. We use OKLCH with a 12-step ramp per palette. Include all palettes (neutral, brand, red, amber, green), step roles, and a dark theme comparison. Use the helpers from stories/helpers/.",
+      "expected_output": "A ColorPrimitives.docs.stories.tsx with swatch grids for each palette, step role annotations, and a theme comparison story",
       "files": ["bs-storybook-docs-workspace/evals/files/tokens/colors.css"],
       "assertions": [
         "File uses CSF3 format with satisfies Meta (no component type parameter)",
@@ -18,7 +18,7 @@
         "Uses Swatch component from stories/helpers/",
         "Uses DocPage component from stories/helpers/",
         "CSS custom property names match source file exactly (e.g. --colors-neutral-50)",
-        "No hardcoded hex colour values — uses var() references or OKLCH from source",
+        "No hardcoded hex color values — uses var() references or OKLCH from source",
         "Overview story showing all palettes at a glance"
       ]
     },

@@ -10,5 +10,5 @@ export { Callout } from './Callout';
 export type DimensionalToken = {
   figmaPath: string;
   cssProperty: string;
-  category: 'colour' | 'spacing' | 'typography' | 'structure';
+  category: 'color' | 'spacing' | 'typography' | 'structure';
 };

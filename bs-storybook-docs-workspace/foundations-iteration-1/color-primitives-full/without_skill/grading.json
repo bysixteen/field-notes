@@ -51,9 +51,9 @@
       "evidence": "Found 1/3 exact CSS property references"
     },
     {
-      "text": "No hardcoded hex colour values \u2014 uses var() references or OKLCH from source",
+      "text": "No hardcoded hex color values \u2014 uses var() references or OKLCH from source",
       "passed": true,
-      "evidence": "Found 1 hardcoded hex colour values"
+      "evidence": "Found 1 hardcoded hex color values"
     },
     {
       "text": "Overview story showing all palettes at a glance",

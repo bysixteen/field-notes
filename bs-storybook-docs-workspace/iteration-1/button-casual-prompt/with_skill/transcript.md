@@ -10,7 +10,7 @@ Generate a comprehensive `Button.docs.stories.tsx` file following the `bs-storyb
 2. **Read all input files:**
    - `Button.tsx` — extracted props interface with defaults (sentiment=neutral, emphasis=high, state=rest, size=md, structure=standard), JSX structure (root button, prefix slot, label, suffix slot, spinner overlay), and data-* attribute pattern.
    - `Button.types.ts` — extracted five dimension unions: ButtonSentiment (5 modes), ButtonEmphasis (3 modes), ButtonState (5 modes), ButtonSize (5 modes), ButtonStructure (3 modes).
-   - `Button.css` — extracted 12 CSS custom properties across four categories (colour, spacing, typography, structure), plus section-based overrides for each dimension.
+   - `Button.css` — extracted 12 CSS custom properties across four categories (color, spacing, typography, structure), plus section-based overrides for each dimension.
    - `index.ts` — confirmed public exports.
    - `stories/helpers/index.ts` — confirmed available helpers (DocPage, TokenTable, Swatch, DemoBox, DosDonts, FigmaRef, Callout) and the DimensionalToken type.
 3. **Generated `Button.docs.stories.tsx`** with all required stories:
@@ -32,5 +32,5 @@ Generate a comprehensive `Button.docs.stories.tsx` file following the `bs-storyb
 - Token table entries match exactly the 12 `--btn/*` custom properties from `Button.css`.
 - Anatomy matches all 5 JSX elements (root, prefix, label, suffix, spinner).
 - All imports reference existing modules (`button-component`, `stories/helpers`).
-- No hardcoded colour or spacing values in story renders.
+- No hardcoded color or spacing values in story renders.
 - `autodocs` tag is present on meta.

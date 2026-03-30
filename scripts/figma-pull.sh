@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-# figma-pull.sh — Pull anchor colours from Figma via local MCP.
+# figma-pull.sh — Pull anchor colors from Figma via local MCP.
 # Writes exclusively to packages/ui/anchors.json (never .ts files).
 # Reads connection config from .mcp.json per PRISM interface definition.
 
@@ -17,7 +17,7 @@ DRY_RUN=false
 usage() {
   echo "Usage: figma-pull.sh [--dry-run]"
   echo ""
-  echo "Pull anchor colours from Figma via MCP."
+  echo "Pull anchor colors from Figma via MCP."
   echo "Output is written to packages/ui/anchors.json."
   echo ""
   echo "Options:"

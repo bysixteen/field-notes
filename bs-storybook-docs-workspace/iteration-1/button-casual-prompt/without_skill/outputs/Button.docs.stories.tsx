@@ -279,9 +279,9 @@ export const DesignTokens: Story = {
   name: 'Token Table',
   render: () => {
     const tokens = [
-      { category: 'Colour', token: '--btn/colour/bg/rest', fallback: '--colour-surface-primary', description: 'Background colour at rest' },
-      { category: 'Colour', token: '--btn/colour/fg/rest', fallback: '--colour-text-on-primary', description: 'Foreground / text colour at rest' },
-      { category: 'Colour', token: '--btn/colour/border/rest', fallback: '--colour-border-primary', description: 'Border colour at rest' },
+      { category: 'Color', token: '--btn/color/bg/rest', fallback: '--color-surface-primary', description: 'Background color at rest' },
+      { category: 'Color', token: '--btn/color/fg/rest', fallback: '--color-text-on-primary', description: 'Foreground / text color at rest' },
+      { category: 'Color', token: '--btn/color/border/rest', fallback: '--color-border-primary', description: 'Border color at rest' },
       { category: 'Spacing', token: '--btn/spacing/padding-x', fallback: '--space-400', description: 'Inline (horizontal) padding' },
       { category: 'Spacing', token: '--btn/spacing/padding-y', fallback: '--space-200', description: 'Block (vertical) padding' },
       { category: 'Spacing', token: '--btn/spacing/gap', fallback: '--space-200', description: 'Gap between prefix, label, and suffix' },
@@ -538,7 +538,7 @@ export const Accessibility: Story = {
           <strong>Spinner</strong> is marked <code>aria-hidden=&quot;true&quot;</code> because the <code>aria-busy</code> attribute on the host element already communicates the loading state.
         </li>
         <li>
-          <strong>Colour contrast</strong> is managed via the design-token layer; each sentiment/emphasis pair is expected to meet WCAG 2.1 AA contrast ratios.
+          <strong>Color contrast</strong> is managed via the design-token layer; each sentiment/emphasis pair is expected to meet WCAG 2.1 AA contrast ratios.
         </li>
         <li>
           <strong>Minimum touch target</strong> is enforced by the <code>--btn/structure/min-height</code> token — even the <code>xs</code> size meets the 24px minimum recommended by WCAG 2.5.8.

@@ -66,8 +66,8 @@ def check_file(content, assertion):
         return has_tokens and has_story, f"Token data={has_tokens}, token story={has_story}"
 
     # Token categories
-    if "token categories" in a and "colour" in a:
-        categories = ['colour', 'spacing', 'typography', 'structure']
+    if "token categories" in a and "color" in a:
+        categories = ['color', 'spacing', 'typography', 'structure']
         found = all(f"'{c}'" in content or f'"{c}"' in content or f"'{c.title()}'" in content or f'"{c.title()}"' in content for c in categories)
         return found, f"All 4 categories present={found}"
 
@@ -105,12 +105,12 @@ def check_file(content, assertion):
         grouped = has_dimensions and has_content and has_events
         return grouped, f"Dimensions={has_dimensions}, Content={has_content}, Events={has_events}"
 
-    # No hardcoded colour/spacing values
+    # No hardcoded color/spacing values
     if "no hardcoded" in a:
-        # Check for hex colours in render functions (not in comments)
+        # Check for hex colors in render functions (not in comments)
         hex_in_render = len(re.findall(r'(?:background|color|border):\s*["\']?#[0-9a-fA-F]{3,8}', content))
         # Allow some in baseline (do/don't styling etc)
-        return hex_in_render <= 2, f"Found {hex_in_render} hardcoded colour values in render code"
+        return hex_in_render <= 2, f"Found {hex_in_render} hardcoded color values in render code"
 
     # Structure dimension represented
     if "structure" in a and ("standard" in a or "icon-only" in a):
@@ -141,7 +141,7 @@ def check_file(content, assertion):
 
     # Token table matches CSS
     if "css custom properties" in a and ("match" in a or "button.css" in a):
-        css_tokens = ['--btn/colour/bg/rest', '--btn/colour/fg/rest', '--btn/spacing/padding-x']
+        css_tokens = ['--btn/color/bg/rest', '--btn/color/fg/rest', '--btn/spacing/padding-x']
         found = sum(1 for t in css_tokens if t in content)
         return found >= 2, f"Found {found}/3 key CSS tokens from source"
 

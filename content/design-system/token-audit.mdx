@@ -9,24 +9,24 @@ A token audit verifies that component tokens follow the resolution chain correct
 
 | Severity | When | Policy |
 |----------|------|--------|
-| **BLOCKING** | Cascade broken (colour track) | Stop. Must fix before handoff. |
+| **BLOCKING** | Cascade broken (color track) | Stop. Must fix before handoff. |
 | **WARNING** | Propagation gap (structural track) | Flag. Should fix, doesn't block. |
 | **INFO** | Noted but not broken | Informational only. |
 
-## BLOCKING Rules — Colour Cascade
+## BLOCKING Rules — Color Cascade
 
-The colour cascade flows bottom-up: **Sentiment → Emphasis → State**. Each layer must alias the one below. A raw colour value at any layer breaks the cascade — theme switching, sentiment changes, and emphasis overrides all silently fail.
+The color cascade flows bottom-up: **Sentiment → Emphasis → State**. Each layer must alias the one below. A raw color value at any layer breaks the cascade — theme switching, sentiment changes, and emphasis overrides all silently fail.
 
-### Rule 1: State layer — no raw colours
+### Rule 1: State layer — no raw colors
 
-Every COLOR token in the State collection must alias an Emphasis token. If you find a hex value, RGB value, or primitive colour reference in State, the cascade is broken.
+Every COLOR token in the State collection must alias an Emphasis token. If you find a hex value, RGB value, or primitive color reference in State, the cascade is broken.
 
 ```
 ✅ State.Button[hover].background → Emphasis.Button[high].background/hover
 ❌ State.Button[hover].background → #1a2b3c
 ```
 
-### Rule 2: Emphasis layer — no raw colours
+### Rule 2: Emphasis layer — no raw colors
 
 Every COLOR token in Emphasis must alias a Sentiment token.
 
@@ -35,9 +35,9 @@ Every COLOR token in Emphasis must alias a Sentiment token.
 ❌ Emphasis.Button[high].background/rest → primitive/blue/500
 ```
 
-### Rule 3: Sentiment layer — no raw colours
+### Rule 3: Sentiment layer — no raw colors
 
-Every COLOR token in Sentiment must alias a Semantic Colour token.
+Every COLOR token in Sentiment must alias a Semantic Color token.
 
 ```
 ✅ Sentiment.Button[neutral].high/bg/rest → Semantic.Color[Value].bg/brand/rest
@@ -64,9 +64,9 @@ When auditing, search for these patterns:
 
 | Pattern | Indicates |
 |---------|-----------|
-| `#` followed by 3–8 hex characters | Hardcoded hex colour |
-| `rgb(` or `rgba(` or `hsl(` | Hardcoded colour function |
-| Pixel values in colour collections | Wrong token type (FLOAT in COLOR slot) |
+| `#` followed by 3–8 hex characters | Hardcoded hex color |
+| `rgb(` or `rgba(` or `hsl(` | Hardcoded color function |
+| Pixel values in color collections | Wrong token type (FLOAT in COLOR slot) |
 | Direct primitive references in State/Emphasis | Skipped cascade layer |
 | `transparent` as a fallback | Silent failure — token is missing |
 
@@ -74,20 +74,20 @@ When auditing, search for these patterns:
 
 When building a new component's token collections, create them in this order. Alias targets must exist before references.
 
-1. **Sentiment** collection → alias from Semantic Colour
+1. **Sentiment** collection → alias from Semantic Color
 2. **Emphasis** collection → alias from Sentiment
 3. **State** collection → alias from Emphasis
 4. **Structure** collection → alias from Semantic Scale/Typography
 5. **Size** collection → raw FLOAT values
 
-After creating all collections, run the audit against every rule above. Then validate by tracing one State leaf token all the way to a Primitive Colour raw value — the chain should pass through every layer.
+After creating all collections, run the audit against every rule above. Then validate by tracing one State leaf token all the way to a Primitive Color raw value — the chain should pass through every layer.
 
 ## Naming Conventions
 
 | Scope | Pattern | Example |
 |-------|---------|---------|
 | Collection | `{Type}.{Component}` | `State.Button`, `Emphasis.Badge` |
-| Colour tokens | `{element}/{property}` | `background/rest`, `foreground/hover` |
+| Color tokens | `{element}/{property}` | `background/rest`, `foreground/hover` |
 | Structure tokens | `{sub-element}/{css-property}` | `root/padding-left`, `root/radius` |
 
 ## Audit Output Format

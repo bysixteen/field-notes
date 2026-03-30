@@ -29,9 +29,9 @@ Generate a Storybook documentation story file for spacing and sizing tokens, inc
    - **loose** — `--size-24` through `--size-128` (section spacing, page margins)
 
 6. **Created five stories** following the skill's Spacing Scale story table:
-   - **Overview** — full visual ruler with horizontal bars, colour-coded by tier
+   - **Overview** — full visual ruler with horizontal bars, color-coded by tier
    - **Scale** — token table plus measured square blocks showing each value
-   - **SpacingTiers** — grouped by gestalt tier with descriptions and colour coding
+   - **SpacingTiers** — grouped by gestalt tier with descriptions and color coding
    - **Application** — live examples of tight/medium/loose usage in context
    - **Radii** — radius specimens on 80x80 boxes plus a token table
 
