@@ -1,0 +1,70 @@
+{
+  "expectations": [
+    {
+      "text": "File uses CSF3 format with satisfies Meta (no component type parameter)",
+      "passed": true,
+      "evidence": "satisfies Meta=True, component type param=False"
+    },
+    {
+      "text": "Meta title starts with 'Foundations/'",
+      "passed": true,
+      "evidence": "Foundations/ title found"
+    },
+    {
+      "text": "Tags include 'autodocs' and parameters include layout: 'fullscreen'",
+      "passed": true,
+      "evidence": "autodocs=True, fullscreen=True"
+    },
+    {
+      "text": "All 5 palettes have dedicated stories: neutral, brand, red, amber, green",
+      "passed": true,
+      "evidence": "Palette stories found: ['neutral', 'brand', 'red', 'amber', 'green']"
+    },
+    {
+      "text": "Each palette story shows all 12 steps (50 through 1000)",
+      "passed": false,
+      "evidence": "Found 9/12 step references"
+    },
+    {
+      "text": "Step role annotations present: background range (50-300), border range (400-600), solid range (700-800), text range (900-1000)",
+      "passed": true,
+      "evidence": "Found 4/4 role categories: ['background', 'border', 'solid', 'text']"
+    },
+    {
+      "text": "ThemeComparison story with data-theme light and dark wrappers",
+      "passed": true,
+      "evidence": "Theme story=True, data-theme=True"
+    },
+    {
+      "text": "Uses Swatch component from stories/helpers/",
+      "passed": true,
+      "evidence": "Swatch import=True, from helpers=True"
+    },
+    {
+      "text": "Uses DocPage component from stories/helpers/",
+      "passed": true,
+      "evidence": "DocPage import=True, from helpers=True"
+    },
+    {
+      "text": "CSS custom property names match source file exactly (e.g. --colors-neutral-50)",
+      "passed": false,
+      "evidence": "Found 1/3 exact CSS property references"
+    },
+    {
+      "text": "No hardcoded hex colour values \u2014 uses var() references or OKLCH from source",
+      "passed": true,
+      "evidence": "Found 0 hardcoded hex colour values"
+    },
+    {
+      "text": "Overview story showing all palettes at a glance",
+      "passed": true,
+      "evidence": "Overview story=found"
+    }
+  ],
+  "summary": {
+    "passed": 10,
+    "failed": 2,
+    "total": 12,
+    "pass_rate": 0.83
+  }
+}

@@ -1,0 +1,60 @@
+{
+  "expectations": [
+    {
+      "text": "File uses CSF3 format with satisfies Meta (no component type parameter)",
+      "passed": true,
+      "evidence": "satisfies Meta=True, component type param=False"
+    },
+    {
+      "text": "Meta title starts with 'Foundations/'",
+      "passed": true,
+      "evidence": "Foundations/ title found"
+    },
+    {
+      "text": "Tags include 'autodocs' and parameters include layout: 'fullscreen'",
+      "passed": true,
+      "evidence": "autodocs=True, fullscreen=True"
+    },
+    {
+      "text": "All spacing tokens present from --size-0 through --size-128",
+      "passed": true,
+      "evidence": "Found 7/7 key spacing tokens"
+    },
+    {
+      "text": "Gestalt tier grouping: tight (4-8), medium (12-20), loose (28-32+)",
+      "passed": true,
+      "evidence": "tight=True, medium=True, loose=True"
+    },
+    {
+      "text": "Both pixel and rem values shown for spacing tokens",
+      "passed": true,
+      "evidence": "px=True, rem=True"
+    },
+    {
+      "text": "Radii tokens documented: --radii-none through --radii-full",
+      "passed": true,
+      "evidence": "Found 6/6 radii tokens"
+    },
+    {
+      "text": "Uses DocPage and DemoBox from stories/helpers/",
+      "passed": true,
+      "evidence": "DocPage import=True, from helpers=True"
+    },
+    {
+      "text": "Visual rendering of scale (blocks/bars, not just a table)",
+      "passed": true,
+      "evidence": "Found 5/6 visual rendering indicators"
+    },
+    {
+      "text": "Stroke weight tokens included (--stroke-weight-1 through 3)",
+      "passed": false,
+      "evidence": "Found 0/3 stroke weight tokens"
+    }
+  ],
+  "summary": {
+    "passed": 9,
+    "failed": 1,
+    "total": 10,
+    "pass_rate": 0.9
+  }
+}
