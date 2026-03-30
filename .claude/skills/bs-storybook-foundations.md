@@ -290,4 +290,4 @@ VALIDATION:
 | `bs-accessibility` | Accessible pairings story requires contrast ratio knowledge |
 | `bs-component-scaffold` | Scaffold references token values defined in foundations |
 
-Full documentation: [Storybook Documentation Rules](/design-system/storybook-documentation-rules)
+Helper library location is project-dependent -- check your project's `stories/helpers/` or equivalent. See your project's design system documentation for the full Storybook foundations reference.

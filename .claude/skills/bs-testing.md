@@ -85,7 +85,7 @@ it('has no axe violations with error state', async () => {
 
 | Snapshot | What It Captures |
 |----------|-----------------|
-| All sentiments at default emphasis/size | Colour correctness |
+| All sentiments at default emphasis/size | Color correctness |
 | All emphases at default sentiment/size | Weight differentiation |
 | All sizes | Scale consistency |
 | All programmatic states | State visual feedback |
@@ -234,4 +234,4 @@ FINDINGS:
 | `bs-review` | Review findings should be captured as regression tests |
 | `bs-html` | Keyboard interaction patterns from HTML semantics define keyboard tests |
 
-Full documentation: [Testing Strategy](/design-system/testing-strategy)
+Test runner is project-dependent (Vitest, Jest, etc.). See your project's design system documentation for the full testing strategy reference.

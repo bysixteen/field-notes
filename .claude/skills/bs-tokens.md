@@ -188,4 +188,4 @@ FINDINGS:
 | `bs-storybook-foundations` | Foundation stories document the token system visually |
 | `bs-storybook-docs` | Component docs include a TokenReference story |
 
-Full documentation: [Token Audit](/design-system/token-audit) | [Token Chain](/design-system/token-chain) | [Token Transform Pipeline](/design-system/token-transform-pipeline)
+See your project's design system documentation for the full token audit, token chain, and token transform pipeline references.

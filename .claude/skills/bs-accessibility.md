@@ -163,4 +163,4 @@ NEXT STEPS:
 | `bs-css` | Focus ring rules (non-negotiable #4) and :not() guards (#3) directly affect a11y |
 | `bs-component-api` | State dimension (disabled, resolving) must map correctly to aria attributes |
 
-Full documentation: [Accessibility Audit](/design-system/accessibility-audit)
+See your project's design system documentation for the full accessibility audit reference.

@@ -230,4 +230,4 @@ VALIDATION:
 | `bs-review` | Run review first; docs stories should reflect final component state |
 | `bs-accessibility` | UsageGuidance story should include a11y do/don'ts from audit |
 
-Full documentation: [Storybook Documentation Rules](/design-system/storybook-documentation-rules)
+Helper library location is project-dependent -- check your project's `stories/helpers/` or equivalent. See your project's design system documentation for the full Storybook documentation reference.

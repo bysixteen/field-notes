@@ -223,4 +223,4 @@ NEXT STEPS:
 | `bs-storybook-docs` | After scaffold, generate comprehensive documentation stories |
 | `bs-accessibility` | Run after scaffold to verify a11y compliance |
 
-Full documentation: [Component Scaffolding](/design-system/component-scaffolding)
+File layout and directory structure are project-configurable. See your project's design system documentation for the full component scaffolding reference.

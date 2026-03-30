@@ -28,7 +28,7 @@ description: >-
 
 | Rule | Pattern | Anti-pattern |
 |------|---------|-------------|
-| **forwardRef on all leaf components** | `forwardRef<HTMLElement, Props>(function Name(props, ref) {...})` | `function Name(props) {...}` without ref |
+| **forwardRef on all leaf components** | `forwardRef<HTMLElement, Props>(function Name(props, ref) {...})` | `function Name(props) {...}` without ref. In React 19+, `ref` is a regular prop -- `forwardRef` wrapper is not required. |
 | **Spread remaining props** | `const { emphasis, ...rest } = props; return <el {...rest}>` | Not spreading, blocking consumer `className`, `data-*`, `aria-*` |
 | **Memoize expensive computations** | `useMemo(() => derive(data), [data])` | Recomputing on every render |
 
@@ -37,7 +37,7 @@ description: >-
 | Rule | Pattern | Anti-pattern |
 |------|---------|-------------|
 | **Composition over configuration** | `<Card><CardHeader>...</CardHeader></Card>` | `<Card header="..." body="..." />` |
-| **'use client' on interactive components** | `'use client'` at top of file with hooks/events | Missing directive on component using onClick |
+| **'use client' on interactive components (Next.js/RSC only)** | `'use client'` at top of file with hooks/events | Missing directive on component using onClick |
 | **Correct key usage** | `key={item.id}` on dynamic lists | `key={index}` on reorderable lists |
 
 ### P3 -- Nice to have
@@ -79,7 +79,7 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
 );
 ```
 
-## Server Component Decision Tree
+## Server Component Decision Tree (Next.js/RSC projects only)
 
 ```
 Uses hooks (useState, useEffect, etc.)?     --> 'use client'
@@ -134,7 +134,7 @@ interface ToggleProps {
 | Not spreading ...rest | P1 | Props |
 | Unnecessary re-renders (missing memo/useMemo) | P1 | Performance |
 | Configuration over composition | P2 | Architecture |
-| Missing 'use client' on interactive component | P2 | RSC |
+| Missing 'use client' on interactive component (Next.js/RSC only) | P2 | RSC |
 | Array index as key in dynamic list | P2 | Rendering |
 | Hover/focus state managed in React instead of CSS | P3 | Performance |
 | Inline object/array creation in JSX props | P3 | Performance |
@@ -181,4 +181,4 @@ REST SPREAD: {Yes | No -- MUST ADD}
 | `bs-testing` | Test patterns depend on React implementation (render, fireEvent) |
 | `bs-css` | CSS handles visual states; React should not duplicate with useState |
 
-Full documentation: [React Patterns](/design-system/react-patterns)
+See your project's design system documentation for the full React patterns reference.
