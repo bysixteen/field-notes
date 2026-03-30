@@ -3,15 +3,11 @@ name: bs-component-scaffold
 description: >-
   Scaffold a new design system component with full boilerplate. Generates
   React .tsx, .css, .stories.tsx, .test.tsx, .types.ts, and index.ts using
-  the dimensional model vocabulary and CSS custom properties. Use when:
-  "create a component", "scaffold X", "new component called Y", "generate
-  component boilerplate", "build component from scratch", "bootstrap component",
-  "stub out a component", "start a new component", "generate files for",
-  "create boilerplate", "set up component structure", "init component",
-  "make me a component", "add a new component to the design system",
-  "component template", "component starter", "skeleton for component",
-  "file structure for component", "what files do I need for a component",
-  "generate component files", "component directory structure".
+  the dimensional model vocabulary and CSS custom properties. Use when
+  creating a new component from scratch or generating the standard file
+  structure for a component directory. Appropriate whenever you need a
+  starting point that follows design system conventions rather than writing
+  files manually.
 ---
 
 # Component Scaffold

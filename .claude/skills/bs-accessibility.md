@@ -3,21 +3,11 @@ name: bs-accessibility
 description: >-
   Run a scored WCAG 2.2 AA accessibility audit on a design system component.
   Classifies components into brackets (B1–B6) and applies rules A01–A30
-  selectively. Use when asked to review for accessibility, run an a11y audit,
-  check WCAG compliance, verify screen reader support, check keyboard
-  operability, or audit focus management. Triggers on: "accessibility review",
-  "a11y audit", "WCAG check", "screen reader", "keyboard navigation",
-  "focus trap", "aria-label", "check this component for accessibility",
-  "accessible", "a11y", "WCAG", "contrast ratio", "color contrast",
-  "color contrast", "4.5:1", "3:1", "focus ring", "focus visible",
-  "focus management", "tab order", "tabindex", "aria attributes",
-  "aria-describedby", "aria-expanded", "aria-hidden", "role attribute",
-  "skip link", "landmark", "screen reader announcement", "live region",
-  "aria-live", "reduce motion", "prefers-reduced-motion", "target size",
-  "touch target", "alt text", "image alt", "form label", "autocomplete",
-  "keyboard trap", "is this accessible", "can blind users use this",
-  "does this meet WCAG", "audit for disabilities", "assistive technology",
-  "voiceover", "NVDA", "JAWS", "axe scan", "lighthouse accessibility".
+  selectively. Use when reviewing a component for accessibility compliance —
+  including keyboard operability, ARIA attributes, focus management, screen
+  reader announcements, contrast ratios, reduced motion, and touch target
+  sizing. Also use when asked whether a component meets WCAG or is usable
+  with assistive technology.
 ---
 
 # Accessibility Audit

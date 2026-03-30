@@ -3,18 +3,11 @@ name: bs-storybook-docs
 description: >-
   Generate comprehensive Storybook documentation stories for a design system
   component. Reads the component source, types, and CSS to produce dimension
-  matrix stories, token tables, anatomy breakdowns, and usage guidance.
-  Triggers on: "generate storybook docs", "document this component in storybook",
-  "create documentation stories", "storybook documentation for X",
-  "add docs stories", "storybook docs", "docs stories", "documentation story",
-  "write storybook documentation", "create docs.stories.tsx",
-  "component documentation", "generate stories for",
-  "document this component", "storybook page for",
-  "add documentation to storybook", "create a storybook page",
-  "dimension matrix story", "token table story", "anatomy story",
-  "usage guidance story", "do dont story", "dos and donts",
-  "CSF3 docs", "autodocs", "component storybook page",
-  "visual documentation", "design system documentation".
+  matrix stories, token tables, anatomy breakdowns, and usage guidance. Use
+  when creating the documentation Storybook page for a component, adding docs
+  stories, or generating visual documentation from source. Appropriate for any
+  component that needs a full docs.stories.tsx covering all dimension
+  combinations and design guidance.
 ---
 
 # Storybook Documentation Generation

@@ -2,21 +2,12 @@
 name: bs-css
 description: >-
   Write, review, and audit CSS/SCSS for design system components. Use when
-  writing component styles, reviewing existing CSS, auditing for violations,
-  or answering questions about how CSS and the token system interact. Triggers
-  on: "write the styles for", "review this CSS", "is this CSS correct",
-  "section order", "BEM modifiers", "focus ring", "logical properties",
-  "margin ban", "will-change", "CSS custom properties", "data attributes",
-  "data-* selectors", "component styles", "stylesheet", "style this component",
-  "CSS for this component", "how should I style", "CSS audit",
-  "css authoring", "design system CSS", "hover state CSS", "disabled CSS",
-  "pseudo-class", "not guard", "transition", "animation CSS",
-  "CSS variable", "custom property", "var(--", "inline-size",
-  "block-size", "padding-inline", "margin-block", "logical property",
-  "physical property", "writing mode", "outline none", "outline removal",
-  "focus-visible", "focus outline", "css specificity", "selector order",
-  "component css structure", "css sections", "slot styles",
-  "child element styles", "motion section", "prefers-reduced-motion".
+  writing component styles, reviewing existing CSS for convention violations,
+  or answering questions about how CSS and the token system interact. Covers
+  section ordering, BEM modifiers, logical properties, focus-visible patterns,
+  the margin ban, data-attribute selectors, transitions, and the
+  prefers-reduced-motion motion section. Also use when auditing a stylesheet
+  for hardcoded values or non-standard property usage.
 ---
 
 # CSS Authoring Rules
