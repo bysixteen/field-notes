@@ -42,6 +42,19 @@ Run all 6 review stages in sequence. Each stage has a dedicated skill -- this or
 | **MINOR IMPROVEMENTS** | No BLOCKING, but SERIOUS findings exist | Merge at discretion, fix soon |
 | **UP TO STANDARD** | No BLOCKING or SERIOUS findings | Good to merge |
 
+## Stage Skip / Focus by Bracket
+
+Not every component needs equal weight across all six stages. Use this matrix to prioritise:
+
+| Bracket | Skip | Extra Weight |
+|---------|------|-------------|
+| B1 Display | Stage 0 (no API contract), Stage 1 (no React patterns needed) | Stage 2 (semantics), Stage 3 (a11y) |
+| B2 Interactive | — | Stage 0 (API), Stage 3 (keyboard/focus) |
+| B3 Form | — | Stage 2 (label association), Stage 3 (aria-invalid, live regions) |
+| B4 Composite | — | Stage 1 (compound patterns), Stage 3 (arrow keys, roving tabindex) |
+| B5 Data | — | Stage 2 (table semantics), Stage 3 (captions, headers) |
+| B6 Overlay | — | Stage 3 (focus trap/restore, Escape), Stage 1 (controlled state) |
+
 ## Finding Severity Mapping
 
 | Stage | BLOCKING | SERIOUS | MODERATE |
@@ -96,6 +109,61 @@ OFFER:
   2. Generate GitHub issues for findings that need discussion
 ===============================================================
 ```
+
+## Reviewer Judgment
+
+### When to merge findings across stages
+
+A CSS issue that's also an a11y issue (e.g., `outline: none` — violates both non-negotiable #4 and rule A06) should be reported in both stages with a cross-reference note. Count it once in the severity totals; fix it once in the remediation list.
+
+### How to prioritize when there are 15+ findings
+
+Sort by:
+1. Blast radius — findings that affect every instance of the component in production first
+2. Severity — BLOCKING before SERIOUS before MODERATE
+3. Stage order — earlier stage findings often unblock later ones
+
+Don't list 15 equally-weighted findings. Group and consolidate where appropriate.
+
+### When to recommend "rewrite" vs "fix incrementally"
+
+Recommend rewrite when: the component has BLOCKING findings in 3+ stages, the root HTML element is wrong, or the component predates the dimensional token model entirely. Recommend incremental fix when: findings are concentrated in 1-2 stages and the structure is sound.
+
+## Calibration Examples
+
+### Too terse (bad)
+
+```
+STAGE 0 -- COMPONENT API    2 FINDINGS
+  Boolean props found. Fix them.
+
+VERDICT: NEEDS UPLIFT
+```
+
+### Too verbose (bad)
+
+```
+STAGE 0 -- COMPONENT API    2 FINDINGS
+  [BLOCKING] In the Button component, which is a Tier 1 interactive element commonly
+  used across the design system in many contexts including primary actions, secondary
+  actions, and destructive actions, we found that the prop `isPrimary` uses a boolean
+  pattern which, as documented in the component API skill, is problematic because...
+```
+
+### Just right
+
+```
+STAGE 0 -- COMPONENT API    2 FINDINGS
+  [BLOCKING] isPrimary is a boolean — use emphasis="high" instead
+    Current: isPrimary?: boolean
+    Should be: emphasis?: 'high' | 'medium' | 'low'  // default: 'medium'
+
+  [SERIOUS] No default for sentiment prop
+    Current: sentiment?: Sentiment
+    Should be: sentiment?: Sentiment  // default: 'neutral'
+```
+
+One finding per entry, severity tag, current state, desired state. No padding prose.
 
 ## Quick Reference: What Each Stage Checks
 
