@@ -50,6 +50,10 @@ State (component) -- aliases Emphasis
 
 Each layer aliases the one below. A single Sentiment change propagates through Emphasis and State automatically.
 
+### Why bottom-up beats top-down
+
+With bottom-up aliasing, changing a Sentiment token (e.g., switching the error palette) instantly updates every Emphasis and State variant — without touching those collections at all. Top-down would require updating every terminal token individually. The cascade does the work.
+
 ## Token Naming Conventions
 
 ### Color Tokens
@@ -114,6 +118,58 @@ Each layer aliases the one below. A single Sentiment change propagates through E
 | Pixel value for spacing | SERIOUS | Replace with `var(--size-*)` |
 | Pixel value for font-size | SERIOUS | Replace with `var(--font-size-*)` |
 | Pixel value for border-radius | WARNING | Replace with `var(--radii-*)` |
+
+## Cascade Debugging Workflow
+
+When a token resolves to an unexpected value, follow this sequence:
+
+1. **Start at State layer** — what does the broken token resolve to? Check if it aliases an Emphasis token or has a hardcoded value.
+2. **Follow the chain** — State → Emphasis → Sentiment → Semantic Color. Inspect each alias link.
+3. **Identify the break point** — which link in the chain is wrong?
+
+| Break pattern | Symptom | Fix |
+|---------------|---------|-----|
+| State aliases a primitive directly | Color doesn't respond to theme | Re-alias to Emphasis token |
+| Emphasis aliases wrong collection | Emphasis change has no effect | Point alias to Sentiment collection |
+| Sentiment aliases a primitive | Sentiment swap doesn't cascade | Point alias to Semantic Color global |
+| Missing alias (token is unset) | Token resolves to transparent or initial | Add alias at correct layer |
+| Circular reference | Token loop / infinite resolve | Audit the chain in Figma Variables panel |
+
+## "Which token should I use?" Decision Tree
+
+```
+What are you styling?
+  |
+  +-- Color (background, foreground, border)
+  |     |
+  |     +-- Is this a component-level state/emphasis/sentiment?  --> var(--{component}-bg/fg/border)
+  |     +-- Is this a global UI surface?                         --> var(--bg-surface), var(--fg-primary)
+  |     +-- Should it adapt to theme?                            --> Never use --colors-* primitives
+  |
+  +-- Spacing (padding, gap)
+  |     --> var(--size-*) or var(--{component}-padding-x/y)
+  |
+  +-- Typography (font-size, weight, line-height)
+  |     --> var(--font-size-*), var(--font-weight-*), var(--leading-*)
+  |
+  +-- Radius
+        --> var(--radii-*) or var(--{component}-radius)
+```
+
+**New component token or reuse existing semantic token?**
+- Reuse if: the token maps cleanly to a global semantic (e.g., `--bg-surface`).
+- Create component token if: the value is component-specific and may diverge in future.
+- If new: follow Build Order — which collection should own it and what should it alias?
+
+## Dark Mode Verification Checklist
+
+| Check | Pass condition |
+|-------|---------------|
+| All color tokens have light + dark mode values | No mode value is empty or inherited |
+| Contrast ratios maintained in both modes | 4.5:1 text, 3:1 UI components |
+| No token accidentally hardcoded in one mode only | Check Figma Variables panel per mode |
+| Semantic Color globals have both modes | `--fg-primary` resolves in light AND dark |
+| No primitive tokens used directly in components | All component tokens alias through the cascade |
 
 ## Build Order (new component)
 

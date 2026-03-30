@@ -61,6 +61,42 @@ Higher bracket wins if ambiguous. Component with action button = B4 minimum.
 | A29 | MOD | | | x | | | | Auth flow requires cognitive test |
 | A30 | MOD | x | x | x | x | x | x | Viewport scale not 1-2 |
 
+## Why Severity Tiers Matter
+
+**CRITICAL** — Complete breakage for assistive technology users. A screen reader user cannot use the component at all, or a keyboard user has no path through the interface. No exceptions.
+
+**SERIOUS** — Degraded but functional. The component works, but with meaningful friction for AT users — missing focus outlines, no keyboard equivalent for a mouse action, color-only state. Fix before next release.
+
+**MODERATE** — Aspirational or edge-case. The component is usable but falls short of best practice in scenarios that may affect a subset of users (touch targets, cognitive load, text spacing edge cases). Fix in follow-up.
+
+## Judgment Guidance
+
+### Component sits between two brackets
+
+Use the higher bracket. A card with a dismiss button is B4 (Composite), not B1 (Display) — the presence of an interactive control elevates the whole component.
+
+### Rules that technically apply but are low-risk in context
+
+Apply the rule, note the context. A `MODERATE` finding on a static admin dashboard used only on desktop can be noted as low-priority. A `MODERATE` on a mobile-first public product should be treated closer to `SERIOUS`.
+
+### Escalating MODERATE to SERIOUS
+
+Escalate when: the component is used in a high-traffic or high-stakes context (authentication, payment, forms), the user population is likely to include AT users, or the mobile-first context makes touch target size a real barrier.
+
+### APG pattern doesn't exactly match your component
+
+Find the closest APG pattern and note the divergence. If your component is a "disclosure with animation" — it still follows the Disclosure pattern. Document which aspects deviate and why, and verify the keyboard model is consistent.
+
+## Common False Positives
+
+| Scenario | Correct interpretation |
+|----------|----------------------|
+| `aria-hidden="true"` on decorative SVG | Correct — not a violation. Decorative icons should be hidden from AT. |
+| Disabled button has no focus styles | Correct — disabled buttons intentionally don't receive focus. Do not flag missing focus ring. |
+| Dialog heading doesn't follow page heading hierarchy | Correct — dialog headings are scoped to the dialog. `h2` inside a dialog after `h1` on the page is fine. |
+| `role="presentation"` on layout table | Correct — removes table semantics from a table used purely for layout. |
+| `aria-label` differs from visible text | Flag only if the accessible name does NOT include the visible label text (rule A21). A label that extends the visible text is fine. |
+
 ## Scoring Formula
 
 ```

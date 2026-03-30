@@ -48,6 +48,49 @@ Is decorative?                 --> aria-hidden="true"
 | **Tooltip** | `<div role="tooltip">` | Appears on focus/hover, Escape dismisses | `aria-describedby` on trigger |
 | **Listbox** | `<div role="listbox">` | Arrow navigates, Enter selects | `role="option"`, `aria-selected` |
 
+## Competing Patterns: How to Choose
+
+When two patterns seem to fit, use this guidance:
+
+| Situation | Choose | Reason |
+|-----------|--------|--------|
+| Single expandable section | Disclosure (`<button aria-expanded>`) | No mutual exclusion needed |
+| Multiple mutually-exclusive sections | Accordion | Users expect collapse of others |
+| Choosing from options (selection) | Listbox | Arrow keys + `aria-selected` |
+| Triggering actions from a menu | Menu | `menuitem` role, no `aria-selected` |
+| Blocking interaction required | Dialog (`<dialog>`) | Modal with focus trap |
+| Supplementary info, non-blocking | Popover/Tooltip | Non-modal, dismissible |
+| Visually looks like a button but navigates | `<a href>` | Navigates = link, regardless of visual |
+| Visually looks like a link but acts | `<button>` | Acts = button, regardless of visual |
+| Tabs work at small viewport width | Accordion | Vertical layout better than scroll |
+
+## Progressive Enhancement
+
+Start with native elements and enhance only when they fall short:
+
+| Component | Native first | Enhance when |
+|-----------|-------------|-------------|
+| Disclosure | `<details>/<summary>` | Custom animation or styling constraints |
+| Modal | `<dialog>` | Need backdrop click, animation, or stack management |
+| Checkbox group | `<fieldset>/<legend>/<input type="checkbox">` | Need indeterminate state handling in complex trees |
+| Select | `<select>` | Need custom option rendering, multi-select with search, or grouping |
+
+Full ARIA widget patterns are only needed when native HTML can't support the required keyboard model or visual design.
+
+## Screen Reader Announcement Patterns
+
+| Element | What gets announced |
+|---------|-------------------|
+| `<button>` | "Button" + accessible name |
+| `<a href>` | "Link" + accessible name |
+| `<button role="switch" aria-checked="true">` | Accessible name + "toggle button, pressed" (or "on") |
+| `aria-label` | Replaces the visible label entirely — screen reader reads the `aria-label` value, not the visible text |
+| `aria-labelledby` | Screen reader reads the referenced element's text — use when visible text should be the name |
+| `aria-live="polite"` | Announces after current speech completes — use for status updates |
+| `aria-live="assertive"` | Interrupts current speech — use only for urgent errors |
+
+**When aria-label overriding visible text is bad:** if a user activates voice control by saying the visible button text but `aria-label` is different, the command won't work. The accessible name must include the visible label text.
+
 ## Form Rules
 
 | Rule | Implementation |

@@ -16,13 +16,62 @@ description: >-
 
 | # | Rule | Violation Example | Correct Example |
 |---|------|-------------------|-----------------|
-| 1 | **BEM modifiers are structural only** -- dimensions arrive via `data-*` attributes | `.button--primary {}` | `[data-emphasis="high"] {}` |
-| 2 | **Section order is enforced** -- Host > Rest > Interactive > Programmatic > Slots > Children > Motion | Transitions mixed with host | Transitions at end |
+| 1 | **BEM modifiers are structural only** — dimensions arrive via `data-*` attributes | `.button--primary {}` | `[data-emphasis="high"] {}` |
+| 2 | **Section order is enforced** — Host > Rest > Interactive > Programmatic > Slots > Children > Motion | Transitions mixed with host | Transitions at end |
 | 3 | **Pseudo-classes carry :not() guards** | `:hover {}` | `:hover:not([data-state="disabled"]):not([data-state="resolving"]) {}` |
 | 4 | **Focus ring uses component focus-offset token** | `outline: 2px solid var(--ring-color)` | `outline: 2px solid var(--{component}-focus-ring-color); outline-offset: var(--{component}-focus-offset)` |
 | 5 | **No margin on components** | `.button { margin: 8px }` | Parent handles spacing via gap/padding |
 | 6 | **Logical properties over physical** | `width`, `padding-left`, `margin-right` | `inline-size`, `padding-inline-start`, `margin-inline-end` |
 | 7 | **will-change requires justification** | `will-change: transform` (speculative) | Only after measured jank, with comment |
+
+### Why each rule matters
+
+**Rule 1 — No BEM for dimensions:** A `data-*` attribute is set once by React and CSS responds to all of it automatically. BEM requires manually toggling class names in JavaScript for every state change.
+
+**Rule 2 — Section order:** Makes components auditable without running them. A reviewer can scan the file and know exactly where to look for hover states, disabled states, and transitions — no hunting.
+
+**Rule 3 — :not() guards:** Without them, `:hover` fires on disabled and resolving elements, creating a visual state that contradicts the component's semantic state. Users see hover feedback on a button that cannot be activated.
+
+**Rule 5 — No margin:** Margin creates invisible coupling between components. A parent's layout changes should not require editing every child component's stylesheet.
+
+**Rule 6 — Logical properties:** A single RTL language switch breaks every `padding-left` / `padding-right` across the codebase. Logical properties handle directionality automatically.
+
+**Rule 7 — will-change justification:** `will-change` creates a new GPU compositor layer. Applied speculatively across 50 components, it can consume significant memory and actually degrade rendering performance.
+
+## Ambiguity Guidance
+
+| Question | Answer |
+|----------|--------|
+| Is a BEM modifier structural or dimensional? | Structural: `--full-width`, `--borderless`. Dimensional: `--large`, `--primary` — these are dimensions, use `data-*`. |
+| Can I skip the :not() guard? | Yes, on non-interactive display components that have no disabled or resolving state. |
+| When is a hardcoded value acceptable? | `border-radius: 50%` for circles. `0` for reset values (`border: 0`, `padding: 0`). Not for colors or spacing. |
+
+## Common Mistakes
+
+```css
+/* BEFORE: BEM modifier for dimension (Rule 1) */
+.button--large { block-size: 48px; }
+
+/* AFTER: data-attribute selector */
+.button[data-size="lg"] { block-size: var(--button-height); }
+```
+
+```css
+/* BEFORE: hover fires on disabled (Rule 3) */
+.button:hover { background: var(--button-bg-hover); }
+
+/* AFTER: :not() guard */
+.button:hover:not([data-state="disabled"]):not([data-state="resolving"]) {
+  background: var(--button-bg-hover);
+}
+```
+
+```css
+/* BEFORE: margin on component (Rule 5) */
+.badge { margin-block-end: 8px; }
+
+/* AFTER: no margin — parent owns spacing */
+/* Parent: */ .card__header { display: flex; gap: var(--size-8); }
 
 ## Section Order (Mandatory)
 

@@ -20,6 +20,33 @@ description: >-
 | 2. Accessibility | jest-axe + @axe-core/playwright | Automated WCAG checks | ~30-40% of WCAG violations |
 | 3. Visual Regression | Chromatic / Playwright screenshots | Screenshot comparison | Style regressions, layout shifts |
 
+## Test Depth Decision Guidance
+
+Not every component needs the same test depth. Use this to calibrate:
+
+| Signal | Guidance |
+|--------|---------|
+| High-traffic component (Button, Input) | Exhaustive — test every dimension boundary, every interaction |
+| Low-traffic component (Separator, Badge) | Minimal — defaults render, data attributes map correctly, axe passes |
+| After a bug fix | Always add a test that would have caught the bug |
+| Dimension with many modes | Test first and last mode, not every mode |
+| No visual states beyond unit test coverage | Skip Layer 3 visual regression |
+
+### Writing good test descriptions
+
+Test names should describe **behaviour**, not implementation:
+
+| Bad | Good |
+|-----|------|
+| `'sets disabled attribute'` | `'prevents click when disabled'` |
+| `'renders with className'` | `'applies custom className to root element'` |
+| `'onChange fires and updates state'` | `'calls onChange with new value on input'` |
+
+**Rules:**
+- If the test name has "and", split it into two tests — one assertion per test.
+- Structure as Arrange / Act / Assert: setup, interaction, expectation.
+- Describe the observable outcome from a consumer's perspective.
+
 ## Layer 1: Unit Tests
 
 **Test these:**
@@ -164,6 +191,23 @@ describe('ComponentName', () => {
   });
 });
 ```
+
+## Test Maintenance
+
+**When to update tests after a component change:**
+- API change (prop renamed, new prop added) → update test assertions and descriptions
+- Behaviour change (disabled no longer prevents click) → update the test that covers the old behaviour
+- Bug fix → add a regression test, don't delete the existing test
+
+**When to delete tests:**
+- Feature was removed and the test only covers the removed behaviour
+- Test was covering internal state that is no longer exposed
+
+**Red flags in a test file:**
+- Test that always passes regardless of component state (testing framework behaviour, not component behaviour)
+- Test description doesn't match what the test actually checks
+- Two tests that are identical except for a label — deduplicate
+- Test that imports and asserts on internal functions or private state
 
 ## Audit Checklist
 

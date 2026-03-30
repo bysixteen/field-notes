@@ -25,9 +25,11 @@ Define the consumer-facing contract of a design system component: every input it
 
 ## Three Rules
 
-1. **Enums, not booleans** -- every dimension input is a string union. A boolean can never grow without a breaking change.
-2. **Every input has a default** -- a bare `<Button />` must render sensibly.
-3. **Names describe the dimension, not the visual** -- `emphasis: 'high'` not `isPrimary: true`.
+1. **Enums, not booleans** — every dimension input is a string union. A boolean can never grow without a breaking change. Two booleans create combinatorial ambiguity: what does `isPrimary && isGhost` mean? An enum makes states mutually exclusive and self-documenting.
+2. **Every input has a default** — a bare `<Button />` must render. Defaults also document the *expected* usage: if `emphasis` defaults to `'medium'`, that's the normal case — high emphasis is the exception.
+3. **Names describe the dimension, not the visual** — `emphasis: 'high'` not `isPrimary: true`. If the brand changes, `primary` becomes meaningless. `emphasis="high"` is abstract and stable across any visual treatment.
+
+**Exception: `disabled` is correctly a boolean.** It is binary, DOM-native, and has no meaningful third state in this model. It maps to `data-state="disabled"` internally.
 
 ## Dimension Vocabulary (Standard Modes)
 
@@ -62,6 +64,14 @@ None of the above                      --> New enum input, name the dimension, p
 | State | `state="disabled"` | `isDisabled`, `disabled` | Unified state dimension |
 | Loading | `state="resolving"` | `isLoading`, `loading` | Loading is a state mode, not separate prop |
 
+## Real-World Trade-offs
+
+| Scenario | Guidance |
+|----------|---------|
+| Only 2 modes, unlikely to grow | A new dimension may be overkill. Consider if the variation is truly structural or just visual. If purely visual, handle in CSS without a prop. |
+| `children` vs named slots | Simple, unstructured content → `children`. Structured content with distinct regions (icon + label + badge) → named slots (`prefixIcon`, `suffixIcon`). |
+| When to break "enums not booleans" | `disabled` (binary, DOM-native), `required` (binary, form standard). Not for anything that describes visual weight, meaning, or state. |
+
 ## Canonical Button Example
 
 ```tsx
@@ -85,6 +95,35 @@ interface ButtonProps {
   disabled?: boolean;  // maps to data-state="disabled"
 }
 ```
+
+## Canonical Form Input Example
+
+Button is simple — a single interactive element. Input shows how the model handles a more complex form component.
+
+```tsx
+interface TextInputProps {
+  // Dimensions
+  size?: 'sm' | 'md' | 'lg';                                   // default: 'md'
+  state?: 'rest' | 'invalid' | 'valid' | 'disabled';           // default: 'rest'
+
+  // Content
+  label: string;                                                // required, no default
+  placeholder?: string;                                         // default: ''
+  helpText?: string;                                            // default: undefined
+  errorMessage?: string;                                        // default: undefined
+
+  // Controlled + uncontrolled
+  value?: string;                                               // controlled
+  defaultValue?: string;                                        // uncontrolled
+  onChange?: (value: string) => void;
+
+  // DOM passthrough
+  disabled?: boolean;                                           // maps to state='disabled'
+  required?: boolean;
+}
+```
+
+Note: `state` for form components uses `invalid`/`valid`/`pending` — not `hover`/`active`. The state dimension is component-specific; use modes that reflect the component's actual interactive model.
 
 ## Audit Checklist
 
