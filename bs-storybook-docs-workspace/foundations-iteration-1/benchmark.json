@@ -11,7 +11,7 @@
   "runs": [
     {
       "eval_id": 1,
-      "eval_name": "colour-primitives-full",
+      "eval_name": "color-primitives-full",
       "configuration": "with_skill",
       "run_number": 1,
       "result": {
@@ -27,7 +27,7 @@
     },
     {
       "eval_id": 1,
-      "eval_name": "colour-primitives-full",
+      "eval_name": "color-primitives-full",
       "configuration": "without_skill",
       "run_number": 1,
       "result": {
@@ -124,7 +124,7 @@
     }
   },
   "notes": [
-    "Colour primitives eval scores tied at 0.83 — both failed on step-matching (grader regex was narrow) and exact CSS property matching. The with-skill output has richer structure (LightnessProfile, AccessiblePairings) that isn't captured by current assertions.",
+    "Color primitives eval scores tied at 0.83 — both failed on step-matching (grader regex was narrow) and exact CSS property matching. The with-skill output has richer structure (LightnessProfile, AccessiblePairings) that isn't captured by current assertions.",
     "Spacing eval shows clear skill advantage: +0.2 pass rate. Baseline omitted satisfies Meta and fullscreen layout. Both missed stroke-weight tokens — skill should mention these explicitly.",
     "Typography eval is the strongest result: 1.0 vs 0.7. Baseline skipped helpers entirely and omitted fullscreen layout.",
     "Baseline typography run explicitly noted it avoided helpers because 'they are stubs with unknown APIs' — the skill provides the confidence to use them.",

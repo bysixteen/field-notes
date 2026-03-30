@@ -14,7 +14,7 @@ stories/
 ├── helpers/              # Shared documentation components
 │   ├── docStyles.ts      # Shared style objects
 │   ├── DocPage.tsx        # Layout wrapper components
-│   ├── Swatch.tsx         # Colour token display
+│   ├── Swatch.tsx         # Color token display
 │   ├── TokenTable.tsx     # Token name/value tables
 │   ├── Callout.tsx        # Notes, warnings, tips
 │   ├── CodeBlock.tsx      # Formatted code display
@@ -24,7 +24,7 @@ stories/
 │   ├── BreakpointScaleTable.tsx  # Multi-breakpoint px resolution
 │   └── index.ts           # Barrel export
 ├── primitives/           # Token documentation stories
-│   ├── Colour.stories.tsx
+│   ├── Color.stories.tsx
 │   ├── Typography.stories.tsx
 │   └── Spacing.stories.tsx
 └── components/           # Component documentation stories
@@ -52,15 +52,15 @@ Import shared components from the `helpers/` directory. These replace inline sty
 
 - **`DocPage`** — page wrapper with padding and max-width. Replaces raw `<div>` wrappers.
 - **`PageTitle`** — `h1` with display typography.
-- **`PageDesc`** — intro paragraph with secondary text colour.
+- **`PageDesc`** — intro paragraph with secondary text color.
 - **`Section`** — section wrapper with consistent bottom margin.
 - **`SectionHeading`** — `h2` with uppercase label treatment and border-bottom.
 
 ### Token Display
 
-- **`Swatch`** — single colour swatch bound to a CSS custom property, with label.
+- **`Swatch`** — single color swatch bound to a CSS custom property, with label.
 - **`SwatchGrid`** — flexible grid layout for arranging multiple swatches.
-- **`TonalRamp`** — horizontal strip showing a primitive colour palette with hex values and auto-calculated text contrast.
+- **`TonalRamp`** — horizontal strip showing a primitive color palette with hex values and auto-calculated text contrast.
 - **`TokenTable`** — table displaying token name, value, and visual preview.
 
 ### Content Components
@@ -125,7 +125,7 @@ The component auto-calculates px values from `REM × rootPx`. This keeps the tab
 - Require `@storybook/addon-a11y` in the project.
 - Every component story must pass the accessibility addon's automated checks.
 - Document exceptions explicitly — if a component intentionally deviates from a guideline, explain why in a `Callout` with the `warning` variant.
-- Use sufficient colour contrast in documentation pages themselves, not just in the components being documented.
+- Use sufficient color contrast in documentation pages themselves, not just in the components being documented.
 
 ## Definition of Done
 
@@ -147,7 +147,7 @@ Organize the Storybook sidebar into a clear information architecture using slash
 Welcome
 Getting Started
 Foundations
-  ├── Colours
+  ├── Colors
   ├── Typography
   ├── Spacing & Grid
   ├── Shape & Radius
@@ -170,7 +170,7 @@ parameters: {
       order: [
         'Welcome',
         'Getting Started',
-        'Foundations', ['Colours', 'Typography', 'Spacing & Grid', 'Shape & Radius', 'Icons'],
+        'Foundations', ['Colors', 'Typography', 'Spacing & Grid', 'Shape & Radius', 'Icons'],
         'Components', ['Atoms', 'Molecules', 'Organisms'],
         'Concepts',
         'Patterns',
@@ -189,13 +189,13 @@ Use both formats — each for what it does best:
 
 | Use Autodocs for | Use MDX for |
 |-----------------|-------------|
-| Component API pages (automatic from props) | Foundations (colours, typography, spacing) |
+| Component API pages (automatic from props) | Foundations (colors, typography, spacing) |
 | Args tables and story listings | Cross-component patterns and guidelines |
 | Single-component reference | Narrative content and design principles |
 
 **Autodocs** generates component documentation from your code with zero effort — props tables, story previews, and controls. Enable per-component with `tags: ['autodocs']` in the story meta.
 
-**MDX** gives full control for pages that need custom layout, multiple components, or prose-heavy content. Use `<Meta title="Foundations/Colours" />` to position MDX pages in the sidebar.
+**MDX** gives full control for pages that need custom layout, multiple components, or prose-heavy content. Use `<Meta title="Foundations/Colors" />` to position MDX pages in the sidebar.
 
 ## CSF3 Format
 

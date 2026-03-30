@@ -9,7 +9,7 @@
 ## Source analysis
 
 - **Dimensions found** (5): sentiment, emphasis, state, size, structure — all have dedicated stories.
-- **CSS custom properties extracted** (12): 3 colour, 3 spacing, 3 typography, 3 structure tokens.
+- **CSS custom properties extracted** (12): 3 color, 3 spacing, 3 typography, 3 structure tokens.
 - **Anatomy elements identified** (5): Root (.btn), Prefix (.btn__prefix), Label (.btn__label), Suffix (.btn__suffix), Spinner (.btn__spinner).
 
 ## Stories generated
@@ -34,5 +34,5 @@
 - Token table entries match CSS custom properties from Button.css.
 - Anatomy matches the JSX element structure in Button.tsx.
 - All imports resolve to the component barrel and helpers barrel.
-- No hardcoded colour or spacing values — all derived from tokens.
+- No hardcoded color or spacing values — all derived from tokens.
 - `autodocs` tag is present in meta.

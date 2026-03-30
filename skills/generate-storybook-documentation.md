@@ -86,18 +86,18 @@ A single `{component}.docs.stories.tsx` file containing:
 
    Only generate stories for dimensions the component actually uses.
 
-8. **Dimension matrix story** (`AllCombinations`) — renders a grid of sentiment × emphasis for the component's most common size. This shows the full colour palette at a glance.
+8. **Dimension matrix story** (`AllCombinations`) — renders a grid of sentiment × emphasis for the component's most common size. This shows the full color palette at a glance.
 
 9. **Token map story** (`TokenReference`) — uses `DocPage` and `TokenTable` helpers to render a programmatic table of all CSS custom properties the component consumes. Structure:
 
    ```tsx
    const COMPONENT_TOKENS: DimensionalToken[] = [
-     { figmaPath: 'Sentiment.{Component}/neutral/bg/rest', cssProperty: '--color-bg-rest', category: 'colour' },
+     { figmaPath: 'Sentiment.{Component}/neutral/bg/rest', cssProperty: '--color-bg-rest', category: 'color' },
      // ... extracted from CSS
    ];
    ```
 
-   Group tokens by category: colour, spacing, typography, structure.
+   Group tokens by category: color, spacing, typography, structure.
 
 10. **Anatomy story** (`Anatomy`) — uses `DocPage` to render a numbered list of the component's internal elements:
 
@@ -127,7 +127,7 @@ A single `{component}.docs.stories.tsx` file containing:
     - Every dimension from the types file has a corresponding story
     - Token table entries match actual CSS custom properties in the stylesheet
     - Anatomy elements match actual JSX structure
-    - No hardcoded colour values, spacing values, or token names — everything derives from source files
+    - No hardcoded color values, spacing values, or token names — everything derives from source files
     - CSF3 format with proper TypeScript types
 
 14. Verify the story renders:

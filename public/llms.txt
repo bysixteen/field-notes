@@ -72,14 +72,14 @@ Multi-dimensional token model, composition rules, naming conventions, and constr
 - [Figma Documentation Rules](/design-system/figma-documentation-rules): Best practices for documenting design tokens and components inside Figma files.
 - [HTML Semantics](/design-system/html-semantics): Rules for choosing native HTML elements and ARIA attributes in design system components.
 - [Token Approach Guide](/design-system): A living methodology for multi-dimensional design token systems.
-- [Colour Scale](/design-system/model/color-scale): The 12-step colour ramp (50–1000) and the UI role of each step.
+- [Color Scale](/design-system/model/color-scale): The 12-step color ramp (50–1000) and the UI role of each step.
 - [Emphasis](/design-system/model/emphasis): How loudly a component communicates — the visual weight and intensity of its signal.
 - [The Dimensional Model](/design-system/model): Every component is the product of up to five independent, orthogonal dimensions.
 - [Sentiment](/design-system/model/sentiment): What a component communicates — its semantic intent, not its visual appearance.
 - [Size](/design-system/model/size): The physical footprint of a component — height, touch target, and padding scale.
 - [State](/design-system/model/state): The interactive condition of a component — always runtime, never a composition decision.
 - [Structure](/design-system/model/structure): The fixed anatomical skeleton of a component — internal padding, gap, fixed heights.
-- [Theme](/design-system/model/theme): The colour scheme dimension — light and dark modes.
+- [Theme](/design-system/model/theme): The color scheme dimension — light and dark modes.
 - [Emphasis Scale](/design-system/naming/emphasis-scale): The weaker → weak → standard → strong naming convention for visual weight.
 - [Naming Conventions](/design-system/naming): How tokens are named across the primitive and semantic layers.
 - [Primitive Naming](/design-system/naming/primitives): The --{category}-{name} pattern for raw token values.

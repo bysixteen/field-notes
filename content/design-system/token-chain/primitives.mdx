@@ -32,30 +32,30 @@ Names typically use **pixel-equivalent values** (e.g. `--font-size-14` = `0.875r
 - Import primitives **before** semantics in CSS (semantics depend on primitive declarations)
 - Never edit auto-generated files — use extension files for manual tokens
 
-## Colour Space: OKLCH
+## Color Space: OKLCH
 
-Colour primitives are defined in the **OKLCH** colour space (`oklch(L C H)`).
+Color primitives are defined in the **OKLCH** color space (`oklch(L C H)`).
 
 | Channel | Meaning | Range |
 |---------|---------|-------|
 | **L** (Lightness) | Perceptual brightness | `0` (black) – `1` (white) |
-| **C** (Chroma) | Colour intensity | `0` (grey) – `~0.37` (most vivid) |
+| **C** (Chroma) | Color intensity | `0` (grey) – `~0.37` (most vivid) |
 | **H** (Hue) | Hue angle | `0°` – `360°` |
 
 Why OKLCH over HSL or raw sRGB hex:
 
-- **Perceptual uniformity** — equal numeric steps produce equal visual steps. Two colours at the same L value look equally bright, which makes contrast ratios predictable across an entire ramp.
-- **Wide gamut** — OKLCH can represent Display P3 and Rec 2020 colours. Gamut mapping to sRGB is applied at build time so tokens degrade gracefully.
+- **Perceptual uniformity** — equal numeric steps produce equal visual steps. Two colors at the same L value look equally bright, which makes contrast ratios predictable across an entire ramp.
+- **Wide gamut** — OKLCH can represent Display P3 and Rec 2020 colors. Gamut mapping to sRGB is applied at build time so tokens degrade gracefully.
 - **Theme symmetry** — inverting lightness for dark mode produces natural-looking results because L is perceptually linear.
 
 ## Anchor Model
 
-Each palette starts from one or more **anchor colours** — designer-chosen hue and chroma values pinned to specific steps in the ramp. The generator holds these anchors fixed and fills the remaining steps algorithmically.
+Each palette starts from one or more **anchor colors** — designer-chosen hue and chroma values pinned to specific steps in the ramp. The generator holds these anchors fixed and fills the remaining steps algorithmically.
 
 An anchor defines:
 
 - **Hue (H)** — the base hue angle for the palette
-- **Chroma (C)** — peak colour intensity at the anchor step
+- **Chroma (C)** — peak color intensity at the anchor step
 - **Step** — which ramp position (e.g. `500`) the anchor occupies
 
 Multiple anchors per palette are supported. When present, hue is interpolated between them using shortest-arc (circular) interpolation to prevent unexpected hue shifts.
@@ -105,9 +105,9 @@ Each scheme (light, dark) has a fixed set of **lightness targets** — the L val
 `generate-ramps.ts` converts anchor definitions into primitive tokens through these steps:
 
 1. **Parse anchors** — load anchor hex values and their designated steps
-2. **Convert to OKLCH** — parse each anchor hex into the OKLCH colour space
+2. **Convert to OKLCH** — parse each anchor hex into the OKLCH color space
 3. **Set lightness** — assign L from the appropriate lightness-targets array (light or dark scheme)
 4. **Interpolate hue** — for steps between anchors, interpolate H via shortest-arc to avoid crossing through unrelated hues
 5. **Distribute chroma** — apply a bell-curve distribution (σ = 0.28) centred on the peak-chroma anchor, with a floor at 8% of peak chroma to prevent fully desaturated mid-ramp steps
-6. **Gamut-map** — clamp chroma via `clampChroma()` so every output colour falls within sRGB
+6. **Gamut-map** — clamp chroma via `clampChroma()` so every output color falls within sRGB
 7. **Emit tokens** — output as CSS custom properties, JSON, and Figma variable schemas

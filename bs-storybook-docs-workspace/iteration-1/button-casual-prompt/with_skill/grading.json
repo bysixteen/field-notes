@@ -51,9 +51,9 @@
       "evidence": "All structures present=True"
     },
     {
-      "text": "No hardcoded colour or spacing values",
+      "text": "No hardcoded color or spacing values",
       "passed": true,
-      "evidence": "Found 0 hardcoded colour values in render code"
+      "evidence": "Found 0 hardcoded color values in render code"
     }
   ],
   "summary": {

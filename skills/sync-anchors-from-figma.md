@@ -1,6 +1,6 @@
 # Sync Anchors from Figma
 
-> Pull anchor colour values from a Figma file's "Anchors" collection into `packages/ui/anchors.json`.
+> Pull anchor color values from a Figma file's "Anchors" collection into `packages/ui/anchors.json`.
 
 ## Required Inputs
 
@@ -10,7 +10,7 @@
 
 ## Expected Outputs
 
-- `packages/ui/anchors.json` updated with the current anchor colour values from Figma.
+- `packages/ui/anchors.json` updated with the current anchor color values from Figma.
 - Console output confirming the number of variables pulled.
 
 ## Prerequisites

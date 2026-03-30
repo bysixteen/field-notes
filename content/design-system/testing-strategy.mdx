@@ -33,7 +33,7 @@ Unit tests verify the component contract — that inputs produce the expected ho
 | Don't test | Why |
 |------------|-----|
 | Token resolution output | That's the token system's job, not the component's |
-| Specific colour values | Tokens change — test that the right variable is applied, not its value |
+| Specific color values | Tokens change — test that the right variable is applied, not its value |
 | Internal implementation details | Test the public API, not the internals |
 | Framework behaviour | React/Next.js rendering, hook internals |
 
@@ -104,10 +104,10 @@ test('Button page has no a11y violations', async ({ page }) => {
 
 | Automatable (jest-axe / axe-core) | Requires manual review |
 |-----------------------------------|----------------------|
-| Missing alt text (A01) | Colour-only state communication (A08) |
+| Missing alt text (A01) | Color-only state communication (A08) |
 | Missing form labels (A03) | Correct heading hierarchy in context (A11) |
 | Missing button/link names (A02) | APG keyboard pattern compliance (A19) |
-| Colour contrast ratios | Focus restoration behaviour (A16) |
+| Color contrast ratios | Focus restoration behaviour (A16) |
 | Positive tabindex (A12) | Touch target spacing (A09b) |
 | aria-hidden on focusable (A13) | Drag alternatives (A25) |
 | Viewport zoom lock (A18) | Content reflow at 320px (A27) |
@@ -120,7 +120,7 @@ Visual regression testing catches unintended visual changes by comparing screens
 
 | Snapshot type | Covers |
 |--------------|--------|
-| All sentiments at each emphasis level | Colour token correctness |
+| All sentiments at each emphasis level | Color token correctness |
 | All programmatic states (disabled, resolving) | State token correctness |
 | All sizes | Scale token correctness |
 | Dark and light themes | Theme token switching |

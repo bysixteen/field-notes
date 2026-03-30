@@ -78,7 +78,7 @@ const PALETTES: PaletteConfig[] = [
     name: 'brand',
     label: 'Brand',
     hue: 250,
-    description: 'Primary brand colour for interactive elements and emphasis',
+    description: 'Primary brand color for interactive elements and emphasis',
     values: {
       50: 'oklch(0.980 0.010 250)',
       100: 'oklch(0.955 0.025 250)',
@@ -186,7 +186,7 @@ const NEUTRAL_DARK_VALUES: Record<number, string> = {
 /* ─── Meta ─────────────────────────────────────────────────────────────────── */
 
 const meta = {
-  title: 'Foundations/Colour Primitives',
+  title: 'Foundations/Color Primitives',
   parameters: { layout: 'fullscreen' },
   tags: ['autodocs'],
 } satisfies Meta;
@@ -203,7 +203,7 @@ type Story = StoryObj<typeof meta>;
 export const Overview: Story = {
   render: () => (
     <DocPage
-      title="Colour Primitives"
+      title="Color Primitives"
       subtitle="OKLCH 12-step ramps across five palettes"
     >
       <Callout>
@@ -285,7 +285,7 @@ export const Brand: Story = {
   render: () => {
     const ramp = buildRamp(PALETTES[1]);
     return (
-      <DocPage title="Brand" subtitle="Hue 250 &middot; Primary brand colour">
+      <DocPage title="Brand" subtitle="Hue 250 &middot; Primary brand color">
         <Callout>
           The brand palette anchors interactive elements, call-to-action buttons,
           and primary emphasis. Use steps 700-800 for solid backgrounds and

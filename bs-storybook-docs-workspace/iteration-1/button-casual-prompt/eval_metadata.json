@@ -13,6 +13,6 @@
     "Anatomy matches the JSX structure (btn root, btn__prefix, btn__label, btn__suffix, btn__spinner)",
     "Uses DosDonts helper for usage guidance",
     "Structure dimension is represented (standard, icon-only, split)",
-    "No hardcoded colour or spacing values"
+    "No hardcoded color or spacing values"
   ]
 }

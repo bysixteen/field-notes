@@ -134,6 +134,6 @@
     "Without-skill runs consistently fail on: helper imports (DocPage/TokenTable), argType grouping (Dimensions/Content/Events), DarkMode story, fullscreen layout parameter",
     "The skill adds ~752 tokens but is actually 8s faster on average — likely because it provides clear structure so the model doesn't explore",
     "Baseline outputs are decent Storybook files but miss project-specific conventions: token table format, helper usage, anatomy breakdown",
-    "The 'no hardcoded values' assertion passes for with-skill but some baselines embed inline hex colours in custom do/don't rendering"
+    "The 'no hardcoded values' assertion passes for with-skill but some baselines embed inline hex colors in custom do/don't rendering"
   ]
 }

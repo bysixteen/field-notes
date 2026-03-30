@@ -8,7 +8,7 @@ description: >-
   operability, or audit focus management. Triggers on: "accessibility review",
   "a11y audit", "WCAG check", "screen reader", "keyboard navigation",
   "focus trap", "aria-label", "check this component for accessibility",
-  "accessible", "a11y", "WCAG", "contrast ratio", "colour contrast",
+  "accessible", "a11y", "WCAG", "contrast ratio", "color contrast",
   "color contrast", "4.5:1", "3:1", "focus ring", "focus visible",
   "focus management", "tab order", "tabindex", "aria attributes",
   "aria-describedby", "aria-expanded", "aria-hidden", "role attribute",
@@ -50,7 +50,7 @@ Higher bracket wins if ambiguous. Component with action button = B4 minimum.
 | A21 | CRIT | | x | x | x | | x | Accessible name doesn't include visible label |
 | A06 | SER | | x | x | x | x | x | Focus outline removed (outline:none without replacement) |
 | A07 | SER | | x | x | x | x | x | Click without keyboard equivalent |
-| A08 | SER | | x | x | x | x | | Colour-only state indication |
+| A08 | SER | | x | x | x | x | | Color-only state indication |
 | A13 | SER | x | x | x | x | x | x | aria-hidden on focusable element |
 | A16 | SER | | | | | | x | No focus restoration after overlay closes |
 | A17 | SER | x | x | x | x | x | x | Mobile font size below 16px |

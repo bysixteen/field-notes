@@ -41,6 +41,6 @@ Skills are organised into three tiers:
 
 | Tier | Purpose | Examples |
 |------|---------|---------|
-| **Bootstrap** | Scaffold new projects or subsystems | `bootstrap-project-shell`, `bootstrap-colour-architecture` |
+| **Bootstrap** | Scaffold new projects or subsystems | `bootstrap-project-shell`, `bootstrap-color-architecture` |
 | **Sync** | Move data between tools (Figma, code, tokens) | `sync-tokens-to-figma`, `sync-anchors-from-figma` |
 | **Component** | Create or document individual components | `scaffold-new-component`, `generate-figma-documentation` |

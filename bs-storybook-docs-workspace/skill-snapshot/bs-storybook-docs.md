@@ -66,11 +66,11 @@ Extract CSS custom properties from the stylesheet. Build a typed array:
 
 ```tsx
 const COMPONENT_TOKENS = [
-  { figmaPath: 'collection/path', cssProperty: '--prop-name', category: 'colour' },
+  { figmaPath: 'collection/path', cssProperty: '--prop-name', category: 'color' },
 ] satisfies DimensionalToken[];
 ```
 
-Categories: `colour`, `spacing`, `typography`, `structure`.
+Categories: `color`, `spacing`, `typography`, `structure`.
 
 Render with `TokenTable` from `stories/helpers/`. Include `FigmaRef` for each entry.
 
@@ -98,7 +98,7 @@ Derive from JSX structure. Number each element:
 - [ ] Token table matches CSS custom properties exactly
 - [ ] Anatomy matches JSX element structure
 - [ ] All imports resolve
-- [ ] No hardcoded colour/spacing values
+- [ ] No hardcoded color/spacing values
 - [ ] Autodocs tag present
 
 Full documentation: [Storybook Documentation Rules](/design-system/storybook-documentation-rules)

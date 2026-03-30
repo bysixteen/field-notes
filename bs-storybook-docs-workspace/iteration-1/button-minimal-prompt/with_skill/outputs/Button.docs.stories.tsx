@@ -99,9 +99,9 @@ const STRUCTURES: ButtonStructure[] = ['standard', 'icon-only', 'split'];
 /* ================================================================= */
 
 const BUTTON_TOKENS: DimensionalToken[] = [
-  { figmaPath: 'btn/colour/bg/rest', cssProperty: '--btn/colour/bg/rest', category: 'colour' },
-  { figmaPath: 'btn/colour/fg/rest', cssProperty: '--btn/colour/fg/rest', category: 'colour' },
-  { figmaPath: 'btn/colour/border/rest', cssProperty: '--btn/colour/border/rest', category: 'colour' },
+  { figmaPath: 'btn/color/bg/rest', cssProperty: '--btn/color/bg/rest', category: 'color' },
+  { figmaPath: 'btn/color/fg/rest', cssProperty: '--btn/color/fg/rest', category: 'color' },
+  { figmaPath: 'btn/color/border/rest', cssProperty: '--btn/color/border/rest', category: 'color' },
   { figmaPath: 'btn/spacing/padding-x', cssProperty: '--btn/spacing/padding-x', category: 'spacing' },
   { figmaPath: 'btn/spacing/padding-y', cssProperty: '--btn/spacing/padding-y', category: 'spacing' },
   { figmaPath: 'btn/spacing/gap', cssProperty: '--btn/spacing/gap', category: 'spacing' },
@@ -301,7 +301,7 @@ export const UsageGuidance: Story = {
         donts={[
           'Do not place multiple high-emphasis buttons side by side — demote secondary actions to medium or low.',
           'Do not use the disabled state to hide validation errors — show inline feedback instead.',
-          'Do not rely on colour alone to convey sentiment — combine with iconography or labelling.',
+          'Do not rely on color alone to convey sentiment — combine with iconography or labelling.',
           'Do not override button tokens with inline styles — use dimension props to change appearance.',
         ]}
       />

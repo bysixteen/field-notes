@@ -16,7 +16,7 @@ import type { DimensionalToken } from '../stories/helpers';
    ================================================================= */
 
 const meta = {
-  title: 'Foundations/Colour Primitives',
+  title: 'Foundations/Color Primitives',
   parameters: { layout: 'fullscreen' },
   tags: ['autodocs'],
 } satisfies Meta;
@@ -41,7 +41,7 @@ const STEP_ROLES: Record<Step, string> = {
   200: 'Border light — low-contrast separators and outlines',
   300: 'Border — standard-weight borders and dividers',
   400: 'Border strong — high-contrast borders and focus rings',
-  500: 'Solid — primary fill colour (anchor step)',
+  500: 'Solid — primary fill color (anchor step)',
   600: 'Solid strong — pressed / active variant of the solid fill',
   700: 'Text subtle — secondary text on light backgrounds',
   800: 'Text — primary readable text on light backgrounds',
@@ -57,13 +57,13 @@ const cssVar = (palette: Palette, step: Step): string =>
 /** Build a token list for a single palette. */
 const buildPaletteTokens = (palette: Palette): DimensionalToken[] =>
   STEPS.map((step) => ({
-    figmaPath: `colours/${palette}/${step}`,
+    figmaPath: `colors/${palette}/${step}`,
     cssProperty: `--colors-${palette}-${step}`,
-    category: 'colour' as const,
+    category: 'color' as const,
   }));
 
-/** All colour tokens across every palette. */
-const ALL_COLOUR_TOKENS: DimensionalToken[] = PALETTES.flatMap(buildPaletteTokens);
+/** All color tokens across every palette. */
+const ALL_COLOR_TOKENS: DimensionalToken[] = PALETTES.flatMap(buildPaletteTokens);
 
 /* =================================================================
    Shared styles
@@ -109,7 +109,7 @@ const PaletteRamp: React.FC<{ palette: Palette }> = ({ palette }) => (
       {STEPS.map((step) => (
         <div key={step}>
           <Swatch
-            colour={cssVar(palette, step)}
+            color={cssVar(palette, step)}
             label={`${palette}-${step}`}
           />
         </div>
@@ -132,9 +132,9 @@ const PaletteRamp: React.FC<{ palette: Palette }> = ({ palette }) => (
 /** Overview of all five palettes rendered as 12-step OKLCH ramps. */
 export const Overview: Story = {
   render: () => (
-    <DocPage title="Colour Primitives">
+    <DocPage title="Color Primitives">
       <Callout>
-        All colour primitives use the OKLCH colour space for perceptually
+        All color primitives use the OKLCH color space for perceptually
         uniform lightness across every palette. Each palette provides a 12-step
         ramp (50–1000) generated from anchor definitions.
       </Callout>
@@ -159,7 +159,7 @@ export const Neutral: Story = {
   ),
 };
 
-/** Brand palette — primary brand identity colour. */
+/** Brand palette — primary brand identity color. */
 export const Brand: Story = {
   render: () => (
     <DocPage title="Brand Palette">
@@ -179,7 +179,7 @@ export const Red: Story = {
     <DocPage title="Red Palette">
       <Callout>
         The red palette (OKLCH hue 25) maps to error, danger, and destructive
-        semantic tokens. Pair with an icon or label — do not rely on colour
+        semantic tokens. Pair with an icon or label — do not rely on color
         alone.
       </Callout>
       <PaletteRamp palette="red" />
@@ -344,7 +344,7 @@ export const DarkThemeComparison: Story = {
   ),
 };
 
-/** Full token reference table for all colour primitives. */
+/** Full token reference table for all color primitives. */
 export const TokenReference: Story = {
   render: () => (
     <DocPage title="Token Reference">
@@ -354,12 +354,12 @@ export const TokenReference: Story = {
         defined in OKLCH and respond to theme via{' '}
         <code>[data-theme=&quot;dark&quot;]</code> overrides.
       </Callout>
-      <TokenTable tokens={ALL_COLOUR_TOKENS} />
+      <TokenTable tokens={ALL_COLOR_TOKENS} />
     </DocPage>
   ),
 };
 
-/** Usage guidance — do and don't rules for colour primitive usage. */
+/** Usage guidance — do and don't rules for color primitive usage. */
 export const UsageGuidance: Story = {
   render: () => (
     <DocPage title="Usage Guidance">
@@ -369,7 +369,7 @@ export const UsageGuidance: Story = {
           'Rely on the step roles to choose the correct value — e.g. 500 for solid fills, 50 for surface backgrounds.',
           'Test both light and dark themes when selecting primitive values.',
           'Keep neutral as the default palette; use chromatic palettes only to convey meaning.',
-          'Pair chromatic colours with a text label or icon — do not rely on colour alone for semantics.',
+          'Pair chromatic colors with a text label or icon — do not rely on color alone for semantics.',
         ]}
         donts={[
           'Do not hardcode OKLCH values in component CSS — always reference the custom property.',

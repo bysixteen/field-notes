@@ -1612,13 +1612,13 @@ Scaffolds a Figma design system file with standard pages, token collections, and
 
 **What it will ask you:**
 - Project name
-- Colour palette or brand colour
+- Color palette or brand color
 - Typography (heading and body font families)
 - Breakpoint targets and root font sizes
 - Component scope
 
 **What it will produce:**
-- Standard documentation pages (Cover, Colour, Typography, Spacing, Border Radius, Components)
+- Standard documentation pages (Cover, Color, Typography, Spacing, Border Radius, Components)
 - Token collections (3 primitive + 3 semantic)
 - Reusable documentation components (Header, Token Row, Section Header)
 - Variable-bound swatches on all token pages
@@ -3957,7 +3957,7 @@ Any CRITICAL finding halts the review. These rules exist because violations make
 
 **A07 — Click without keyboard handler** (WCAG 2.1.1) — Interactive element with click but no keyboard handler. Native `<button>` and `<a href>` are exempt.
 
-**A08 — Colour-only state communication** (WCAG 1.4.1) — Status indicated only by colour with no icon, text label, or pattern alongside.
+**A08 — Color-only state communication** (WCAG 1.4.1) — Status indicated only by color with no icon, text label, or pattern alongside.
 
 **A13 — aria-hidden on focusable element** (WCAG 4.1.2) — `aria-hidden="true"` on an element that can receive focus.
 
@@ -4010,7 +4010,7 @@ Any CRITICAL finding halts the review. These rules exist because violations make
 | A05 (anchor no href) | | ✓ | | ✓ | | ✓ |
 | A06 (focus outline) | | ✓ | ✓ | ✓ | | ✓ |
 | A07 (click no keyboard) | | ✓ | ✓ | ✓ | ✓ | ✓ |
-| A08 (colour-only) | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ |
+| A08 (color-only) | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ |
 | A09 (target 44px) | | ✓ | ✓ | ✓ | | ✓ |
 | A10 (role no tabindex) | | ✓ | ✓ | ✓ | | ✓ |
 | A11 (heading levels) | ✓ | | | ✓ | ✓ | |
@@ -4228,7 +4228,7 @@ Sizes use a suffix: `--input-height-sm`, `--input-height-md`, `--input-height-lg
 
 | Limitation | Detail |
 |-----------|--------|
-| No automatic cascade | Changing a brand colour means updating multiple tokens |
+| No automatic cascade | Changing a brand color means updating multiple tokens |
 | No theme switching via alias swaps | Requires runtime switching or AI tooling |
 | Relationships are implicit | Naming convention, not explicit aliasing |
 | Harder to scale | More tokens needed as component count grows |
@@ -4271,7 +4271,7 @@ Traditional design token layers evolved to encode relationships that machines co
 
 With LLM-mediated workflows, the LLM provides this context from naming and usage patterns. The intermediate layers become less necessary because:
 
-- "Change the brand colour" → LLM knows which variables are brand-related
+- "Change the brand color" → LLM knows which variables are brand-related
 - "Make buttons darker on hover" → LLM understands state relationships
 - The alias chain that encoded these relationships is now redundant
 
@@ -4330,7 +4330,7 @@ Most design systems give every variation of a component its own name. A button m
 - Danger Outline
 - Ghost
 
-Each name bundles together several different decisions into one label. "Primary" means the most important action, *and* it's filled in, *and* it uses the brand colour, *and* it's usually the biggest. Four separate choices, one name.
+Each name bundles together several different decisions into one label. "Primary" means the most important action, *and* it's filled in, *and* it uses the brand color, *and* it's usually the biggest. Four separate choices, one name.
 
 This works fine when you only have a handful of components. But it creates real problems as the system grows.
 
@@ -4338,7 +4338,7 @@ This works fine when you only have a handful of components. But it creates real 
 
 **Names stop making sense.** What's the actual difference between "secondary" and "tertiary"? Between "ghost" and "outline"? People on the team will disagree, and over time, people just pick whatever looks right instead of what's semantically correct.
 
-**The list of variants keeps growing.** Every time you add a new meaning (like "new" for recently-added features), you need to create that variant for *every* component — buttons, cards, badges, banners — and define the colours for each one. The work multiplies fast.
+**The list of variants keeps growing.** Every time you add a new meaning (like "new" for recently-added features), you need to create that variant for *every* component — buttons, cards, badges, banners — and define the colors for each one. The work multiplies fast.
 
 **You can't separate decisions.** If "Danger" always means red and always means filled, there's no clean way to say "this is a warning, but it's not urgent — make it softer." You'd need to invent yet another variant name.
 
@@ -4387,7 +4387,7 @@ Instead of remembering what "tertiary" means versus "ghost," you just answer: *W
 
 ### New meanings don't create busywork
 
-Want to add a "new" sentiment for recently-added features? In a typical system, someone has to create NewButton, NewCard, NewBadge, and define the colours for each. In the dimensional model, you add "new" to the list of sentiments once, and every component can use it immediately.
+Want to add a "new" sentiment for recently-added features? In a typical system, someone has to create NewButton, NewCard, NewBadge, and define the colors for each. In the dimensional model, you add "new" to the list of sentiments once, and every component can use it immediately.
 
 ### You can turn the volume up or down
 
@@ -4727,7 +4727,7 @@ Always include:
 After scaffolding, iterate on token values visually in Storybook or a dev environment:
 
 1. Open the component with default token values
-2. Adjust token values — background, foreground, border colours per dimension
+2. Adjust token values — background, foreground, border colors per dimension
 3. Test emphasis/sentiment combinations visually
 4. Verify size scale feels proportional
 5. Check state transitions (hover, active, disabled)
@@ -4736,11 +4736,11 @@ After scaffolding, iterate on token values visually in Storybook or a dev enviro
 ### Visual Iteration Checklist
 
 - [ ] All emphasis levels render with distinct visual weight
-- [ ] All sentiment colours are distinguishable (not just by hue — check luminance)
+- [ ] All sentiment colors are distinguishable (not just by hue — check luminance)
 - [ ] Size scale maintains visual proportion (text, padding, icon sizing)
 - [ ] Disabled state is visually distinct but not invisible
 - [ ] Hover/active states provide clear feedback
-- [ ] Focus ring is visible on all background colours
+- [ ] Focus ring is visible on all background colors
 - [ ] Dark and light themes both work
 - [ ] Reduced motion preference is respected
 - [ ] Touch targets meet WCAG 2.2 minimum (44×44px for `md` and above)
@@ -4815,7 +4815,7 @@ Sentiment and Emphasis are independent axes, but their **combination carries sem
 - **Sentiment** = what to communicate (neutral, warning, highlight, new)
 - **Emphasis** = how loudly (high, medium, low)
 
-Low emphasis degrades a sentiment's signal across multiple properties simultaneously — reducing colour intensity, saturation, and the presence of background or border surfaces. This is intentional: it enables **advisory communication** without alarming the user.
+Low emphasis degrades a sentiment's signal across multiple properties simultaneously — reducing color intensity, saturation, and the presence of background or border surfaces. This is intentional: it enables **advisory communication** without alarming the user.
 
 ## The Legibility Floor
 
@@ -5039,7 +5039,7 @@ How loudly a component communicates its sentiment.
 
 | Value | Meaning |
 |-------|---------|
-| `high` | Maximum presence. Solid backgrounds, strong colour, full surface visibility. |
+| `high` | Maximum presence. Solid backgrounds, strong color, full surface visibility. |
 | `medium` | Moderate presence. Tinted or bordered surfaces. |
 | `low` | Minimal presence. Reduced saturation, no background, reduced or no border. |
 
@@ -5146,7 +5146,7 @@ Semantic token pairings are designed to meet **WCAG AA** contrast requirements (
 To maintain this guarantee:
 - Always pair foreground and background from the **same family**
 - Do not mix emphasis levels between foreground and background
-- Do not override semantic tokens with arbitrary colour values
+- Do not override semantic tokens with arbitrary color values
 
 ## Reduced Motion
 
@@ -5160,9 +5160,9 @@ Respect `prefers-reduced-motion`:
 
 Motion tokens (duration, easing) should automatically respect this media query. See the [Concepts Manifest](/design-system/concepts-manifest) for motion token guidance.
 
-## Colour Independence
+## Color Independence
 
-Never rely on colour alone to convey information. Complement colour signals with:
+Never rely on color alone to convey information. Complement color signals with:
 - Text labels
 - Icons or shapes
 - Pattern or texture differences
@@ -5238,7 +5238,7 @@ Never rely on colour alone to convey information. Complement colour signals with
 | Rule | Rationale |
 |------|-----------|
 | Never invent token names — use existing tokens | Maintains traceability to the design system source |
-| Never hardcode colour/spacing values | Breaks theming and consistency |
+| Never hardcode color/spacing values | Breaks theming and consistency |
 | Use semantic tokens in components, not primitives | Primitives bypass theme switching |
 | Primitives only when defining new semantics | Semantics reference primitives via `var()` |
 | Import primitives before semantics in CSS | Semantics depend on primitive `var()` declarations |
@@ -5393,7 +5393,7 @@ Never add `will-change` speculatively. It consumes GPU memory and can actually h
 
 | Owns | Doesn't own |
 |------|-------------|
-| Structural invariants (display, flex direction, overflow) | Colour values (background, foreground, border colour) |
+| Structural invariants (display, flex direction, overflow) | Color values (background, foreground, border color) |
 | Transition declarations | Dimensional variants (size, emphasis, sentiment) |
 | BEM structural modifiers | External spacing (margin) |
 | Focus ring shape | Token resolution |
@@ -5463,7 +5463,7 @@ This two-part structure keeps every page visually consistent and makes it immedi
 
 Token documentation uses tabular rows to display each token's swatch and metadata:
 
-- **Left side:** colour swatch (bound to the Figma variable) + bold token name.
+- **Left side:** color swatch (bound to the Figma variable) + bold token name.
 - **Right side:** hex value, right-aligned.
 - **Grouping:** rows are organised into sections by element — background, foreground, border, action, overlay, etc.
 - **Section headers:** each group has a title and optional description explaining the category.
@@ -5490,7 +5490,7 @@ Document which font families and styles the project uses:
 
 When creating token documentation with bound swatches:
 
-- **Colour swatches:** use `setBoundVariableForPaint()` to bind fills to variables. This keeps documentation swatches live — when the variable value changes, the swatch updates automatically.
+- **Color swatches:** use `setBoundVariableForPaint()` to bind fills to variables. This keeps documentation swatches live — when the variable value changes, the swatch updates automatically.
 - **Corner radius:** bind per-corner radius properties (`topLeftRadius`, `topRightRadius`, etc.), not the shorthand `cornerRadius` property. The shorthand does not persist variable bindings correctly.
 - **All values in px:** Figma works exclusively in pixels. REM conversion happens in code, not in Figma. When documenting scale tokens, show the px value in Figma and note the REM equivalent in a separate column or annotation.
 
@@ -5583,7 +5583,7 @@ Side-by-side comparison of correct and incorrect usage.
 Visual separator between documentation sections.
 
 - **Type:** Component, 1px height line, width Fill Container
-- **Colour:** `--border-subtle`
+- **Color:** `--border-subtle`
 
 ### Assembling a Documentation Page
 
@@ -5618,8 +5618,8 @@ Each dimension gets its own variable collection. This keeps the collection list 
 
 | Collection | Modes | Token types | Example variables |
 |------------|-------|-------------|-------------------|
-| Primitive Colour | Dark, Light | COLOR | `colors/brand-dark/500`, `colors/neutral/100` |
-| Semantic Colour | Value | COLOR | `background/brand/rest`, `fg/primary` |
+| Primitive Color | Dark, Light | COLOR | `colors/brand-dark/500`, `colors/neutral/100` |
+| Semantic Color | Value | COLOR | `background/brand/rest`, `fg/primary` |
 | Sentiment.Component | One per sentiment value | COLOR | `emphasis high/background colors/s-h-rest` |
 | Emphasis.Component | One per emphasis level | COLOR | `background/rest`, `foreground/hover` |
 | State.Component | One per state | COLOR + BOOLEAN | `background`, `foreground`, `spinnerVisible` |
@@ -5636,14 +5636,14 @@ Mode names use the exact vocabulary from the [Component API](/design-system/comp
 
 ### Cascade Direction
 
-Colour collections alias upward through the cascade:
+Color collections alias upward through the cascade:
 
 ```
 State.Button[hover].background
   → aliases → Emphasis.Button[high].background/hover
     → aliases → Sentiment.Button[neutral].high/bg/hover
-      → aliases → Semantic Colour[Value].bg/brand/hover
-        → aliases → Primitive Colour[Dark].brand-dark/400
+      → aliases → Semantic Color[Value].bg/brand/hover
+        → aliases → Primitive Color[Dark].brand-dark/400
 ```
 
 Every alias link must be a `VARIABLE_ALIAS` reference in Figma, not a hardcoded value. This ensures theme switching and sentiment changes propagate automatically.
@@ -5859,9 +5859,9 @@ Plus **Theme** (light/dark) as an environmental dimension.
 
 This guide grows as the approach evolves. Pages marked as `draft` are in progress. The [Concepts Manifest](/design-system/concepts-manifest) is the single source of truth for valid dimension values — expand it when introducing new concepts rather than improvising inline.
 
-### Colour Scale
+### Color Scale
 
-*The 12-step colour ramp (50–1000) and the UI role of each step.*
+*The 12-step color ramp (50–1000) and the UI role of each step.*
 
 ## Definition
 
@@ -5888,7 +5888,7 @@ Every sentiment palette is a **12-step ramp** numbered from 50 to 1000. The numb
 
 ## Mapping to Semantic Tokens
 
-Colour-scale steps are **primitives** — they should never appear directly in component styles. Instead, semantic tokens reference specific steps and are the values components consume.
+Color-scale steps are **primitives** — they should never appear directly in component styles. Instead, semantic tokens reference specific steps and are the values components consume.
 
 The mapping follows this pattern:
 
@@ -5939,7 +5939,7 @@ Emphasis controls the **surface area and intensity** of a sentiment's expression
 
 | Value | Meaning | Visual expression |
 |-------|---------|-------------------|
-| `high` | Maximum presence | Solid backgrounds, strong colour, full visibility |
+| `high` | Maximum presence | Solid backgrounds, strong color, full visibility |
 | `medium` | Moderate presence | Tinted or bordered surfaces |
 | `low` | Minimal presence | Reduced saturation, no background, reduced border |
 
@@ -5958,7 +5958,7 @@ For example:
 
 ## The Emphasis-Sentiment Relationship
 
-Emphasis and Sentiment are independent axes, but their combination carries semantic weight. Low emphasis degrades a sentiment's signal across multiple properties simultaneously — reducing colour intensity, saturation, and the presence of background or border surfaces.
+Emphasis and Sentiment are independent axes, but their combination carries semantic weight. Low emphasis degrades a sentiment's signal across multiple properties simultaneously — reducing color intensity, saturation, and the presence of background or border surfaces.
 
 This is intentional: it enables advisory communication without alarming the user.
 
@@ -6000,11 +6000,11 @@ Every component's visual appearance is the product of up to **five independent d
 | **Size** | Component footprint — height, touch target, padding scale (`xs / sm / md / lg / xl`) | Composition time |
 | **Structure** | Fixed anatomical dimensions — internal padding, gap, fixed heights | Build time |
 
-## Colour vs Structural Dimensions
+## Color vs Structural Dimensions
 
 The five dimensions split into two groups:
 
-**Colour Dimensions (Cascading)** — each layer aliases the one below:
+**Color Dimensions (Cascading)** — each layer aliases the one below:
 
 | Dimension | Controls |
 |-----------|----------|
@@ -6012,7 +6012,7 @@ The five dimensions split into two groups:
 | Emphasis | Visual weight |
 | State | Interactive condition (runtime only) |
 
-**Structural Dimensions (Independent)** — no connection to the colour cascade:
+**Structural Dimensions (Independent)** — no connection to the color cascade:
 
 | Dimension | Controls |
 |-----------|----------|
@@ -6249,18 +6249,18 @@ A component's structure determines *what spaces exist*. Size determines *how lar
 
 ### Theme
 
-*The colour scheme dimension — light and dark modes.*
+*The color scheme dimension — light and dark modes.*
 
 ## Definition
 
-Theme controls the overall **colour scheme** — light or dark mode. It is an environmental dimension that affects the entire application or a scoped section.
+Theme controls the overall **color scheme** — light or dark mode. It is an environmental dimension that affects the entire application or a scoped section.
 
 ## Values
 
 | Value | Meaning |
 |-------|---------|
-| `light` | Light colour scheme |
-| `dark` | Dark colour scheme |
+| `light` | Light color scheme |
+| `dark` | Dark color scheme |
 
 **Default:** project-dependent
 
@@ -6295,7 +6295,7 @@ Theme relies on a **two-layer token model**: primitives and semantics.
 }
 ```
 
-**Semantic tokens** reference primitives via `var()`. They describe intent, not colour:
+**Semantic tokens** reference primitives via `var()`. They describe intent, not color:
 
 ```css
 :root {
@@ -6308,12 +6308,12 @@ When the theme changes, primitive values swap. Semantic tokens automatically res
 
 | Layer | Role | Changes with theme? |
 |-------|------|---------------------|
-| Primitive | Defines raw colour values per mode | Yes |
+| Primitive | Defines raw color values per mode | Yes |
 | Semantic | Describes purpose, references primitives | No |
 
 ## Mode Structure in Figma
 
-Figma variable collections mirror this two-layer model. A **Primitives** collection contains raw colour values with modes for each theme:
+Figma variable collections mirror this two-layer model. A **Primitives** collection contains raw color values with modes for each theme:
 
 | Variable | Light | Dark |
 |----------|-------|------|
@@ -6407,7 +6407,7 @@ The token naming uses a four-point scale while the dimension uses three points. 
 
 Moving along the emphasis scale simultaneously adjusts:
 
-- **Colour intensity** — from muted/tinted to full saturation
+- **Color intensity** — from muted/tinted to full saturation
 - **Background presence** — from transparent/subtle to solid fill
 - **Border visibility** — from hidden to prominent
 
@@ -6429,7 +6429,7 @@ The token system uses two distinct naming patterns, one per layer:
 ## Key Rules
 
 1. **Never invent token names** — use existing tokens from the design system source
-2. **Never hardcode colour/spacing values** — breaks theming and consistency
+2. **Never hardcode color/spacing values** — breaks theming and consistency
 3. **Use semantic tokens in components**, not primitives
 4. **Primitives only when defining new semantics** — reference via `var()`
 
@@ -6478,7 +6478,7 @@ This makes it easy to mentally map between the token name and its rendered size 
 
 ## Alpha Variant Naming
 
-Colour alpha variants follow:
+Color alpha variants follow:
 
 `--colors-{palette}-alpha-{shade}-a{opacity}`
 
@@ -6501,13 +6501,13 @@ Semantic tokens describe **what a value is for**, not what it looks like. The el
 | Element | Purpose | Examples |
 |---------|---------|----------|
 | `surface` | Page and component backgrounds | `--surface-background` |
-| `text` | Text and icon colours | `--text-primary`, `--text-secondary` |
+| `text` | Text and icon colors | `--text-primary`, `--text-secondary` |
 | `border` | Borders and dividers | `--border-default`, `--border-subtle` |
 | `type` | Typography properties | `--type-family-text`, `--type-size-heading-02` |
 | `space` | Spacing values | `--space-sm`, `--space-md` |
 | `radius` | Border radius values | `--radius-sm`, `--radius-md` |
 | `size` | Dimension values | `--size-4`, `--size-8` |
-| `action` | Interactive element colours | `--action-primary`, `--action-destructive` |
+| `action` | Interactive element colors | `--action-primary`, `--action-destructive` |
 
 ## Qualifiers
 
@@ -6534,7 +6534,7 @@ Qualifiers use **role-based** names that describe intensity or purpose:
 --type-size-heading-02       /* second-level heading size */
 --space-md                   /* medium spacing unit */
 --radius-md                  /* medium corner radius */
---action-primary             /* primary interactive colour */
+--action-primary             /* primary interactive color */
 ```
 
 ## Relationship to Primitives
@@ -6757,7 +6757,7 @@ stories/
 ├── helpers/              # Shared documentation components
 │   ├── docStyles.ts      # Shared style objects
 │   ├── DocPage.tsx        # Layout wrapper components
-│   ├── Swatch.tsx         # Colour token display
+│   ├── Swatch.tsx         # Color token display
 │   ├── TokenTable.tsx     # Token name/value tables
 │   ├── Callout.tsx        # Notes, warnings, tips
 │   ├── CodeBlock.tsx      # Formatted code display
@@ -6767,7 +6767,7 @@ stories/
 │   ├── BreakpointScaleTable.tsx  # Multi-breakpoint px resolution
 │   └── index.ts           # Barrel export
 ├── primitives/           # Token documentation stories
-│   ├── Colour.stories.tsx
+│   ├── Color.stories.tsx
 │   ├── Typography.stories.tsx
 │   └── Spacing.stories.tsx
 └── components/           # Component documentation stories
@@ -6795,15 +6795,15 @@ Import shared components from the `helpers/` directory. These replace inline sty
 
 - **`DocPage`** — page wrapper with padding and max-width. Replaces raw `<div>` wrappers.
 - **`PageTitle`** — `h1` with display typography.
-- **`PageDesc`** — intro paragraph with secondary text colour.
+- **`PageDesc`** — intro paragraph with secondary text color.
 - **`Section`** — section wrapper with consistent bottom margin.
 - **`SectionHeading`** — `h2` with uppercase label treatment and border-bottom.
 
 ### Token Display
 
-- **`Swatch`** — single colour swatch bound to a CSS custom property, with label.
+- **`Swatch`** — single color swatch bound to a CSS custom property, with label.
 - **`SwatchGrid`** — flexible grid layout for arranging multiple swatches.
-- **`TonalRamp`** — horizontal strip showing a primitive colour palette with hex values and auto-calculated text contrast.
+- **`TonalRamp`** — horizontal strip showing a primitive color palette with hex values and auto-calculated text contrast.
 - **`TokenTable`** — table displaying token name, value, and visual preview.
 
 ### Content Components
@@ -6854,7 +6854,7 @@ The component auto-calculates px values from `REM × rootPx`. This keeps the tab
 - Require `@storybook/addon-a11y` in the project.
 - Every component story must pass the accessibility addon's automated checks.
 - Document exceptions explicitly — if a component intentionally deviates from a guideline, explain why in a `Callout` with the `warning` variant.
-- Use sufficient colour contrast in documentation pages themselves, not just in the components being documented.
+- Use sufficient color contrast in documentation pages themselves, not just in the components being documented.
 
 ## Definition of Done
 
@@ -6876,7 +6876,7 @@ Organize the Storybook sidebar into a clear information architecture using slash
 Welcome
 Getting Started
 Foundations
-  ├── Colours
+  ├── Colors
   ├── Typography
   ├── Spacing & Grid
   ├── Shape & Radius
@@ -6899,7 +6899,7 @@ parameters: {
       order: [
         'Welcome',
         'Getting Started',
-        'Foundations', ['Colours', 'Typography', 'Spacing & Grid', 'Shape & Radius', 'Icons'],
+        'Foundations', ['Colors', 'Typography', 'Spacing & Grid', 'Shape & Radius', 'Icons'],
         'Components', ['Atoms', 'Molecules', 'Organisms'],
         'Concepts',
         'Patterns',
@@ -6918,7 +6918,7 @@ Use both formats — each for what it does best:
 
 | Use Autodocs for | Use MDX for |
 |-----------------|-------------|
-| Component API pages (automatic from props) | Foundations (colours, typography, spacing) |
+| Component API pages (automatic from props) | Foundations (colors, typography, spacing) |
 | Args tables and story listings | Cross-component patterns and guidelines |
 | Single-component reference | Narrative content and design principles |
 
@@ -7124,7 +7124,7 @@ Unit tests verify the component contract — that inputs produce the expected ho
 | Don't test | Why |
 |------------|-----|
 | Token resolution output | That's the token system's job, not the component's |
-| Specific colour values | Tokens change — test that the right variable is applied, not its value |
+| Specific color values | Tokens change — test that the right variable is applied, not its value |
 | Internal implementation details | Test the public API, not the internals |
 | Framework behaviour | React/Next.js rendering, hook internals |
 
@@ -7188,10 +7188,10 @@ test('Button page has no a11y violations', async ({ page }) => {
 
 | Automatable (jest-axe / axe-core) | Requires manual review |
 |-----------------------------------|----------------------|
-| Missing alt text (A01) | Colour-only state communication (A08) |
+| Missing alt text (A01) | Color-only state communication (A08) |
 | Missing form labels (A03) | Correct heading hierarchy in context (A11) |
 | Missing button/link names (A02) | APG keyboard pattern compliance (A19) |
-| Colour contrast ratios | Focus restoration behaviour (A16) |
+| Color contrast ratios | Focus restoration behaviour (A16) |
 | Positive tabindex (A12) | Touch target spacing (A09b) |
 | aria-hidden on focusable (A13) | Drag alternatives (A25) |
 | Viewport zoom lock (A18) | Content reflow at 320px (A27) |
@@ -7204,7 +7204,7 @@ Visual regression testing catches unintended visual changes by comparing screens
 
 | Snapshot type | Covers |
 |--------------|--------|
-| All sentiments at each emphasis level | Colour token correctness |
+| All sentiments at each emphasis level | Color token correctness |
 | All programmatic states (disabled, resolving) | State token correctness |
 | All sizes | Scale token correctness |
 | Dark and light themes | Theme token switching |
@@ -7260,24 +7260,24 @@ A token audit verifies that component tokens follow the resolution chain correct
 
 | Severity | When | Policy |
 |----------|------|--------|
-| **BLOCKING** | Cascade broken (colour track) | Stop. Must fix before handoff. |
+| **BLOCKING** | Cascade broken (color track) | Stop. Must fix before handoff. |
 | **WARNING** | Propagation gap (structural track) | Flag. Should fix, doesn't block. |
 | **INFO** | Noted but not broken | Informational only. |
 
-## BLOCKING Rules — Colour Cascade
+## BLOCKING Rules — Color Cascade
 
-The colour cascade flows bottom-up: **Sentiment → Emphasis → State**. Each layer must alias the one below. A raw colour value at any layer breaks the cascade — theme switching, sentiment changes, and emphasis overrides all silently fail.
+The color cascade flows bottom-up: **Sentiment → Emphasis → State**. Each layer must alias the one below. A raw color value at any layer breaks the cascade — theme switching, sentiment changes, and emphasis overrides all silently fail.
 
-### Rule 1: State layer — no raw colours
+### Rule 1: State layer — no raw colors
 
-Every COLOR token in the State collection must alias an Emphasis token. If you find a hex value, RGB value, or primitive colour reference in State, the cascade is broken.
+Every COLOR token in the State collection must alias an Emphasis token. If you find a hex value, RGB value, or primitive color reference in State, the cascade is broken.
 
 ```
 ✅ State.Button[hover].background → Emphasis.Button[high].background/hover
 ❌ State.Button[hover].background → #1a2b3c
 ```
 
-### Rule 2: Emphasis layer — no raw colours
+### Rule 2: Emphasis layer — no raw colors
 
 Every COLOR token in Emphasis must alias a Sentiment token.
 
@@ -7286,9 +7286,9 @@ Every COLOR token in Emphasis must alias a Sentiment token.
 ❌ Emphasis.Button[high].background/rest → primitive/blue/500
 ```
 
-### Rule 3: Sentiment layer — no raw colours
+### Rule 3: Sentiment layer — no raw colors
 
-Every COLOR token in Sentiment must alias a Semantic Colour token.
+Every COLOR token in Sentiment must alias a Semantic Color token.
 
 ```
 ✅ Sentiment.Button[neutral].high/bg/rest → Semantic.Color[Value].bg/brand/rest
@@ -7315,9 +7315,9 @@ When auditing, search for these patterns:
 
 | Pattern | Indicates |
 |---------|-----------|
-| `#` followed by 3–8 hex characters | Hardcoded hex colour |
-| `rgb(` or `rgba(` or `hsl(` | Hardcoded colour function |
-| Pixel values in colour collections | Wrong token type (FLOAT in COLOR slot) |
+| `#` followed by 3–8 hex characters | Hardcoded hex color |
+| `rgb(` or `rgba(` or `hsl(` | Hardcoded color function |
+| Pixel values in color collections | Wrong token type (FLOAT in COLOR slot) |
 | Direct primitive references in State/Emphasis | Skipped cascade layer |
 | `transparent` as a fallback | Silent failure — token is missing |
 
@@ -7325,20 +7325,20 @@ When auditing, search for these patterns:
 
 When building a new component's token collections, create them in this order. Alias targets must exist before references.
 
-1. **Sentiment** collection → alias from Semantic Colour
+1. **Sentiment** collection → alias from Semantic Color
 2. **Emphasis** collection → alias from Sentiment
 3. **State** collection → alias from Emphasis
 4. **Structure** collection → alias from Semantic Scale/Typography
 5. **Size** collection → raw FLOAT values
 
-After creating all collections, run the audit against every rule above. Then validate by tracing one State leaf token all the way to a Primitive Colour raw value — the chain should pass through every layer.
+After creating all collections, run the audit against every rule above. Then validate by tracing one State leaf token all the way to a Primitive Color raw value — the chain should pass through every layer.
 
 ## Naming Conventions
 
 | Scope | Pattern | Example |
 |-------|---------|---------|
 | Collection | `{Type}.{Component}` | `State.Button`, `Emphasis.Badge` |
-| Colour tokens | `{element}/{property}` | `background/rest`, `foreground/hover` |
+| Color tokens | `{element}/{property}` | `background/rest`, `foreground/hover` |
 | Structure tokens | `{sub-element}/{css-property}` | `root/padding-left`, `root/radius` |
 
 ## Audit Output Format
@@ -7422,7 +7422,7 @@ Primitive → Semantic → Component Slot → Resolver → Rendered Value
 
 | Layer | What it contains |
 |-------|-----------------|
-| **Primitives** | Raw values (colours, spacing, typography) |
+| **Primitives** | Raw values (colors, spacing, typography) |
 | **Semantics** | Theme-aware, purpose-driven references to primitives |
 | **Component Slots** | Component-specific tokens defining which semantic fills each role |
 | **Resolver** | Runtime engine for multi-dimensional resolution |
@@ -7430,7 +7430,7 @@ Primitive → Semantic → Component Slot → Resolver → Rendered Value
 ## Dependency Chain
 
 ```
-Primitives             Raw values (colours, spacing, typography)
+Primitives             Raw values (colors, spacing, typography)
        ↓
 Semantics              Theme-aware references to primitives
        ↓
@@ -7498,30 +7498,30 @@ Names typically use **pixel-equivalent values** (e.g. `--font-size-14` = `0.875r
 - Import primitives **before** semantics in CSS (semantics depend on primitive declarations)
 - Never edit auto-generated files — use extension files for manual tokens
 
-## Colour Space: OKLCH
+## Color Space: OKLCH
 
-Colour primitives are defined in the **OKLCH** colour space (`oklch(L C H)`).
+Color primitives are defined in the **OKLCH** color space (`oklch(L C H)`).
 
 | Channel | Meaning | Range |
 |---------|---------|-------|
 | **L** (Lightness) | Perceptual brightness | `0` (black) – `1` (white) |
-| **C** (Chroma) | Colour intensity | `0` (grey) – `~0.37` (most vivid) |
+| **C** (Chroma) | Color intensity | `0` (grey) – `~0.37` (most vivid) |
 | **H** (Hue) | Hue angle | `0°` – `360°` |
 
 Why OKLCH over HSL or raw sRGB hex:
 
-- **Perceptual uniformity** — equal numeric steps produce equal visual steps. Two colours at the same L value look equally bright, which makes contrast ratios predictable across an entire ramp.
-- **Wide gamut** — OKLCH can represent Display P3 and Rec 2020 colours. Gamut mapping to sRGB is applied at build time so tokens degrade gracefully.
+- **Perceptual uniformity** — equal numeric steps produce equal visual steps. Two colors at the same L value look equally bright, which makes contrast ratios predictable across an entire ramp.
+- **Wide gamut** — OKLCH can represent Display P3 and Rec 2020 colors. Gamut mapping to sRGB is applied at build time so tokens degrade gracefully.
 - **Theme symmetry** — inverting lightness for dark mode produces natural-looking results because L is perceptually linear.
 
 ## Anchor Model
 
-Each palette starts from one or more **anchor colours** — designer-chosen hue and chroma values pinned to specific steps in the ramp. The generator holds these anchors fixed and fills the remaining steps algorithmically.
+Each palette starts from one or more **anchor colors** — designer-chosen hue and chroma values pinned to specific steps in the ramp. The generator holds these anchors fixed and fills the remaining steps algorithmically.
 
 An anchor defines:
 
 - **Hue (H)** — the base hue angle for the palette
-- **Chroma (C)** — peak colour intensity at the anchor step
+- **Chroma (C)** — peak color intensity at the anchor step
 - **Step** — which ramp position (e.g. `500`) the anchor occupies
 
 Multiple anchors per palette are supported. When present, hue is interpolated between them using shortest-arc (circular) interpolation to prevent unexpected hue shifts.
@@ -7571,11 +7571,11 @@ Each scheme (light, dark) has a fixed set of **lightness targets** — the L val
 `generate-ramps.ts` converts anchor definitions into primitive tokens through these steps:
 
 1. **Parse anchors** — load anchor hex values and their designated steps
-2. **Convert to OKLCH** — parse each anchor hex into the OKLCH colour space
+2. **Convert to OKLCH** — parse each anchor hex into the OKLCH color space
 3. **Set lightness** — assign L from the appropriate lightness-targets array (light or dark scheme)
 4. **Interpolate hue** — for steps between anchors, interpolate H via shortest-arc to avoid crossing through unrelated hues
 5. **Distribute chroma** — apply a bell-curve distribution (σ = 0.28) centred on the peak-chroma anchor, with a floor at 8% of peak chroma to prevent fully desaturated mid-ramp steps
-6. **Gamut-map** — clamp chroma via `clampChroma()` so every output colour falls within sRGB
+6. **Gamut-map** — clamp chroma via `clampChroma()` so every output color falls within sRGB
 7. **Emit tokens** — output as CSS custom properties, JSON, and Figma variable schemas
 
 ### Resolver
@@ -7693,7 +7693,7 @@ Always pair foreground and background tokens from the **same family and emphasis
 
 *End-to-end pipeline from designer anchor choices through generation, layering, and output to CSS custom properties.*
 
-The token transform pipeline traces how a designer's colour anchor choices become consumable CSS custom properties through six stages. This is a custom pipeline — not Style Dictionary or Token Studio — built to handle the dimensional model's alias chains and multi-mode resolution. Figma integration occurs at defined sync points between stages.
+The token transform pipeline traces how a designer's color anchor choices become consumable CSS custom properties through six stages. This is a custom pipeline — not Style Dictionary or Token Studio — built to handle the dimensional model's alias chains and multi-mode resolution. Figma integration occurs at defined sync points between stages.
 
 ## Pipeline Overview
 
@@ -7713,7 +7713,7 @@ The six stages form a single direction: each stage's output feeds the next. Figm
 
 ## Stage 1: Anchors
 
-Designers choose anchor hex values and assign each to a step in the [12-step colour ramp](/design-system/model/color-scale). An anchor defines the hue and chroma that a given step should hit — the generator fills in the rest.
+Designers choose anchor hex values and assign each to a step in the [12-step color ramp](/design-system/model/color-scale). An anchor defines the hue and chroma that a given step should hit — the generator fills in the rest.
 
 A palette can have multiple anchors. When it does, hue interpolates between them using shortest-arc (circular) interpolation, keeping transitions smooth across the ramp.
 
@@ -7736,7 +7736,7 @@ See [Generation Pipeline](/design-system/token-chain/primitives#generation-pipel
 
 ## Stage 3: Primitives
 
-The generator's output: raw OKLCH colour values plus size, typography, and scale tokens. These are the lowest-level tokens in the system.
+The generator's output: raw OKLCH color values plus size, typography, and scale tokens. These are the lowest-level tokens in the system.
 
 - **Naming:** `--{category}-{name}` (e.g., `--colors-neutral-500`, `--size-16`)
 - **Theme-aware:** light and dark modes produce different values for the same token name
@@ -7775,7 +7775,7 @@ The pipeline generates separate CSS files per category:
 
 | File | Content |
 |------|---------|
-| `colors.css` | Colour tokens with dark/light mode via `@media (prefers-color-scheme)` |
+| `colors.css` | Color tokens with dark/light mode via `@media (prefers-color-scheme)` |
 | `scale.css` | Spacing, radii, shadows, z-index, opacity, borders |
 | `typography.css` | Font families, sizes, weights, line heights, letter spacing |
 | `semantics.css` | Semantic aliases that reference the above |
@@ -7808,7 +7808,7 @@ At each stage boundary the pipeline validates alias integrity:
 
 - Every alias reference points to an existing variable
 - No circular alias chains
-- Colour tokens in component collections alias semantic tokens, not primitives directly
+- Color tokens in component collections alias semantic tokens, not primitives directly
 - Mode counts match across related collections
 
 Validation failures produce clear error messages with the broken alias path. See [Token Audit](/design-system/token-audit) for the full cascade integrity methodology.
@@ -7820,7 +7820,7 @@ Validation failures produce clear error messages with the broken alias path. See
 - [Semantics](/design-system/token-chain/semantics) — purpose-driven alias rules
 - [Component Slots](/design-system/token-chain/component-slots) — slot definitions and manifest flow
 - [Resolver](/design-system/token-chain/resolver) — runtime multi-dimensional resolution
-- [Colour Scale](/design-system/model/color-scale) — the 12-step ramp structure
+- [Color Scale](/design-system/model/color-scale) — the 12-step ramp structure
 - [Naming Conventions](/design-system/naming) — token naming across layers
 - [Token Audit](/design-system/token-audit) — cascade integrity verification
 
@@ -7835,7 +7835,7 @@ Two shell scripts synchronise design tokens with Figma through the [PRISM](/desi
 | Script | Direction | Purpose |
 |--------|-----------|---------|
 | `figma-push.sh` | Local → Figma | Push generated token collections into Figma as variables |
-| `figma-pull.sh` | Figma → Local | Pull anchor colours from Figma into `packages/ui/anchors.json` |
+| `figma-pull.sh` | Figma → Local | Pull anchor colors from Figma into `packages/ui/anchors.json` |
 
 Both scripts read connection configuration from `.mcp.json` at the project root and discover MCP tool names at runtime — nothing is hardcoded.
 
@@ -7924,7 +7924,7 @@ If any check fails the script exits with a descriptive error.
 
 ## figma-pull.sh
 
-Pulls anchor colour tokens from Figma and writes them to `packages/ui/anchors.json`.
+Pulls anchor color tokens from Figma and writes them to `packages/ui/anchors.json`.
 
 ### Usage
 

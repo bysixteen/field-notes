@@ -13,14 +13,14 @@ description: >-
   "css variable", "design token", "token system", "token architecture",
   "dimensional model", "mixing desk", "fader", "collection mode",
   "sentiment collection", "emphasis collection", "state collection",
-  "structure collection", "size collection", "colour cascade",
-  "color cascade", "alias chain", "hardcoded value", "hardcoded colour",
+  "structure collection", "size collection", "color cascade",
+  "color cascade", "alias chain", "hardcoded value", "hardcoded color",
   "hardcoded color", "magic number", "hex value in CSS",
   "token resolution", "token pipeline", "token transform",
   "which token should I use", "what token for this",
   "how do tokens work", "token system overview",
   "theme token", "dark mode token", "light mode token",
-  "semantic colour", "semantic color", "primitive colour",
+  "semantic color", "semantic color", "primitive color",
   "build order for tokens", "token build order",
   "new component tokens", "component token API".
 ---
@@ -48,13 +48,13 @@ Each dimension is a fader on a mixing desk -- faders move independently. The com
  ─────────   ─────────   ─────────   ─────────   ─────────
 ```
 
-## Colour Cascade (bottom-up)
+## Color Cascade (bottom-up)
 
 ```
-Semantic Colour (global)
+Semantic Color (global)
     |
     v
-Sentiment (component) -- aliases Semantic Colour
+Sentiment (component) -- aliases Semantic Color
     |
     v
 Emphasis (component) -- aliases Sentiment
@@ -67,7 +67,7 @@ Each layer aliases the one below. A single Sentiment change propagates through E
 
 ## Token Naming Conventions
 
-### Colour Tokens
+### Color Tokens
 
 | Pattern | Example | When |
 |---------|---------|------|
@@ -104,13 +104,13 @@ Each layer aliases the one below. A single Sentiment change propagates through E
 
 ## Audit Rules
 
-### BLOCKING (colour track)
+### BLOCKING (color track)
 
 | # | Rule | Check |
 |---|------|-------|
 | 1 | State layer: every COLOR must alias Emphasis | `--button-bg-hover` aliases `--button-bg` from Emphasis, not a primitive |
 | 2 | Emphasis layer: every COLOR must alias Sentiment | `--button-bg` (high) aliases Sentiment collection |
-| 3 | Sentiment layer: every COLOR must alias Semantic Colour | Sentiment collection aliases `--fg-*`, `--bg-*` globals |
+| 3 | Sentiment layer: every COLOR must alias Semantic Color | Sentiment collection aliases `--fg-*`, `--bg-*` globals |
 
 ### WARNING (structural track)
 
@@ -134,7 +134,7 @@ Each layer aliases the one below. A single Sentiment change propagates through E
 
 | Step | Collection | Aliases From | Contains |
 |------|-----------|-------------|----------|
-| 1 | Sentiment | Semantic Colour globals | `--component-bg`, `--component-fg` per sentiment mode |
+| 1 | Sentiment | Semantic Color globals | `--component-bg`, `--component-fg` per sentiment mode |
 | 2 | Emphasis | Sentiment collection | `--component-bg`, `--component-fg` per emphasis mode |
 | 3 | State | Emphasis collection | `--component-bg-hover`, `--component-bg-active` etc. |
 | 4 | Structure | Semantic Scale / Typography | `--component-padding-x`, `--component-radius`, `--component-font-size` |
@@ -149,8 +149,8 @@ TOKEN AUDIT: {ComponentName}
 Files: {CSS and token files reviewed}
 ===========================================================
 
-COLOUR TRACK:
-  Sentiment -> Semantic Colour:  {PASS | FAIL: details}
+COLOR TRACK:
+  Sentiment -> Semantic Color:  {PASS | FAIL: details}
   Emphasis -> Sentiment:         {PASS | FAIL: details}
   State -> Emphasis:             {PASS | FAIL: details}
 
@@ -164,7 +164,7 @@ HARDCODED VALUES:
   Line {n}: {value} -- should be {token}
 
 TOKENS CONSUMED:
-  Colour:     {list}
+  Color:     {list}
   Spacing:    {list}
   Typography: {list}
   Structure:  {list}

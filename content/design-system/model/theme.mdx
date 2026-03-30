@@ -1,18 +1,18 @@
 ---
 title: Theme
-description: The colour scheme dimension — light and dark modes.
+description: The color scheme dimension — light and dark modes.
 ---
 
 ## Definition
 
-Theme controls the overall **colour scheme** — light or dark mode. It is an environmental dimension that affects the entire application or a scoped section.
+Theme controls the overall **color scheme** — light or dark mode. It is an environmental dimension that affects the entire application or a scoped section.
 
 ## Values
 
 | Value | Meaning |
 |-------|---------|
-| `light` | Light colour scheme |
-| `dark` | Dark colour scheme |
+| `light` | Light color scheme |
+| `dark` | Dark color scheme |
 
 **Default:** project-dependent
 
@@ -47,7 +47,7 @@ Theme relies on a **two-layer token model**: primitives and semantics.
 }
 ```
 
-**Semantic tokens** reference primitives via `var()`. They describe intent, not colour:
+**Semantic tokens** reference primitives via `var()`. They describe intent, not color:
 
 ```css
 :root {
@@ -60,12 +60,12 @@ When the theme changes, primitive values swap. Semantic tokens automatically res
 
 | Layer | Role | Changes with theme? |
 |-------|------|---------------------|
-| Primitive | Defines raw colour values per mode | Yes |
+| Primitive | Defines raw color values per mode | Yes |
 | Semantic | Describes purpose, references primitives | No |
 
 ## Mode Structure in Figma
 
-Figma variable collections mirror this two-layer model. A **Primitives** collection contains raw colour values with modes for each theme:
+Figma variable collections mirror this two-layer model. A **Primitives** collection contains raw color values with modes for each theme:
 
 | Variable | Light | Dark |
 |----------|-------|------|

@@ -130,8 +130,8 @@ Extract CSS custom properties from the stylesheet. Build a typed array:
 
 ```tsx
 const COMPONENT_TOKENS = [
-  { figmaPath: 'collection/path', cssProperty: '--component-bg', category: 'colour' },
-  { figmaPath: 'collection/path', cssProperty: '--component-fg', category: 'colour' },
+  { figmaPath: 'collection/path', cssProperty: '--component-bg', category: 'color' },
+  { figmaPath: 'collection/path', cssProperty: '--component-fg', category: 'color' },
   { figmaPath: 'collection/path', cssProperty: '--component-padding-x', category: 'spacing' },
   { figmaPath: 'collection/path', cssProperty: '--component-height', category: 'spacing' },
   { figmaPath: 'collection/path', cssProperty: '--component-radius', category: 'structure' },
@@ -139,7 +139,7 @@ const COMPONENT_TOKENS = [
 ] satisfies DimensionalToken[];
 ```
 
-Categories: `colour`, `spacing`, `typography`, `structure`.
+Categories: `color`, `spacing`, `typography`, `structure`.
 
 Render with `TokenTable` from `stories/helpers/`. Include `FigmaRef` for each entry.
 
@@ -162,7 +162,7 @@ Derive from JSX structure. Number each element:
 | `Section` | Content section with consistent padding |
 | `SectionHeading` | Section title typography |
 | `TokenTable` | Table of token names, values, categories |
-| `Swatch` | Colour swatch with label |
+| `Swatch` | Color swatch with label |
 | `SwatchGrid` | Grid layout for swatches or demo items |
 | `DemoBox` | Labeled specimen container |
 | `DosDonts` | Side-by-side do/don't examples |
@@ -183,7 +183,7 @@ Derive from JSX structure. Number each element:
 - [ ] Token table matches CSS custom properties exactly
 - [ ] Anatomy matches JSX element structure
 - [ ] All imports resolve
-- [ ] No hardcoded colour/spacing values
+- [ ] No hardcoded color/spacing values
 - [ ] Autodocs tag present
 - [ ] Zero inline `style={{ }}` attributes
 

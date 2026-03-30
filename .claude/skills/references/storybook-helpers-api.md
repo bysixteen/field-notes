@@ -7,7 +7,7 @@ These components live in `stories/helpers/` and are the **only** way to build do
 Every documentation story wraps content in this hierarchy:
 
 ```tsx
-<DocPage title="Colour Primitives" subtitle="OKLCH 12-step ramps">
+<DocPage title="Color Primitives" subtitle="OKLCH 12-step ramps">
   <Section>
     <SectionHeading>Neutral</SectionHeading>
     {/* section content */}
@@ -25,7 +25,7 @@ Every documentation story wraps content in this hierarchy:
 | `Section` | Section wrapper with consistent bottom margin | — |
 | `SectionHeading` | `h2` with uppercase label treatment and border-bottom | children (text) |
 
-## Colour Display
+## Color Display
 
 ```tsx
 {/* Single swatch */}
@@ -47,7 +47,7 @@ Every documentation story wraps content in this hierarchy:
 
 | Component | Purpose | Props |
 |-----------|---------|-------|
-| `Swatch` | Single colour swatch bound to CSS custom property | `token`, `label`, `sublabel` |
+| `Swatch` | Single color swatch bound to CSS custom property | `token`, `label`, `sublabel` |
 | `SwatchGrid` | Flexible grid layout for arranging multiple swatches | children |
 | `TonalRamp` | Horizontal strip showing full palette with hex values and auto-contrast text | `palette`, `steps` |
 
@@ -121,6 +121,6 @@ import type { DimensionalToken } from '../stories/helpers';
 type DimensionalToken = {
   figmaPath: string;
   cssProperty: string;
-  category: 'colour' | 'spacing' | 'typography' | 'structure';
+  category: 'color' | 'spacing' | 'typography' | 'structure';
 };
 ```

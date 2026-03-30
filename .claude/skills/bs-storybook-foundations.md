@@ -2,16 +2,16 @@
 name: bs-storybook-foundations
 description: >-
   Generate Storybook documentation stories for design system foundations --
-  colour primitives, semantic tokens, spacing scales, typography scales, radii,
+  color primitives, semantic tokens, spacing scales, typography scales, radii,
   elevation, and motion. Reads CSS token files and generates visual documentation
   pages using the shared helper component library. Triggers on: "document tokens
   in storybook", "storybook docs for primitives", "generate foundation stories",
-  "colour scale documentation", "token documentation stories", "document
+  "color scale documentation", "token documentation stories", "document
   spacing/typography scale", "storybook pages for design tokens", "foundation
   docs", "document elevation tokens", "motion token stories",
   "foundation documentation", "primitives documentation",
-  "colour palette docs", "color palette docs", "colour ramp",
-  "color ramp", "OKLCH ramp", "semantic colour docs", "semantic color docs",
+  "color palette docs", "color palette docs", "color ramp",
+  "color ramp", "OKLCH ramp", "semantic color docs", "semantic color docs",
   "token pages", "design token documentation", "document the tokens",
   "document the foundations", "document spacing tokens", "document radii",
   "document typography tokens", "document font scale",
@@ -40,7 +40,7 @@ Read the relevant CSS token files before generating:
 
 | File | Contains | Extract |
 |------|----------|---------|
-| `colors.css` | Primitive colour ramps (OKLCH, 12-step per palette) | `--colors-{palette}-{step}` custom properties |
+| `colors.css` | Primitive color ramps (OKLCH, 12-step per palette) | `--colors-{palette}-{step}` custom properties |
 | `semantics.css` | Purpose-driven aliases | `--{element}-{variant}-{state}` custom properties |
 | `scale.css` | Spacing, sizing, radii, and stroke weights | `--size-{n}`, `--radii-{name}`, `--stroke-weight-{n}` |
 | `typography.css` | Font size, weight, family, leading, tracking | `--font-size-{n}`, `--font-weight-{n}`, `--leading-{name}`, `--tracking-{name}`, `--font-family-{name}` |
@@ -66,7 +66,7 @@ const meta = {
 export default meta;
 ```
 
-## Colour Step Roles (12-step OKLCH)
+## Color Step Roles (12-step OKLCH)
 
 | Step | Role | Typical Use |
 |------|------|-------------|
@@ -112,11 +112,11 @@ export const PaletteName = {
 };
 ```
 
-**Critical: never write inline styles.** Every visual pattern has a helper. If you find yourself writing `style={{ ... }}`, stop and use the appropriate helper component instead. The helpers use `docStyles.ts` constants for consistent typography, spacing, and colour.
+**Critical: never write inline styles.** Every visual pattern has a helper. If you find yourself writing `style={{ ... }}`, stop and use the appropriate helper component instead. The helpers use `docStyles.ts` constants for consistent typography, spacing, and color.
 
 ## Foundation Page Types
 
-### Colour Primitives (`ColourPrimitives.docs.stories.tsx`)
+### Color Primitives (`ColorPrimitives.docs.stories.tsx`)
 
 Source: `colors.css`
 
@@ -140,7 +140,7 @@ const STEP_ROLES = {
 | `ThemeComparison` | Light and dark side by side using `data-theme` wrappers | `DemoBox`, `SwatchGrid` |
 | `AccessiblePairings` | Foreground/background combinations meeting contrast | `DemoBox`, `Callout` |
 
-### Semantic Colours (`SemanticColours.docs.stories.tsx`)
+### Semantic Colors (`SemanticColors.docs.stories.tsx`)
 
 Source: `semantics.css`
 
@@ -211,7 +211,7 @@ Source: `motion.css` (if present)
 | `DocPage` | Page wrapper with title and subtitle |
 | `Section` | Content section with consistent padding |
 | `SectionHeading` | Section title typography |
-| `Swatch` | Colour swatch with token, label, sublabel |
+| `Swatch` | Color swatch with token, label, sublabel |
 | `SwatchGrid` | Grid layout for swatches |
 | `TonalRamp` | Horizontal palette ramp visualization |
 | `TokenTable` | Table of token names, values, categories |
@@ -227,7 +227,7 @@ Source: `motion.css` (if present)
 | `style={{ fontSize: '10px', color: '#6b7280' }}` | Use `SectionHeading` or `Callout` |
 | `<div style={{ padding: '2rem' }}>` | Use `DocPage` or `Section` |
 | `const ScaleBar = () => ...` (local component) | Use `DemoBox` with `TokenTable` |
-| Hardcoded hex colours (`#94a3b8`) | Use `var(--colors-*)` CSS custom properties |
+| Hardcoded hex colors (`#94a3b8`) | Use `var(--colors-*)` CSS custom properties |
 | `<table style={{ ... }}>` with inline cell styles | Use `TokenTable` component |
 
 ## Rules
@@ -236,15 +236,15 @@ Source: `motion.css` (if present)
 2. **Helpers only** -- read `references/storybook-helpers-api.md` and use exclusively those components. No inline styles, no local presentation components
 3. **CSF3 + TypeScript** -- `satisfies Meta`, no component type parameter for foundations
 4. **Fullscreen layout** -- `parameters: { layout: 'fullscreen' }` and `tags: ['autodocs']`
-5. **Theme aware** -- colour specimens must show both light and dark via `data-theme` wrappers
-6. **Step roles** -- annotate every colour step with its semantic role
+5. **Theme aware** -- color specimens must show both light and dark via `data-theme` wrappers
+6. **Step roles** -- annotate every color step with its semantic role
 7. **Group by purpose** -- semantic tokens grouped by element, not alphabetically
 8. **Complete extraction** -- include ALL tokens from the source file, including radii and stroke weights from `scale.css`, font families from `typography.css`
 
 ## Validation Checklist
 
 - [ ] Every CSS custom property from the source file appears in a story
-- [ ] Colour swatches use `Swatch` component with `token` prop (not hardcoded hex)
+- [ ] Color swatches use `Swatch` component with `token` prop (not hardcoded hex)
 - [ ] Step roles annotated for all 12 steps per palette
 - [ ] Theme comparison uses `data-theme="light"` and `data-theme="dark"` wrappers
 - [ ] Spacing values include both px and rem
@@ -269,7 +269,7 @@ STORIES GENERATED:
 
 TOKENS DOCUMENTED: {count}
 HELPERS USED: {list}
-PALETTES COVERED: {list, if colour}
+PALETTES COVERED: {list, if color}
 
 VALIDATION:
   [x] All tokens from source file included

@@ -3,7 +3,7 @@ title: Token Transform Pipeline
 description: End-to-end pipeline from designer anchor choices through generation, layering, and output to CSS custom properties.
 ---
 
-The token transform pipeline traces how a designer's colour anchor choices become consumable CSS custom properties through six stages. This is a custom pipeline — not Style Dictionary or Token Studio — built to handle the dimensional model's alias chains and multi-mode resolution. Figma integration occurs at defined sync points between stages.
+The token transform pipeline traces how a designer's color anchor choices become consumable CSS custom properties through six stages. This is a custom pipeline — not Style Dictionary or Token Studio — built to handle the dimensional model's alias chains and multi-mode resolution. Figma integration occurs at defined sync points between stages.
 
 ## Pipeline Overview
 
@@ -23,7 +23,7 @@ The six stages form a single direction: each stage's output feeds the next. Figm
 
 ## Stage 1: Anchors
 
-Designers choose anchor hex values and assign each to a step in the [12-step colour ramp](/design-system/model/color-scale). An anchor defines the hue and chroma that a given step should hit — the generator fills in the rest.
+Designers choose anchor hex values and assign each to a step in the [12-step color ramp](/design-system/model/color-scale). An anchor defines the hue and chroma that a given step should hit — the generator fills in the rest.
 
 A palette can have multiple anchors. When it does, hue interpolates between them using shortest-arc (circular) interpolation, keeping transitions smooth across the ramp.
 
@@ -46,7 +46,7 @@ See [Generation Pipeline](/design-system/token-chain/primitives#generation-pipel
 
 ## Stage 3: Primitives
 
-The generator's output: raw OKLCH colour values plus size, typography, and scale tokens. These are the lowest-level tokens in the system.
+The generator's output: raw OKLCH color values plus size, typography, and scale tokens. These are the lowest-level tokens in the system.
 
 - **Naming:** `--{category}-{name}` (e.g., `--colors-neutral-500`, `--size-16`)
 - **Theme-aware:** light and dark modes produce different values for the same token name
@@ -85,7 +85,7 @@ The pipeline generates separate CSS files per category:
 
 | File | Content |
 |------|---------|
-| `colors.css` | Colour tokens with dark/light mode via `@media (prefers-color-scheme)` |
+| `colors.css` | Color tokens with dark/light mode via `@media (prefers-color-scheme)` |
 | `scale.css` | Spacing, radii, shadows, z-index, opacity, borders |
 | `typography.css` | Font families, sizes, weights, line heights, letter spacing |
 | `semantics.css` | Semantic aliases that reference the above |
@@ -118,7 +118,7 @@ At each stage boundary the pipeline validates alias integrity:
 
 - Every alias reference points to an existing variable
 - No circular alias chains
-- Colour tokens in component collections alias semantic tokens, not primitives directly
+- Color tokens in component collections alias semantic tokens, not primitives directly
 - Mode counts match across related collections
 
 Validation failures produce clear error messages with the broken alias path. See [Token Audit](/design-system/token-audit) for the full cascade integrity methodology.
@@ -130,6 +130,6 @@ Validation failures produce clear error messages with the broken alias path. See
 - [Semantics](/design-system/token-chain/semantics) — purpose-driven alias rules
 - [Component Slots](/design-system/token-chain/component-slots) — slot definitions and manifest flow
 - [Resolver](/design-system/token-chain/resolver) — runtime multi-dimensional resolution
-- [Colour Scale](/design-system/model/color-scale) — the 12-step ramp structure
+- [Color Scale](/design-system/model/color-scale) — the 12-step ramp structure
 - [Naming Conventions](/design-system/naming) — token naming across layers
 - [Token Audit](/design-system/token-audit) — cascade integrity verification

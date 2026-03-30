@@ -174,7 +174,7 @@ const NEUTRAL_DARK_VALUES: Record<number, string> = {
 /* ─── Meta ─────────────────────────────────────────────────────────────────── */
 
 const meta = {
-  title: 'Foundations/Colour Primitives',
+  title: 'Foundations/Color Primitives',
   parameters: { layout: 'fullscreen' },
   tags: ['autodocs'],
 } satisfies Meta;
@@ -189,7 +189,7 @@ type Story = StoryObj<typeof meta>;
  */
 export const Overview: Story = {
   render: () => (
-    <DocPage title="Colour Primitives" subtitle="OKLCH 12-step ramps across all palettes">
+    <DocPage title="Color Primitives" subtitle="OKLCH 12-step ramps across all palettes">
       <Callout>
         Every palette follows a 12-step lightness ramp from 50 (lightest) to 1000
         (darkest). Steps map to functional roles: backgrounds, surfaces, borders,
@@ -252,7 +252,7 @@ export const Brand: Story = {
   render: () => {
     const ramp = buildRamp(PALETTES[1]);
     return (
-      <DocPage title="Brand" subtitle="Hue 250 · Primary brand colour">
+      <DocPage title="Brand" subtitle="Hue 250 · Primary brand color">
         <DemoBox>
           {ramp.map(({ step, cssProperty, role }) => (
             <Swatch key={step} token={cssProperty} label={`${step}`} sublabel={role} />

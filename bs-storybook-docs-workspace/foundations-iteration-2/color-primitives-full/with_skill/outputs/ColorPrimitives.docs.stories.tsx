@@ -12,7 +12,7 @@ import {
 } from '../stories/helpers';
 
 const meta = {
-  title: 'Foundations/ColourPrimitives',
+  title: 'Foundations/ColorPrimitives',
   parameters: { layout: 'fullscreen' },
   tags: ['autodocs'],
 } satisfies Meta;
@@ -171,9 +171,9 @@ const DARK_NEUTRAL_OKLCH: Record<StepKey, string> = {
 /** All palettes at a glance — one TonalRamp per palette. */
 export const Overview = {
   render: () => (
-    <DocPage title="Colour Primitives" subtitle="OKLCH 12-step ramps across 5 palettes">
+    <DocPage title="Color Primitives" subtitle="OKLCH 12-step ramps across 5 palettes">
       <Callout variant="note">
-        Every palette follows a consistent 12-step lightness ramp in OKLCH colour space.
+        Every palette follows a consistent 12-step lightness ramp in OKLCH color space.
         Steps are numbered from 50 (lightest) to 1000 (darkest) and each step has a
         defined role in the interface.
       </Callout>
