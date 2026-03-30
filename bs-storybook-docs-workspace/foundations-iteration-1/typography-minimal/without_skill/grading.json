@@ -1,0 +1,60 @@
+{
+  "expectations": [
+    {
+      "text": "File uses CSF3 format with satisfies Meta (no component type parameter)",
+      "passed": false,
+      "evidence": "satisfies Meta=False, component type param=False"
+    },
+    {
+      "text": "Meta title starts with 'Foundations/'",
+      "passed": true,
+      "evidence": "Foundations/ title found"
+    },
+    {
+      "text": "Tags include 'autodocs' and parameters include layout: 'fullscreen'",
+      "passed": false,
+      "evidence": "autodocs=True, fullscreen=False"
+    },
+    {
+      "text": "All font-size tokens present (--font-size-11 through --font-size-48)",
+      "passed": true,
+      "evidence": "Found 5/5 key font-size tokens"
+    },
+    {
+      "text": "Font weight scale shown (400, 500, 600, 700)",
+      "passed": true,
+      "evidence": "Found 4/4 font weights"
+    },
+    {
+      "text": "Leading scale documented (none through loose)",
+      "passed": true,
+      "evidence": "Found 4/4 leading tokens"
+    },
+    {
+      "text": "Tracking scale documented (tighter through wider)",
+      "passed": true,
+      "evidence": "Found 5/5 tracking tokens"
+    },
+    {
+      "text": "Text samples rendered at actual token sizes (not just listed)",
+      "passed": true,
+      "evidence": "var(--font-size)=True, fontSize style=True"
+    },
+    {
+      "text": "Uses DocPage from stories/helpers/",
+      "passed": false,
+      "evidence": "DocPage import=False, from helpers=False"
+    },
+    {
+      "text": "Font family tokens included (sans and mono)",
+      "passed": true,
+      "evidence": "sans=True, mono=True"
+    }
+  ],
+  "summary": {
+    "passed": 7,
+    "failed": 3,
+    "total": 10,
+    "pass_rate": 0.7
+  }
+}

@@ -1,0 +1,70 @@
+{
+  "expectations": [
+    {
+      "text": "File uses CSF3 format with satisfies Meta (no component type parameter)",
+      "passed": true,
+      "evidence": "satisfies Meta=True, component type=False"
+    },
+    {
+      "text": "Meta title starts with 'Foundations/'",
+      "passed": true,
+      "evidence": "Foundations/ title found"
+    },
+    {
+      "text": "Tags include 'autodocs' and parameters include layout: 'fullscreen'",
+      "passed": true,
+      "evidence": "autodocs=True, fullscreen=True"
+    },
+    {
+      "text": "All 5 palettes have dedicated stories: neutral, brand, red, amber, green",
+      "passed": true,
+      "evidence": "Palette stories: ['Neutral', 'Brand', 'Red', 'Amber', 'Green']"
+    },
+    {
+      "text": "All 12 steps present per palette (50, 100, 200, 300, 400, 500, 600, 700, 800, 900, 950, 1000)",
+      "passed": true,
+      "evidence": "Builder pattern found, 12/12 step numbers present"
+    },
+    {
+      "text": "Step role annotations present for all ranges: background, surface, border, solid, text",
+      "passed": true,
+      "evidence": "Roles found: ['background', 'border', 'solid', 'text']"
+    },
+    {
+      "text": "ThemeComparison story with data-theme light and dark wrappers",
+      "passed": true,
+      "evidence": "Theme story=True, data-theme=True"
+    },
+    {
+      "text": "Uses Swatch or SwatchGrid or TonalRamp from stories/helpers/",
+      "passed": true,
+      "evidence": "Swatch=True, SwatchGrid=True, TonalRamp=True, helpers=True"
+    },
+    {
+      "text": "Uses DocPage with Section and SectionHeading from stories/helpers/",
+      "passed": true,
+      "evidence": "DocPage=True, Section=True, SectionHeading=True, helpers=True"
+    },
+    {
+      "text": "CSS custom property names derived from source (--colors-neutral-50 etc.)",
+      "passed": true,
+      "evidence": "Template pattern generates tokens dynamically, palettes present=True"
+    },
+    {
+      "text": "Zero inline style attributes in story JSX \u2014 all visual via helpers",
+      "passed": true,
+      "evidence": "Found 0 inline style={ occurrences"
+    },
+    {
+      "text": "Overview story showing all palettes at a glance",
+      "passed": true,
+      "evidence": "Overview story=found"
+    }
+  ],
+  "summary": {
+    "passed": 12,
+    "failed": 0,
+    "total": 12,
+    "pass_rate": 1.0
+  }
+}

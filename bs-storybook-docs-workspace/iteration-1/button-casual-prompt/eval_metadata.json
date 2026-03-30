@@ -1,0 +1,18 @@
+{
+  "eval_id": 2,
+  "eval_name": "button-casual-prompt",
+  "prompt": "Create documentation stories for our Button component in Storybook. I need the full docs treatment — all the dimension grids, token table, anatomy breakdown, and usage do/don'ts. Component files are in button-component/.",
+  "assertions": [
+    "Output file uses CSF3 format with 'satisfies Meta<typeof Button>'",
+    "Meta has tags: ['autodocs'] and layout: 'fullscreen'",
+    "All 5 sentiments from types file appear in a story",
+    "All 3 emphasis levels appear in a story",
+    "All 5 sizes appear in a story",
+    "All 5 states appear in a story",
+    "Token table extracts CSS custom properties from the CSS file — not invented values",
+    "Anatomy matches the JSX structure (btn root, btn__prefix, btn__label, btn__suffix, btn__spinner)",
+    "Uses DosDonts helper for usage guidance",
+    "Structure dimension is represented (standard, icon-only, split)",
+    "No hardcoded colour or spacing values"
+  ]
+}

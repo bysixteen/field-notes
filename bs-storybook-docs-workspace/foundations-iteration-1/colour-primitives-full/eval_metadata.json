@@ -1,0 +1,19 @@
+{
+  "eval_id": 1,
+  "eval_name": "colour-primitives-full",
+  "prompt": "Generate Storybook documentation for our colour primitives. The CSS file is at bs-storybook-docs-workspace/evals/files/tokens/colors.css. We use OKLCH with a 12-step ramp per palette. Include all palettes (neutral, brand, red, amber, green), step roles, and a dark theme comparison. Use the helpers from stories/helpers/.",
+  "assertions": [
+    "File uses CSF3 format with satisfies Meta (no component type parameter)",
+    "Meta title starts with 'Foundations/'",
+    "Tags include 'autodocs' and parameters include layout: 'fullscreen'",
+    "All 5 palettes have dedicated stories: neutral, brand, red, amber, green",
+    "Each palette story shows all 12 steps (50 through 1000)",
+    "Step role annotations present: background range (50-300), border range (400-600), solid range (700-800), text range (900-1000)",
+    "ThemeComparison story with data-theme light and dark wrappers",
+    "Uses Swatch component from stories/helpers/",
+    "Uses DocPage component from stories/helpers/",
+    "CSS custom property names match source file exactly (e.g. --colors-neutral-50)",
+    "No hardcoded hex colour values — uses var() references or OKLCH from source",
+    "Overview story showing all palettes at a glance"
+  ]
+}

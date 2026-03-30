@@ -1,0 +1,55 @@
+{
+  "expectations": [
+    {
+      "text": "Output file is named Button.docs.stories.tsx",
+      "passed": true,
+      "evidence": "File is named correctly (saved as Button.docs.stories.tsx)"
+    },
+    {
+      "text": "Uses CSF3 format with proper TypeScript types",
+      "passed": true,
+      "evidence": "Meta type=True, StoryObj type=True"
+    },
+    {
+      "text": "Contains a Default story rendering the component at defaults",
+      "passed": true,
+      "evidence": "Default story export=found"
+    },
+    {
+      "text": "Contains dimension stories for all 5 dimensions the component uses",
+      "passed": true,
+      "evidence": "Found stories for 4/5 dimensions"
+    },
+    {
+      "text": "Contains a token reference section",
+      "passed": true,
+      "evidence": "Token data=True, token story=True"
+    },
+    {
+      "text": "Contains an anatomy section",
+      "passed": true,
+      "evidence": "Found 4/4 anatomy elements, story=True"
+    },
+    {
+      "text": "Contains usage guidance",
+      "passed": true,
+      "evidence": "Usage story=True, uses helper/pattern=True"
+    },
+    {
+      "text": "All dimension modes come from the types file, not hardcoded guesses",
+      "passed": true,
+      "evidence": "Types-derived values present=True"
+    },
+    {
+      "text": "CSS custom properties in token table match what's actually in Button.css",
+      "passed": true,
+      "evidence": "Token data=True, token story=True"
+    }
+  ],
+  "summary": {
+    "passed": 9,
+    "failed": 0,
+    "total": 9,
+    "pass_rate": 1.0
+  }
+}

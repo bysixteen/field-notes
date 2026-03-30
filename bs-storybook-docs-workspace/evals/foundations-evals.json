@@ -1,0 +1,64 @@
+{
+  "skill_name": "bs-storybook-foundations",
+  "evals": [
+    {
+      "id": 1,
+      "name": "colour-primitives-full",
+      "prompt": "Generate Storybook documentation for our colour primitives. The CSS file is at bs-storybook-docs-workspace/evals/files/tokens/colors.css. We use OKLCH with a 12-step ramp per palette. Include all palettes (neutral, brand, red, amber, green), step roles, and a dark theme comparison. Use the helpers from stories/helpers/.",
+      "expected_output": "A ColourPrimitives.docs.stories.tsx with swatch grids for each palette, step role annotations, and a theme comparison story",
+      "files": ["bs-storybook-docs-workspace/evals/files/tokens/colors.css"],
+      "assertions": [
+        "File uses CSF3 format with satisfies Meta (no component type parameter)",
+        "Meta title starts with 'Foundations/'",
+        "Tags include 'autodocs' and parameters include layout: 'fullscreen'",
+        "All 5 palettes have dedicated stories: neutral, brand, red, amber, green",
+        "Each palette story shows all 12 steps (50 through 1000)",
+        "Step role annotations present: background range (50-300), border range (400-600), solid range (700-800), text range (900-1000)",
+        "ThemeComparison story with data-theme light and dark wrappers",
+        "Uses Swatch component from stories/helpers/",
+        "Uses DocPage component from stories/helpers/",
+        "CSS custom property names match source file exactly (e.g. --colors-neutral-50)",
+        "No hardcoded hex colour values — uses var() references or OKLCH from source",
+        "Overview story showing all palettes at a glance"
+      ]
+    },
+    {
+      "id": 2,
+      "name": "spacing-scale-casual",
+      "prompt": "hey can you make storybook docs for our spacing and sizing tokens? the css is in bs-storybook-docs-workspace/evals/files/tokens/scale.css. should show the full scale visually with measured blocks, and group them by the gestalt tiers (tight/medium/loose). radii too please",
+      "expected_output": "A SpacingScale.docs.stories.tsx with visual rulers, tier groupings, and radii specimens",
+      "files": ["bs-storybook-docs-workspace/evals/files/tokens/scale.css"],
+      "assertions": [
+        "File uses CSF3 format with satisfies Meta (no component type parameter)",
+        "Meta title starts with 'Foundations/'",
+        "Tags include 'autodocs' and parameters include layout: 'fullscreen'",
+        "All spacing tokens present from --size-0 through --size-128",
+        "Gestalt tier grouping: tight (4-8), medium (12-20), loose (28-32+)",
+        "Both pixel and rem values shown for spacing tokens",
+        "Radii tokens documented: --radii-none through --radii-full",
+        "Uses DocPage and DemoBox from stories/helpers/",
+        "Visual rendering of scale (blocks/bars, not just a table)",
+        "Stroke weight tokens included (--stroke-weight-1 through 3)"
+      ]
+    },
+    {
+      "id": 3,
+      "name": "typography-minimal",
+      "prompt": "Document the typography tokens in Storybook. CSS: bs-storybook-docs-workspace/evals/files/tokens/typography.css",
+      "expected_output": "A TypographyScale.docs.stories.tsx with font size samples, weight scale, leading, and tracking",
+      "files": ["bs-storybook-docs-workspace/evals/files/tokens/typography.css"],
+      "assertions": [
+        "File uses CSF3 format with satisfies Meta (no component type parameter)",
+        "Meta title starts with 'Foundations/'",
+        "Tags include 'autodocs' and parameters include layout: 'fullscreen'",
+        "All font-size tokens present (--font-size-11 through --font-size-48)",
+        "Font weight scale shown (400, 500, 600, 700)",
+        "Leading scale documented (none through loose)",
+        "Tracking scale documented (tighter through wider)",
+        "Text samples rendered at actual token sizes (not just listed)",
+        "Uses DocPage from stories/helpers/",
+        "Font family tokens included (sans and mono)"
+      ]
+    }
+  ]
+}
