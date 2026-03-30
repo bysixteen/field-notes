@@ -1,13 +1,24 @@
+---
+name: bs-storybook-helpers
+description: >-
+  Catalogue of documentation helper components used to build Storybook pages.
+  Defines the API for every helper (DocPage, Section, TokenTable, Swatch,
+  DosDonts, Callout, etc.) and maps each to its Figma documentation component
+  equivalent. Loaded by the bs-storybook-ds orchestrator before any documentation
+  generation. Triggers on: "what helpers are available", "documentation components",
+  "helper API", "which component for this pattern".
+---
+
 # Storybook Documentation Helpers API
 
-These components live in `stories/helpers/` and are the **only** way to build documentation pages. Do not write inline styles or create local presentation components — every visual pattern has a helper.
+These components live in `stories/helpers/` and are the **only** way to build documentation pages. Do not write inline styles or create local presentation components. Every visual pattern has a helper.
 
 ## Page Structure
 
 Every documentation story wraps content in this hierarchy:
 
 ```tsx
-<DocPage title="Color Primitives" subtitle="OKLCH 12-step ramps">
+<DocPage title="Colour Primitives" subtitle="OKLCH 12-step ramps">
   <Section>
     <SectionHeading>Neutral</SectionHeading>
     {/* section content */}
@@ -22,10 +33,10 @@ Every documentation story wraps content in this hierarchy:
 | Component | Purpose | Props |
 |-----------|---------|-------|
 | `DocPage` | Page wrapper with padding and max-width | `title`, `subtitle` |
-| `Section` | Section wrapper with consistent bottom margin | — |
+| `Section` | Section wrapper with consistent bottom margin | children |
 | `SectionHeading` | `h2` with uppercase label treatment and border-bottom | children (text) |
 
-## Color Display
+## Colour Display
 
 ```tsx
 {/* Single swatch */}
@@ -39,15 +50,12 @@ Every documentation story wraps content in this hierarchy:
 </SwatchGrid>
 
 {/* Full palette ramp strip */}
-<TonalRamp
-  palette="neutral"
-  steps={NEUTRAL_STEPS}
-/>
+<TonalRamp palette="neutral" steps={NEUTRAL_STEPS} />
 ```
 
 | Component | Purpose | Props |
 |-----------|---------|-------|
-| `Swatch` | Single color swatch bound to CSS custom property | `token`, `label`, `sublabel` |
+| `Swatch` | Single colour swatch bound to CSS custom property | `token`, `label`, `sublabel` |
 | `SwatchGrid` | Flexible grid layout for arranging multiple swatches | children |
 | `TonalRamp` | Horizontal strip showing full palette with hex values and auto-contrast text | `palette`, `steps` |
 
@@ -56,8 +64,8 @@ Every documentation story wraps content in this hierarchy:
 ```tsx
 <TokenTable
   tokens={[
-    { name: '--size-4', value: '0.25rem', description: '4px — tight spacing' },
-    { name: '--size-8', value: '0.5rem', description: '8px — tight spacing' },
+    { name: '--size-4', value: '0.25rem', description: '4px spacing' },
+    { name: '--size-8', value: '0.5rem', description: '8px spacing' },
   ]}
 />
 ```
@@ -80,7 +88,7 @@ Every documentation story wraps content in this hierarchy:
 |-----------|---------|-------|
 | `DemoBox` | Isolated frame with border, centred content | children |
 
-## Content & Guidance
+## Content and Guidance
 
 ```tsx
 <Callout variant="tip">
@@ -89,7 +97,7 @@ Every documentation story wraps content in this hierarchy:
 
 <DosDonts
   dos={['Use semantic tokens in components, not primitives directly.']}
-  donts={['Do not hardcode hex values — always reference a token.']}
+  donts={['Do not hardcode hex values. Always reference a token.']}
 />
 
 <FigmaRef path="Primitives/colors/neutral/500" />
@@ -117,10 +125,26 @@ This provides consistent typography, spacing, and layout constants. Never hardco
 ```tsx
 import type { DimensionalToken } from '../stories/helpers';
 
-// For token data arrays
 type DimensionalToken = {
   figmaPath: string;
   cssProperty: string;
-  category: 'color' | 'spacing' | 'typography' | 'structure';
+  category: 'colour' | 'spacing' | 'typography' | 'structure';
 };
 ```
+
+## Figma Documentation Component Equivalents
+
+When building documentation in Figma (via Prism MCP), each Storybook helper maps to a `.documentation/` Figma component:
+
+| Storybook Helper | Figma Component | Notes |
+|------------------|-----------------|-------|
+| `DocPage` + `SectionHeading` | `.documentation/Header` | Title, description, status badge, storybook link |
+| `TokenTable` | `.documentation/Table` + `.documentation/Table/Row` | Vertical stack of horizontal rows |
+| `DemoBox` + numbered annotations | `.documentation/Anatomy` | Image/frame slot + annotation list |
+| `DosDonts` | `.documentation/DoAndDont` | Horizontal layout, green/red accent bars |
+| Section separator | `.documentation/Divider` | 1px line bound to `border/subtle` |
+| `Callout` | No Figma equivalent yet | Use a text frame with rounded border manually |
+| `Swatch` / `SwatchGrid` | No Figma equivalent yet | Use native Figma colour swatches bound to variables |
+| `TonalRamp` | No Figma equivalent yet | Build manually with auto-layout frames |
+
+The Figma components follow Uber Base style: simple rounded callouts, tabular colour, no accent bars or decorative elements. Status badges use text properties, not booleans.
