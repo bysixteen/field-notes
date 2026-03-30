@@ -151,4 +151,4 @@ RECOMMENDED API:
 | `bs-html` | API decisions like link vs button affect which HTML element to use |
 | `bs-css` | Dimension inputs map to `data-*` attribute selectors in CSS |
 
-Full documentation: [Component API](/design-system/component-api)
+See your project's design system documentation for the full component API reference.

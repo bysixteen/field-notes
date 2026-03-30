@@ -145,7 +145,7 @@ description: >-
 | Margin on component root | SERIOUS | 1 |
 | Physical property used | SERIOUS | All |
 | will-change without justification | SERIOUS | 7 |
-| Hardcoded colour/spacing value | SERIOUS | 2 |
+| Hardcoded color/spacing value | SERIOUS | 2 |
 | Missing prefers-reduced-motion | MODERATE | 7 |
 | Missing focus-visible styles | MODERATE | 3 |
 
@@ -183,4 +183,4 @@ PHYSICAL PROPERTIES FOUND:
 | `bs-review` | Full review runs CSS audit as Stage 5 |
 | `bs-html` | HTML semantics determine which selectors are appropriate |
 
-Full documentation: [CSS Authoring Rules](/design-system/css-authoring-rules)
+Applies to CSS and SCSS. See your project's design system documentation for the full CSS authoring reference.

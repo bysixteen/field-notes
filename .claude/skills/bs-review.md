@@ -134,8 +134,8 @@ OFFER:
 - Score calculation
 
 ### Stage 4 -- Token Integrity
-- Colour cascade: Sentiment -> Emphasis -> State
-- No hardcoded colour values
+- Color cascade: Sentiment -> Emphasis -> State
+- No hardcoded color values
 - Structure aliases Size/Scale/Typography
 - Token naming conventions
 
@@ -150,14 +150,16 @@ OFFER:
 
 This skill orchestrates all other skills. Each stage corresponds to:
 
-| Stage | Skill | Full Documentation |
-|-------|-------|-------------------|
-| 0 | `bs-component-api` | [Component API](/design-system/component-api) |
-| 1 | `bs-react-patterns` | [React Patterns](/design-system/react-patterns) |
-| 2 | `bs-html` | [HTML Semantics](/design-system/html-semantics) |
-| 3 | `bs-accessibility` | [Accessibility Audit](/design-system/accessibility-audit) |
-| 4 | `bs-tokens` | [Token Audit](/design-system/token-audit) |
-| 5 | `bs-css` | [CSS Authoring Rules](/design-system/css-authoring-rules) |
+| Stage | Skill |
+|-------|-------|
+| 0 | `bs-component-api` |
+| 1 | `bs-react-patterns` |
+| 2 | `bs-html` |
+| 3 | `bs-accessibility` |
+| 4 | `bs-tokens` |
+| 5 | `bs-css` |
+
+See your project's design system documentation for full details on each stage.
 
 Related but not stages:
 - `bs-testing` -- Run after review to verify test coverage matches findings

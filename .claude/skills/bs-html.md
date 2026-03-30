@@ -150,4 +150,4 @@ FINDINGS:
 | `bs-review` | Full review runs HTML semantics as Stage 2 |
 | `bs-css` | HTML elements determine valid CSS selectors |
 
-Full documentation: [HTML Semantics](/design-system/html-semantics)
+See your project's design system documentation for the full HTML semantics reference.
