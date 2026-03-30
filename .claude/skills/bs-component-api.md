@@ -2,21 +2,12 @@
 name: bs-component-api
 description: >-
   Define, name, type, and default component inputs for a design system.
-  Use when specifying a new component API, auditing existing inputs, deciding
-  between boolean/enum, naming props, handling slots, or extrapolating an API
-  from the canonical Button example. Triggers on: "what should this component
-  accept", "should this be a boolean or an enum", "how do I name this prop",
-  "what's the API for X", "slot patterns", "component API", "props interface",
-  "component contract", "define the inputs", "design the API",
-  "prop naming", "prop types", "default values", "dimension inputs",
-  "content inputs", "slot inputs", "event outputs", "enum vs boolean",
-  "boolean prop", "string union", "emphasis prop", "sentiment prop",
-  "size prop", "state prop", "which props does this need",
-  "what dimensions should this have", "API surface", "breaking change",
-  "prop audit", "input categories", "component inputs", "consumer API",
-  "public interface", "how should I type this", "design token mode",
-  "dimensional model", "add a new variant", "extend this component",
-  "component configuration".
+  Use when specifying a new component API, auditing existing inputs for
+  convention compliance, deciding between boolean/enum/T-shirt sizing, naming
+  props, or handling slots. Draws on the canonical Button example to
+  extrapolate APIs for any component — covering dimension inputs, content
+  inputs, event outputs, and public interface surface. Also use when extending
+  a component or evaluating breaking changes.
 ---
 
 # Component API

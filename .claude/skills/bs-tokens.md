@@ -1,28 +1,13 @@
 ---
 name: bs-tokens
 description: >-
-  Use when working with design tokens -- consuming tokens in CSS, reasoning
-  about the dimensional model, auditing token cascade integrity, or building
-  component token APIs. Triggers on: design tokens, CSS custom properties,
-  semantic colors, theming, state/emphasis/sentiment/size dimensions, resolution
-  chains, hardcoded value audits, mixing desk metaphor, "use our tokens",
-  "style this to match our design", "which token for this element",
-  "token audit", "token cascade", "token chain", "token integrity",
-  "token naming", "token convention", "custom property",
-  "var(--", "--fg-", "--bg-", "--color-", "--size-", "--radii-",
-  "css variable", "design token", "token system", "token architecture",
-  "dimensional model", "mixing desk", "fader", "collection mode",
-  "sentiment collection", "emphasis collection", "state collection",
-  "structure collection", "size collection", "color cascade",
-  "color cascade", "alias chain", "hardcoded value", "hardcoded color",
-  "hardcoded color", "magic number", "hex value in CSS",
-  "token resolution", "token pipeline", "token transform",
-  "which token should I use", "what token for this",
-  "how do tokens work", "token system overview",
-  "theme token", "dark mode token", "light mode token",
-  "semantic color", "semantic color", "primitive color",
-  "build order for tokens", "token build order",
-  "new component tokens", "component token API".
+  Use when working with design tokens — consuming tokens in CSS, reasoning
+  about the dimensional model, auditing token cascade integrity, or building a
+  component token API. Covers the mixing desk model, six resolution dimensions
+  (state, emphasis, sentiment, size, density, structure), color cascade
+  integrity, hardcoded value audits, and choosing the right CSS custom property
+  for any context. Also use when styling an element to match the design system
+  or tracing a token chain.
 ---
 
 # Design Tokens

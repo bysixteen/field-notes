@@ -2,23 +2,12 @@
 name: bs-html
 description: >-
   Decide which HTML elements and ARIA attributes to use in a design system
-  component. Use when choosing between link/button, deciding container
-  semantics, implementing dialog/menu/tabs/accordion, or adding ARIA
-  attributes. Triggers on: "should this be a link or button", "what role",
-  "which ARIA attributes", "semantic HTML", "dialog pattern", "form labels",
-  "nav vs menu", "disclosure pattern", "HTML element", "which tag",
-  "what element should I use", "native element", "ARIA role",
-  "aria-expanded", "aria-selected", "aria-checked", "aria-label",
-  "aria-describedby", "aria-hidden", "aria-live", "aria-controls",
-  "aria-haspopup", "aria-modal", "role=button", "role=dialog",
-  "role=tablist", "role=menu", "role=switch", "role=combobox",
-  "fieldset", "legend", "label element", "form semantics",
-  "tabpanel", "tab pattern", "accordion pattern", "menu pattern",
-  "listbox pattern", "combobox pattern", "disclosure widget",
-  "modal dialog", "non-modal dialog", "popover", "tooltip semantics",
-  "nav element", "header element", "main element", "section element",
-  "landmark", "heading level", "heading hierarchy", "interactive element",
-  "keyboard path", "focusable", "tabindex", "which HTML for this component".
+  component. Use when choosing between link and button, deciding container
+  semantics, implementing dialog, menu, tabs, or accordion patterns, or adding
+  ARIA attributes. Covers native element selection, role assignment, labelling
+  patterns, heading hierarchy, and landmark usage. Also use when reviewing HTML
+  for semantic correctness or determining the right interactive pattern for a
+  component.
 ---
 
 # HTML Semantics

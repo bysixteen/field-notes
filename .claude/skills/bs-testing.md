@@ -2,25 +2,12 @@
 name: bs-testing
 description: >-
   Review or write tests for design system components using the three-layer
-  strategy: unit tests, accessibility automation, and visual regression.
-  Use when writing tests, reviewing test coverage, deciding what to test,
-  or setting up testing infrastructure. Triggers on: "write tests for",
-  "test this component", "what should I test", "testing strategy",
-  "jest-axe", "visual regression", "coverage", "test coverage",
-  "unit test", "unit tests", "component test", "component tests",
-  "test file", "test suite", "describe block", "it block",
-  "testing library", "render test", "screen test", "fireEvent",
-  "userEvent", "toHaveAttribute", "toBeInTheDocument",
-  "axe-core", "toHaveNoViolations", "accessibility test",
-  "a11y test", "automated accessibility", "axe violations",
-  "screenshot test", "snapshot test", "visual test",
-  "playwright test", "chromatic", "storybook test",
-  "what should I test for this component", "test plan",
-  "testing checklist", "how to test", "test this",
-  "add tests", "missing tests", "test gap", "improve coverage",
-  "regression test", "integration test", "test infrastructure",
-  "testing setup", "jest config", "vitest config",
-  "test this for accessibility", "keyboard test".
+  strategy: unit tests, accessibility automation, and visual regression. Use
+  when writing tests, reviewing test coverage, deciding what to test, or
+  setting up testing infrastructure for a component. Covers jest-axe, Testing
+  Library patterns, userEvent, and Playwright/Chromatic visual testing. Also
+  use when identifying testing gaps or deciding the right test approach for a
+  given interaction.
 ---
 
 # Testing Strategy

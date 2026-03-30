@@ -1,19 +1,13 @@
 ---
 name: bs-review
 description: >-
-  Orchestrate a full design system component review across 6 stages: component API,
-  React patterns, HTML semantics, accessibility (WCAG 2.2 AA), token integrity,
-  and CSS authoring. Use when reviewing a component before merge, auditing an
-  existing component, or running a full quality check. Triggers on: "review this
-  component", "audit", "check before merge", "full review", "run all checks",
-  "component review", "quality check", "design system review",
-  "review before PR", "review before pull request", "merge check",
-  "code review", "component audit", "full audit", "run all stages",
-  "comprehensive review", "check this component", "is this ready to merge",
-  "is this component done", "pre-merge review", "review all aspects",
-  "multi-stage review", "consolidated review", "quality gate",
-  "design system QA", "component QA", "sign off on this component",
-  "check component quality", "review checklist", "final check".
+  Orchestrate a full design system component review across six stages:
+  component API, React patterns, HTML semantics, accessibility (WCAG 2.2 AA),
+  token integrity, and CSS authoring. Use when reviewing a component before
+  merge, running a comprehensive quality check on an existing component, or
+  performing a multi-stage audit. Produces a consolidated, scored report with
+  actionable findings across all dimensions — the single entry point for
+  complete component sign-off.
 ---
 
 # Design System Component Review

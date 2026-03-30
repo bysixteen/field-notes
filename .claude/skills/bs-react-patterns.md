@@ -1,23 +1,13 @@
 ---
 name: bs-react-patterns
 description: >-
-  Review React component code for modern patterns and best practices in
-  design system contexts. Covers hooks, memo, key usage, RSC boundaries,
-  forwardRef, composition, and performance. Use when reviewing React
-  components, checking for anti-patterns, or ensuring modern React practices.
-  Triggers on: "review React patterns", "is this React correct", "hooks
-  usage", "memo", "forwardRef", "server components", "React best practices",
-  "React component review", "review this component", "React anti-patterns",
-  "use client", "use server", "RSC boundary", "server component boundary",
-  "forward ref", "ref forwarding", "spread props", "rest props",
-  "useMemo", "useCallback", "useRef", "useState", "useEffect",
-  "custom hook", "React.lazy", "Suspense", "composition pattern",
-  "render prop", "children pattern", "slot pattern in React",
-  "compound component", "controlled vs uncontrolled",
-  "key prop", "list rendering", "array index key",
-  "React performance", "unnecessary re-render", "memoization",
-  "React design system patterns", "component implementation",
-  "how should I implement this in React", "React code review".
+  Review React component code for modern patterns and best practices in design
+  system contexts. Covers hooks, memo, key usage, RSC boundaries, forwardRef,
+  composition, and performance. Use when reviewing a React component for
+  anti-patterns, ensuring hooks are used correctly, checking server/client
+  component boundaries, or evaluating composition strategies. Also use when
+  deciding between controlled and uncontrolled patterns, or assessing whether
+  memoization is warranted.
 ---
 
 # React Patterns for Design Systems

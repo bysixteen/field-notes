@@ -1,27 +1,13 @@
 ---
 name: bs-storybook-foundations
 description: >-
-  Generate Storybook documentation stories for design system foundations --
+  Generate Storybook documentation stories for design system foundations —
   color primitives, semantic tokens, spacing scales, typography scales, radii,
-  elevation, and motion. Reads CSS token files and generates visual documentation
-  pages using the shared helper component library. Triggers on: "document tokens
-  in storybook", "storybook docs for primitives", "generate foundation stories",
-  "color scale documentation", "token documentation stories", "document
-  spacing/typography scale", "storybook pages for design tokens", "foundation
-  docs", "document elevation tokens", "motion token stories",
-  "foundation documentation", "primitives documentation",
-  "color palette docs", "color palette docs", "color ramp",
-  "color ramp", "OKLCH ramp", "semantic color docs", "semantic color docs",
-  "token pages", "design token documentation", "document the tokens",
-  "document the foundations", "document spacing tokens", "document radii",
-  "document typography tokens", "document font scale",
-  "document shadow tokens", "document elevation", "document motion tokens",
-  "document easing curves", "document duration tokens",
-  "storybook foundation pages", "foundation stories",
-  "create token documentation", "visual token reference",
-  "stroke weight documentation", "scale documentation",
-  "swatch grid", "tonal ramp story", "lightness profile story",
-  "theme comparison story", "accessible pairings story".
+  elevation, and motion. Reads CSS token files and generates visual
+  documentation pages using the shared helper component library. Use when
+  documenting any foundation token set in Storybook, creating visual token
+  tables, or generating pages for color ramps, spacing scales, elevation, or
+  motion definitions.
 ---
 
 # Storybook Foundations Documentation
