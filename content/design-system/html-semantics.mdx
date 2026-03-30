@@ -12,6 +12,8 @@ Does activating it navigate to a new URL?
 ├── YES → <a href="...">
 │   Does it open in a new tab?
 │   └── YES → <a href="..." target="_blank" rel="noopener noreferrer">
+│         (Note: modern browsers apply rel="noopener" by default for target="_blank",
+│          but adding it explicitly ensures compatibility with older browsers)
 └── NO → Does it submit a form?
     ├── YES → <button type="submit">
     └── NO → <button type="button">
@@ -66,7 +68,7 @@ Native `<dialog>` provides:
 - Escape key to close
 - Correct `role="dialog"` and `aria-modal="true"` implicitly
 
-When native `<dialog>` isn't available (e.g., custom positioning needs), add manually:
+When native `<dialog>` doesn't meet your needs (e.g., custom positioning or animation requirements beyond what the native API supports), add manually:
 - `role="dialog"` and `aria-modal="true"`
 - Focus trap (first focusable element on open)
 - Focus restoration (return to trigger on close)

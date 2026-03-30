@@ -84,6 +84,7 @@ Multi-dimensional token model, composition rules, naming conventions, and constr
 - [Naming Conventions](/design-system/naming): How tokens are named across the primitive and semantic layers.
 - [Primitive Naming](/design-system/naming/primitives): The --{category}-{name} pattern for raw token values.
 - [Semantic Naming](/design-system/naming/semantics): The --{element}-{qualifier} pattern for purpose-driven tokens.
+- [PRISM — Figma MCP Bridge](/design-system/prism): Interface contract for PRISM, the bridge between local design-token tooling and Figma via the Model Context Protocol (MCP).
 - [Storybook Documentation Rules](/design-system/storybook-documentation-rules): Best practices for documenting design systems in Storybook with consistent structure and components.
 - [Testing Strategy](/design-system/testing-strategy): A three-layer testing approach for design system components — unit, accessibility, and visual regression.
 - [Token Audit](/design-system/token-audit): How to audit component tokens for cascade integrity, hardcoded values, and structural correctness.

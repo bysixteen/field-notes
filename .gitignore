@@ -4,6 +4,10 @@ node_modules/
 out/
 .env
 .env.local
+# Dev artifacts
+/skills/
+bs-storybook-docs-workspace/
+
 # AI context — track plans and rules, ignore ephemeral/binary
 .context/notes.md
 .context/todos.md

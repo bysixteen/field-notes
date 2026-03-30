@@ -5,73 +5,161 @@ description: >-
   React patterns, HTML semantics, accessibility (WCAG 2.2 AA), token integrity,
   and CSS authoring. Use when reviewing a component before merge, auditing an
   existing component, or running a full quality check. Triggers on: "review this
-  component", "audit", "check before merge", "full review", "run all checks".
+  component", "audit", "check before merge", "full review", "run all checks",
+  "component review", "quality check", "design system review",
+  "review before PR", "review before pull request", "merge check",
+  "code review", "component audit", "full audit", "run all stages",
+  "comprehensive review", "check this component", "is this ready to merge",
+  "is this component done", "pre-merge review", "review all aspects",
+  "multi-stage review", "consolidated review", "quality gate",
+  "design system QA", "component QA", "sign off on this component",
+  "check component quality", "review checklist", "final check".
 ---
 
 # Design System Component Review
 
-Run all 6 review stages in sequence. Each stage has a dedicated skill — this orchestrator ensures they run in the right order and produces a consolidated verdict.
+Run all 6 review stages in sequence. Each stage has a dedicated skill -- this orchestrator ensures they run in the right order and produces a consolidated verdict.
 
 ## Stages
 
-| Stage | Concern | Skill |
-|-------|---------|-------|
-| 0 | Component API contract | `bs-component-api` |
-| 1 | React patterns (hooks, memo, key usage, RSC) | `bs-react-patterns` |
-| 2 | Semantic HTML + ARIA | `bs-html` |
-| 3 | WCAG 2.2 AA accessibility (scored, bracket-aware) | `bs-accessibility` |
-| 4 | Token integrity (cascade, hardcoded values) | `bs-tokens` |
-| 5 | CSS/SCSS authoring | `bs-css` |
+| Stage | Concern | Skill | Key Checks |
+|-------|---------|-------|------------|
+| 0 | Component API contract | `bs-component-api` | Enums not booleans, defaults, naming |
+| 1 | React patterns | `bs-react-patterns` | forwardRef, rest spread, RSC, hooks |
+| 2 | Semantic HTML + ARIA | `bs-html` | Native elements, ARIA roles, keyboard |
+| 3 | WCAG 2.2 AA accessibility | `bs-accessibility` | Scored audit (B1-B6), rules A01-A30 |
+| 4 | Token integrity | `bs-tokens` | Cascade chain, no hardcoded values |
+| 5 | CSS/SCSS authoring | `bs-css` | Seven non-negotiables, section order |
 
 ## Workflow
 
-1. Read all component files (`.tsx`, `.css`/`.scss`, `.test.tsx`, `.stories.tsx`, types)
-2. Run stages 0–5 in order
+1. Read all component files (`.tsx`, `.css`/`.scss`, `.test.tsx`, `.stories.tsx`, `.types.ts`)
+2. Run stages 0-5 in order
 3. Collect all findings across stages
 4. Calculate consolidated score
-5. Produce verdict
+5. Produce verdict using report template
+6. Offer to fix
 
 ## Verdict Logic
 
-```
-NEEDS UPLIFT    — any BLOCKING finding in any stage
-MINOR IMPROVEMENTS — no BLOCKING, but SERIOUS findings exist
-UP TO STANDARD — no BLOCKING or SERIOUS findings
-```
+| Verdict | Condition | Action |
+|---------|-----------|--------|
+| **NEEDS UPLIFT** | Any BLOCKING finding in any stage | Merge blocked, must remediate |
+| **MINOR IMPROVEMENTS** | No BLOCKING, but SERIOUS findings exist | Merge at discretion, fix soon |
+| **UP TO STANDARD** | No BLOCKING or SERIOUS findings | Good to merge |
+
+## Finding Severity Mapping
+
+| Stage | BLOCKING | SERIOUS | MODERATE |
+|-------|----------|---------|----------|
+| 0 - API | Boolean dimension, missing default | Non-standard mode, visual name | Broad children vs named slot |
+| 1 - React | Missing forwardRef, no rest spread | Missing 'use client', config over composition | Index as key, missing memo |
+| 2 - HTML | Click on div, missing label, no href | Wrong ARIA role, missing keyboard | tabindex > 0, heading skip |
+| 3 - A11y | A01-A05, A18-A21 (CRITICAL rules) | A06-A08, A13, A16-A17, A22-A25 | A09-A12, A14-A15, A26-A30 |
+| 4 - Tokens | State not aliasing Emphasis, Emphasis not aliasing Sentiment | Structure missing alias | Non-standard naming |
+| 5 - CSS | BEM for dimensions, section order, missing :not() | Margin, physical props, hardcoded | Missing reduced-motion |
 
 ## Consolidated Report Template
 
 ```
-═══════════════════════════════════════════════════════════════
+===============================================================
 COMPONENT REVIEW: {ComponentName}
-Files: {list}
-═══════════════════════════════════════════════════════════════
+Files: {list of all files reviewed}
+===============================================================
 
-STAGE 0 — COMPONENT API                    {PASS|FINDINGS}
-STAGE 1 — REACT PATTERNS                   {PASS|FINDINGS}
-STAGE 2 — HTML SEMANTICS                   {PASS|FINDINGS}
-STAGE 3 — ACCESSIBILITY (B{n})             Score: {n}/100
-STAGE 4 — TOKEN INTEGRITY                  {PASS|FINDINGS}
-STAGE 5 — CSS AUTHORING                    {PASS|FINDINGS}
+STAGE 0 -- COMPONENT API                    {PASS | n FINDINGS}
+  {findings with severity and fix, if any}
 
-═══════════════════════════════════════════════════════════════
+STAGE 1 -- REACT PATTERNS                   {PASS | n FINDINGS}
+  {findings with severity and fix, if any}
+
+STAGE 2 -- HTML SEMANTICS                   {PASS | n FINDINGS}
+  {findings with severity and fix, if any}
+
+STAGE 3 -- ACCESSIBILITY (B{n})             Score: {n}/100
+  {findings with severity and fix, if any}
+
+STAGE 4 -- TOKEN INTEGRITY                  {PASS | n FINDINGS}
+  {findings with severity and fix, if any}
+
+STAGE 5 -- CSS AUTHORING                    {PASS | n FINDINGS}
+  {findings with severity and fix, if any}
+
+===============================================================
+SUMMARY:
+  BLOCKING:  {count}
+  SERIOUS:   {count}
+  MODERATE:  {count}
+  A11y Score: {n}/100
+
 VERDICT: {NEEDS UPLIFT | MINOR IMPROVEMENTS | UP TO STANDARD}
+===============================================================
 
-{If findings exist, list all with stage number, severity, and fix}
-═══════════════════════════════════════════════════════════════
+{If NEEDS UPLIFT or MINOR IMPROVEMENTS, numbered priority list of fixes}
+
+OFFER:
+  1. Apply all fixes directly to the component files
+  2. Generate GitHub issues for findings that need discussion
+===============================================================
 ```
 
-## After Review
+## Quick Reference: What Each Stage Checks
 
-Offer to:
-1. Apply all fixes directly to the component files
-2. Generate GitHub issues for findings that need discussion
+### Stage 0 -- Component API
+- No boolean dimension inputs
+- Every input has a default
+- Names describe dimension, not visual
+- Standard mode values only
+- Loading merged into state='resolving'
 
-## Reference
+### Stage 1 -- React Patterns
+- forwardRef on all leaf components
+- Spread remaining props (...rest)
+- Correct 'use client' directive
+- Composition over configuration
+- Proper key usage
 
-- [Component API](/design-system/component-api)
-- [Accessibility Audit](/design-system/accessibility-audit)
-- [Token Audit](/design-system/token-audit)
-- [CSS Authoring Rules](/design-system/css-authoring-rules)
-- [HTML Semantics](/design-system/html-semantics)
-- [Testing Strategy](/design-system/testing-strategy)
+### Stage 2 -- HTML Semantics
+- Native elements first
+- Correct ARIA roles and attributes
+- Keyboard path for all interactive elements
+- Form labels and fieldsets
+- No ARIA overriding native semantics
+
+### Stage 3 -- Accessibility
+- Bracket classification (B1-B6)
+- Rules A01-A30 by bracket
+- APG pattern compliance
+- Contrast ratios (4.5:1 text, 3:1 UI)
+- Score calculation
+
+### Stage 4 -- Token Integrity
+- Colour cascade: Sentiment -> Emphasis -> State
+- No hardcoded colour values
+- Structure aliases Size/Scale/Typography
+- Token naming conventions
+
+### Stage 5 -- CSS Authoring
+- Seven non-negotiables
+- Section order enforced
+- :not() guards on pseudo-classes
+- Logical properties
+- No margin on components
+
+## Cross-References
+
+This skill orchestrates all other skills. Each stage corresponds to:
+
+| Stage | Skill | Full Documentation |
+|-------|-------|-------------------|
+| 0 | `bs-component-api` | [Component API](/design-system/component-api) |
+| 1 | `bs-react-patterns` | [React Patterns](/design-system/react-patterns) |
+| 2 | `bs-html` | [HTML Semantics](/design-system/html-semantics) |
+| 3 | `bs-accessibility` | [Accessibility Audit](/design-system/accessibility-audit) |
+| 4 | `bs-tokens` | [Token Audit](/design-system/token-audit) |
+| 5 | `bs-css` | [CSS Authoring Rules](/design-system/css-authoring-rules) |
+
+Related but not stages:
+- `bs-testing` -- Run after review to verify test coverage matches findings
+- `bs-component-scaffold` -- If component needs full rewrite, scaffold from scratch
+- `bs-storybook-docs` -- Generate docs stories after review passes
