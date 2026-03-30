@@ -1,25 +1,38 @@
 ---
 name: bs-storybook-foundations
 description: >-
-  Generate Storybook documentation stories for design system foundations —
+  Generate Storybook documentation stories for design system foundations --
   colour primitives, semantic tokens, spacing scales, typography scales, radii,
   elevation, and motion. Reads CSS token files and generates visual documentation
   pages using the shared helper component library. Triggers on: "document tokens
   in storybook", "storybook docs for primitives", "generate foundation stories",
   "colour scale documentation", "token documentation stories", "document
   spacing/typography scale", "storybook pages for design tokens", "foundation
-  docs", "document elevation tokens", "motion token stories".
+  docs", "document elevation tokens", "motion token stories",
+  "foundation documentation", "primitives documentation",
+  "colour palette docs", "color palette docs", "colour ramp",
+  "color ramp", "OKLCH ramp", "semantic colour docs", "semantic color docs",
+  "token pages", "design token documentation", "document the tokens",
+  "document the foundations", "document spacing tokens", "document radii",
+  "document typography tokens", "document font scale",
+  "document shadow tokens", "document elevation", "document motion tokens",
+  "document easing curves", "document duration tokens",
+  "storybook foundation pages", "foundation stories",
+  "create token documentation", "visual token reference",
+  "stroke weight documentation", "scale documentation",
+  "swatch grid", "tonal ramp story", "lightness profile story",
+  "theme comparison story", "accessible pairings story".
 ---
 
 # Storybook Foundations Documentation
 
 Generate `{foundation}.docs.stories.tsx` files from CSS token files.
 
-Component stories show how a component behaves across its dimensions. Foundation stories show what raw values are *available* and how they relate to each other — the building blocks that components consume. Without these pages, designers and developers have to grep CSS files to understand the palette or guess spacing values.
+Component stories show how a component behaves across its dimensions. Foundation stories show what raw values are *available* and how they relate to each other -- the building blocks that components consume. Without these pages, designers and developers have to grep CSS files to understand the palette or guess spacing values.
 
 ## Before you start
 
-Read the helper API reference at `references/storybook-helpers-api.md` (sibling to this file). It documents every available helper component and how to use it. The helpers are the visual language of the documentation — they enforce consistent layout, typography, and spacing across all pages.
+Read the helper API reference at `references/storybook-helpers-api.md` (sibling to this file). It documents every available helper component and how to use it. The helpers are the visual language of the documentation -- they enforce consistent layout, typography, and spacing across all pages.
 
 ## Inputs
 
@@ -34,11 +47,11 @@ Read the relevant CSS token files before generating:
 | `elevation.css` | Box shadows and layering | `--shadow-{level}`, `--z-{name}` |
 | `motion.css` | Easing curves and duration | `--ease-{name}`, `--duration-{name}` |
 
-Match the page type to its source — not every page needs every file.
+Match the page type to its source -- not every page needs every file.
 
 ## Meta Configuration
 
-Foundation stories document tokens, not components — no `component` property:
+Foundation stories document tokens, not components -- no `component` property:
 
 ```tsx
 import type { Meta } from '@storybook/react';
@@ -53,9 +66,30 @@ const meta = {
 export default meta;
 ```
 
+## Colour Step Roles (12-step OKLCH)
+
+| Step | Role | Typical Use |
+|------|------|-------------|
+| 50 | App background | Page canvas |
+| 100 | Subtle background | Zebra stripes, code blocks |
+| 200 | Element background | Card, input default |
+| 300 | Hover element | Interactive hover state |
+| 400 | Subtle border | Dividers, hairlines |
+| 500 | Default border | Input borders, outlines |
+| 600 | Strong border | Focus rings, emphasis |
+| 700 | Solid background | Primary buttons, badges |
+| 800 | Solid hover | Button hover on solid |
+| 900 | Low-contrast text | Placeholder, captions |
+| 950 | Default text | Body text |
+| 1000 | High-contrast text | Headings, emphasis |
+
+## Standard Palettes
+
+`neutral`, `red`, `orange`, `amber`, `yellow`, `lime`, `green`, `teal`, `cyan`, `blue`, `indigo`, `violet`, `purple`, `pink`
+
 ## Page structure pattern
 
-Every story uses the same structural hierarchy. This is what makes the documentation feel cohesive — every page looks like it belongs to the same system:
+Every story uses the same structural hierarchy. This is what makes the documentation feel cohesive -- every page looks like it belongs to the same system:
 
 ```tsx
 export const PaletteName = {
@@ -80,13 +114,11 @@ export const PaletteName = {
 
 **Critical: never write inline styles.** Every visual pattern has a helper. If you find yourself writing `style={{ ... }}`, stop and use the appropriate helper component instead. The helpers use `docStyles.ts` constants for consistent typography, spacing, and colour.
 
-## Foundation page types
+## Foundation Page Types
 
 ### Colour Primitives (`ColourPrimitives.docs.stories.tsx`)
 
 Source: `colors.css`
-
-Build a data array for each palette from the CSS custom properties. Every palette must include all 12 steps with their step role annotation:
 
 ```tsx
 const STEP_ROLES = {
@@ -98,17 +130,11 @@ const STEP_ROLES = {
   900: 'Low-contrast text',   950: 'Default text',
   1000: 'High-contrast text',
 } as const;
-
-const NEUTRAL_STEPS = Object.entries(STEP_ROLES).map(([step, role]) => ({
-  step: Number(step),
-  token: `--colors-neutral-${step}`,
-  role,
-}));
 ```
 
-| Story | Content | Key helpers |
+| Story | Content | Key Helpers |
 |-------|---------|-------------|
-| `Overview` | All palettes — one `TonalRamp` per palette | `TonalRamp` |
+| `Overview` | All palettes -- one `TonalRamp` per palette | `TonalRamp` |
 | `{PaletteName}` | Full 12-step ramp with swatches and token table | `SwatchGrid`, `Swatch`, `TokenTable` |
 | `LightnessProfile` | How lightness progresses across steps | `DemoBox` |
 | `ThemeComparison` | Light and dark side by side using `data-theme` wrappers | `DemoBox`, `SwatchGrid` |
@@ -118,7 +144,7 @@ const NEUTRAL_STEPS = Object.entries(STEP_ROLES).map(([step, role]) => ({
 
 Source: `semantics.css`
 
-Group tokens by element (background, foreground, border, overlay) — not alphabetically.
+Group tokens by element (background, foreground, border, overlay) -- not alphabetically.
 
 | Story | Content |
 |-------|---------|
@@ -126,8 +152,8 @@ Group tokens by element (background, foreground, border, overlay) — not alphab
 | `Backgrounds` | All `--background-*` tokens with their primitive alias |
 | `Foregrounds` | All `--foreground-*` tokens |
 | `Borders` | All `--border-*` tokens |
-| `EmphasisScale` | Weaker → weak → standard → strong progression |
-| `StateProgression` | Rest → hover → active → disabled for a representative set |
+| `EmphasisScale` | Weaker -> weak -> standard -> strong progression |
+| `StateProgression` | Rest -> hover -> active -> disabled for a representative set |
 | `ThemeComparison` | Light and dark side by side |
 
 ### Spacing & Scale (`SpacingScale.docs.stories.tsx`)
@@ -136,31 +162,10 @@ Source: `scale.css`
 
 Include **all** token types from the file: spacing (`--size-*`), radii (`--radii-*`), and stroke weights (`--stroke-weight-*`).
 
-```tsx
-const SPACING_SCALE = [
-  { name: '--size-0', px: 0, rem: '0rem', tier: 'zero' },
-  { name: '--size-4', px: 4, rem: '0.25rem', tier: 'tight' },
-  { name: '--size-8', px: 8, rem: '0.5rem', tier: 'tight' },
-  { name: '--size-12', px: 12, rem: '0.75rem', tier: 'medium' },
-  // ... extract ALL values from the CSS file
-] as const;
-
-const RADII = [
-  { name: '--radii-none', value: '0rem' },
-  { name: '--radii-sm', value: '0.25rem' },
-  // ...
-] as const;
-
-const STROKE_WEIGHTS = [
-  { name: '--stroke-weight-1', value: '1px' },
-  // ...
-] as const;
-```
-
-| Story | Content | Key helpers |
+| Story | Content | Key Helpers |
 |-------|---------|-------------|
 | `Overview` | Visual ruler of all spacing values | `DemoBox`, `TokenTable` |
-| `SpacingTiers` | Grouped by Gestalt tier: tight (4–8), medium (12–20), loose (28–32+) | `Section`, `SectionHeading`, `Callout` |
+| `SpacingTiers` | Grouped by Gestalt tier: tight (4-8), medium (12-20), loose (28-32+) | `Section`, `SectionHeading`, `Callout` |
 | `Radii` | Each radius token as a specimen box | `DemoBox`, `SwatchGrid` |
 | `StrokeWeights` | Each stroke weight as a line specimen | `DemoBox` |
 | `Application` | Where each tier is used (gap, padding, margin) | `DosDonts` |
@@ -168,8 +173,6 @@ const STROKE_WEIGHTS = [
 ### Typography (`TypographyScale.docs.stories.tsx`)
 
 Source: `typography.css`
-
-Include **all** token categories: font families, font sizes, font weights, leading (line-height), and tracking (letter-spacing).
 
 | Story | Content |
 |-------|---------|
@@ -201,11 +204,24 @@ Source: `motion.css` (if present)
 | `Durations` | Each `--duration-*` token as an animated specimen |
 | `ReducedMotion` | How `prefers-reduced-motion` affects each |
 
+## Available Helpers
+
+| Helper | Purpose |
+|--------|---------|
+| `DocPage` | Page wrapper with title and subtitle |
+| `Section` | Content section with consistent padding |
+| `SectionHeading` | Section title typography |
+| `Swatch` | Colour swatch with token, label, sublabel |
+| `SwatchGrid` | Grid layout for swatches |
+| `TonalRamp` | Horizontal palette ramp visualization |
+| `TokenTable` | Table of token names, values, categories |
+| `DemoBox` | Labeled specimen container |
+| `DosDonts` | Side-by-side do/don't examples |
+| `Callout` | Highlighted note or warning |
+
 ## Anti-patterns
 
-These patterns produce inconsistent documentation. Every one has a helper that does the job better:
-
-| Don't | Do instead |
+| Don't | Do Instead |
 |-------|-----------|
 | `style={{ display: 'flex', gap: '1rem' }}` | Use `SwatchGrid` or `DemoBox` |
 | `style={{ fontSize: '10px', color: '#6b7280' }}` | Use `SectionHeading` or `Callout` |
@@ -216,14 +232,14 @@ These patterns produce inconsistent documentation. Every one has a helper that d
 
 ## Rules
 
-1. **Derive everything from CSS files** — parse custom properties, don't hardcode token names or values
-2. **Helpers only** — read `references/storybook-helpers-api.md` and use exclusively those components. No inline styles, no local presentation components
-3. **CSF3 + TypeScript** — `satisfies Meta`, no component type parameter for foundations
-4. **Fullscreen layout** — `parameters: { layout: 'fullscreen' }` and `tags: ['autodocs']`
-5. **Theme aware** — colour specimens must show both light and dark via `data-theme` wrappers
-6. **Step roles** — annotate every colour step with its semantic role
-7. **Group by purpose** — semantic tokens grouped by element, not alphabetically
-8. **Complete extraction** — include ALL tokens from the source file, including radii and stroke weights from `scale.css`, font families from `typography.css`
+1. **Derive everything from CSS files** -- parse custom properties, don't hardcode token names or values
+2. **Helpers only** -- read `references/storybook-helpers-api.md` and use exclusively those components. No inline styles, no local presentation components
+3. **CSF3 + TypeScript** -- `satisfies Meta`, no component type parameter for foundations
+4. **Fullscreen layout** -- `parameters: { layout: 'fullscreen' }` and `tags: ['autodocs']`
+5. **Theme aware** -- colour specimens must show both light and dark via `data-theme` wrappers
+6. **Step roles** -- annotate every colour step with its semantic role
+7. **Group by purpose** -- semantic tokens grouped by element, not alphabetically
+8. **Complete extraction** -- include ALL tokens from the source file, including radii and stroke weights from `scale.css`, font families from `typography.css`
 
 ## Validation Checklist
 
@@ -237,5 +253,41 @@ These patterns produce inconsistent documentation. Every one has a helper that d
 - [ ] Zero inline `style={{ }}` attributes in story JSX
 - [ ] All imports from `stories/helpers/` resolve
 - [ ] `autodocs` tag and `fullscreen` layout present
+
+## Output Format Template
+
+```
+===========================================================
+FOUNDATION DOCS: {TopicName}
+Output: {path}/{topic}.docs.stories.tsx
+Source: {css file(s) read}
+===========================================================
+
+STORIES GENERATED:
+  [x] {StoryName} -- {description}
+  ...
+
+TOKENS DOCUMENTED: {count}
+HELPERS USED: {list}
+PALETTES COVERED: {list, if colour}
+
+VALIDATION:
+  [x] All tokens from source file included
+  [x] Step roles annotated
+  [x] Theme comparison present
+  [x] Zero inline styles
+  [x] Helpers only
+===========================================================
+```
+
+## Cross-References
+
+| Related Skill | When to Use Together |
+|---------------|---------------------|
+| `bs-storybook-docs` | For component-specific documentation (not foundations) |
+| `bs-tokens` | Token architecture knowledge helps understand cascade and naming |
+| `bs-css` | CSS custom property conventions apply to token file parsing |
+| `bs-accessibility` | Accessible pairings story requires contrast ratio knowledge |
+| `bs-component-scaffold` | Scaffold references token values defined in foundations |
 
 Full documentation: [Storybook Documentation Rules](/design-system/storybook-documentation-rules)

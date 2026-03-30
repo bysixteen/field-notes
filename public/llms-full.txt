@@ -1165,7 +1165,7 @@ The most valuable additions come from the workflow itself. When the agent makes 
 
 Context engineering is the set of strategies for curating and maintaining the optimal set of tokens during LLM inference. Where prompt engineering focuses on how you ask, context engineering focuses on everything that surrounds the ask — system prompts, tools, examples, retrieved data, conversation history, and structured memory.
 
-The shift matters because intelligence is no longer the bottleneck. Modern models are capable enough. The constraint is context: what information is available when the model reasons, and how efficiently that information is encoded.
+The shift matters because, for many practical tasks, raw model capability is no longer the primary bottleneck. The constraint is increasingly context: what information is available when the model reasons, and how efficiently that information is encoded.
 
 > Think of the LLM as a CPU and the context window as RAM. You would not blame a CPU for poor performance if you loaded the wrong data into memory.
 
@@ -2391,7 +2391,7 @@ CREATE OR REPLACE FUNCTION get_user_role()
 RETURNS text AS $$
 BEGIN
   RETURN coalesce(
-    current_setting('request.jwt.claims', true)::json->>'role',
+    current_setting('request.jwt.claims', true)::json->'app_metadata'->>'role',
     'anonymous'
   );
 END;
@@ -2506,7 +2506,7 @@ WITH CHECK (get_user_role() = 'admin');
 
 ### Combining Policies
 
-Multiple policies on the same table are combined with OR logic for the same operation. This means a user only needs to satisfy one policy to gain access. Design policies carefully to avoid unintended access through policy combination.
+Multiple **permissive** policies on the same table are combined with OR logic for the same operation — a user only needs to satisfy one policy to gain access. Policies created with `AS RESTRICTIVE` are combined with AND logic instead, meaning the user must satisfy every restrictive policy. Design policies carefully to avoid unintended access through policy combination.
 
 ## Middleware Route Protection
 
@@ -2568,7 +2568,7 @@ Middleware is the friendly bouncer at the door. RLS is the vault that won't open
 - Middleware provides a good user experience (redirect to login, show a helpful error).
 - RLS provides a security guarantee (even if middleware fails, data is safe).
 
-## The Benefit: Defense in Depth
+## The Benefit: Defence in Depth
 
 This pattern creates multiple layers of security:
 
@@ -2578,7 +2578,7 @@ This pattern creates multiple layers of security:
 
 If any single layer has a bug, the other layers still protect the data. An application code bug that forgets to check the user's role won't leak data because RLS policies still filter the query results. A middleware bypass through a direct API call still hits RLS policies.
 
-This is the core value of database-level security: **the database is the last line of defense, and it never trusts the application.**
+This is the core value of database-level security: **the database is the last line of defence, and it never trusts the application.**
 
 ## Testing RLS Policies
 
@@ -3897,6 +3897,8 @@ Multi-dimensional token model, composition rules, naming conventions, and constr
 
 This framework classifies components into brackets (B1–B6) and applies WCAG 2.2 AA rules selectively based on each bracket's accessibility surface area. The result is a scored audit with actionable fix-oriented output.
 
+> **Note on bracket numbering:** Brackets are numbered by accessibility complexity, not alphabetical order. The classification table below is ordered by descending complexity (B6 highest surface area → B1 lowest) so you hit the right bracket sooner when classifying top-down.
+
 ## Component Brackets
 
 Classify the component by working through these questions top-to-bottom. Stop at the first match. If ambiguous, use the higher bracket.
@@ -3961,7 +3963,7 @@ Any CRITICAL finding halts the review. These rules exist because violations make
 
 **A16 — Dialog missing focus restoration** (WCAG 2.4.3) — B6 overlay that doesn't restore focus to trigger on close.
 
-**A17 — Mobile input font-size below 16px** (WCAG 1.4.4) — Input styled below 16px triggers iOS auto-zoom.
+**A17 — Mobile input font-size below 16px** — Input styled below 16px triggers iOS auto-zoom. This is a UX best practice rather than a direct WCAG 1.4.4 violation; iOS auto-zoom is a browser behaviour, not a conformance failure, but it degrades the mobile experience enough to warrant SERIOUS severity.
 
 **A22 — Dynamic status without live region** (WCAG 4.1.3) — Status message rendered without `aria-live` or `role="status"`.
 
@@ -5420,7 +5422,7 @@ These rules apply regardless of styling approach:
 | Section order | Enforce in file structure | Enforce in template literal | Group by concern |
 | :not() guards | Same syntax | Same in template literal | Use `not-data-[disabled]:hover:` |
 | No margin | Same rule | Same rule | Avoid `m-*` on components |
-| Logical properties | Same syntax | Same syntax | Use `ps-*`, `pe-*`, `is-*` |
+| Logical properties | Same syntax | Same syntax | Use `ps-*`, `pe-*`, `bs-*` |
 
 ## Reduced Motion
 
@@ -5669,6 +5671,8 @@ Does activating it navigate to a new URL?
 ├── YES → <a href="...">
 │   Does it open in a new tab?
 │   └── YES → <a href="..." target="_blank" rel="noopener noreferrer">
+│         (Note: modern browsers apply rel="noopener" by default for target="_blank",
+│          but adding it explicitly ensures compatibility with older browsers)
 └── NO → Does it submit a form?
     ├── YES → <button type="submit">
     └── NO → <button type="button">
@@ -5723,7 +5727,7 @@ Native `<dialog>` provides:
 - Escape key to close
 - Correct `role="dialog"` and `aria-modal="true"` implicitly
 
-When native `<dialog>` isn't available (e.g., custom positioning needs), add manually:
+When native `<dialog>` doesn't meet your needs (e.g., custom positioning or animation requirements beyond what the native API supports), add manually:
 - `role="dialog"` and `aria-modal="true"`
 - Focus trap (first focusable element on open)
 - Focus restoration (return to trigger on close)
@@ -5861,7 +5865,7 @@ This guide grows as the approach evolves. Pages marked as `draft` are in progres
 
 ## Definition
 
-Every sentiment palette is a **12-step ramp** numbered from 50 to 1000. The numbering follows a Radix-style convention where lower steps are subtler (backgrounds) and higher steps are bolder (text, solid fills). Each step has a defined role in the UI so that palettes remain consistent regardless of the underlying hue.
+Every sentiment palette is a **12-step ramp** numbered from 50 to 1000. The numbering uses Tailwind-style 50–1000 values with a Radix-inspired role-per-step convention: lower steps are subtler (backgrounds) and higher steps are bolder (text, solid fills). Each step has a defined role in the UI so that palettes remain consistent regardless of the underlying hue.
 
 ## The 12 Steps
 
@@ -6546,6 +6550,197 @@ Semantic tokens alias primitive tokens. The semantic name stays stable across th
 ```
 
 Components always consume semantic tokens, never primitives directly.
+
+### PRISM — Figma MCP Bridge
+
+*Interface contract for PRISM, the bridge between local design-token tooling and Figma via the Model Context Protocol (MCP).*
+
+Interface contract for PRISM, the bridge between local design-token tooling and Figma via the Model Context Protocol (MCP). This document defines the connection protocol, payload schemas for push/pull operations, and tool discovery requirements.
+
+## Connection Protocol
+
+PRISM communicates with Figma through an MCP server exposed over one of two transports:
+
+| Transport | Detail |
+|-----------|--------|
+| **STDIO** | Default. The MCP client spawns the server process and communicates over stdin/stdout. |
+| **Local HTTP** | Optional. Server listens on `http://localhost:3055` (port 3055 by default). |
+
+### Configuration
+
+All connection details are read from the `.mcp.json` file located in the project root. Scripts and tools MUST NOT hardcode server commands, URLs, or Figma file IDs — everything is resolved at runtime from this file.
+
+```jsonc
+// .mcp.json (example structure — values are project-specific)
+{
+  "mcpServers": {
+    "figma": {
+      "command": "npx",
+      "args": ["-y", "figma-mcp-server"],
+      "env": {
+        "FIGMA_ACCESS_TOKEN": "<token>"
+      }
+    }
+  },
+  "figma": {
+    "fileId": "<file-id>"
+  }
+}
+```
+
+Key rules:
+- `fileId` is always read from `.mcp.json` at runtime — never embedded in scripts or documentation examples.
+- The server entry under `mcpServers` determines which command to spawn (STDIO) or which URL to connect to (HTTP).
+
+## Push Tokens Payload Schema
+
+Pushes locally-generated token collections into Figma as variables.
+
+**Tool:** discovered at runtime (canonical name: `push_tokens` or equivalent — see [Tool Discovery](#tool-discovery-requirement)).
+
+### Request Payload
+
+```json
+{
+  "fileId": "<from .mcp.json>",
+  "collections": [
+    {
+      "name": "Primitives",
+      "modes": ["Light", "Dark"],
+      "variables": [
+        {
+          "name": "sky-50",
+          "type": "COLOR",
+          "valuesByMode": {
+            "Light": "#f0f9ff",
+            "Dark": "#082f49"
+          }
+        },
+        {
+          "name": "sky-100",
+          "type": "COLOR",
+          "valuesByMode": {
+            "Light": "#e0f2fe",
+            "Dark": "#0c4a6e"
+          }
+        }
+      ]
+    }
+  ]
+}
+```
+
+### Field Reference
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `fileId` | `string` | Figma file ID — resolved from `.mcp.json` at runtime. |
+| `collections` | `array` | One or more variable collections to push. |
+| `collections[].name` | `string` | Collection name in Figma (e.g., `"Primitives"`, `"Anchors"`). |
+| `collections[].modes` | `string[]` | Mode names the collection supports (e.g., `["Light", "Dark"]`). |
+| `collections[].variables` | `array` | Variables to create or update within the collection. |
+| `variables[].name` | `string` | Variable name. Use Radix-style 50–1000 numbering for scales. |
+| `variables[].type` | `string` | Variable type: `"COLOR"`, `"FLOAT"`, `"STRING"`, or `"BOOLEAN"`. |
+| `variables[].valuesByMode` | `object` | Map of mode name to value. Keys must match `modes` array. |
+
+## Pull Anchors Payload Schema
+
+Pulls variable values back from Figma — typically anchor tokens set by designers.
+
+**Tool:** discovered at runtime (canonical name: `pull_variables` or equivalent — see [Tool Discovery](#tool-discovery-requirement)).
+
+### Request Payload
+
+```json
+{
+  "fileId": "<from .mcp.json>",
+  "collection": "Anchors"
+}
+```
+
+### Response Payload (expected shape)
+
+```json
+{
+  "collection": "Anchors",
+  "modes": ["Light", "Dark"],
+  "variables": [
+    {
+      "name": "accent",
+      "type": "COLOR",
+      "valuesByMode": {
+        "Light": "#2563eb",
+        "Dark": "#60a5fa"
+      }
+    }
+  ]
+}
+```
+
+### Field Reference
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `fileId` | `string` | Figma file ID — resolved from `.mcp.json` at runtime. |
+| `collection` | `string` | Name of the collection to pull (e.g., `"Anchors"`). |
+
+The response shape mirrors the push schema's `collections[]` entry, making round-trip operations straightforward.
+
+## Tool Discovery Requirement
+
+MCP servers may expose tools under different names depending on version or configuration. Scripts MUST NOT assume fixed tool names. Instead, every script that interacts with PRISM must include a **preflight tool-discovery step**.
+
+### Discovery Protocol
+
+1. **List available tools** before executing any operation:
+   ```bash
+   manus-mcp-cli tool list --server figma-mcp
+   ```
+2. **Log the discovered tools** so operators can audit what is available:
+   ```
+   [PRISM] Discovered tools: create_variables, get_variables, set_variable_value, ...
+   ```
+3. **Match against required capabilities** — map canonical operation names to whatever the server exposes.
+
+### Dynamic Tool-Name Mapping
+
+Scripts must maintain a mapping table of canonical operations to discovered tool names. If the MCP server exposes `create_variables` instead of `push_tokens`, the script maps accordingly.
+
+```
+Canonical Operation    → Discovered Tool Name
+─────────────────────────────────────────────
+push_tokens            → (resolved at runtime)
+pull_variables         → (resolved at runtime)
+```
+
+**Implementation pattern (pseudocode):**
+
+```
+tools = mcp.listTools(server: "figma-mcp")
+
+PUSH_TOOL = tools.find(name matches /push|create|set.*variable/)
+PULL_TOOL = tools.find(name matches /pull|get.*variable/)
+
+if (!PUSH_TOOL || !PULL_TOOL) {
+  abort("Required tools not found. Available: " + tools.map(t => t.name))
+}
+```
+
+Key rules:
+- Never call a tool by a hardcoded name without first verifying it exists.
+- If a required tool is not found, abort with a clear error listing available tools.
+- Log the resolved mapping at the start of every run for debuggability.
+
+## Summary
+
+| Aspect | Detail |
+|--------|--------|
+| Transport | MCP over STDIO (default) or local HTTP (:3055) |
+| Configuration | `.mcp.json` in project root |
+| Push | Send token collections with modes and typed values |
+| Pull | Retrieve a named collection's variables and mode values |
+| Tool names | Discovered at runtime — never hardcoded |
+| File IDs | Always from `.mcp.json` — never hardcoded |
 
 ### Storybook Documentation Rules
 

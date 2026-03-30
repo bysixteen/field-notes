@@ -5,6 +5,8 @@ description: A bracket-based WCAG 2.2 AA audit framework for design system compo
 
 This framework classifies components into brackets (B1–B6) and applies WCAG 2.2 AA rules selectively based on each bracket's accessibility surface area. The result is a scored audit with actionable fix-oriented output.
 
+> **Note on bracket numbering:** Brackets are numbered by accessibility complexity, not alphabetical order. The classification table below is ordered by descending complexity (B6 highest surface area → B1 lowest) so you hit the right bracket sooner when classifying top-down.
+
 ## Component Brackets
 
 Classify the component by working through these questions top-to-bottom. Stop at the first match. If ambiguous, use the higher bracket.
@@ -69,7 +71,7 @@ Any CRITICAL finding halts the review. These rules exist because violations make
 
 **A16 — Dialog missing focus restoration** (WCAG 2.4.3) — B6 overlay that doesn't restore focus to trigger on close.
 
-**A17 — Mobile input font-size below 16px** (WCAG 1.4.4) — Input styled below 16px triggers iOS auto-zoom.
+**A17 — Mobile input font-size below 16px** — Input styled below 16px triggers iOS auto-zoom. This is a UX best practice rather than a direct WCAG 1.4.4 violation; iOS auto-zoom is a browser behaviour, not a conformance failure, but it degrades the mobile experience enough to warrant SERIOUS severity.
 
 **A22 — Dynamic status without live region** (WCAG 4.1.3) — Status message rendered without `aria-live` or `role="status"`.
 

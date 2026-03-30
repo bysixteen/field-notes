@@ -64,7 +64,7 @@ CREATE OR REPLACE FUNCTION get_user_role()
 RETURNS text AS $$
 BEGIN
   RETURN coalesce(
-    current_setting('request.jwt.claims', true)::json->>'role',
+    current_setting('request.jwt.claims', true)::json->'app_metadata'->>'role',
     'anonymous'
   );
 END;
@@ -179,7 +179,7 @@ WITH CHECK (get_user_role() = 'admin');
 
 ### Combining Policies
 
-Multiple policies on the same table are combined with OR logic for the same operation. This means a user only needs to satisfy one policy to gain access. Design policies carefully to avoid unintended access through policy combination.
+Multiple **permissive** policies on the same table are combined with OR logic for the same operation — a user only needs to satisfy one policy to gain access. Policies created with `AS RESTRICTIVE` are combined with AND logic instead, meaning the user must satisfy every restrictive policy. Design policies carefully to avoid unintended access through policy combination.
 
 ## Middleware Route Protection
 
@@ -243,7 +243,7 @@ Middleware is the friendly bouncer at the door. RLS is the vault that won't open
 - Middleware provides a good user experience (redirect to login, show a helpful error).
 - RLS provides a security guarantee (even if middleware fails, data is safe).
 
-## The Benefit: Defense in Depth
+## The Benefit: Defence in Depth
 
 This pattern creates multiple layers of security:
 
@@ -253,7 +253,7 @@ This pattern creates multiple layers of security:
 
 If any single layer has a bug, the other layers still protect the data. An application code bug that forgets to check the user's role won't leak data because RLS policies still filter the query results. A middleware bypass through a direct API call still hits RLS policies.
 
-This is the core value of database-level security: **the database is the last line of defense, and it never trusts the application.**
+This is the core value of database-level security: **the database is the last line of defence, and it never trusts the application.**
 
 ## Testing RLS Policies
 

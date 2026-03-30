@@ -25,6 +25,7 @@
     "---Tooling---",
     "tooling",
     "---Documentation Standards---",
+    "prism",
     "figma-documentation-rules",
     "storybook-documentation-rules"
   ]
