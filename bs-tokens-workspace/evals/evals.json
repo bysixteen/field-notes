@@ -1,0 +1,84 @@
+{
+  "skill_name": "bs-tokens",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "Audit the token usage in this Card component's CSS file. Check for hardcoded values and token compliance. The component files are in the broken-card/ directory: Card.css and Card.tsx.",
+      "expected_output": "A structured token audit report identifying multiple hardcoded values (hex colors, rgb values, pixel spacing, pixel font-size, pixel border-radius) with correct severity levels and token replacement suggestions.",
+      "files": [
+        "evals/files/broken-card/Card.css",
+        "evals/files/broken-card/Card.tsx"
+      ],
+      "expectations": [
+        "Detects #f5f5f5 as a hardcoded hex color value and flags it as BLOCKING severity",
+        "Detects rgb(51, 51, 51) as a hardcoded color value and flags it as BLOCKING severity",
+        "Detects 8px border-radius as a hardcoded value and flags it as WARNING severity",
+        "Detects 16px/24px padding as hardcoded spacing and flags it as SERIOUS severity",
+        "Detects 14px font-size as hardcoded typography and flags it as SERIOUS severity",
+        "Suggests specific token replacements for hardcoded values (e.g., var(--bg-surface) or var(--color-surface-*) for background, var(--radii-*) for radius, var(--space-*) for padding, var(--font-size-*) for font-size)",
+        "Does NOT flag existing correct token usage like var(--color-border-primary) or var(--space-300) as violations",
+        "Output follows a structured audit report format with clear sections (not freeform prose)",
+        "Correctly distinguishes color track violations as BLOCKING from structural track violations as WARNING or SERIOUS",
+        "References the token naming convention when suggesting replacement tokens"
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "Check the token cascade integrity for this Alert component. Verify the alias chain is correct. The file is broken-cascade/Alert.css.",
+      "expected_output": "A cascade audit identifying two BLOCKING violations: State layer aliasing primitives directly (should alias Emphasis), and Emphasis layer aliasing Semantic Color directly (should alias Sentiment). Should show the correct alias path.",
+      "files": [
+        "evals/files/broken-cascade/Alert.css"
+      ],
+      "expectations": [
+        "Identifies that the State layer (hover/active) aliases primitives (--colors-blue-100, --colors-blue-300) directly — flags as BLOCKING because State must alias Emphasis",
+        "Identifies that the Emphasis layer aliases Semantic Color globals (--bg-surface-bold, --fg-primary) directly instead of Sentiment tokens — flags as BLOCKING because Emphasis must alias Sentiment",
+        "Shows the correct alias path: State → Emphasis → Sentiment → Semantic Color",
+        "Does NOT flag the border chain as a violation where it correctly uses semantic tokens (e.g., transparent in emphasis='low' is legitimate)",
+        "Output includes a COLOR TRACK section showing pass/fail status for each cascade layer",
+        "References the cascade debugging workflow or bottom-up cascade model in explanation",
+        "Severity is BLOCKING for both color track violations (not WARNING)",
+        "Provides specific fix recommendations: what each broken alias should point to instead (e.g., State hover should alias --alert-bg from Emphasis, not --colors-blue-100)",
+        "Explains why bottom-up aliasing matters (theme propagation, single-point-of-change)",
+        "Output is structured as an audit report with clear sections"
+      ]
+    },
+    {
+      "id": 3,
+      "prompt": "Which token should I use for a disabled border on a button component? The Button component files are in button-component/ for reference.",
+      "expected_output": "A practical recommendation for the correct token pattern, referencing the decision tree, cascade model, and naming conventions.",
+      "files": [
+        "evals/files/button-component/Button.css",
+        "evals/files/button-component/Button.tsx",
+        "evals/files/button-component/Button.types.ts"
+      ],
+      "expectations": [
+        "Recommends a component-scoped token pattern like --btn/color/border/rest on the disabled state selector, or references var(--color-border-disabled)",
+        "References the 'Which token should I use?' decision tree or similar reasoning about color → component-level state",
+        "Explains that disabled is a State-layer token in the dimensional model",
+        "Notes that State aliases Emphasis in the cascade (so theme/sentiment changes propagate automatically)",
+        "References the token naming convention for state-scoped tokens",
+        "Does not recommend using a primitive token directly (e.g., never use --colors-gray-300)",
+        "Mentions that the token should adapt to theme or sentiment changes via the cascade",
+        "Response is practical and actionable — gives a concrete answer, not just theory"
+      ]
+    },
+    {
+      "id": 4,
+      "prompt": "Audit this Tag component's CSS for token compliance. Flag any hardcoded values. The file is edge-case/Tag.css.",
+      "expected_output": "An audit that correctly identifies transparent, inherit, and currentColor as legitimate CSS values and does NOT flag them as hardcoded violations.",
+      "files": [
+        "evals/files/edge-case/Tag.css"
+      ],
+      "expectations": [
+        "Does NOT flag 'transparent' as a hardcoded color violation",
+        "Does NOT flag 'inherit' as a hardcoded value violation",
+        "Does NOT flag 'currentColor' as a hardcoded color violation",
+        "If any actual hardcoded values exist alongside these keywords, those ARE correctly flagged",
+        "Explicitly acknowledges transparent, inherit, and currentColor as legitimate CSS values (not just silently skipping them)",
+        "BLOCKING vs WARNING severity applied correctly for any real violations found",
+        "Output follows the structured audit report format",
+        "Overall audit result reflects that this component has good token compliance (legitimate CSS keywords are acceptable)"
+      ]
+    }
+  ]
+}

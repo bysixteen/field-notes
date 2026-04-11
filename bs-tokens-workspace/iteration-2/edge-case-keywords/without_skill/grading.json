@@ -1,0 +1,47 @@
+{
+  "eval_id": 4,
+  "eval_name": "edge-case-keywords",
+  "configuration": "without_skill",
+  "expectations": [
+    {
+      "text": "Does NOT flag 'transparent' as a hardcoded color violation",
+      "passed": true,
+      "evidence": "Lists transparent under 'CSS Keywords Requiring Contextual Judgment' as 'Acceptable', not under hardcoded violations"
+    },
+    {
+      "text": "Does NOT flag 'inherit' as a hardcoded value violation",
+      "passed": true,
+      "evidence": "Lists inherit under 'CSS Keywords Requiring Contextual Judgment' as 'Acceptable'"
+    },
+    {
+      "text": "Does NOT flag 'currentColor' as a hardcoded color violation",
+      "passed": true,
+      "evidence": "Lists currentColor under 'CSS Keywords Requiring Contextual Judgment' as 'Acceptable (multiple instances)'"
+    },
+    {
+      "text": "If any actual hardcoded values exist alongside these keywords, those ARE correctly flagged",
+      "passed": false,
+      "evidence": "Flags 'padding: 0' and 'border: none' as hardcoded values, but these are CSS keywords (0 and none) that should not be flagged — shows incorrect identification of real vs. keyword values"
+    },
+    {
+      "text": "Explicitly acknowledges transparent, inherit, and currentColor as legitimate CSS values (not just silently skipping them)",
+      "passed": true,
+      "evidence": "Dedicated section 'CSS Keywords Requiring Contextual Judgment' explicitly lists all three as 'Acceptable'"
+    },
+    {
+      "text": "BLOCKING vs WARNING severity applied correctly for any real violations found",
+      "passed": false,
+      "evidence": "Uses 'Low risk' instead of BLOCKING/WARNING/SERIOUS severity classifications"
+    },
+    {
+      "text": "Output follows the structured audit report format",
+      "passed": true,
+      "evidence": "Has Summary, Findings, Hardcoded Values Flagged, CSS Keywords, Token Usage, and Verdict sections"
+    },
+    {
+      "text": "Overall audit result reflects that this component has good token compliance (legitimate CSS keywords are acceptable)",
+      "passed": true,
+      "evidence": "Verdict states 'Overall: PASS. Strong token discipline.' with 28/30 declarations compliant"
+    }
+  ]
+}

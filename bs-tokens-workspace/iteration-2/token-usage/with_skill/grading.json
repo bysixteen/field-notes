@@ -1,0 +1,47 @@
+{
+  "eval_id": 3,
+  "eval_name": "token-usage",
+  "configuration": "with_skill",
+  "expectations": [
+    {
+      "text": "Recommends a component-scoped token pattern like --btn/color/border/rest on the disabled state selector, or references var(--color-border-disabled)",
+      "passed": true,
+      "evidence": "Recommends both: 'Use the component-scoped custom property --btn/color/border/rest and set it to var(--color-border-disabled) within the disabled state selector'"
+    },
+    {
+      "text": "References the 'Which token should I use?' decision tree or similar reasoning about color → component-level state",
+      "passed": false,
+      "evidence": "Does not explicitly reference a decision tree. Provides reasoning about cascade position but does not mention a 'Which token should I use?' decision tree by name"
+    },
+    {
+      "text": "Explains that disabled is a State-layer token in the dimensional model",
+      "passed": true,
+      "evidence": "Explicitly states: 'disabled is a State-layer value'"
+    },
+    {
+      "text": "Notes that State aliases Emphasis in the cascade (so theme/sentiment changes propagate automatically)",
+      "passed": true,
+      "evidence": "States: 'The alias chain is State -> Emphasis -> Sentiment -> Semantic Color... theme changes and sentiment swaps propagate automatically'"
+    },
+    {
+      "text": "References the token naming convention for state-scoped tokens",
+      "passed": true,
+      "evidence": "Shows the naming pattern --btn/color/border/rest within data-state='disabled' selector, demonstrating the component-scoped state token convention"
+    },
+    {
+      "text": "Does not recommend using a primitive token directly (e.g., never use --colors-gray-300)",
+      "passed": true,
+      "evidence": "Explicitly warns against primitives: 'Primitives like --colors-gray-300 -- breaks theme propagation (BLOCKING audit finding)'"
+    },
+    {
+      "text": "Mentions that the token should adapt to theme or sentiment changes via the cascade",
+      "passed": true,
+      "evidence": "States '--color-border-disabled token is a semantic-level global that resolves through the theme pipeline, so theme changes and sentiment swaps propagate automatically'"
+    },
+    {
+      "text": "Response is practical and actionable — gives a concrete answer, not just theory",
+      "passed": true,
+      "evidence": "Gives the specific token name, shows the exact CSS selector code, references the existing line number in Button.css, and explains why alternatives are wrong"
+    }
+  ]
+}

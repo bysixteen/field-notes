@@ -1,0 +1,15 @@
+{
+  "expectations": [
+    {"text": "Does NOT flag 'transparent' as a hardcoded color violation", "passed": true, "evidence": "Section A: 'Both are acceptable — transparent is a CSS-native keyword that represents a deliberate design decision, not a missing token.'"},
+    {"text": "Does NOT flag 'inherit' as a hardcoded value violation", "passed": true, "evidence": "Section B: 'This is acceptable — it is a deliberate cascade decision.'"},
+    {"text": "Does NOT flag 'currentColor' as a hardcoded color violation", "passed": true, "evidence": "Section C: 'This is a legitimate CSS pattern for maintaining color coherence.'"},
+    {"text": "If any actual hardcoded values exist alongside these keywords, those ARE correctly flagged", "passed": true, "evidence": "Flags padding:0 and border:none as 'Low severity' — these are borderline but shows the system would catch actual violations."},
+    {"text": "Explicitly acknowledges transparent, inherit, and currentColor as legitimate CSS values", "passed": true, "evidence": "Dedicated 'Edge-Case Keywords Requiring Judgment' section with detailed per-keyword assessment."},
+    {"text": "BLOCKING vs WARNING severity applied correctly for any real violations found", "passed": false, "evidence": "Uses 'Low/None' severity scale instead of BLOCKING/WARNING/SERIOUS. No awareness of the token audit severity framework."},
+    {"text": "Output follows the structured audit report format", "passed": false, "evidence": "Uses its own format (Summary, Flagged Hardcoded Values, Edge-Case Keywords, Compliance Scorecard, Recommendations) — not the TOKEN AUDIT template from the skill."},
+    {"text": "Overall audit result reflects that this component has good token compliance", "passed": true, "evidence": "'This file demonstrates strong token discipline.'"}
+  ],
+  "summary": {"passed": 6, "failed": 2, "total": 8, "pass_rate": 0.75},
+  "timing": {"total_duration_seconds": 61.1},
+  "eval_feedback": {"overall": "Surprisingly strong without-skill performance on the edge case — correctly handled all CSS keywords. Failed on severity framework and output template, which are the skill-specific differentiators. Also flagged layout properties (display, flex-shrink, cursor) as 'hardcoded values' which shows lack of focus on what actually matters for token compliance."}
+}

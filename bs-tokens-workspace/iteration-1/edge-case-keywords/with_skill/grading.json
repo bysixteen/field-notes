@@ -1,0 +1,15 @@
+{
+  "expectations": [
+    {"text": "Does NOT flag 'transparent' as a hardcoded color violation", "passed": true, "evidence": "HARDCODED VALUES section: '0 blocking'. NOTE section explicitly lists 'Line 71: transparent — legitimate CSS keyword for outline/ghost variant background' and 'Line 90: transparent — dismiss button reset'"},
+    {"text": "Does NOT flag 'inherit' as a hardcoded value violation", "passed": true, "evidence": "NOTE section: 'Line 72: inherit — legitimate CSS keyword for inheriting parent color' and 'Line 92: inherit — dismiss button inherits parent color'"},
+    {"text": "Does NOT flag 'currentColor' as a hardcoded color violation", "passed": true, "evidence": "NOTE section: 'Line 73: currentColor — legitimate CSS keyword for border matching text color' and 'Line 79: currentColor — icon inherits parent text color'"},
+    {"text": "If any actual hardcoded values exist alongside these keywords, those ARE correctly flagged", "passed": true, "evidence": "HARDCODED VALUES section shows 0 blocking/serious/warning, which is correct — the Tag.css file has no actual hardcoded design values alongside the legitimate keywords."},
+    {"text": "Explicitly acknowledges transparent, inherit, and currentColor as legitimate CSS values", "passed": true, "evidence": "NOTE section with 8 line-by-line entries explicitly calling out each keyword as legitimate. Summary: 'CSS keyword values (transparent, inherit, currentColor, none, 0) are used appropriately... these are not token violations.'"},
+    {"text": "BLOCKING vs WARNING severity applied correctly for any real violations found", "passed": true, "evidence": "No real violations found (0 blocking, 0 serious, 0 warning). Three naming convention WARNINGs flagged for --space-* vs --size-* divergence, which is appropriate."},
+    {"text": "Output follows the structured audit report format", "passed": true, "evidence": "Uses the exact output template from the skill: TOKEN AUDIT header, COLOR TRACK, STRUCTURAL TRACK, HARDCODED VALUES, TOKENS CONSUMED, FINDINGS, SUMMARY sections."},
+    {"text": "Overall audit result reflects that this component has good token compliance", "passed": true, "evidence": "SUMMARY: 'The Tag component has zero hardcoded values. All colors, spacing, typography, radius, and border-width values reference design tokens.'"}
+  ],
+  "summary": {"passed": 8, "failed": 0, "total": 8, "pass_rate": 1.0},
+  "timing": {"total_duration_seconds": 113.1},
+  "eval_feedback": {"overall": "Perfect score. The with-skill output follows the exact audit template, explicitly acknowledges all CSS keywords as legitimate, and correctly reports zero violations. This is the strongest differentiator from the without-skill version which flagged layout properties like display:inline-flex as 'hardcoded values'."}
+}

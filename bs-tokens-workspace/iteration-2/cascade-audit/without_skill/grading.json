@@ -1,0 +1,57 @@
+{
+  "eval_id": 2,
+  "eval_name": "cascade-audit",
+  "configuration": "without_skill",
+  "expectations": [
+    {
+      "text": "Identifies that the State layer (hover/active) aliases primitives (--colors-blue-100, --colors-blue-300) directly — flags as BLOCKING because State must alias Emphasis",
+      "passed": false,
+      "evidence": "Identifies state section as FAIL and notes 'Aliases primitive tokens directly, skipping the semantic layer entirely' but does not use BLOCKING severity and incorrectly says it skips the 'semantic layer' rather than the 'Emphasis layer'"
+    },
+    {
+      "text": "Identifies that the Emphasis layer aliases Semantic Color globals (--bg-surface-bold, --fg-primary) directly instead of Sentiment tokens — flags as BLOCKING because Emphasis must alias Sentiment",
+      "passed": false,
+      "evidence": "Identifies emphasis section as FAIL and notes 'Bypasses the sentiment layer by using generic semantic tokens instead of sentiment-aware ones' but does not use BLOCKING severity classification"
+    },
+    {
+      "text": "Shows the correct alias path: State → Emphasis → Sentiment → Semantic Color",
+      "passed": false,
+      "evidence": "Does not show the correct cascade alias path anywhere in the output"
+    },
+    {
+      "text": "Does NOT flag the border chain as a violation where it correctly uses semantic tokens (e.g., transparent in emphasis='low' is legitimate)",
+      "passed": false,
+      "evidence": "Lists 'Hardcoded transparent in low emphasis instead of a token' as an issue in the Emphasis section, incorrectly flagging transparent as a violation"
+    },
+    {
+      "text": "Output includes a COLOR TRACK section showing pass/fail status for each cascade layer",
+      "passed": false,
+      "evidence": "Uses section-based PASS/FAIL (Host, Sentiment, Emphasis, State, Slots) but does not have a dedicated COLOR TRACK section showing cascade layer status"
+    },
+    {
+      "text": "References the cascade debugging workflow or bottom-up cascade model in explanation",
+      "passed": false,
+      "evidence": "No reference to the cascade debugging workflow or bottom-up cascade model"
+    },
+    {
+      "text": "Severity is BLOCKING for both color track violations (not WARNING)",
+      "passed": false,
+      "evidence": "Uses 'high-severity' terminology but not the specific BLOCKING severity label"
+    },
+    {
+      "text": "Provides specific fix recommendations: what each broken alias should point to instead",
+      "passed": false,
+      "evidence": "Describes the problems but does not provide specific fix recommendations or replacement token names"
+    },
+    {
+      "text": "Explains why bottom-up aliasing matters (theme propagation, single-point-of-change)",
+      "passed": false,
+      "evidence": "Notes 'interaction states would override sentiment colors' but does not explain the broader principle of why bottom-up aliasing matters for theme propagation"
+    },
+    {
+      "text": "Output is structured as an audit report with clear sections",
+      "passed": true,
+      "evidence": "Output uses clear sections: Host, Sentiment, Emphasis, State, Slots with PASS/FAIL labels and a summary line"
+    }
+  ]
+}
