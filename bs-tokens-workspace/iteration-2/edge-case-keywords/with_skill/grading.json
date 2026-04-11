@@ -1,0 +1,47 @@
+{
+  "eval_id": 4,
+  "eval_name": "edge-case-keywords",
+  "configuration": "with_skill",
+  "expectations": [
+    {
+      "text": "Does NOT flag 'transparent' as a hardcoded color violation",
+      "passed": true,
+      "evidence": "Lists transparent under legitimate CSS keywords: 'NOTE: CSS keywords (transparent, inherit, currentColor, none, 0) are NOT hardcoded violations' and shows 'Line 71: transparent' as present and legitimate"
+    },
+    {
+      "text": "Does NOT flag 'inherit' as a hardcoded value violation",
+      "passed": true,
+      "evidence": "Lists inherit under legitimate CSS keywords at Line 72 and Line 92"
+    },
+    {
+      "text": "Does NOT flag 'currentColor' as a hardcoded color violation",
+      "passed": true,
+      "evidence": "Lists currentColor under legitimate CSS keywords at Line 73 and Line 79"
+    },
+    {
+      "text": "If any actual hardcoded values exist alongside these keywords, those ARE correctly flagged",
+      "passed": true,
+      "evidence": "Reports '0 found' hardcoded values and flags a [WARNING] for spacing tokens using --space-* instead of --size-*, showing it can still identify real issues"
+    },
+    {
+      "text": "Explicitly acknowledges transparent, inherit, and currentColor as legitimate CSS values (not just silently skipping them)",
+      "passed": true,
+      "evidence": "Dedicated NOTE section: 'CSS keywords (transparent, inherit, currentColor, none, 0) are NOT hardcoded violations' with each instance listed by line number"
+    },
+    {
+      "text": "BLOCKING vs WARNING severity applied correctly for any real violations found",
+      "passed": true,
+      "evidence": "The spacing issue is flagged as [WARNING], which is appropriate for a structural track concern that is not a color cascade break"
+    },
+    {
+      "text": "Output follows the structured audit report format",
+      "passed": true,
+      "evidence": "Full structured format with COLOR TRACK, STRUCTURAL TRACK, HARDCODED VALUES, TOKENS CONSUMED, FINDINGS, and CORRECT CHAIN sections"
+    },
+    {
+      "text": "Overall audit result reflects that this component has good token compliance (legitimate CSS keywords are acceptable)",
+      "passed": true,
+      "evidence": "COLOR TRACK shows all PASS, 0 hardcoded values found, only a minor WARNING for spacing convention — overall reflects strong compliance"
+    }
+  ]
+}

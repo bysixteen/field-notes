@@ -1,0 +1,17 @@
+{
+  "eval_id": 2,
+  "eval_name": "cascade-audit",
+  "prompt": "Check the token cascade integrity for this Alert component. Verify the alias chain is correct. The file is broken-cascade/Alert.css.",
+  "assertions": [
+    "Identifies that the State layer (hover/active) aliases primitives (--colors-blue-100, --colors-blue-300) directly — flags as BLOCKING because State must alias Emphasis",
+    "Identifies that the Emphasis layer aliases Semantic Color globals (--bg-surface-bold, --fg-primary) directly instead of Sentiment tokens — flags as BLOCKING because Emphasis must alias Sentiment",
+    "Shows the correct alias path: State → Emphasis → Sentiment → Semantic Color",
+    "Does NOT flag the border chain as a violation where it correctly uses semantic tokens (e.g., transparent in emphasis='low' is legitimate)",
+    "Output includes a COLOR TRACK section showing pass/fail status for each cascade layer",
+    "References the cascade debugging workflow or bottom-up cascade model in explanation",
+    "Severity is BLOCKING for both color track violations (not WARNING)",
+    "Provides specific fix recommendations: what each broken alias should point to instead",
+    "Explains why bottom-up aliasing matters (theme propagation, single-point-of-change)",
+    "Output is structured as an audit report with clear sections"
+  ]
+}

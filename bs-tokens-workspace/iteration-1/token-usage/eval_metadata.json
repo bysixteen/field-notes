@@ -1,0 +1,15 @@
+{
+  "eval_id": 3,
+  "eval_name": "token-usage",
+  "prompt": "Which token should I use for a disabled border on a button component?",
+  "assertions": [
+    "Recommends a component-scoped token pattern like --btn/color/border/rest on the disabled state selector, or references var(--color-border-disabled)",
+    "References the 'Which token should I use?' decision tree or similar reasoning about color → component-level state",
+    "Explains that disabled is a State-layer token in the dimensional model",
+    "Notes that State aliases Emphasis in the cascade (so theme/sentiment changes propagate automatically)",
+    "References the token naming convention for state-scoped tokens",
+    "Does not recommend using a primitive token directly (e.g., never use --colors-gray-300)",
+    "Mentions that the token should adapt to theme or sentiment changes via the cascade",
+    "Response is practical and actionable — gives a concrete answer, not just theory"
+  ]
+}

@@ -1,0 +1,96 @@
+/* =================================================================
+   Tag — label/badge component
+   Sections: host · sentiment · interactive · slots
+   ================================================================= */
+
+/* ── Host ───────────────────────────────────────────────────────── */
+.tag {
+  --tag-bg: var(--color-surface-secondary);
+  --tag-fg: var(--color-text-primary);
+  --tag-border: var(--color-border-secondary);
+  --tag-padding-x: var(--space-200);
+  --tag-padding-y: var(--space-100);
+  --tag-radius: var(--radii-full);
+  --tag-font-size: var(--font-size-12);
+
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-100);
+  padding-block: var(--tag-padding-y);
+  padding-inline: var(--tag-padding-x);
+  background: var(--tag-bg);
+  color: var(--tag-fg);
+  border: var(--border-width-thin) solid var(--tag-border);
+  border-radius: var(--tag-radius);
+  font-size: var(--tag-font-size);
+  font-weight: var(--font-weight-500);
+  line-height: var(--leading-tight);
+  white-space: nowrap;
+}
+
+/* ── Sentiment ──────────────────────────────────────────────────── */
+.tag[data-sentiment='neutral'] {
+  --tag-bg: var(--color-neutral-bg);
+  --tag-fg: var(--color-neutral-fg);
+  --tag-border: var(--color-neutral-border);
+}
+
+.tag[data-sentiment='warning'] {
+  --tag-bg: var(--color-warning-bg);
+  --tag-fg: var(--color-warning-fg);
+  --tag-border: var(--color-warning-border);
+}
+
+.tag[data-sentiment='success'] {
+  --tag-bg: var(--color-success-bg);
+  --tag-fg: var(--color-success-fg);
+  --tag-border: var(--color-success-border);
+}
+
+.tag[data-sentiment='error'] {
+  --tag-bg: var(--color-error-bg);
+  --tag-fg: var(--color-error-fg);
+  --tag-border: var(--color-error-border);
+}
+
+/* ── Interactive ────────────────────────────────────────────────── */
+.tag[data-interactive='true'] {
+  cursor: pointer;
+}
+
+.tag[data-interactive='true']:hover {
+  --tag-bg: var(--color-surface-hover);
+}
+
+.tag[data-interactive='true']:active {
+  --tag-bg: var(--color-surface-active);
+}
+
+/* ── Outline variant — uses transparent and inherit legitimately ── */
+.tag[data-emphasis='low'] {
+  --tag-bg: transparent;
+  --tag-fg: inherit;
+  --tag-border: currentColor;
+}
+
+/* ── Slots ──────────────────────────────────────────────────────── */
+.tag__icon {
+  flex-shrink: 0;
+  color: currentColor;
+}
+
+.tag__label {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.tag__dismiss {
+  flex-shrink: 0;
+  cursor: pointer;
+  background: transparent;
+  border: none;
+  color: inherit;
+  padding: 0;
+  display: inline-flex;
+  align-items: center;
+}

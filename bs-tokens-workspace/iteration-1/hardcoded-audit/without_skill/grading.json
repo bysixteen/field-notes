@@ -1,0 +1,17 @@
+{
+  "expectations": [
+    {"text": "Detects #f5f5f5 as a hardcoded hex color value and flags it as BLOCKING severity", "passed": false, "evidence": "Detected #f5f5f5 but categorized as 'Color' — no BLOCKING severity used. Uses generic 'Category' column instead."},
+    {"text": "Detects rgb(51, 51, 51) as a hardcoded color value and flags it as BLOCKING severity", "passed": false, "evidence": "Detected rgb(51,51,51) but categorized as 'Color' — no BLOCKING severity."},
+    {"text": "Detects 8px border-radius as a hardcoded value and flags it as WARNING severity", "passed": false, "evidence": "Detected 8px but categorized as 'Radius' — no WARNING severity."},
+    {"text": "Detects 16px/24px padding as hardcoded spacing and flags it as SERIOUS severity", "passed": false, "evidence": "Detected 16px 24px but categorized as 'Spacing' — no SERIOUS severity."},
+    {"text": "Detects 14px font-size as hardcoded typography and flags it as SERIOUS severity", "passed": false, "evidence": "Detected 14px but categorized as 'Typography' — no SERIOUS severity."},
+    {"text": "Suggests specific token replacements for hardcoded values", "passed": false, "evidence": "No token replacement suggestions provided. Only lists values and categories."},
+    {"text": "Does NOT flag existing correct token usage like var(--color-border-primary) or var(--space-300) as violations", "passed": true, "evidence": "'Correct Token Usages' section lists these as correct."},
+    {"text": "Output follows a structured audit report format with clear sections (not freeform prose)", "passed": true, "evidence": "Has structured sections: 'Hardcoded Values' table, 'Correct Token Usages', 'Key Risks'."},
+    {"text": "Correctly distinguishes color track violations as BLOCKING from structural track violations as WARNING or SERIOUS", "passed": false, "evidence": "No BLOCKING/SERIOUS/WARNING severity system used at all. All findings use generic 'Category' labels."},
+    {"text": "References the token naming convention when suggesting replacement tokens", "passed": false, "evidence": "No token naming conventions referenced. No replacement tokens suggested."}
+  ],
+  "summary": {"passed": 2, "failed": 8, "total": 10, "pass_rate": 0.2},
+  "timing": {"total_duration_seconds": 44.5},
+  "eval_feedback": {"overall": "Without-skill correctly detects hardcoded values but completely lacks the severity framework and token replacement guidance that the skill provides."}
+}

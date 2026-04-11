@@ -35,25 +35,24 @@ Each dimension is a fader on a mixing desk -- faders move independently. The com
 
 ## Color Cascade (bottom-up)
 
-The color cascade has four layers. Each layer aliases exactly one layer below it — never skipping layers, never pointing at primitives.
-
 ```
 Semantic Color (global)
-    ↑ aliases
-Sentiment (component) ── aliases ──→ Semantic Color
-    ↑ aliases
-Emphasis (component)  ── aliases ──→ Sentiment
-    ↑ aliases
-State (component)     ── aliases ──→ Emphasis
+    |
+    v
+Sentiment (component) -- aliases Semantic Color
+    |
+    v
+Emphasis (component) -- aliases Sentiment
+    |
+    v
+State (component) -- aliases Emphasis
 ```
 
-**The alias chain in one line:** State → Emphasis → Sentiment → Semantic Color.
-
-When answering "which token?" questions about colors, always name which layer the token belongs to (State, Emphasis, Sentiment, or Semantic) and what it aliases. For example: "disabled is a State-layer value; the State layer aliases Emphasis, so theme/sentiment changes propagate automatically through the chain."
+Each layer aliases the one below. A single Sentiment change propagates through Emphasis and State automatically.
 
 ### Why bottom-up beats top-down
 
-With bottom-up aliasing, changing a Sentiment token (e.g., switching the error palette) instantly updates every Emphasis and State variant — without touching those collections at all. Top-down would require updating every terminal token individually. The cascade does the work. This is why every cascade audit finding that breaks the chain is BLOCKING — a broken link means theme changes, sentiment swaps, or emphasis overrides silently stop propagating.
+With bottom-up aliasing, changing a Sentiment token (e.g., switching the error palette) instantly updates every Emphasis and State variant — without touching those collections at all. Top-down would require updating every terminal token individually. The cascade does the work.
 
 ## Token Naming Conventions
 
@@ -185,8 +184,6 @@ What are you styling?
 
 ## Output Format Template
 
-Always use this template when auditing token usage or cascade integrity. Every section is required — do not condense or omit sections even if they all pass.
-
 ```
 ===========================================================
 TOKEN AUDIT: {ComponentName}
@@ -207,9 +204,6 @@ HARDCODED VALUES:
   {count} found
   Line {n}: {value} -- should be {token}
 
-  NOTE: CSS keywords (transparent, inherit, currentColor, none, 0)
-  are NOT hardcoded violations — list them with explanation if present.
-
 TOKENS CONSUMED:
   Color:     {list}
   Spacing:    {list}
@@ -217,19 +211,12 @@ TOKENS CONSUMED:
   Structure:  {list}
 
 FINDINGS:
-  [{BLOCKING|WARNING|SERIOUS}] {description}
-    Current: {what exists now, with line numbers}
-    Should be: {correct token or alias, with full chain}
-    Why: {what breaks if this isn't fixed — e.g., theme changes won't propagate}
-
-CORRECT CHAIN (show for every cascade audit):
-  State → Emphasis → Sentiment → Semantic Color
-  {Show the expected alias path for this specific component}
+  [{BLOCKING|WARNING}] {description}
+    Current: {what exists}
+    Should be: {correct alias chain}
 
 ===========================================================
 ```
-
-The FINDINGS section is the most important part of the audit. For every finding, include all three lines (Current / Should be / Why). The "Should be" line must name the specific token the alias should point to — not just "fix this". The "Why" line explains what user-visible behaviour breaks.
 
 ## Cross-References
 

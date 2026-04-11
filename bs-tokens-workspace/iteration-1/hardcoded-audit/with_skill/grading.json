@@ -1,0 +1,17 @@
+{
+  "expectations": [
+    {"text": "Detects #f5f5f5 as a hardcoded hex color value and flags it as BLOCKING severity", "passed": true, "evidence": "Table row: '8 | #f5f5f5 (background) | BLOCKING'"},
+    {"text": "Detects rgb(51, 51, 51) as a hardcoded color value and flags it as BLOCKING severity", "passed": true, "evidence": "Table row: '9 | rgb(51, 51, 51) (color) | BLOCKING'"},
+    {"text": "Detects 8px border-radius as a hardcoded value and flags it as WARNING severity", "passed": true, "evidence": "Table row: '11 | 8px (border-radius) | WARNING'"},
+    {"text": "Detects 16px/24px padding as hardcoded spacing and flags it as SERIOUS severity", "passed": true, "evidence": "Table row: '12 | 16px 24px (padding) | SERIOUS'"},
+    {"text": "Detects 14px font-size as hardcoded typography and flags it as SERIOUS severity", "passed": true, "evidence": "Table row: '13 | 14px (font-size) | SERIOUS'"},
+    {"text": "Suggests specific token replacements for hardcoded values", "passed": true, "evidence": "Each row has 'Should Be' column with specific tokens: var(--card-bg) -> var(--bg-surface), var(--card-radius) -> var(--radii-sm), var(--card-padding-y)/var(--card-padding-x) -> var(--size-*), var(--card-font-size) -> var(--font-size-14)"},
+    {"text": "Does NOT flag existing correct token usage like var(--color-border-primary) or var(--space-300) as violations", "passed": true, "evidence": "'Tokens Consumed Correctly' section lists --color-border-primary, --space-300 etc. as correct usage"},
+    {"text": "Output follows a structured audit report format with clear sections (not freeform prose)", "passed": true, "evidence": "Report has structured sections: 'Hardcoded Values Found' table, 'Color Track', 'Structural Track', 'Tokens Consumed Correctly', 'Summary'"},
+    {"text": "Correctly distinguishes color track violations as BLOCKING from structural track violations as WARNING or SERIOUS", "passed": true, "evidence": "Color values (#f5f5f5, rgb(51,51,51), #1a1a1a) are BLOCKING. Spacing (16px/24px) and font-size (14px, 18px) are SERIOUS. Radius (8px) is WARNING."},
+    {"text": "References the token naming convention when suggesting replacement tokens", "passed": true, "evidence": "Replacement suggestions follow naming conventions: var(--card-bg) -> var(--bg-surface), var(--radii-sm), var(--size-*), var(--font-size-14)"}
+  ],
+  "summary": {"passed": 10, "failed": 0, "total": 10, "pass_rate": 1.0},
+  "timing": {"total_duration_seconds": 81.3},
+  "eval_feedback": {"overall": "Strong eval set. All assertions are discriminating — the without-skill version failed several of these (no severity levels, no token replacement suggestions)."}
+}

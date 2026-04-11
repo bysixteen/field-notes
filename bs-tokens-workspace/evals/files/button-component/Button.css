@@ -1,0 +1,204 @@
+/* =================================================================
+   Button — dimensional stylesheet
+   Sections: host · rest · interactive · programmatic · slots · motion
+   ================================================================= */
+
+/* ── Host ───────────────────────────────────────────────────────── */
+.btn {
+  --btn/color/bg/rest: var(--color-surface-primary);
+  --btn/color/fg/rest: var(--color-text-on-primary);
+  --btn/color/border/rest: var(--color-border-primary);
+  --btn/spacing/padding-x: var(--space-400);
+  --btn/spacing/padding-y: var(--space-200);
+  --btn/spacing/gap: var(--space-200);
+  --btn/typography/font-size: var(--type-body-md);
+  --btn/typography/font-weight: var(--type-weight-semibold);
+  --btn/typography/line-height: var(--type-leading-tight);
+  --btn/structure/border-radius: var(--radius-md);
+  --btn/structure/border-width: var(--border-width-thin);
+  --btn/structure/min-height: var(--control-height-md);
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--btn/spacing/gap);
+  padding-block: var(--btn/spacing/padding-y);
+  padding-inline: var(--btn/spacing/padding-x);
+  font-size: var(--btn/typography/font-size);
+  font-weight: var(--btn/typography/font-weight);
+  line-height: var(--btn/typography/line-height);
+  background: var(--btn/color/bg/rest);
+  color: var(--btn/color/fg/rest);
+  border: var(--btn/structure/border-width) solid var(--btn/color/border/rest);
+  border-radius: var(--btn/structure/border-radius);
+  min-block-size: var(--btn/structure/min-height);
+  cursor: pointer;
+  position: relative;
+}
+
+/* ── Rest / Sentiment ───────────────────────────────────────────── */
+.btn[data-sentiment='neutral'] {
+  --btn/color/bg/rest: var(--color-neutral-bg);
+  --btn/color/fg/rest: var(--color-neutral-fg);
+  --btn/color/border/rest: var(--color-neutral-border);
+}
+
+.btn[data-sentiment='warning'] {
+  --btn/color/bg/rest: var(--color-warning-bg);
+  --btn/color/fg/rest: var(--color-warning-fg);
+  --btn/color/border/rest: var(--color-warning-border);
+}
+
+.btn[data-sentiment='highlight'] {
+  --btn/color/bg/rest: var(--color-highlight-bg);
+  --btn/color/fg/rest: var(--color-highlight-fg);
+  --btn/color/border/rest: var(--color-highlight-border);
+}
+
+.btn[data-sentiment='success'] {
+  --btn/color/bg/rest: var(--color-success-bg);
+  --btn/color/fg/rest: var(--color-success-fg);
+  --btn/color/border/rest: var(--color-success-border);
+}
+
+.btn[data-sentiment='error'] {
+  --btn/color/bg/rest: var(--color-error-bg);
+  --btn/color/fg/rest: var(--color-error-fg);
+  --btn/color/border/rest: var(--color-error-border);
+}
+
+/* ── Emphasis ───────────────────────────────────────────────────── */
+.btn[data-emphasis='high'] {
+  --btn/color/bg/rest: var(--color-emphasis-high-bg);
+  --btn/color/fg/rest: var(--color-emphasis-high-fg);
+  --btn/color/border/rest: var(--color-emphasis-high-border);
+}
+
+.btn[data-emphasis='medium'] {
+  --btn/color/bg/rest: var(--color-emphasis-medium-bg);
+  --btn/color/fg/rest: var(--color-emphasis-medium-fg);
+  --btn/color/border/rest: var(--color-emphasis-medium-border);
+}
+
+.btn[data-emphasis='low'] {
+  --btn/color/bg/rest: var(--color-emphasis-low-bg);
+  --btn/color/fg/rest: var(--color-emphasis-low-fg);
+  --btn/color/border/rest: transparent;
+}
+
+/* ── Interactive / State ────────────────────────────────────────── */
+.btn[data-state='hover'] {
+  --btn/color/bg/rest: var(--color-bg-hover);
+  --btn/color/border/rest: var(--color-border-hover);
+}
+
+.btn[data-state='active'] {
+  --btn/color/bg/rest: var(--color-bg-active);
+  --btn/color/border/rest: var(--color-border-active);
+}
+
+.btn[data-state='disabled'] {
+  --btn/color/bg/rest: var(--color-bg-disabled);
+  --btn/color/fg/rest: var(--color-fg-disabled);
+  --btn/color/border/rest: var(--color-border-disabled);
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+.btn[data-state='resolving'] {
+  --btn/color/bg/rest: var(--color-bg-disabled);
+  --btn/color/fg/rest: var(--color-fg-disabled);
+  cursor: wait;
+}
+
+/* ── Programmatic / Size ────────────────────────────────────────── */
+.btn[data-size='xs'] {
+  --btn/spacing/padding-x: var(--space-200);
+  --btn/spacing/padding-y: var(--space-100);
+  --btn/typography/font-size: var(--type-body-xs);
+  --btn/structure/min-height: var(--control-height-xs);
+}
+
+.btn[data-size='sm'] {
+  --btn/spacing/padding-x: var(--space-300);
+  --btn/spacing/padding-y: var(--space-100);
+  --btn/typography/font-size: var(--type-body-sm);
+  --btn/structure/min-height: var(--control-height-sm);
+}
+
+.btn[data-size='md'] {
+  /* defaults — declared in host */
+}
+
+.btn[data-size='lg'] {
+  --btn/spacing/padding-x: var(--space-500);
+  --btn/spacing/padding-y: var(--space-300);
+  --btn/typography/font-size: var(--type-body-lg);
+  --btn/structure/min-height: var(--control-height-lg);
+}
+
+.btn[data-size='xl'] {
+  --btn/spacing/padding-x: var(--space-600);
+  --btn/spacing/padding-y: var(--space-400);
+  --btn/typography/font-size: var(--type-body-xl);
+  --btn/structure/min-height: var(--control-height-xl);
+}
+
+/* ── Structure ──────────────────────────────────────────────────── */
+.btn[data-structure='icon-only'] {
+  --btn/spacing/padding-x: var(--space-200);
+  aspect-ratio: 1;
+}
+
+.btn[data-structure='split'] {
+  --btn/spacing/gap: 0;
+}
+
+/* ── Slots ──────────────────────────────────────────────────────── */
+.btn__prefix,
+.btn__suffix {
+  display: inline-flex;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+.btn__label {
+  flex: 1 1 auto;
+  text-align: center;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.btn__spinner {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.btn__spinner::after {
+  content: '';
+  width: 1em;
+  height: 1em;
+  border: 2px solid currentcolor;
+  border-right-color: transparent;
+  border-radius: 50%;
+  animation: btn-spin 0.6s linear infinite;
+}
+
+/* ── Motion ─────────────────────────────────────────────────────── */
+@keyframes btn-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.btn {
+  transition:
+    background-color 150ms ease,
+    border-color 150ms ease,
+    color 150ms ease,
+    opacity 150ms ease;
+}

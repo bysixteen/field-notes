@@ -1,0 +1,15 @@
+{
+  "expectations": [
+    {"text": "Recommends a component-scoped token pattern", "passed": true, "evidence": "Recommends '--color-border-disabled' and shows --btn/color/border/rest usage from Button.css"},
+    {"text": "References the 'Which token should I use?' decision tree", "passed": false, "evidence": "No decision tree referenced. Derives answer directly from the Button.css code."},
+    {"text": "Explains that disabled is a State-layer token in the dimensional model", "passed": false, "evidence": "No mention of State-layer or dimensional model. Refers to 'interactive state tokens' generically."},
+    {"text": "Notes that State aliases Emphasis in the cascade", "passed": false, "evidence": "No cascade aliasing mentioned."},
+    {"text": "References the token naming convention for state-scoped tokens", "passed": true, "evidence": "'follows the codebase\\'s --color-{property}-{state} naming convention'"},
+    {"text": "Does not recommend using a primitive token directly", "passed": true, "evidence": "Recommends semantic token. Does not mention primitives but also doesn't recommend them."},
+    {"text": "Mentions that the token should adapt to theme or sentiment changes via the cascade", "passed": true, "evidence": "'themes can redefine the value without touching component CSS'"},
+    {"text": "Response is practical and actionable", "passed": true, "evidence": "Gives concrete answer with code example from Button.css. Short and direct."}
+  ],
+  "summary": {"passed": 5, "failed": 3, "total": 8, "pass_rate": 0.625},
+  "timing": {"total_duration_seconds": 33.2},
+  "eval_feedback": {"overall": "Gave the right answer with good practicality, but lacks the dimensional model framework (State-layer, decision tree, cascade aliasing) that the skill provides."}
+}
