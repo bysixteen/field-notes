@@ -56,8 +56,10 @@ Multi-dimensional token model, composition rules, naming conventions, and constr
 - [Component Principles](/design-system/approaches/component-principles): Single-responsibility, composition, and API design for design system components.
 - [Flat Architecture](/design-system/approaches/flat): Single-layer CSS custom properties for LLM-mediated workflows.
 - [Approaches](/design-system/approaches): When to use the full layered architecture vs flat tokens.
+- [Industry Research](/design-system/approaches/industry-research): How major design systems address nine recurring problems — and where the dimensional model lands.
 - [Layered Architecture](/design-system/approaches/layered): The full four-layer token chain for enterprise and multi-brand systems.
 - [Why Dimensional](/design-system/approaches/why-dimensional): A plain-language explanation of how the dimensional model compares to typical design systems — and why it works better.
+- [Why This Works](/design-system/approaches/why-this-works): Eleven rules that keep the dimensional model coherent as it scales — each with the reasoning, industry validation, and how to apply it.
 - [Component API](/design-system/component-api): How to define the consumer-facing contract of a design system component — inputs, types, defaults, and slots.
 - [Component Scaffolding](/design-system/component-scaffolding): The workflow for scaffolding a new design system component — from dimension decisions through file generation to visual iteration.
 - [Composition](/design-system/composition): The checklist and rules for composing components with the dimensional model.
