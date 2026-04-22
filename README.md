@@ -59,3 +59,6 @@ Deployed to GitHub Pages on every push to `main`.
 - Add filenames (without extension) to the directory's `meta.json`
 - Lowercase kebab-case filenames, project-agnostic content only
 - Run `npm run generate:llms` after content changes
+
+
+<!-- Fix #113 -->
