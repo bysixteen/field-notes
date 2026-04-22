@@ -1,0 +1,179 @@
+---
+title: Industry Research
+description: How major design systems address nine recurring problems — and where the dimensional model lands.
+---
+
+Each section below frames a recurring architectural problem, compares how well-known design systems have addressed it, names the anti-pattern to avoid, and states the position this system takes. Claims about external systems are drawn from their public documentation at time of writing.
+
+## Problem 1 — Variant Naming Combinatorics
+
+How do systems name the visual variations of a component?
+
+| System | Typical button variants | Naming axis |
+|--------|-------------------------|-------------|
+| Material Design 3 | filled, tonal, elevated, outlined, text | Visual treatment |
+| IBM Carbon | primary, secondary, tertiary, ghost, danger, danger-tertiary | Rank + sentiment |
+| Shopify Polaris | primary, plain, critical, monochrome-plain | Role + sentiment |
+| Radix UI | solid, soft, surface, outline, ghost | Visual treatment |
+| Ant Design | primary, default, dashed, text, link | Type + treatment |
+
+**Core tension.** A single `variant` prop bundles multiple decisions — rank, sentiment, fill style — into one label. Adding a new meaning (e.g. "new") forces every component to grow a new variant, with new colours defined for each.
+
+**Anti-pattern.** Treating variants as a flat list of names. The list is O(sentiments × emphases × structures) and grows faster than anyone can keep it coherent.
+
+**This system.** Variants are not named; they are *coordinates*. A button is described by its answers to independent questions (sentiment, emphasis, size, structure). Adding a new sentiment extends the list in one place, not once per component. See [Why Dimensional](/design-system/approaches/why-dimensional).
+
+## Problem 2 — Colour Ramp Generation
+
+How do systems produce a 12-step scale that is perceptually even in both light and dark modes?
+
+| System | Approach | Colour space |
+|--------|----------|--------------|
+| Tailwind CSS | Hand-tuned by eye, 50–950 steps | sRGB |
+| Radix Colors | Hand-tuned per-hue; 12 steps with fixed UI roles | sRGB / P3 |
+| Material Design 3 | Programmatic tone map from seed colour | HCT |
+| IBM Carbon | Programmatic HSL with lightness ramp | HSL |
+| Adobe Spectrum | Contrast-driven generation (Leonardo) | sRGB |
+
+**Core tension.** HSL lightness is not perceptually uniform — two hues at the same HSL lightness look very different. Hand-tuning solves the perception problem but does not scale to many hues. HCT and OKLCH solve both by placing lightness on a perceptual axis.
+
+**Anti-pattern.** Generating ramps in HSL and trusting the numbers. The "same" step across hues will read inconsistently, especially for yellow and green.
+
+**This system.** A 12-step scale in OKLCH with fixed lightness targets per step. Each step has a defined UI role (background, border, solid, text), so a component that uses step 700 for a solid fill behaves the same regardless of the sentiment hue. See [Color Scale](/design-system/model/color-scale).
+
+## Problem 3 — Theme Model
+
+How are light/dark, brand, and density variants represented?
+
+| System | Light/dark | Brand switching | Density |
+|--------|-----------|-----------------|---------|
+| Material Design 3 | Dynamic tonal palette from seed | Seed swap | Separate density setting |
+| Shopify Polaris | Single theme; dark in progress | Not supported | Not a dimension |
+| Figma variables | Collection modes (up to 4 per collection) | Separate collection or mode | Mode or collection |
+| Tokens Studio | Themes as token-set compositions | Set composition | Set composition |
+| Salt (JP Morgan) | Mode at root | Theme overlay | Environment-level density |
+
+**Core tension.** Teams conflate three distinct ideas — colour scheme (light/dark), brand (colour palette swap), and density (spatial adjustment) — into a single "theme" abstraction. The result is a god collection with modes multiplied together.
+
+**Anti-pattern.** Stacking every axis into one variable collection. Four brands × two modes × three densities = 24 variants per semantic token.
+
+**This system.** Theme is a mode on the **primitive** collection only. Semantic tokens reference primitives by alias, so a theme swap changes resolved values without rewriting any semantic or component-slot token. Density is collapsed into size. See [Theme](/design-system/model/theme).
+
+## Problem 4 — Token Layering Depth
+
+How many tiers should sit between a raw value and a rendered pixel?
+
+| Source | Tiers | Structure |
+|--------|-------|-----------|
+| Brad Frost (Atomic) | 3 | Global → Alias → Component |
+| IBM Carbon | 2 | Core → Component |
+| Shopify Polaris | 2 | Raw → Semantic |
+| W3C DTCG draft | Agnostic | Tooling-defined |
+| Nathan Curtis (EightShapes) | 3–4 | Option → Decision → Component |
+
+**Core tension.** Too few tiers couples intent to value — changing a brand colour requires touching every component. Too many tiers buries the resolved value under aliases, making debugging painful. Most published tier counts are 2 or 3; 4-tier systems are rarer but useful when component-slot tokens need to stay stable across theme swaps.
+
+**Anti-pattern.** Skipping the semantic tier ("it's only one app") and hard-coding primitive values in component styles. Every later theme, brand, or mode becomes a rewrite.
+
+**This system.** A four-tier chain for layered architectures — Primitive → Semantic → Component Slot → Resolver — plus a one-tier flat fallback for LLM-mediated projects. See [Approaches](/design-system/approaches) and [Token Chain](/design-system/token-chain).
+
+## Problem 5 — Semantic Intent vs Appearance Naming
+
+Should a token be named for what it *looks like* or what it's *for*?
+
+| System | Example tokens | Naming style |
+|--------|----------------|--------------|
+| Tailwind (utility) | `bg-blue-500` | Appearance |
+| Radix UI | `blue-9`, `gray-11` | Indexed + hue |
+| Shopify Polaris | `color-bg-primary`, `color-text-critical` | Intent |
+| IBM Carbon | `layer-01`, `interactive-01`, `text-primary` | Role + rank |
+| Material Design 3 | `surface-container`, `on-primary-container` | Role + relationship |
+
+**Core tension.** Appearance names (`--gray-100`) break the moment a dark mode arrives — the name lies. Intent names (`--background-neutral-rest`) require discipline to avoid ballooning into dozens of near-synonyms.
+
+**Anti-pattern.** Mixing the two: a semantic token named `--brand-blue` gives you the worst of both — you cannot rebrand without renaming, and the name doesn't describe a role.
+
+**This system.** Primitives are indexed (`--colors-neutral-500` — pure coordinates). Semantic tokens describe role, not colour (`--background-neutral-weaker-rest`). Components consume semantics only. See [Naming](/design-system/naming).
+
+## Problem 6 — Emphasis and Visual Weight
+
+How is "how loudly this thing shouts" encoded?
+
+| System | Emphasis mechanism |
+|--------|-------------------|
+| Material Design 3 | Separate variants (filled / tonal / outlined / text) |
+| Ant Design | Separate button types (primary / default / text / link) |
+| Radix UI | `variant` prop (solid / soft / outline / ghost) |
+| Polaris | Limited — primary vs plain |
+| Carbon | Rank names (primary / secondary / tertiary) |
+
+**Core tension.** Almost every system encodes emphasis as a variant name, which means emphasis is not independently composable with sentiment. "A warning at low emphasis" has no name in most systems — you have to invent `ghost-danger` or similar.
+
+**Anti-pattern.** Letting emphasis live inside the variant name. You end up multiplying variants whenever a new sentiment or emphasis level is added.
+
+**This system.** Emphasis is a named dimension (`high` / `medium` / `low`) orthogonal to sentiment. A warning at low emphasis is a valid, first-class composition — not a contrived variant. See [Emphasis](/design-system/model/emphasis).
+
+## Problem 7 — State Modelling
+
+How are hover, focus, active, selected, and disabled states represented?
+
+| System | State mechanism |
+|--------|-----------------|
+| Material Design 3 | State layer (overlay) with documented opacities |
+| Radix UI | `data-state` attributes on primitives |
+| IBM Carbon | Pseudo-classes, explicitly documented tokens per state |
+| Polaris | Mostly pseudo-classes; limited public state tokens |
+| Tailwind | Pseudo-class prefixes (`hover:`, `focus:`) |
+
+**Core tension.** State sprawls in two directions: into component props (`isHovered`, `isPressed`) — which hardcodes a runtime-only concern at composition time — or into variant names (`button-hover`) which multiplies the variant matrix.
+
+**Anti-pattern.** Accepting a `state` prop. Once composition can set state, the component no longer owns its own interaction model, and behaviour becomes inconsistent across consumers.
+
+**This system.** State is always runtime. It is expressed via pseudo-classes and `data-state` attributes. In token names, state is the final segment (`--background-neutral-weaker-hover`). Composition never sets it. See [State](/design-system/model/state).
+
+## Problem 8 — Breakpoints & Responsive Adaptation
+
+How do systems express "this looks different on mobile"?
+
+| Source | Approach | Key finding |
+|--------|----------|-------------|
+| Adobe Spectrum | Platform scale | Scale × t-shirt size are independent; 1.25× ratio for touch |
+| Tokens Studio | Responsive collection | Separate collection; acknowledged as orthogonal to theme |
+| Frontend Masters (2024) | CSS-first | `clamp()` + container queries + intrinsic layout replace most breakpoints |
+| Andrew Hurley (Medium) | Advisory against | Responsive tokens are "hacky"; keep separate from theme |
+| Devōt | Hybrid | Tokens for scalar changes, component variants for structural changes |
+| Figma (official) | Variants per breakpoint | Named per breakpoint for auto-switching in prototypes |
+
+**Core tension.** Breakpoint tokens sit at the wrong abstraction level. A breakpoint is a *viewport* concept; tokens are *component* concepts. Modelling breakpoints as a token dimension on semantics creates a god collection where every paired value needs mobile / tablet / desktop entries.
+
+**Anti-pattern.** Adding a `breakpoint` mode to the semantic or component-slot collection. The variable count multiplies by the number of breakpoints, and the cascade loses all of its economy.
+
+**This system.** Breakpoints are reference constants in code, not tokens in the chain. Responsive mechanisms map to the change being made:
+
+| Change type | Mechanism |
+|-------------|-----------|
+| Scalar (size up/down) | `clamp()` |
+| Structural (reflow internals) | Container queries |
+| Layout (different page shape) | Media queries |
+
+For Figma preview, prefer a **hybrid**: component variants for structural shifts, a thin responsive collection only where scalar tokens genuinely need discrete values. Never put breakpoints on the semantic or primitive collections.
+
+## Problem 9 — Size vs Scale Independence
+
+If every component already has per-device values, is `size` redundant?
+
+| Source | Approach | Key finding |
+|--------|----------|-------------|
+| Adobe Spectrum (platform scale) | Two orthogonal axes | Scale × t-shirt size are independent; 1.25× ratio for touch |
+| Tokens Studio (Pro) | Theme groups as a matrix | Brand × density × mode compose orthogonally |
+| SAS Software | Theme + density as independent dimensions | Size and density stay separate at the theme level |
+
+**Core tension.** Size answers *"how large should this be relative to its siblings?"* — a per-instance designer choice. Scale answers *"how large should everything be in this environment?"* — a viewport-level decision. They are orthogonal: a component with t-shirt sizing is still affected by scale.
+
+**Anti-pattern.** Putting per-component device entries on every semantic or component-slot token. Fifty components × five slots × two modes quickly reaches thousands of variables, and the size dimension is effectively killed — every instance is the environmentally-scaled default.
+
+**This system.** A thin **Scale** collection (~10–25 base variables, 2 modes: desktop/touch) sits above size. Size tokens reference scale values, so scale adapts everything proportionally without touching the size vocabulary. A component's `size` prop remains a relative hierarchy choice; scale handles the environment. See [Size](/design-system/model/size).
+
+## Sources
+
+Claims above reference the public documentation of each system at time of writing. Where a single author is cited (Nathan Curtis, Brad Frost, Andrew Hurley), the reference is to their published writing. External links are not included inline; see each project's documentation for the authoritative source.

@@ -1,0 +1,116 @@
+---
+title: Why This Works
+description: Eleven rules that keep the dimensional model coherent as it scales — each with the reasoning, industry validation, and how to apply it.
+---
+
+Each rule below states an invariant of the model, why it matters, where the industry has independently reached the same conclusion, and how to apply it in day-to-day work.
+
+## Rule 1 — Name the Question, Not the Answer
+
+Variants are not a name; they are a set of answers to independent questions (sentiment, emphasis, size, structure).
+
+**Why it matters.** Named variants bundle multiple decisions into one label. "Danger" means red *and* filled *and* most important. Unbundling these into dimensions lets each decision vary independently — a warning at low emphasis becomes a first-class composition rather than a custom variant.
+
+**Industry validation.** Radix, Material Design, and Ant all ship growing variant matrices (typically 4–6 button variants plus sentiment modifiers). Teams then hit the same wall: adding a new sentiment multiplies the variant count. Nathan Curtis has written repeatedly about the maintenance cost of variant explosion.
+
+**How to apply.** When tempted to add a new variant name, ask which dimension the new idea belongs to. If it is a new sentiment, add it to the sentiment list once and every component inherits it. If it is a new emphasis level, the same. If it is neither, it probably belongs as a structure variant on that one component.
+
+## Rule 2 — Primitives Are Indexed, Not Semantic
+
+Primitive tokens carry coordinates (`--colors-warning-500`), not roles (`--colors-brand-danger`).
+
+**Why it matters.** A primitive is a raw value. The moment it picks up a role in its name, it can no longer be reused for a different role without lying. Coordinate names stay truthful across themes, brands, and modes.
+
+**Industry validation.** Radix (`blue-9`, `gray-11`), Tailwind (`blue-500`), and IBM Carbon's `layer-01` indexing all push role-bearing names up into the semantic tier and keep the primitives purely indexed.
+
+**How to apply.** When naming a new primitive, describe its position in a scale (hue + step). If the only sensible name mentions a role ("brand", "accent", "action"), it is not a primitive — it is a semantic token that needs a primitive underneath it.
+
+## Rule 3 — Semantics Describe Intent, Not Appearance
+
+A semantic token says *what it is for*, never *what it looks like*.
+
+**Why it matters.** Appearance names (`--gray-100`) break the moment a second theme appears. Intent names (`--background-neutral-weaker-rest`) survive every mode swap because they describe a role, and the primitive resolves to whichever value the role demands in the current theme.
+
+**Industry validation.** Polaris (`color-bg-primary`, `color-text-critical`), Carbon (`interactive-01`, `text-primary`), and Material Design 3 (`on-primary-container`) all converge on role-based semantic names.
+
+**How to apply.** A semantic token name should answer: *surface*, *emphasis*, *sentiment*, and *state* — in that order. Never include a colour, shade, or hue word in a semantic token name.
+
+## Rule 4 — Contrast Is Guaranteed at the Pair Layer
+
+Every `background-X` token pairs with a `foreground-X` token that meets WCAG contrast — by construction, not by per-component audit.
+
+**Why it matters.** If contrast is enforced at the pair level, a component that uses the matched pair gets AA contrast in every theme automatically. Move contrast enforcement up into the token chain and the component never needs to know.
+
+**Industry validation.** Adobe Leonardo generates ramps from contrast targets. Material 3's tonal palettes pair foreground/background tones at documented contrast ratios. Radix documents guaranteed AA pairings per step.
+
+**How to apply.** Never mix backgrounds and foregrounds across sentiments or emphasis levels. If you need a `neutral` background with `warning` text, that pairing must exist as a defined combination — otherwise the contrast guarantee does not hold.
+
+## Rule 5 — Emphasis Is Orthogonal to Sentiment
+
+The two answer different questions — *what* vs *how loudly* — and a valid composition includes any sentiment at any emphasis.
+
+**Why it matters.** Fusing emphasis into variant names (`ghost-danger`, `outline-critical`) is how variant matrices explode. Separating them cuts the matrix from O(sentiment × emphasis) named variants down to O(sentiment + emphasis) dimension values.
+
+**Industry validation.** Nearly every system encodes emphasis in the variant name (Material, Radix, Ant). The dimensional model is the outlier here — by design. The `sentiment × emphasis` grid shown in [Sentiment + Emphasis](/design-system/composition/sentiment-emphasis) would require naming 15 variants in a conventional system; as two dimensions, it needs only eight values total.
+
+**How to apply.** When writing a composition, pick sentiment first (what does this say?), then emphasis (how urgently?). If a combination doesn't feel right, the answer is usually that the sentiment is wrong — not that the emphasis is.
+
+## Rule 6 — State Is Always Runtime
+
+Composition never sets state. State is determined by user interaction via pseudo-classes and `data-state` attributes.
+
+**Why it matters.** Once composition can pass a `state` prop, two things break: the component no longer owns its interaction model, and static documentation examples start to look like real runtime states. Both lead to visual drift.
+
+**Industry validation.** Radix uses `data-state` for complex states (open, closed, checked). Pseudo-classes (`:hover`, `:active`, `:focus-visible`) are the browser's native state model; Carbon and Material both lean on them.
+
+**How to apply.** When you see a `state="hover"` prop in a component API, remove it. Document visual states via Storybook's pseudo-state addon or explicit `data-state` attributes on the component root, not as composition props.
+
+## Rule 7 — Theme Is a Swap on Primitives, Not a Rewrite
+
+Changing theme swaps primitive values only. Semantic tokens, component-slot tokens, and component styles stay identical.
+
+**Why it matters.** If theme reaches into the semantic or component-slot tier, every theme becomes an effective rewrite. Keeping theme confined to primitives means adding a theme is a single collection-mode operation, not a system-wide refactor.
+
+**Industry validation.** Figma variable collections model modes exactly this way: modes belong to a collection. Tokens Studio's theme composition works by swapping the bottom-most token set. W3C DTCG's mode resolver operates at the primitive level by convention.
+
+**How to apply.** Never set a theme-specific override on a semantic token. If a dark-mode value feels wrong, fix the primitive it resolves to — not the semantic. If the semantic still doesn't work, the problem is that its role is wrong, not that it needs a mode exception.
+
+## Rule 8 — Component Slots Alias Semantics, Not Primitives
+
+Component-slot tokens (the fourth tier in layered systems) reference semantic tokens — never primitives directly.
+
+**Why it matters.** If a component slot references a primitive, it skips the semantic tier and loses role information. The next theme, brand, or mode change will touch that slot directly, defeating the purpose of having the tier at all.
+
+**Industry validation.** Nathan Curtis's component-token tier reaches the same conclusion. Polaris's component-level tokens reference semantics by construction.
+
+**How to apply.** In any new component slot, the `var()` chain should read: `component-slot → semantic → primitive`. If the chain collapses ("this slot points straight at `--colors-neutral-500`"), reinsert the semantic layer.
+
+## Rule 9 — Structure Is Build-Time; Size Is Composition-Time
+
+A component's anatomy (which regions exist, fixed radii, fixed font) is decided when the component is built. Its footprint (how large the regions are) is decided when the component is used.
+
+**Why it matters.** Collapsing these two lifecycles is how components either (a) expose every internal padding as a prop or (b) grow a parallel set of "compact" variants. Separating them gives consumers one knob — `size` — and keeps everything else fixed.
+
+**Industry validation.** Salt treats density as environment-level, not per-component. Material M3 absorbs density into size reductions rather than a separate axis. Nathan Curtis recommends the same collapse.
+
+**How to apply.** If a prop controls internal spacing, padding, or gap, ask whether it belongs on the size scale. If it does, remove it. If it doesn't, it is probably a structure variant — which means it is a build-time decision, not a composition prop.
+
+## Rule 10 — Breakpoints Are Not a Token Dimension
+
+Breakpoint values are reference constants in code, not tokens on the semantic or primitive chain.
+
+**Why it matters.** A breakpoint is a viewport concept; tokens are component concepts. Modelling breakpoints as a mode on semantic or component-slot tokens creates a god collection: each paired value multiplied by the number of breakpoints. The cascade loses its economy, and the chain becomes impossible to keep coherent.
+
+**Industry validation.** Frontend Masters (2024) demonstrates that `clamp()` + container queries + intrinsic layout replace most breakpoint-driven CSS. Andrew Hurley describes responsive tokens as "hacky" and recommends keeping them out of the theme. Figma's official guidance uses component variants named per breakpoint rather than modes on variable collections.
+
+**How to apply.** For responsive behaviour, pick the mechanism by the change being made: `clamp()` for scalar, container queries for structural, media queries for layout. In Figma, use component variants for structural shifts and a thin **responsive** collection only where scalar tokens genuinely need discrete values. Never put breakpoints on semantic or primitive collections.
+
+## Rule 11 — Size and Scale Are Independent
+
+Size (xs – xl) is a relative hierarchy chosen per instance by the designer. Scale (touch / desktop) is an environmental adaptation chosen by the viewport. They do not replace each other.
+
+**Why it matters.** Putting per-component device entries on every token is the god collection anti-pattern — it multiplies the variable count and collapses size to "whatever the environment dictates." Treating size and scale as two orthogonal axes preserves designer choice while still adapting to device context.
+
+**Industry validation.** Adobe Spectrum's platform scale (medium/large, 1.25× ratio for touch) is independent of t-shirt sizing: "A component with t-shirt sizing is still affected by scale." Tokens Studio (Pro) composes theme groups as a matrix — brand × density × mode — for the same reason.
+
+**How to apply.** Keep a thin **Scale** collection (~10–25 base variables, 2 modes) above size. Size tokens reference scale values, so when scale flips from desktop to touch, every size adapts proportionally. A component's `size` prop stays a per-instance hierarchy decision; scale handles the environment.
