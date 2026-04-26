@@ -1302,6 +1302,129 @@ The degradation is a performance gradient, not a hard cliff. Practical implicati
 
 Across all techniques, the goal is the same: find the smallest set of high-signal tokens that maximise the likelihood of the desired outcome. As models improve, they require less prescriptive engineering and can operate with more autonomy — but context remains a precious, finite resource that rewards careful curation.
 
+### Dimensional Systems and DESIGN.md
+
+*How a dimensional design system projects into the Google DESIGN.md spec, what is preserved, what is sidecarred, and the layered context stack that makes both legible to an agent.*
+
+The Google [DESIGN.md spec](https://github.com/google-labs-code/design.md) (April 2026) is the first credible attempt at a portable, agent-readable design system context format. It is also intentionally narrow — flat colour, hex sRGB only, no dimensional vocabulary, no patterns, no states. A dimensional design system cannot be expressed in DESIGN.md without loss.
+
+This page documents the lossy projection from a dimensional system into DESIGN.md, the DTCG `tokens.json` sidecar that recovers what DESIGN.md cannot carry, and the layered CLAUDE.md / AGENTS.md / DESIGN.md / tokens.json stack that makes the whole system legible to an external agent. The pattern is implemented in the [`bs-design-md`](/claude/skills-catalogue) skill.
+
+## Why DESIGN.md Cannot Carry a Dimensional System
+
+The Google spec mandates:
+
+- Hex sRGB colours only (`#RRGGBB`). No OKLCH, no Display P3, no alpha channel.
+- A flat component schema with eight properties: `backgroundColor`, `textColor`, `typography`, `rounded`, `padding`, `size`, `height`, `width`.
+- Variants as **sibling keys** with related names (`button-primary`, `button-primary-hover`).
+- No `state` field, no border tokens, no elevation, no motion, no theming.
+
+A dimensional system — Sentiment × Emphasis × State × Size × Structure — has no native home in this schema. A 4-sentiment × 3-emphasis × 4-state × 3-size matrix expands to 144 sibling component entries. The cascade ([State → Emphasis → Sentiment → Semantic Color](/design-system/token-chain)) cannot be expressed at all; it has to be encoded in prose.
+
+This is not a flaw in DESIGN.md. The spec is alpha and explicit about its scope. The implication is that **DESIGN.md is one layer in a stack, not the whole stack**.
+
+## Adam Argyle Names the Gap
+
+Composition — codifying how components compose into patterns — is the unsolved problem in design systems. Adam Argyle (Google, Chrome DevRel) put it directly on the [Knapsack design systems podcast](https://www.knapsack.cloud/blog/32-deep-dive-on-tokens-with-adam-argyle-from-google-how-do-you-codify-composition):
+
+> I'm still struggling at how to codify layouts into design systems without losing fluidity.
+
+Tokens encode values. They do not encode the rules that govern composition. Wolosin and Frost both name this gap; Pandya argues patterns deserve a tier above components in any agent-readable schema. None of them ship the worked example.
+
+The dimensional model addresses exactly this layer. Sentiment × Emphasis × State × Size × Structure is a deterministic vocabulary for composition — what the component communicates, how loudly, in which footprint, under which interactive condition. An agent reading the dimensions can compose any combination, even ones never explicitly named, because the cascade resolves them.
+
+Encoding the dimensions in DESIGN.md prose ([the `## Do's and Don'ts` carrier](/claude/skills-catalogue)) gives an external agent the rules. Pairing that with a DTCG sidecar gives it the wide-gamut values the projection drops. Together, the two files cover what DESIGN.md alone cannot.
+
+## The Layered Stack
+
+A complete agent-facing context for a dimensional design system uses four files:
+
+| Layer | File | Role | Loaded |
+|-------|------|------|--------|
+| Constitution | `CLAUDE.md` / `AGENTS.md` | Project rules, trust boundaries, what tools to use | Always |
+| Visual identity | `DESIGN.md` | Brand, foundations, components, dimensional rules in prose | Always |
+| Tokens (canonical) | `tokens.json` | DTCG 2025.10 — OKLCH, P3, themes, motion, elevation | On reference |
+| Components (granular) | `Component.md` per primitive | Per-component contract, props, accessibility | On reference |
+
+The shape was implied by [Wolosin's Indeed pipeline](https://www.designsystemscollective.com/ai-metadata-powering-a-design-system-mcp-b5deafcae8f5), Frost's [progressive disclosure architecture](https://www.intodesignsystems.com/blog/design-system-not-ready-for-ai-agents), and [Romina Kavcic's "skills wrap MCP" pattern](https://learn.thedesignsystem.guide/p/why-your-design-system-team-need). Nobody has shipped the worked example for a dimensional system. This is that example.
+
+### What goes where
+
+**CLAUDE.md / AGENTS.md** — How the agent should behave: which build commands to run, which tools to prefer, what counts as a finished task. This is the **process** layer.
+
+**DESIGN.md** — What the brand looks like: hex colours, type scale, component shapes, dimensional rules. This is the **agent-facing identity** layer. It is intentionally lossy and intentionally always-loaded.
+
+**tokens.json (DTCG)** — The wide-gamut canonical values. This is the **tooling-facing source of truth**. When DESIGN.md and tokens.json disagree, tokens.json wins.
+
+**Component.md (one per primitive)** — Per-component anatomy, accessibility contract, prop shape. Loaded when the agent works on that specific primitive. Wolosin's data shows this tier alone produced 80% fewer tokens consumed than mixing it into a single context blob.
+
+## The Lossy Projection
+
+What survives, what sidecars, what lives in prose:
+
+| Concern | DESIGN.md | tokens.json | `## Do's and Don'ts` |
+|---------|-----------|-------------|----------------------|
+| Hex sRGB approximations | yes | yes | — |
+| OKLCH / Display P3 originals | — | yes | — |
+| Multiple themes (light/dark) | — | yes | — |
+| Token aliases / cascade chain | — | yes | rule documented |
+| Border tokens | — | yes | — |
+| Elevation / shadow tokens | — | yes | — |
+| Motion tokens | — | yes | — |
+| Density tokens | — | yes | — |
+| Component primitives (8 props) | yes | yes | — |
+| Variant naming | yes (flat) | yes (structured) | — |
+| Dimensional independence rule | — | — | yes |
+| Decision order (Sent → Emph → Size → Struct → State) | — | — | yes |
+| Cascade resolution behaviour | — | — | yes |
+| Sentiment selection criteria | — | — | yes |
+| Anti-patterns | — | — | yes |
+| Pattern definitions | — | — | yes |
+
+The DESIGN.md is the agent-facing summary. The tokens.json is the source of truth. The prose carries the rules. Treat them as a set, not as alternatives.
+
+## Round-Trip Behaviour
+
+| Conversion | Lossless? | Notes |
+|------------|-----------|-------|
+| Dimensional source → DTCG `tokens.json` | yes | DTCG 2025.10 covers OKLCH, P3, themes |
+| Dimensional source → DESIGN.md | no | Lossy on colour space, theming, borders, shadows, motion |
+| DESIGN.md → DTCG (via `@google/design.md export`) | yes for what's in DESIGN.md | Won't recover what wasn't there |
+| DESIGN.md → Tailwind config | lossy | Variants flatten to utility names; no cascade |
+| DTCG `tokens.json` → DESIGN.md | not yet supported | Google CLI only goes the other way |
+
+The practical implication: DTCG is the canonical export; DESIGN.md is the agent-facing summary.
+
+## When DESIGN.md Is the Wrong Output Format
+
+DESIGN.md is alpha and narrow. Don't generate one when:
+
+- The source system relies primarily on motion or animation tokens.
+- The output consumer is another design tool (Figma, Tokens Studio, Style Dictionary) — emit DTCG `tokens.json` directly.
+- The system has more than two themes; the namespace flattening becomes unreadable.
+- The product needs strict accessibility validation; the linter only catches contrast warnings, not full WCAG.
+
+In any of these cases, emit the DTCG sidecar only and skip the DESIGN.md.
+
+## Verifying the Projection
+
+Treat the linter as a release gate. From the [`bs-design-md` skill](/claude/skills-catalogue):
+
+- **Errors must be zero.** `broken-ref` and malformed colours block the file from being usable.
+- **`missing-primary`, `missing-typography`, `missing-sections`** — must be zero. Warnings in the linter, but indicate an incomplete file.
+- **`contrast-ratio`** — surface count and worst-offender pair, but don't auto-fix. These often reveal genuine accessibility decisions for a designer to make.
+- **`orphaned-tokens`** — warn if more than 10% of tokens are unreferenced. Otherwise the source DS likely has unused tokens worth pruning upstream.
+- **Round-trip check** — `npx @google/design.md export --format dtcg <DESIGN.md>` should produce a `tokens.json` whose shared keys match the sidecar exactly.
+
+Without these gates, a DESIGN.md that lints clean can still be subtly wrong — a `primary` colour that defaulted from the first colour in the source, a typography token that lost its `letterSpacing`, a component that dropped a property the schema didn't recognise.
+
+## Related
+
+- [Skills patterns](/claude/skills-patterns) — how a skill orchestrates a multi-step workflow
+- [The dimensional model](/design-system/model) — the source of the five dimensions
+- [Token chain](/design-system/token-chain) — primitives, semantics, the cascade
+- [CLAUDE.md playbook](/claude/claude-md-playbook) — the constitution layer
+
 ### Claude & AI Workflows
 
 *Patterns for working effectively with AI coding agents — from context engineering to workflow architectures.*
