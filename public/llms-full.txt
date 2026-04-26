@@ -6345,6 +6345,40 @@ For the precise lightness targets in each scheme, see the [Primitives](/design-s
 - **Test both modes.** Because lightness inverts, always verify contrast in light and dark schemes.
 - **Every palette shares the same structure.** Patterns learned on one sentiment transfer directly to all others.
 
+### Density — why it is not a dimension
+
+*Density was considered as a sixth dimension in the bysixteen model. This note documents why it was not adopted and how Size covers the same use cases.*
+
+## What Density would have been
+
+Density was proposed as a sixth dimension to allow compact vs. default spacing without changing the Size dimension. The intent was that `data-density="compact"` would reduce internal padding and gap values across components, enabling denser information layouts (for example, admin data tables) without changing the semantic size of the component.
+
+## Why Size covers this
+
+A smaller `data-size` value achieves the same result. The Size dimension already encodes how much space a component occupies. Using a smaller `data-size` for compact layouts is semantically correct and avoids introducing a dimension whose only role is to modulate spacing.
+
+Introducing Density would also create ambiguity: a component with `data-size="sm" data-density="compact"` has two attributes competing to control the same visual property. Size alone is unambiguous.
+
+## The decision
+
+**Density is not a dimension in the bysixteen model.**
+
+The canonical five dimensions are:
+
+| Dimension | Role |
+|-----------|------|
+| Sentiment | Communicative intent (`neutral`, `highlight`, `positive`, `warning`, `new`) |
+| Emphasis | Visual weight (`low`, `medium`, `high`) |
+| Size | Spatial footprint — also covers compact layouts via smaller values |
+| Structure | Visual form (`filled`, `outlined`, `ghost`) |
+| State | Interaction state (`default`, `hover`, `active`, `disabled`, `loading`) |
+
+## Cross-references
+
+- [Size dimension](/design-system/model/size) — the dimension that absorbs Density's intended use cases
+- Bolton Metro ADR-0009 (`architecture/decisions/0009-align-tokens-to-field-notes-kb.md`) — formal alignment to the five-dimension model
+- Bolton Metro issue [#398](https://github.com/bysixteen/bolton-metro/issues/398) — removal of Density from the live codebase
+
 ### Emphasis
 
 *How loudly a component communicates — the visual weight and intensity of its signal.*
