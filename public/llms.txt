@@ -76,6 +76,7 @@ Multi-dimensional token model, composition rules, naming conventions, and constr
 - [HTML Semantics](/design-system/html-semantics): Rules for choosing native HTML elements and ARIA attributes in design system components.
 - [Token Approach Guide](/design-system): A living methodology for multi-dimensional design token systems.
 - [Color Scale](/design-system/model/color-scale): The 12-step color ramp (50–1000) and the UI role of each step.
+- [Density — why it is not a dimension](/design-system/model/density-note): Density was considered as a sixth dimension in the bysixteen model. This note documents why it was not adopted and how Size covers the same use cases.
 - [Emphasis](/design-system/model/emphasis): How loudly a component communicates — the visual weight and intensity of its signal.
 - [The Dimensional Model](/design-system/model): Every component is the product of up to five independent, orthogonal dimensions.
 - [Sentiment](/design-system/model/sentiment): What a component communicates — its semantic intent, not its visual appearance.
