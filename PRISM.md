@@ -13,7 +13,7 @@ PRISM communicates with Figma through an MCP server exposed over one of two tran
 | Transport | Detail |
 |-----------|--------|
 | **STDIO** | Default. The MCP client spawns the server process and communicates over stdin/stdout. |
-| **Local HTTP** | Optional. Server listens on `http://localhost:3055` (port 3055 by default). |
+| **Local HTTP** | Optional. Server listens on `http://localhost:7890` (port 7890 by default). |
 
 ### Configuration
 
@@ -23,11 +23,12 @@ All connection details are read from the `.mcp.json` file located in the project
 // .mcp.json (example structure — values are project-specific)
 {
   "mcpServers": {
-    "figma": {
-      "command": "npx",
-      "args": ["-y", "figma-mcp-server"],
+    "prism": {
+      "command": "node",
+      "args": ["/path/to/prism/dist/mcp/index.js"],
       "env": {
-        "FIGMA_ACCESS_TOKEN": "<token>"
+        "FIGMA_PAT": "<your-personal-access-token>",
+        "FIGMA_MCP_PORT": "7890"
       }
     }
   },
@@ -36,6 +37,8 @@ All connection details are read from the `.mcp.json` file located in the project
   }
 }
 ```
+
+> **v0.3.0+:** Once published to npm, replace the command/args with `"command": "npx", "args": ["-y", "prism-figma-mcp"]`.
 
 Key rules:
 - `fileId` is always read from `.mcp.json` at runtime — never embedded in scripts or documentation examples.
@@ -149,7 +152,7 @@ MCP servers may expose tools under different names depending on version or confi
 
 1. **List available tools** before executing any operation:
    ```bash
-   manus-mcp-cli tool list --server figma-mcp
+   manus-mcp-cli tool list --server prism
    ```
 2. **Log the discovered tools** so operators can audit what is available:
    ```
@@ -171,7 +174,7 @@ pull_variables         → (resolved at runtime)
 **Implementation pattern (pseudocode):**
 
 ```
-tools = mcp.listTools(server: "figma-mcp")
+tools = mcp.listTools(server: "prism")
 
 PUSH_TOOL = tools.find(name matches /push|create|set.*variable/)
 PULL_TOOL = tools.find(name matches /pull|get.*variable/)
@@ -192,7 +195,7 @@ Key rules:
 
 | Aspect | Detail |
 |--------|--------|
-| Transport | MCP over STDIO (default) or local HTTP (:3055) |
+| Transport | MCP over STDIO (default) or local HTTP (:7890) |
 | Configuration | `.mcp.json` in project root |
 | Push | Send token collections with modes and typed values |
 | Pull | Retrieve a named collection's variables and mode values |
