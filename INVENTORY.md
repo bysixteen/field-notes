@@ -8,7 +8,9 @@ A plain-prose map of what you've built across the field-notes and lanefour works
 
 ## The repo and its worktrees
 
-**field-notes** is your reference project — a knowledge base and a toolkit of skills. It contains three worktrees side by side. `kigali-v2/` is the current, active version (you're reading this from there). `tacoma-v2/` is a recent prior worktree, still fully populated and readable but not where new work goes. `karachi-v1/` is the archived predecessor; it has its own git history and its own skill copies, plus evaluation workspaces (`bs-storybook-docs-workspace`, `bs-tokens-workspace`) that were used to benchmark the skills before they were promoted forward. Treat karachi-v1 as a museum: useful for tracing how things evolved, not where to make changes. Treat tacoma-v2 the same way for now — it's last-week's worktree, not this-week's.
+**field-notes** is your reference project — a knowledge base and a toolkit of skills. The live worktree is `kathmandu-v1/` (you're reading this from there). `karachi-v1/` is the archived predecessor that lives alongside it; it has its own git history and its own skill copies, plus evaluation workspaces (`bs-storybook-docs-workspace`, `bs-tokens-workspace`) used to benchmark the skills before they were promoted forward. Treat karachi-v1 as a museum: useful for tracing how things evolved, not where to make changes.
+
+**Worktree convention.** Conductor creates a fresh worktree per task; the live one is whichever has the freshest mtime under `/Users/danielcork/conductor/workspaces/field-notes/`. Older worktrees move to `/Users/danielcork/conductor/archived-contexts/field-notes/<name>/` once their work has merged — those archived directories preserve the worktree's `.context/` state but not the full source tree. When auditing field-notes, read the live worktree by mtime; treat anything in `archived-contexts/` as historical reference only. Update this section whenever the live worktree rotates so future audits target the right place.
 
 **lanefour** is the Bolton Metro Swimming Club management platform — your actual product. It's a pnpm + Turborepo monorepo with four apps (admin portal, public site, Fumadocs wiki, marketing site) and seven packages (`design-system`, `auth`, `config`, `pipeline`, `results`, `gocardless`, `email-templates`). Tech stack: Next.js 15, React 19, Supabase, Radix Primitives + Pattern A CSS. Current focus per MASTER_PLAN.md (v6) is Phase 2 — Core Data and Meet Management.
 
@@ -116,7 +118,7 @@ What "the design loop" should look like end-to-end: `lanefour/<live worktree>/.c
 
 `karachi-v1` is archived; nothing should be edited there. The other-than-current lanefour worktrees are stale once a newer one exists; consider whether you want to keep all six or prune to one or two. Six worktrees of the same repo in one folder is a strong cause of "wait, which version am I in?" confusion — this is probably one source of the disorientation.
 
-field-notes has the same problem in miniature: `karachi-v1`, `tacoma-v2`, and `kigali-v2` all live side by side. `karachi-v1` is the agreed museum; `tacoma-v2` and `kigali-v2` are both populated and recently touched, so it's not obvious which one is "live" without checking mtimes. Same prune-or-name-clearer recommendation applies.
+field-notes only keeps `kathmandu-v1` (live) and `karachi-v1` (museum) under `workspaces/`; older worktrees (`tacoma-v2`, `addis-ababa`, `kigali-v2`, etc.) have been archived to `archived-contexts/field-notes/`. The live-worktree-by-mtime rule above is the canonical resolution to "which version am I in?".
 
 Empty `.context/notes.md` and `.context/todos.md` files in both repos suggest a convention that was set up but never adopted. Either start using them or delete them so they stop showing up as "things I should be writing in".
 
