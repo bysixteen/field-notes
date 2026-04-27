@@ -47,7 +47,7 @@ When the user supplies a URL or asks to generate a DESIGN.md from an existing si
 2. **Reconcile with vision.** Read the screenshots and the raw `tokens.json` together. Cluster the colour palette down to 4–8 named groups; cut spacing scales to ≤6 steps; identify the typography stack actually in use (not the full system font stack the browser fell back to). Extractors over-tokenise — your job is to dedupe.
 3. **Assign dimensional roles.** Map each surviving token to a dimensional role: which colours are sentiments, which are emphasis variants of a single sentiment, which are state shifts? Read `references/dimensional-mapping.md` for the mapping rules. If the source site doesn't have an obvious sentiment palette, default to `neutral` and note the limitation in the Overview prose.
 4. **Identify components.** From screenshots, list the component primitives present (button, badge, input, card, link, nav). Note variants you can see (primary/secondary, hover state, selected state). Don't invent components that aren't visible.
-5. **Emit.** Run `scripts/emit-design-md.mjs --from-tokens raw/tokens.json --components <component-list> --out <dir>`. It writes `DESIGN.md` and `tokens.json` to `<dir>`.
+5. **Emit.** Run `scripts/emit-design-md.mjs --tokens raw/tokens.json --components <component-list> --out <dir>`. It writes `DESIGN.md` and `tokens.json` to `<dir>`.
 6. **Validate.** Run `scripts/lint.sh <dir>/DESIGN.md`. Surface any errors. Warnings on `contrast-ratio` and `orphaned-tokens` are expected for an extracted site — flag them but don't block.
 
 **Honest caveats to surface to the user:**
