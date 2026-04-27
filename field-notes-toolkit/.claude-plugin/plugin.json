@@ -1,0 +1,16 @@
+{
+  "name": "field-notes-toolkit",
+  "description": "The bysixteen design-system toolkit, sliced from the field-notes reference repo. Contains the bs-* skills, the workflow skills (start-issue, start-work), the shared _foundations/ mental models, and the token/Figma pipeline scripts.",
+  "version": "0.1.0",
+  "author": {
+    "name": "Daniel Cork",
+    "email": "daniel@bysixteen.co.uk"
+  },
+  "homepage": "https://github.com/bysixteen/field-notes",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/bysixteen/field-notes",
+    "directory": "field-notes-toolkit"
+  },
+  "license": "MIT"
+}
