@@ -30,14 +30,29 @@
 
 import { readFileSync, writeFileSync, mkdirSync, existsSync } from "node:fs";
 import { basename, resolve, join } from "node:path";
+import {
+  classifyExistingFile,
+  composeFresh,
+  composeWithMerge,
+  decideWriteAction,
+} from "./lib/preserve.mjs";
 
 // ─── arg parsing ────────────────────────────────────────────────────────────
 
 const argv = process.argv.slice(2);
 const args = {};
+const flags = new Set();
 for (let i = 0; i < argv.length; i++) {
   const a = argv[i];
-  if (a.startsWith("--")) args[a.slice(2)] = argv[++i];
+  if (!a.startsWith("--")) continue;
+  const key = a.slice(2);
+  const next = argv[i + 1];
+  if (next !== undefined && !next.startsWith("--")) {
+    args[key] = next;
+    i++;
+  } else {
+    flags.add(key);
+  }
 }
 
 const required = ["tokens", "components", "out"];
@@ -381,10 +396,27 @@ const projectedComponents = projectComponents(components);
 if (Object.keys(projectedComponents).length) frontmatter.components = projectedComponents;
 
 const yamlBody = yamlMap(frontmatter);
-const designMd = `---\n${yamlBody}---\n\n${proseSections(name, frontmatter)}\n`;
+const frontmatterBlock = `---\n${yamlBody}---`;
+const generatedProse = proseSections(name, frontmatter);
 
 const designPath = join(outDir, "DESIGN.md");
 const sidecarPath = join(outDir, "tokens.json");
+
+const existingContents = existsSync(designPath) ? readFileSync(designPath, "utf8") : null;
+const fileState = classifyExistingFile(existingContents);
+
+let designMd;
+try {
+  const decision = decideWriteAction({ state: fileState, init: flags.has("init"), designPath });
+  if (decision.action === "write-fresh") {
+    designMd = composeFresh({ frontmatterBlock, generatedProse });
+  } else {
+    designMd = composeWithMerge({ existingContents, frontmatterBlock, generatedProse });
+  }
+} catch (err) {
+  console.error(`✗ ${err.message}`);
+  process.exit(65);
+}
 
 writeFileSync(designPath, designMd);
 writeFileSync(sidecarPath, JSON.stringify(tokens, null, 2));
