@@ -12,6 +12,10 @@ description: >-
 
 # Testing Strategy
 
+## Foundations (read first)
+
+- [QUALITY-GATES](_foundations/QUALITY-GATES.md)
+
 ## Three Layers
 
 | Layer | Tool | Purpose | Catches |

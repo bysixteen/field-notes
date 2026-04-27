@@ -11,6 +11,11 @@ description: >-
 
 # Storybook Component Documentation
 
+## Foundations (read first)
+
+- [DESIGN-INTENT](_foundations/DESIGN-INTENT.md)
+- [DIMENSIONAL-MODEL](_foundations/DIMENSIONAL-MODEL.md)
+
 Generate a `{component}.docs.stories.tsx` from the component's source files.
 
 When invoked via the `bs-storybook-ds` orchestrator, the helper API is already loaded. When invoked independently, read `bs-storybook-helpers` first for the complete helper component catalogue.

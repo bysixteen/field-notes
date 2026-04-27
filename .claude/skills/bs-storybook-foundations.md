@@ -13,6 +13,11 @@ description: >-
 
 # Storybook Foundations Documentation
 
+## Foundations (read first)
+
+- [DIMENSIONAL-MODEL](_foundations/DIMENSIONAL-MODEL.md)
+- [TOKEN-ARCHITECTURE](_foundations/TOKEN-ARCHITECTURE.md)
+
 Generate `{foundation}.docs.stories.tsx` files from CSS token files.
 
 Component stories show how a component behaves across its dimensions. Foundation stories show what raw values are *available* and how they relate to each other. Without these pages, designers and developers have to grep CSS files to understand the palette or guess spacing values.

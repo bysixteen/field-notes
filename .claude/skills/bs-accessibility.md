@@ -12,6 +12,11 @@ description: >-
 
 # Accessibility Audit
 
+## Foundations (read first)
+
+- [DESIGN-INTENT](_foundations/DESIGN-INTENT.md)
+- [QUALITY-GATES](_foundations/QUALITY-GATES.md)
+
 ## Bracket Classification Matrix
 
 | Bracket | Name | Example Components | Key A11y Concerns |

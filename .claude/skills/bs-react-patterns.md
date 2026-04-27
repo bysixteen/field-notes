@@ -12,6 +12,10 @@ description: >-
 
 # React Patterns for Design Systems
 
+## Foundations (read first)
+
+- [QUALITY-GATES](_foundations/QUALITY-GATES.md)
+
 ## Priority Rules
 
 ### P1 -- Must fix (merge blocked)

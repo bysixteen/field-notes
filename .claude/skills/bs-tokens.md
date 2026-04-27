@@ -3,14 +3,20 @@ name: bs-tokens
 description: >-
   Use when working with design tokens — consuming tokens in CSS, reasoning
   about the dimensional model, auditing token cascade integrity, or building a
-  component token API. Covers the mixing desk model, six resolution dimensions
-  (state, emphasis, sentiment, size, density, structure), color cascade
+  component token API. Covers the mixing desk model, the five resolution
+  dimensions (state, emphasis, sentiment, size, structure), color cascade
   integrity, hardcoded value audits, and choosing the right CSS custom property
   for any context. Also use when styling an element to match the design system
   or tracing a token chain.
 ---
 
 # Design Tokens
+
+## Foundations (read first)
+
+- [DIMENSIONAL-MODEL](_foundations/DIMENSIONAL-MODEL.md)
+- [TOKEN-ARCHITECTURE](_foundations/TOKEN-ARCHITECTURE.md)
+- [QUALITY-GATES](_foundations/QUALITY-GATES.md)
 
 ## Two Concerns
 
