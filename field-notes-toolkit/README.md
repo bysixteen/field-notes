@@ -63,7 +63,27 @@ The slice is deliberately tight. Excluded:
 
 ## Installing
 
-Until this plugin is published to a marketplace, install from a local path or from the packed `.plugin` artefact in `dist/field-notes-toolkit.plugin`.
+The plugin works two ways:
+
+**As a Claude plugin** (skills + workflows). Until this is published to a marketplace, install from the packed `.plugin` artefact at `/Users/danielcork/conductor/workspaces/field-notes/dist/field-notes-toolkit.plugin`.
+
+**As an npm package** (so the pipeline scripts are reachable from a consumer project's `node_modules/`). Until this is published to npm, link locally:
+
+```sh
+# in field-notes-toolkit/
+npm link
+
+# in the consumer project (e.g. lanefour/gwangju-v3)
+npm link field-notes-toolkit
+```
+
+This puts the toolkit at `node_modules/field-notes-toolkit/`, exposing the canonical paths the Phase 3 prompts cite — e.g.:
+
+```sh
+node node_modules/field-notes-toolkit/scripts/emit-design-md.mjs --from-dimensional ./ --out ./
+```
+
+`scripts/emit-design-md.mjs` is a thin shim that delegates to the canonical CLI inside `skills/bs-design-md/scripts/`.
 
 ## Using
 
