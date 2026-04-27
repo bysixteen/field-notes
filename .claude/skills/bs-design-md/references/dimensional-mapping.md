@@ -6,7 +6,7 @@ The five canonical dimensions are documented in `content/design-system/model/ind
 |-----------|--------|--------------|
 | Sentiment | `neutral`, `warning`, `highlight`, `new`, `positive` | Composition |
 | Emphasis | `high`, `medium`, `low` | Composition |
-| State | `rest`, `hover`, `active`, `selected`, `disabled` | Runtime |
+| State | `rest`, `hover`, `active`, `selected`, `disabled`, `resolving`, `pending` | Runtime |
 | Size | `xs`, `sm`, `md`, `lg`, `xl` | Composition |
 | Structure | (fixed; no variants) | Build |
 
@@ -109,3 +109,107 @@ If the source system uses additional dimensions beyond the canonical five (e.g. 
 - Preserve them in the DTCG `tokens.json` sidecar in their original shape.
 - In `DESIGN.md`, fold them into compound variant names where they materially change the output (`button-compact-sm` if compact density changes the visible component).
 - Note the additional dimension in `## Do's and Don'ts` and link to the sidecar for the full system.
+
+## `dimensional_values` MDX-frontmatter convention
+
+For `--from-dimensional` mode, the walker discovers each dimension's vocabulary from the project's `content/design-system/model/<dim>.mdx` files via a `dimensional_values` frontmatter key. This is the **single source of truth** — no regex/table fallback, no fenced-code conventions. If the key is missing or malformed for any of the five model files, the walker fails fast with an actionable error.
+
+Required shape:
+
+```yaml
+---
+title: Sentiment
+description: What a component communicates...
+dimensional_values:
+  default: neutral
+  values: [neutral, warning, highlight, new, positive]
+---
+```
+
+Canonical defaults (must match the values listed in this document at lines 23–28):
+
+| Dimension | `default` | `values` |
+|-----------|-----------|----------|
+| Sentiment | `neutral` | `[neutral, warning, highlight, new, positive]` |
+| Emphasis | `high` | `[high, medium, low]` |
+| Size | `md` | `[xs, sm, md, lg, xl]` |
+| State | `rest` | `[rest, hover, active, selected, disabled, resolving, pending]` |
+| Structure | (informational) | (component-specific; not used for variant flattening) |
+
+`structure.mdx`'s `dimensional_values` is informational only — Structure does not appear in variant names (see "Structure dimension" above).
+
+The `default` field is **load-bearing**, not decorative. The cap policy in this document references it at runtime — changing `default: rest` to `default: hover` in `state.mdx` shifts which combinations the walker emits, with no code edits. There is no second copy of "rest" in walker code.
+
+## `applies_to` per-primitive applicability matrix
+
+Without an explicit per-primitive declaration, the walker has no way to know that (e.g.) a `card` is sentiment-agnostic or a `tooltip` only ships in two sizes. Inferring from primitive name is fragile; emitting the full cap-policy cross-product produces orphans the linter rejects.
+
+`components.json` extends to declare an `applies_to` shape per component:
+
+```json
+{
+  "button": {
+    "applies_to": {
+      "sentiment": "all",
+      "emphasis": "all",
+      "size": "all",
+      "state": "all"
+    },
+    "properties": {
+      "backgroundColor": "{colors.primary}",
+      "textColor": "{colors.on-primary}"
+    }
+  },
+  "tooltip": {
+    "applies_to": {
+      "sentiment": ["neutral"],
+      "emphasis": ["medium"],
+      "size": ["sm", "md"],
+      "state": ["rest", "hover"]
+    },
+    "properties": { "...": "..." }
+  }
+}
+```
+
+Rules:
+- `"all"` resolves to "the values list from the dimension's `dimensional_values` frontmatter".
+- Explicit arrays must be a strict subset of the dimension's `values` list. The walker fails fast if an explicit array names a value absent from the island, printing both lists side-by-side.
+- The legacy flat shape (no `applies_to`, properties at the top level) is supported via a one-time pre-walk migration that infers `applies_to: all` for every dimension and emits a deprecation warning.
+
+## Tie-break policy
+
+Determinism rules consumed by `cascade.mjs`:
+
+1. **Cascade collisions where two paths produce the same resolved hex after OKLCH→sRGB clipping** — keep the variant from the more specific dimensional path; if specificity ties, the lexicographically-lower variant name wins. Worked example: if `button-warning-low-sm-hover` and `button-warning-low-sm-active` both clip to `#9A4F1A`, both are emitted (specificity ties; the active state has its own row); but if a `button-warning-low` row would also clip to the same value, the more specific variants win and the `button-warning-low` row drops to avoid duplication.
+2. **Iteration order across merged sources** — sort all object keys lexicographically before YAML emit. Pinned by the `emit-twice` round-trip test.
+3. **Defaulted vs explicit primitive ordering in `components.json`** — author order in `components.json` wins. The legacy-shape migration shim preserves order.
+
+## Implementation note — `cascade.mjs`
+
+`_foundations/TOKEN-ARCHITECTURE.md` is the **canonical contract** for the cascade order (State → Emphasis → Sentiment → Semantic Color, line 48). `scripts/lib/cascade.mjs` is a **new implementation** of that contract — there is no pre-existing walker to reuse. The implementation reads `default` and `values` from each dimension's `dimensional_values` frontmatter at runtime, never embedding literal strings in code.
+
+## `migrate` disposition YAML — canonical shape
+
+Used by `--non-interactive --disposition <path>` for CI scripting of the `migrate` subcommand:
+
+```yaml
+version: 1
+sections:
+  - heading: "## Overview"        # exact heading text from the source file
+    disposition: g                # g = generated, p = preserved, s = skip (delete)
+  - heading: "## Colors"
+    disposition: g
+  - heading: "## The Five Dimensions"
+    disposition: p
+  - heading: "## Identity"
+    disposition: p
+  - heading: "## Stale Section"
+    disposition: s
+```
+
+Rules:
+- `version: 1` is required; future format changes bump this and `migrate` refuses unknown versions.
+- `heading` matches the section heading verbatim, including the `## ` prefix. `migrate` errors if the YAML names a heading absent from the source, or if a source heading has no entry.
+- `disposition` must be one of `g`, `p`, `s`. Any other value errors.
+- Order in the YAML is informational; the source file's heading order is preserved on output.

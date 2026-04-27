@@ -28,30 +28,129 @@
 // The OKLCH → sRGB conversion is inline (no deps) and clips out-of-gamut
 // colours. For round-trip preservation, always use the sidecar.
 
-import { readFileSync, writeFileSync, mkdirSync, existsSync } from "node:fs";
-import { basename, resolve, join } from "node:path";
+import { readFileSync, writeFileSync, renameSync, mkdirSync, existsSync } from "node:fs";
+import { basename, resolve, join, dirname } from "node:path";
+import { createInterface } from "node:readline";
+import {
+  classifyExistingFile,
+  composeFresh,
+  composeWithMerge,
+  decideWriteAction,
+} from "./lib/preserve.mjs";
+import {
+  splitDesignMd,
+  defaultDisposition,
+  parseDispositionYaml,
+  validateDispositions,
+  buildMigrated,
+  alreadyMigrated,
+} from "./lib/migrate.mjs";
+import { walkDimensionalSource } from "./lib/dimensional-walker.mjs";
+import { flattenComponentMatrix } from "./lib/cascade.mjs";
 
 // ─── arg parsing ────────────────────────────────────────────────────────────
 
 const argv = process.argv.slice(2);
 const args = {};
+const flags = new Set();
+let subcommand = null;
 for (let i = 0; i < argv.length; i++) {
   const a = argv[i];
-  if (a.startsWith("--")) args[a.slice(2)] = argv[++i];
-}
-
-const required = ["tokens", "components", "out"];
-for (const k of required) {
-  if (!args[k]) {
-    console.error(`missing required --${k}`);
-    process.exit(64);
+  if (!a.startsWith("--")) {
+    if (subcommand === null) subcommand = a;
+    continue;
+  }
+  const key = a.slice(2);
+  const next = argv[i + 1];
+  if (next !== undefined && !next.startsWith("--")) {
+    args[key] = next;
+    i++;
+  } else {
+    flags.add(key);
   }
 }
 
-const tokens = JSON.parse(readFileSync(resolve(args.tokens), "utf8"));
-const components = JSON.parse(readFileSync(resolve(args.components), "utf8"));
+// ─── migrate subcommand ────────────────────────────────────────────────────
+// Wraps an existing hand-authored DESIGN.md in preservation markers based on
+// per-section disposition. One-time path for consumers adopting the skill.
+
+if (subcommand === "migrate") {
+  await runMigrate({
+    inPath: args.in,
+    nonInteractive: flags.has("non-interactive"),
+    dispositionPath: args.disposition,
+  });
+  process.exit(0);
+}
+
+// --from-dimensional <root>  ⟷  --tokens/--components are mutually exclusive
+// modes. The dimensional mode walks tokens.json + components.json + the five
+// model MDX islands and synthesises a flat per-variant components map via
+// the cap policy in references/dimensional-mapping.md.
+
+if (!args.out) {
+  console.error("missing required --out");
+  process.exit(64);
+}
+
+let tokens, components;
+
+if (args["from-dimensional"]) {
+  if (args.tokens || args.components) {
+    console.error("✗ --from-dimensional is mutually exclusive with --tokens / --components");
+    process.exit(64);
+  }
+  const root = resolve(args["from-dimensional"]);
+  let walked;
+  try {
+    walked = walkDimensionalSource(root);
+  } catch (err) {
+    console.error(`✗ ${err.message}`);
+    process.exit(65);
+  }
+  tokens = walked.tokens;
+  components = expandComponentsToVariants(walked);
+  printDimensionalSummary(walked, components);
+} else {
+  if (!args.tokens || !args.components) {
+    console.error("✗ either --from-dimensional <root> OR both --tokens and --components are required");
+    process.exit(64);
+  }
+  tokens = JSON.parse(readFileSync(resolve(args.tokens), "utf8"));
+  components = JSON.parse(readFileSync(resolve(args.components), "utf8"));
+}
+
 const outDir = resolve(args.out);
 const name = args.name ?? basename(outDir);
+
+// Expand a walker's `{name: {applies_to, properties}}` map into a flat
+// `{variantName: properties}` map by running each component through the cap
+// policy. Each variant inherits its parent's `properties` verbatim — token
+// references in those properties are resolved by the existing emit pipeline.
+function expandComponentsToVariants(walked) {
+  const flat = {};
+  for (const [component, def] of Object.entries(walked.components)) {
+    const variantNames = flattenComponentMatrix({
+      component,
+      applies_to: def.applies_to,
+      defaults: walked.defaults,
+    });
+    for (const variant of variantNames) {
+      flat[variant] = def.properties;
+    }
+  }
+  return flat;
+}
+
+function printDimensionalSummary(walked, flatComponents) {
+  const v = walked.vocab;
+  console.log(`Discovered vocabulary:`);
+  console.log(`  sentiment:  ${v.sentiment.length} (${v.sentiment.join(", ")})`);
+  console.log(`  emphasis:   ${v.emphasis.length} (${v.emphasis.join(", ")})`);
+  console.log(`  size:       ${v.size.length} (${v.size.join(", ")})`);
+  console.log(`  state:      ${v.state.length} (${v.state.join(", ")})`);
+  console.log(`  components: ${Object.keys(walked.components).length} → ${Object.keys(flatComponents).length} variants`);
+}
 
 if (!existsSync(outDir)) mkdirSync(outDir, { recursive: true });
 
@@ -381,10 +480,27 @@ const projectedComponents = projectComponents(components);
 if (Object.keys(projectedComponents).length) frontmatter.components = projectedComponents;
 
 const yamlBody = yamlMap(frontmatter);
-const designMd = `---\n${yamlBody}---\n\n${proseSections(name, frontmatter)}\n`;
+const frontmatterBlock = `---\n${yamlBody}---`;
+const generatedProse = proseSections(name, frontmatter);
 
 const designPath = join(outDir, "DESIGN.md");
 const sidecarPath = join(outDir, "tokens.json");
+
+const existingContents = existsSync(designPath) ? readFileSync(designPath, "utf8") : null;
+const fileState = classifyExistingFile(existingContents);
+
+let designMd;
+try {
+  const decision = decideWriteAction({ state: fileState, init: flags.has("init"), designPath });
+  if (decision.action === "write-fresh") {
+    designMd = composeFresh({ frontmatterBlock, generatedProse });
+  } else {
+    designMd = composeWithMerge({ existingContents, frontmatterBlock, generatedProse });
+  }
+} catch (err) {
+  console.error(`✗ ${err.message}`);
+  process.exit(65);
+}
 
 writeFileSync(designPath, designMd);
 writeFileSync(sidecarPath, JSON.stringify(tokens, null, 2));
@@ -397,3 +513,110 @@ console.log(`  spacing:    ${Object.keys(projectedSpacing).length}`);
 console.log(`  rounded:    ${Object.keys(projectedRounded).length}`);
 console.log(`  components: ${Object.keys(projectedComponents).length}`);
 console.log(`\nnext: lint with scripts/lint.sh ${designPath}`);
+
+// ─── migrate runner ─────────────────────────────────────────────────────────
+
+async function runMigrate({ inPath, nonInteractive, dispositionPath }) {
+  if (!inPath) {
+    console.error("✗ migrate: missing required --in <path-to-DESIGN.md>");
+    process.exit(64);
+  }
+  const absIn = resolve(inPath);
+  if (!existsSync(absIn)) {
+    console.error(`✗ migrate: file not found: ${absIn}`);
+    process.exit(66);
+  }
+  const original = readFileSync(absIn, "utf8");
+
+  if (alreadyMigrated(original)) {
+    console.log(`✓ ${absIn} already contains preservation markers — nothing to do.`);
+    console.log(`  Re-running emit-design-md.mjs without 'migrate' will refresh the generated block.`);
+    return;
+  }
+
+  const parsed = splitDesignMd(original);
+  if (parsed.sections.length === 0) {
+    console.error(`✗ migrate: ${absIn} has no \`## \` headings to disposition. Nothing to migrate.`);
+    process.exit(65);
+  }
+
+  let dispositions;
+  if (nonInteractive) {
+    if (!dispositionPath) {
+      console.error("✗ migrate: --non-interactive requires --disposition <yaml-path>");
+      process.exit(64);
+    }
+    const yamlText = readFileSync(resolve(dispositionPath), "utf8");
+    const { dispositions: parsedDisp } = parseDispositionYaml(yamlText);
+    dispositions = parsedDisp;
+    validateDispositions({ sections: parsed.sections, dispositions });
+  } else {
+    dispositions = await promptDispositions(parsed.sections);
+  }
+
+  const migrated = buildMigrated({
+    frontmatterBlock: parsed.frontmatterBlock,
+    sections: parsed.sections,
+    dispositions,
+  });
+
+  if (!nonInteractive) {
+    const ok = await confirmFinal(absIn, original, migrated);
+    if (!ok) {
+      console.log("✗ migrate: aborted; original file unchanged.");
+      process.exit(1);
+    }
+  }
+
+  // Atomic write: temp file in the same directory + rename.
+  const tmp = join(dirname(absIn), `.${basename(absIn)}.migrate.tmp`);
+  writeFileSync(tmp, migrated);
+  renameSync(tmp, absIn);
+  const counts = { g: 0, p: 0, s: 0 };
+  for (const d of dispositions.values()) counts[d]++;
+  const sectionWord = (n) => (n === 1 ? "section" : "sections");
+  console.log(`✓ migrated ${absIn}`);
+  console.log(`  ${counts.g} ${sectionWord(counts.g)} wrapped in markers`);
+  console.log(`  ${counts.p} ${sectionWord(counts.p)} preserved below :end`);
+  console.log(`  ${counts.s} ${sectionWord(counts.s)} deleted`);
+}
+
+async function promptDispositions(sections) {
+  const rl = createInterface({ input: process.stdin, output: process.stdout });
+  const ask = (q) =>
+    new Promise((res) => rl.question(q, (a) => res(a)));
+  const dispositions = new Map();
+  console.log(`\nMigrating ${sections.length} sections.`);
+  console.log(`For each section, choose:  g = generated (wrap in markers)`);
+  console.log(`                            p = preserved (keep verbatim below markers)`);
+  console.log(`                            s = skip (delete)\n`);
+  for (const s of sections) {
+    const def = defaultDisposition(s.heading);
+    const preview = s.body.split("\n")[0]?.trim().slice(0, 80) ?? "";
+    console.log(`  ${s.heading}`);
+    if (preview) console.log(`    ${preview}…`);
+    let answer;
+    while (true) {
+      answer = (await ask(`    [g/p/s, default ${def}]: `)).trim().toLowerCase();
+      if (answer === "") answer = def;
+      if (["g", "p", "s"].includes(answer)) break;
+      console.log(`    invalid — choose g, p, or s.`);
+    }
+    dispositions.set(s.heading, answer);
+  }
+  rl.close();
+  return dispositions;
+}
+
+async function confirmFinal(path, before, after) {
+  const rl = createInterface({ input: process.stdin, output: process.stdout });
+  const ask = (q) =>
+    new Promise((res) => rl.question(q, (a) => res(a)));
+  console.log(`\n— migrate diff for ${path} —`);
+  console.log(`  before: ${before.length} bytes`);
+  console.log(`  after:  ${after.length} bytes`);
+  console.log(`  (full diff via \`diff <(echo BEFORE) <(echo AFTER)\` if needed)`);
+  const a = (await ask(`Write changes? [y/N]: `)).trim().toLowerCase();
+  rl.close();
+  return a === "y" || a === "yes";
+}
