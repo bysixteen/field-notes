@@ -1,0 +1,75 @@
+{
+  "button": {
+    "applies_to": {
+      "sentiment": "all",
+      "emphasis": "all",
+      "size": "all",
+      "state": "all"
+    },
+    "properties": {
+      "backgroundColor": "{color.primary}",
+      "textColor": "{color.on-primary}",
+      "typography": "{typography.label-md}",
+      "rounded": "{borderRadius.md}",
+      "padding": "{spacing.8} {spacing.16}"
+    }
+  },
+  "input": {
+    "applies_to": {
+      "sentiment": ["neutral", "danger"],
+      "emphasis": ["medium"],
+      "size": "all",
+      "state": ["rest", "hover", "active", "disabled"]
+    },
+    "properties": {
+      "backgroundColor": "{color.on-primary}",
+      "textColor": "{color.neutral}",
+      "typography": "{typography.label-md}",
+      "rounded": "{borderRadius.md}",
+      "padding": "{spacing.8} {spacing.16}"
+    }
+  },
+  "badge": {
+    "applies_to": {
+      "sentiment": "all",
+      "emphasis": ["high", "medium"],
+      "size": ["sm", "md"],
+      "state": ["rest"]
+    },
+    "properties": {
+      "backgroundColor": "{color.primary}",
+      "textColor": "{color.on-primary}",
+      "typography": "{typography.label-md}",
+      "rounded": "{borderRadius.md}",
+      "padding": "{spacing.8}"
+    }
+  },
+  "alert": {
+    "applies_to": {
+      "sentiment": ["positive", "warning", "danger"],
+      "emphasis": ["medium"],
+      "size": ["md"],
+      "state": ["rest"]
+    },
+    "properties": {
+      "backgroundColor": "{color.primary}",
+      "textColor": "{color.on-primary}",
+      "typography": "{typography.label-md}",
+      "rounded": "{borderRadius.md}",
+      "padding": "{spacing.16}"
+    }
+  },
+  "card": {
+    "applies_to": {
+      "sentiment": ["neutral"],
+      "emphasis": ["high"],
+      "size": "all",
+      "state": ["rest"]
+    },
+    "properties": {
+      "backgroundColor": "{color.on-primary}",
+      "rounded": "{borderRadius.md}",
+      "padding": "{spacing.16}"
+    }
+  }
+}

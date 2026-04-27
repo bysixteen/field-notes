@@ -1,0 +1,22 @@
+---
+title: Structure
+description: Structural form of a component — filled, outlined, ghost.
+dimensional_values:
+  informational: true
+  default: filled
+  values: [filled, outlined, ghost]
+---
+
+## Definition
+
+Structure is the **shape** of a component's surface. Marked `informational: true` because structure is documentation-only — it does not appear in component variant names per the cap policy in `references/dimensional-mapping.md`.
+
+## Values
+
+| Value | Meaning |
+|-------|---------|
+| `filled` | Solid background fill. |
+| `outlined` | Transparent fill with a border. |
+| `ghost` | No fill, no border — text only. |
+
+Replace this list with the structural forms your project uses. If your design system collapses structure into emphasis (e.g. `high → filled`, `medium → outlined`, `low → ghost`), you can keep this file with sensible defaults but model the variants through emphasis instead.
