@@ -45,6 +45,8 @@ import {
   buildMigrated,
   alreadyMigrated,
 } from "./lib/migrate.mjs";
+import { walkDimensionalSource } from "./lib/dimensional-walker.mjs";
+import { flattenComponentMatrix } from "./lib/cascade.mjs";
 
 // ─── arg parsing ────────────────────────────────────────────────────────────
 
@@ -81,18 +83,74 @@ if (subcommand === "migrate") {
   process.exit(0);
 }
 
-const required = ["tokens", "components", "out"];
-for (const k of required) {
-  if (!args[k]) {
-    console.error(`missing required --${k}`);
-    process.exit(64);
-  }
+// --from-dimensional <root>  ⟷  --tokens/--components are mutually exclusive
+// modes. The dimensional mode walks tokens.json + components.json + the five
+// model MDX islands and synthesises a flat per-variant components map via
+// the cap policy in references/dimensional-mapping.md.
+
+if (!args.out) {
+  console.error("missing required --out");
+  process.exit(64);
 }
 
-const tokens = JSON.parse(readFileSync(resolve(args.tokens), "utf8"));
-const components = JSON.parse(readFileSync(resolve(args.components), "utf8"));
+let tokens, components;
+
+if (args["from-dimensional"]) {
+  if (args.tokens || args.components) {
+    console.error("✗ --from-dimensional is mutually exclusive with --tokens / --components");
+    process.exit(64);
+  }
+  const root = resolve(args["from-dimensional"]);
+  let walked;
+  try {
+    walked = walkDimensionalSource(root);
+  } catch (err) {
+    console.error(`✗ ${err.message}`);
+    process.exit(65);
+  }
+  tokens = walked.tokens;
+  components = expandComponentsToVariants(walked);
+  printDimensionalSummary(walked, components);
+} else {
+  if (!args.tokens || !args.components) {
+    console.error("✗ either --from-dimensional <root> OR both --tokens and --components are required");
+    process.exit(64);
+  }
+  tokens = JSON.parse(readFileSync(resolve(args.tokens), "utf8"));
+  components = JSON.parse(readFileSync(resolve(args.components), "utf8"));
+}
+
 const outDir = resolve(args.out);
 const name = args.name ?? basename(outDir);
+
+// Expand a walker's `{name: {applies_to, properties}}` map into a flat
+// `{variantName: properties}` map by running each component through the cap
+// policy. Each variant inherits its parent's `properties` verbatim — token
+// references in those properties are resolved by the existing emit pipeline.
+function expandComponentsToVariants(walked) {
+  const flat = {};
+  for (const [component, def] of Object.entries(walked.components)) {
+    const variantNames = flattenComponentMatrix({
+      component,
+      applies_to: def.applies_to,
+      defaults: walked.defaults,
+    });
+    for (const variant of variantNames) {
+      flat[variant] = def.properties;
+    }
+  }
+  return flat;
+}
+
+function printDimensionalSummary(walked, flatComponents) {
+  const v = walked.vocab;
+  console.log(`Discovered vocabulary:`);
+  console.log(`  sentiment:  ${v.sentiment.length} (${v.sentiment.join(", ")})`);
+  console.log(`  emphasis:   ${v.emphasis.length} (${v.emphasis.join(", ")})`);
+  console.log(`  size:       ${v.size.length} (${v.size.join(", ")})`);
+  console.log(`  state:      ${v.state.length} (${v.state.join(", ")})`);
+  console.log(`  components: ${Object.keys(walked.components).length} → ${Object.keys(flatComponents).length} variants`);
+}
 
 if (!existsSync(outDir)) mkdirSync(outDir, { recursive: true });
 
