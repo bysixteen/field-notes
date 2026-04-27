@@ -472,17 +472,26 @@ function emitDtcg(ramps: Ramp[]): object {
     return colorToken(light, dark, description);
   };
 
+  // Step-pairing convention. The dark ramp mirror-inverts the light ramp's
+  // step→lightness curve: in light, step 50 = lightest and step 1000 = darkest;
+  // in dark, the relationship is reversed. So:
+  //   - Aliases that should ADAPT to mode (bg, fg, border, hover/active/disabled
+  //     interaction states) use the SAME step for both — the ramp itself flips
+  //     the value, and the step number encodes the semantic role.
+  //   - Aliases that should stay VISUALLY FIXED across modes (e.g. on-primary
+  //     stays light text against a mid-saturation primary in both modes) use
+  //     mirrored steps so the same lightness is fetched from each ramp.
   Object.assign(colors, {
     primary: ALIAS("highlight", 600, 600, "Primary action — highlight ramp solid step."),
-    "primary-hover": ALIAS("highlight", 700, 500, "Primary action hover state."),
-    "primary-active": ALIAS("highlight", 800, 400, "Primary action active/pressed state."),
-    "primary-disabled": ALIAS("highlight", 300, 800, "Primary action disabled state."),
+    "primary-hover": ALIAS("highlight", 700, 700, "Primary action hover state."),
+    "primary-active": ALIAS("highlight", 800, 800, "Primary action active/pressed state."),
+    "primary-disabled": ALIAS("highlight", 300, 300, "Primary action disabled state."),
     "on-primary": ALIAS("neutral", 50, 1000, "Foreground on primary surfaces."),
-    fg: ALIAS("neutral", 1000, 50, "Default foreground / body text."),
-    "fg-muted": ALIAS("neutral", 700, 300, "Secondary foreground / supporting text."),
-    bg: ALIAS("neutral", 50, 1000, "Default surface."),
-    "bg-elevated": ALIAS("neutral", 100, 950, "Raised surface — cards, panels."),
-    border: ALIAS("neutral", 200, 800, "Default UI border."),
+    fg: ALIAS("neutral", 1000, 1000, "Default foreground / body text."),
+    "fg-muted": ALIAS("neutral", 700, 700, "Secondary foreground / supporting text."),
+    bg: ALIAS("neutral", 50, 50, "Default surface."),
+    "bg-elevated": ALIAS("neutral", 100, 100, "Raised surface — cards, panels."),
+    border: ALIAS("neutral", 200, 200, "Default UI border."),
     danger: ALIAS("danger", 600, 600, "Destructive sentiment."),
     warning: ALIAS("warning", 600, 600, "Cautionary sentiment."),
     positive: ALIAS("positive", 600, 600, "Affirmative sentiment."),

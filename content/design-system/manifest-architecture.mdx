@@ -1,6 +1,6 @@
 ---
 title: Manifest Architecture
-description: Two-tier manifest system that lets agents consume the design system without loading it wholesale on every prompt.
+description: Three-tier manifest system that lets agents consume the design system without loading it wholesale on every prompt.
 ---
 
 ## The Token Trap
@@ -80,7 +80,7 @@ generated/                       emit-design-md.mjs   ──▶   /DESIGN.md   (
                                        lint.sh
 ```
 
-`generate-ramps.ts` keeps the bespoke OKLCH ramp logic; it does not delegate ramp generation to `tokens.json`. The DTCG output is *additional*, not a replacement. When [Terrazzo](https://terrazzo.app/) is adopted (issue #98), it will consume `/tokens.json` for multi-platform output (CSS / Sass / JS / Tailwind) — `generate-ramps.ts` keeps producing the DTCG anchor; Terrazzo replaces the bespoke CSS / JSON / Figma emitters.
+`generate-ramps.ts` keeps the bespoke OKLCH ramp logic; it does not delegate ramp generation to `tokens.json`. The DTCG output is *additional*, not a replacement. When [Terrazzo](https://terrazzo.app/) is adopted, it will consume `/tokens.json` for multi-platform output (CSS / Sass / JS / Tailwind) — `generate-ramps.ts` keeps producing the DTCG anchor; Terrazzo replaces the bespoke CSS / JSON / Figma emitters.
 
 ## Discipline
 
