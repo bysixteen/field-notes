@@ -1,116 +1,341 @@
 ---
 title: Why This Works
-description: Eleven rules that keep the dimensional model coherent as it scales — each with the reasoning, industry validation, and how to apply it.
+description: Rules and reasoning for the dimensional model — written so an LLM understands the benefits well enough to apply them when building components
 ---
 
-Each rule below states an invariant of the model, why it matters, where the industry has independently reached the same conclusion, and how to apply it in day-to-day work.
+## Purpose
 
-## Rule 1 — Name the Question, Not the Answer
+This document explains the **why** behind every architectural decision in the dimensional model. It is written so that an LLM (or any builder) can reason about the system's benefits when making component decisions — not just follow rules, but understand the trade-offs well enough to make correct judgement calls.
 
-Variants are not a name; they are a set of answers to independent questions (sentiment, emphasis, size, structure).
+---
 
-**Why it matters.** Named variants bundle multiple decisions into one label. "Danger" means red *and* filled *and* most important. Unbundling these into dimensions lets each decision vary independently — a warning at low emphasis becomes a first-class composition rather than a custom variant.
+## Rule 1: Sentiment and Emphasis Are Always Independent
 
-**Industry validation.** Radix, Material Design, and Ant all ship growing variant matrices (typically 4–6 button variants plus sentiment modifiers). Teams then hit the same wall: adding a new sentiment multiplies the variant count. Nathan Curtis has written repeatedly about the maintenance cost of variant explosion.
+**The rule:** A component's communicative intent (sentiment) and its visual intensity (emphasis) must be separate, orthogonal dimensions. Never couple them in a single prop or token.
 
-**How to apply.** When tempted to add a new variant name, ask which dimension the new idea belongs to. If it is a new sentiment, add it to the sentiment list once and every component inherits it. If it is a new emphasis level, the same. If it is neither, it probably belongs as a structure variant on that one component.
+**Why this matters:**
 
-## Rule 2 — Primitives Are Indexed, Not Semantic
+In traditional systems, `variant="danger"` means both "this is a destructive action" AND "use a solid red background." These are two different decisions:
+- **What** the component communicates (danger/warning)
+- **How loudly** it communicates it (filled/outlined/ghost)
 
-Primitive tokens carry coordinates (`--colors-warning-500`), not roles (`--colors-brand-danger`).
+Coupling them creates two problems:
 
-**Why it matters.** A primitive is a raw value. The moment it picks up a role in its name, it can no longer be reused for a different role without lying. Coordinate names stay truthful across themes, brands, and modes.
+1. **You can't turn the volume down.** A warning that's genuinely advisory (user *may* want to know but isn't blocked) gets the same visual screaming as a warning that's critical (user's action is blocked). This creates "warning fatigue" — users learn to ignore all warnings because the system can't distinguish urgency.
 
-**Industry validation.** Radix (`blue-9`, `gray-11`), Tailwind (`blue-500`), and IBM Carbon's `layer-01` indexing all push role-bearing names up into the semantic tier and keep the primitives purely indexed.
+2. **Adding a new meaning multiplies variants.** To add a "new" sentiment (for recently added features), you must create `New`, `New Outline`, `New Ghost` for every component. With 5 sentiments × 3 emphasis levels × N components, the variant count explodes.
 
-**How to apply.** When naming a new primitive, describe its position in a scale (hue + step). If the only sensible name mentions a role ("brand", "accent", "action"), it is not a primitive — it is a semantic token that needs a primitive underneath it.
+**Industry validation:**
+- Braid Design System (SEEK) uses independent `tone` and `weight` props. They concluded these are "orthogonal axes."
+- nuka-ui explicitly argues: "There is no inherent relationship between how loud a button is and what it means."
+- HeroUI (NextUI) has "Semantic Intent Over Visual Style" as a core design principle.
+- CVA, Stitches, and Tailwind Variants all implement independent variant dimensions with compound variants for intersections.
 
-## Rule 3 — Semantics Describe Intent, Not Appearance
+**How to apply:** When building a component, always ask two separate questions:
+1. What is this component trying to say? → Choose a sentiment
+2. How urgently does the user need to receive this signal? → Choose an emphasis level
 
-A semantic token says *what it is for*, never *what it looks like*.
+Never answer both questions with a single prop value.
 
-**Why it matters.** Appearance names (`--gray-100`) break the moment a second theme appears. Intent names (`--background-neutral-weaker-rest`) survive every mode swap because they describe a role, and the primitive resolves to whichever value the role demands in the current theme.
+---
 
-**Industry validation.** Polaris (`color-bg-primary`, `color-text-critical`), Carbon (`interactive-01`, `text-primary`), and Material Design 3 (`on-primary-container`) all converge on role-based semantic names.
+## Rule 2: Dimensions Don't Interfere
 
-**How to apply.** A semantic token name should answer: *surface*, *emphasis*, *sentiment*, and *state* — in that order. Never include a colour, shade, or hue word in a semantic token name.
+**The rule:** Each dimension (sentiment, emphasis, size, state, structure, theme) operates independently. Changing one dimension must never require changing another.
 
-## Rule 4 — Contrast Is Guaranteed at the Pair Layer
+**Why this matters:**
 
-Every `background-X` token pairs with a `foreground-X` token that meets WCAG contrast — by construction, not by per-component audit.
+Traditional systems create implicit dependencies:
+- Changing from `primary` to `danger` might also change the button's size or padding
+- Switching to dark mode might break component state styles
+- Increasing size might alter border treatment
 
-**Why it matters.** If contrast is enforced at the pair level, a component that uses the matched pair gets AA contrast in every theme automatically. Move contrast enforcement up into the token chain and the component never needs to know.
+Independent dimensions mean:
+- Changing sentiment from `neutral` to `warning` only changes colour. Size, padding, borders, states all remain exactly the same.
+- Switching from light to dark theme only changes which primitive values semantic tokens resolve to. Component structure, emphasis levels, and states are unaffected.
+- Increasing from `md` to `lg` only changes footprint and internal spacing. Colour, borders, and semantic meaning stay identical.
 
-**Industry validation.** Adobe Leonardo generates ramps from contrast targets. Material 3's tonal palettes pair foreground/background tones at documented contrast ratios. Radix documents guaranteed AA pairings per step.
+**Industry validation:**
+- Adobe Spectrum maintains three independent dimensions (colour theme, platform scale, component state) at enterprise scale
+- SAS Design System refactored specifically to make density independent of theme
+- Tokens Studio Multi-Dimensional Themes compose brand × density × colour mode as independent groups
 
-**How to apply.** Never mix backgrounds and foregrounds across sentiments or emphasis levels. If you need a `neutral` background with `warning` text, that pairing must exist as a defined combination — otherwise the contrast guarantee does not hold.
+**How to apply:** When building a component, if changing one dimension's value requires adjusting another dimension, you have a coupling bug. Each dimension should resolve through its own token path without cross-contamination.
 
-## Rule 5 — Emphasis Is Orthogonal to Sentiment
+---
 
-The two answer different questions — *what* vs *how loudly* — and a valid composition includes any sentiment at any emphasis.
+## Rule 3: ~13 Options Serve Any Number of Components
 
-**Why it matters.** Fusing emphasis into variant names (`ghost-danger`, `outline-critical`) is how variant matrices explode. Separating them cuts the matrix from O(sentiment × emphasis) named variants down to O(sentiment + emphasis) dimension values.
+**The rule:** The design system has approximately 13 dimension values total (5 sentiments + 3 emphasis levels + 5 sizes). This number stays constant regardless of how many components exist.
 
-**Industry validation.** Nearly every system encodes emphasis in the variant name (Material, Radix, Ant). The dimensional model is the outlier here — by design. The `sentiment × emphasis` grid shown in [Sentiment + Emphasis](/design-system/composition/sentiment-emphasis) would require naming 15 variants in a conventional system; as two dimensions, it needs only eight values total.
+**Why this matters:**
 
-**How to apply.** When writing a composition, pick sentiment first (what does this say?), then emphasis (how urgently?). If a combination doesn't feel right, the answer is usually that the sentiment is wrong — not that the emphasis is.
+| Components | Traditional system | Dimensional system |
+|------------|-------------------|-------------------|
+| 5 | ~100 named variants | ~13 dimension values |
+| 15 | ~300 named variants | ~13 dimension values |
+| 50 | ~1,000 named variants | ~13 dimension values |
 
-## Rule 6 — State Is Always Runtime
+This is the fundamental scaling advantage. In traditional systems, each new component needs its own set of named variants. In the dimensional system, a new component just declares which dimensions it uses — the values already exist.
 
-Composition never sets state. State is determined by user interaction via pseudo-classes and `data-state` attributes.
+Adding a new sentiment value (e.g., `destructive`) makes it immediately available to every component that uses the sentiment dimension. No per-component work needed.
 
-**Why it matters.** Once composition can pass a `state` prop, two things break: the component no longer owns its interaction model, and static documentation examples start to look like real runtime states. Both lead to visual drift.
+**Industry validation:**
+- Nathan Curtis (EightShapes) identified this exact problem: "subtle secondary background hover color" creates hundreds of tokens if all combinations are implemented
+- CVA and Tailwind Variants solve this partially by keeping dimensions independent per component, but each component still defines its own dimension values
+- Our system is unique in having a system-wide vocabulary that all components share
 
-**Industry validation.** Radix uses `data-state` for complex states (open, closed, checked). Pseudo-classes (`:hover`, `:active`, `:focus-visible`) are the browser's native state model; Carbon and Material both lean on them.
+**How to apply:** When you find yourself wanting to add a new value to a dimension, ask: "Does this represent a genuinely new communicative intent / urgency level / size category?" If yes, add it to the concepts manifest and it works everywhere. If no, you're probably solving a component-specific problem that should be handled differently (structure, composition, or slot customisation).
 
-**How to apply.** When you see a `state="hover"` prop in a component API, remove it. Document visual states via Storybook's pseudo-state addon or explicit `data-state` attributes on the component root, not as composition props.
+---
 
-## Rule 7 — Theme Is a Swap on Primitives, Not a Rewrite
+## Rule 4: Components Never Know Their Theme
 
-Changing theme swaps primitive values only. Semantic tokens, component-slot tokens, and component styles stay identical.
+**The rule:** Components reference semantic tokens. Semantic tokens reference primitives. Primitives change per theme. Components have zero awareness of which theme is active.
 
-**Why it matters.** If theme reaches into the semantic or component-slot tier, every theme becomes an effective rewrite. Keeping theme confined to primitives means adding a theme is a single collection-mode operation, not a system-wide refactor.
+**Why this matters:**
 
-**Industry validation.** Figma variable collections model modes exactly this way: modes belong to a collection. Tokens Studio's theme composition works by swapping the bottom-most token set. W3C DTCG's mode resolver operates at the primitive level by convention.
+When components contain theme logic (`if dark mode, use X; else use Y`), three problems emerge:
 
-**How to apply.** Never set a theme-specific override on a semantic token. If a dark-mode value feels wrong, fix the primitive it resolves to — not the semantic. If the semantic still doesn't work, the problem is that its role is wrong, not that it needs a mode exception.
+1. **Every component must be updated for every new theme.** Adding "high contrast" mode means touching every component file.
+2. **Scoped theming breaks.** You can't put a dark sidebar inside a light page because the component is checking a global flag, not inheriting from its container.
+3. **Testing multiplies.** Each component needs testing in each theme, and the theme logic is component-specific code that can have bugs.
 
-## Rule 8 — Component Slots Alias Semantics, Not Primitives
+With theme-unaware components:
+- Adding a new theme means adding a new set of primitive values. Zero component changes.
+- Scoped theming works via CSS cascade — `data-theme="dark"` on any container makes everything inside dark.
+- Testing is simpler — components behave identically regardless of theme.
 
-Component-slot tokens (the fourth tier in layered systems) reference semantic tokens — never primitives directly.
+**Industry validation:**
+- Radix Colors: dark mode "Just Works" by swapping CSS variable values. Components reference scale steps that are already theme-aware.
+- Cloudflare: "Every product built using the Design System now had a dark mode theme built in for free, with no additional work required by teams."
+- Open Props: adaptive tokens handle theming; components reference theme-agnostic aliases.
+- Apple: system colors resolve per appearance at the platform level. Apps don't contain theme logic.
 
-**Why it matters.** If a component slot references a primitive, it skips the semantic tier and loses role information. The next theme, brand, or mode change will touch that slot directly, defeating the purpose of having the tier at all.
+**How to apply:** When building a component, never use `prefers-color-scheme`, theme context, or conditional colour logic. Reference semantic tokens only. If a colour doesn't look right in dark mode, the problem is in the primitive or semantic token definition, not in the component.
 
-**Industry validation.** Nathan Curtis's component-token tier reaches the same conclusion. Polaris's component-level tokens reference semantics by construction.
+---
 
-**How to apply.** In any new component slot, the `var()` chain should read: `component-slot → semantic → primitive`. If the chain collapses ("this slot points straight at `--colors-neutral-500`"), reinsert the semantic layer.
+## Rule 5: Each Layer References Only the One Below
 
-## Rule 9 — Structure Is Build-Time; Size Is Composition-Time
+**The rule:** The token chain has four layers: Primitive → Semantic → Component Slot → Resolver. Each layer may only alias the layer immediately below it. Never skip layers.
 
-A component's anatomy (which regions exist, fixed radii, fixed font) is decided when the component is built. Its footprint (how large the regions are) is decided when the component is used.
+**Why this matters:**
 
-**Why it matters.** Collapsing these two lifecycles is how components either (a) expose every internal padding as a prop or (b) grow a parallel set of "compact" variants. Separating them gives consumers one knob — `size` — and keeps everything else fixed.
+If a component slot token points directly at a primitive (skipping semantics):
+```css
+/* BROKEN: slot → primitive (skips semantic layer) */
+--button-bg: var(--colors-red-500);
+```
 
-**Industry validation.** Salt treats density as environment-level, not per-component. Material M3 absorbs density into size reductions rather than a separate axis. Nathan Curtis recommends the same collapse.
+Then changing the semantic meaning of "warning" (e.g., from red to orange) won't propagate to this component. Theme changes silently fail.
 
-**How to apply.** If a prop controls internal spacing, padding, or gap, ask whether it belongs on the size scale. If it does, remove it. If it doesn't, it is probably a structure variant — which means it is a build-time decision, not a composition prop.
+With correct chaining:
+```css
+/* CORRECT: slot → semantic → primitive */
+--button-bg: var(--background-warning-high-rest);
+/* which resolves to → var(--colors-red-500) in light theme */
+/* and to → var(--colors-red-400) in dark theme */
+```
 
-## Rule 10 — Breakpoints Are Not a Token Dimension
+Now changing the warning semantic or switching themes cascades automatically.
 
-Breakpoint values are reference constants in code, not tokens on the semantic or primitive chain.
+**Industry validation:**
+- Martin Fowler's article recommends making option tokens (primitives) private to prevent direct consumption
+- Frontside's "Context Dilemma" article shows that using global semantic tokens directly in components creates misleading associations — component-scoped tokens (slots) are needed as a translation layer
+- Styled System's Design Graph enforces a similar flow: Scales → Theme → Variants → Components
 
-**Why it matters.** A breakpoint is a viewport concept; tokens are component concepts. Modelling breakpoints as a mode on semantic or component-slot tokens creates a god collection: each paired value multiplied by the number of breakpoints. The cascade loses its economy, and the chain becomes impossible to keep coherent.
+**How to apply:** When defining a component slot token, ask: "Am I pointing at a semantic token?" If you're pointing at a primitive, you have a cascade break. If you're pointing at another component's slot token, you have a cross-component dependency. Both are errors.
 
-**Industry validation.** Frontend Masters (2024) demonstrates that `clamp()` + container queries + intrinsic layout replace most breakpoint-driven CSS. Andrew Hurley describes responsive tokens as "hacky" and recommends keeping them out of the theme. Figma's official guidance uses component variants named per breakpoint rather than modes on variable collections.
+---
 
-**How to apply.** For responsive behaviour, pick the mechanism by the change being made: `clamp()` for scalar, container queries for structural, media queries for layout. In Figma, use component variants for structural shifts and a thin **responsive** collection only where scalar tokens genuinely need discrete values. Never put breakpoints on semantic or primitive collections.
+## Rule 6: Primitives Are Theme-Aware; Semantics Are Theme-Unaware
 
-## Rule 11 — Size and Scale Are Independent
+**The rule:** Primitive token values change per theme (light/dark). Semantic tokens are constant aliases that point at primitives via `var()`. The semantic layer is the same in every theme.
 
-Size (xs – xl) is a relative hierarchy chosen per instance by the designer. Scale (touch / desktop) is an environmental adaptation chosen by the viewport. They do not replace each other.
+**Why this matters:**
 
-**Why it matters.** Putting per-component device entries on every token is the god collection anti-pattern — it multiplies the variable count and collapses size to "whatever the environment dictates." Treating size and scale as two orthogonal axes preserves designer choice while still adapting to device context.
+This is the mechanism that makes Rule 4 work. The theme switch happens at the lowest level (primitives), and everything above inherits automatically.
 
-**Industry validation.** Adobe Spectrum's platform scale (medium/large, 1.25× ratio for touch) is independent of t-shirt sizing: "A component with t-shirt sizing is still affected by scale." Tokens Studio (Pro) composes theme groups as a matrix — brand × density × mode — for the same reason.
+Alternative approaches and their problems:
+- **Semantics change per theme** (Open Props style): Works, but means the semantic layer needs N versions (one per theme). Harder to audit and maintain.
+- **Components handle themes** (Tailwind `dark:` prefix): No abstraction at all. Every component explicitly declares both light and dark styles. Maximum verbosity.
+- **Theme-unaware primitives + semantic switching** (Material Design 3): Primitives are raw values that never change. Semantics map to different primitives per theme. Also works, but means the semantic layer is more complex.
 
-**How to apply.** Keep a thin **Scale** collection (~10–25 base variables, 2 modes) above size. Size tokens reference scale values, so when scale flips from desktop to touch, every size adapts proportionally. A component's `size` prop stays a per-instance hierarchy decision; scale handles the environment.
+Our choice (theme-aware primitives + theme-unaware semantics) means:
+- The simplest possible semantic layer — just aliases, no conditional logic
+- Primitives are generated per theme by `generate-ramps.ts` with OKLCH perceptual uniformity
+- Adding a theme only requires generating a new set of primitives
+
+**Industry validation:**
+- Radix Colors: each scale step swaps values per theme class. The functional meaning of steps stays constant.
+- Cloudflare: `reverse()` on luminosity scales. Simple mechanism, powerful result.
+- CSS `light-dark()` function: browser-native support for theme-aware values validates this pattern.
+
+**Trade-off to acknowledge:** Theme-aware primitives work well for 2 themes (light/dark). With 3+ themes, each needs a full set of primitive values. GitHub Primer found this expensive at 6+ modes. Our OKLCH generation mitigates this — we generate ramps algorithmically, so adding a theme is running the generator with different lightness targets, not manual authoring.
+
+---
+
+## Rule 7: OKLCH Is Non-Negotiable for Colour Primitives
+
+**The rule:** All colour primitives use the OKLCH colour space. Never define colours in hex, RGB, or HSL at the primitive level.
+
+**Why this matters:**
+
+OKLCH provides three properties no other colour space offers simultaneously:
+
+1. **Perceptual uniformity.** Equal numeric steps in lightness (L) produce equal visual steps. Two colours at the same L value look equally bright to human eyes. This means contrast ratios are predictable across the entire ramp without manual checking.
+
+2. **Theme symmetry.** Inverting lightness for dark mode produces natural results because L is perceptually linear. Stack Overflow tried reversing HSL-based scales and "everything had unusable contrast." OKLCH avoids this because its lightness channel maps to perceived brightness, not mathematical brightness.
+
+3. **Wide gamut.** Can represent Display P3 and Rec 2020 colours, with graceful sRGB fallback via gamut mapping. Future-proof for modern displays.
+
+**Industry validation:**
+- Tinte uses OKLCH for all 13 semantic tokens
+- The W3C Design Tokens Format (stable v1, Oct 2025) includes full OKLCH support
+- Adobe's Spectrum reinvented its colour system using perceptual colour science
+- Tailwind v4 defaults to OKLCH-based palette
+- `oklch()` is supported in all modern browsers
+
+**How to apply:** When defining new anchor colours, specify hue (H) and chroma (C) in OKLCH. Lightness is set by the generation targets. Never convert to hex and hand-edit — always regenerate from anchors.
+
+---
+
+## Rule 8: The Concepts Manifest Is the Authority
+
+**The rule:** Only values listed in the concepts manifest may be used when composing components. Undeclared values must be formally added before use.
+
+**Why this matters:**
+
+Without a manifest, dimension values drift. One developer adds `severity` as a sentiment. Another uses `error`. A third uses `destructive`. All mean roughly the same thing but create three incompatible token paths.
+
+The manifest prevents this by serving as a controlled vocabulary:
+- Adding a new value is a deliberate decision, reviewed and documented
+- The full set of valid values is visible in one place
+- Tooling can validate that components only use declared values
+
+**Industry validation:**
+- Nathan Curtis advocates "defining things just as much as not defining things"
+- Spectrum uses a flat, predictable naming convention with a documented vocabulary
+- Atlassian uses explicit modifier enumerations in their token system
+
+**How to apply:** Before using a dimension value, check the concepts manifest. If the value isn't there, don't improvise — either use an existing value that fits, or propose adding the new value with a clear definition of when it should be used.
+
+---
+
+## Rule 9: Foreground and Background Must Pair from the Same Family
+
+**The rule:** When setting both foreground and background, always pair tokens from the same family and emphasis level. Never mix families.
+
+**Why this matters:**
+
+Pairing ensures contrast. Tokens from the same family are designed to meet WCAG AA contrast requirements when used together. Mixing families produces unpredictable contrast:
+
+```css
+/* CORRECT — matched family */
+background: var(--background-warning-high-rest);
+color: var(--foreground-warning-high-rest);
+
+/* BROKEN — mixed families, contrast unpredictable */
+background: var(--background-brand-rest);
+color: var(--foreground-neutral-strong-rest);
+```
+
+**Industry validation:**
+- Radix Colors designs each 12-step scale so that specific step pairings guarantee contrast (e.g., steps 1-5 with step 12 text, steps 6-8 with step 12 text, step 9 with white text)
+- GitHub Primer automated contrast checking across 100+ colour pairs for exactly this reason
+
+**How to apply:** Every time you set a background colour, immediately set the matching foreground from the same family. If the component inherits foreground from a parent, verify the parent is using the same family.
+
+---
+
+## Rule 10: Breakpoints Are Not a Token Dimension
+
+**The rule:** Breakpoint values are reference constants in CSS, not tokens in the resolution chain. Never add breakpoint or device modes to semantic or primitive variable collections.
+
+**Why this matters:**
+
+Tempting as it is to put breakpoints next to colours and spacing ("they're all design decisions, aren't they?"), doing so creates three failures:
+
+1. **Wrong abstraction level.** A breakpoint describes the *viewport*. Components need to know about their *container*. A sidebar and a main-content region at the same viewport width have different available space. Tokenising the viewport propagates the wrong value to half of them.
+
+2. **The god collection.** If every component needs device-specific values, a device mode on semantic collections means each colour, radius, spacing, and typography token needs a desktop and touch value. Most don't differ. The collection bloats with duplicate entries to satisfy the mode system.
+
+3. **Per-component device entries explode.** The escalation from "god collection" to "per-component god collection" is common: a separate device collection for each component. 50 components × 5 properties × 2 modes = 500 variables that live outside the cascade. The size dimension becomes redundant because every size is already pre-baked per device.
+
+The correct architecture separates concerns:
+
+- **Scalar changes** (padding, font-size) → `clamp(min, preferred, max)` in CSS. Or a thin Scale collection (~10–25 variables, 2 modes: Touch, Desktop) that size tokens reference.
+- **Structural changes** (nav collapses to hamburger, card stacks) → component variants. The component itself knows it has two shapes.
+- **Layout changes** (grid columns, container widths) → container queries on the parent, not media queries on the component.
+
+**Industry validation:**
+- Frontend Masters: `clamp()` + container queries + intrinsic layout replace most breakpoints.
+- Andrew Hurley: responsive values on theme tokens are "hacky" — separate collection instead.
+- Devōt: hybrid model — tokens for scalar, variants for structural.
+- Figma's own guidance: use component variants named per breakpoint, not variable modes.
+
+**How to apply:** When asked to make a component "responsive," ask two questions. *Does it change shape?* → variant. *Does it just scale?* → `clamp()` or a scale-collection reference. Never tell designers "I'll add a device mode to the colour collection."
+
+---
+
+## Rule 11: Size and Scale Are Independent
+
+**The rule:** Size (xs–xl) is the designer's relative hierarchy choice. Scale (touch/desktop) is environmental adaptation. They are orthogonal. Never collapse them by baking device-specific values into every component.
+
+**Why this matters:**
+
+When a design manager asks "if we have desktop and touch values for every button property, what's the point of size?" the answer isn't obvious — but the dimensions answer different questions.
+
+- **Size asks: how prominent is this relative to other things on the same screen?** A designer picking `md` over `lg` is expressing hierarchy. The primary CTA is larger; secondary actions are smaller.
+- **Scale asks: how does every component adapt to the viewport?** A finger is larger than a cursor; touch targets grow proportionally. The hierarchy is preserved — a small button stays smaller than a large button — but absolute sizes shift.
+
+The collapse ("just bake a desktop value and a touch value into every component") destroys the size dimension. Every component now carries absolute values per device. The designer's hierarchical choice becomes invisible in the token layer.
+
+**Industry validation:**
+
+Adobe Spectrum documents this directly: "A component with t-shirt sizing is still affected by scale." Spectrum's platform scale (medium/large, 1.25× ratio) multiplies every component proportionally. T-shirt size (S/M/L/XL) is independent. Every (scale × size) combination is valid.
+
+**The god collection anti-pattern:**
+
+Teams under pressure to show every component at every device in Figma often create a device collection with per-component entries. 50 components × 5 properties × 2 modes = 500 variables. Every property baked per device. This kills:
+
+- The size dimension (already baked, nothing left for the designer to express)
+- Cascade propagation (raw values, no aliases)
+- Orthogonality (can't change scale without editing every entry)
+- Maintainability (base-unit changes require 50+ edits)
+
+**The correct pattern — thin Scale collection:**
+
+~10–25 base variables (`scale-unit`, `scale-space-sm`, `scale-radius-sm`, `scale-font-sm`, etc.) with 2 modes (Touch, Desktop). Size tokens reference scale values. Components reference size tokens, never scale.
+
+- Switching scale mode updates ~20 variables; every component scales proportionally
+- Size dimension stays meaningful — designers still choose hierarchy per instance
+- Base-unit changes are one edit in the scale collection
+- Scale × size remains orthogonal
+
+**How to apply:** When adding a new component, define its size variants using size tokens. If you find yourself writing `button-md-height-desktop`, stop — the value should be `var(--size-md-height)` which itself references scale. If there's pressure to add device entries to a component, push back: device preview belongs in a thin Scale collection (or component variants for structural changes), never in per-component entries.
+
+---
+
+## Summary: The Core Insight
+
+The dimensional model works because it decomposes a complex styling problem into simple, independent questions:
+
+| Question | Dimension | Decides |
+|----------|-----------|---------|
+| What is this saying? | Sentiment | Colour family |
+| How urgently? | Emphasis | Visual intensity |
+| How big? | Size | Footprint and spacing |
+| What's happening? | State | Interaction feedback |
+| What's it made of? | Structure | Internal anatomy |
+| Where is it? | Theme | Light/dark resolution |
+
+Each question has a small, finite set of answers. Any answer to any question is valid with any answer to any other question. The system resolves the intersection through a four-layer token chain, not through enumerated combinations.
+
+This means:
+- **Builders ask simple questions** instead of memorising variant names
+- **New meanings don't create busywork** — add once, available everywhere
+- **Theme changes propagate automatically** — no component modifications
+- **The system scales O(1)** — adding components doesn't add dimension values
+- **Contrast is guaranteed** through paired tokens and cascade integrity
