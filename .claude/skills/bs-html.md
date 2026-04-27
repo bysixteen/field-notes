@@ -12,6 +12,10 @@ description: >-
 
 # HTML Semantics
 
+## Foundations (read first)
+
+- [QUALITY-GATES](_foundations/QUALITY-GATES.md)
+
 Native HTML elements first. ARIA only when no native element fits.
 
 ## Element Decision Tree

@@ -12,6 +12,11 @@ description: >-
 
 # Component Scaffold
 
+## Foundations (read first)
+
+- [DIMENSIONAL-MODEL](_foundations/DIMENSIONAL-MODEL.md)
+- [TOKEN-ARCHITECTURE](_foundations/TOKEN-ARCHITECTURE.md)
+
 ## Inputs
 
 - **Component name** (kebab-case, e.g. `status-indicator`)

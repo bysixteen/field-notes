@@ -15,6 +15,13 @@ description: >-
 
 # DESIGN.md (Google spec) — extract, project, validate
 
+## Foundations (read first)
+
+- [DESIGN-INTENT](../_foundations/DESIGN-INTENT.md)
+- [DIMENSIONAL-MODEL](../_foundations/DIMENSIONAL-MODEL.md)
+- [TOKEN-ARCHITECTURE](../_foundations/TOKEN-ARCHITECTURE.md)
+- [QUALITY-GATES](../_foundations/QUALITY-GATES.md)
+
 ## Two Modes
 
 This skill orchestrates two workflows that converge on the same emitter:
