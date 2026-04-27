@@ -7278,6 +7278,105 @@ Plus **Theme** (light/dark) as an environmental dimension.
 
 This guide grows as the approach evolves. Pages marked as `draft` are in progress. The [Concepts Manifest](/design-system/concepts-manifest) is the single source of truth for valid dimension values — expand it when introducing new concepts rather than improvising inline.
 
+### Manifest Architecture
+
+*Two-tier manifest system that lets agents consume the design system without loading it wholesale on every prompt.*
+
+## The Token Trap
+
+Loading the entire design system into context on every prompt is the **Token Trap** — the single largest avoidable cost in an AI design workflow. Every unbounded `scan_tokens` call, every `llms-full.txt` dump, every "let me just paste the whole token file" pattern wastes context that doesn't change between prompts.
+
+The fix is a **tiered manifest**: regenerate-on-change, not load-on-every-prompt.
+
+## Tiers
+
+| Tier | Artefact | Size | Loaded |
+|---|---|---|---|
+| 1 | `/DESIGN.md` | ~200 lines | Always (system prompt) |
+| 2 | `/.context/INDEX.md` | ~50 lines | On demand (routing) |
+| 3 | `/tokens.json` *or* Prism `scan_tokens` | full DTCG / live Figma | One token at a time |
+
+### Tier 1 — `DESIGN.md`
+
+Compact, always-loaded system prompt. Hex sRGB colors, named semantic tokens, typography, rounded, spacing, and component variants in flat naming (`button`, `button-hover`, `button-disabled`). Conforms to the Google DESIGN.md alpha spec so external agents — Claude, Gemini, GPT — can consume it without bespoke parsing.
+
+What it does **not** contain: wide-gamut OKLCH, dark-mode values, primitive ramps, motion / elevation tokens. Those live in Tier 3.
+
+### Tier 2 — `.context/INDEX.md`
+
+A routing map. ~50 lines. No inline token values — only pointers to the right Tier 3 query, the right docs page, or the right Figma variable filter. Load this only when Tier 1 doesn't answer and you're about to reach for the full system.
+
+### Tier 3 — full token system
+
+Two backends:
+
+- `/tokens.json` — DTCG Format Module 2025.10. Wide-gamut OKLCH preserved. Dark-mode values live in `$extensions.field-notes.modes`.
+- Prism MCP `scan_tokens` — live Figma values, including library variables the official Figma MCP cannot resolve.
+
+**Always pass a filter.** `scan_tokens` without a filter is the Token Trap. Read `/tokens.json` for static lookups; reach for Prism only when you need the *live* value.
+
+## When to use each tier
+
+```
+Question                                    → Tier
+─────────────────────────────────────────────────
+"What's the primary button colour?"         → 1 (DESIGN.md)
+"What's the dark-mode value for fg?"        → 3 (tokens.json $extensions)
+"What sentiments exist?"                    → 2 → concepts-manifest.mdx
+"What's the live Figma value of bg-hover?"  → 3 (scan_tokens with nameFilter)
+"Which token does button-hover alias?"      → 2 → bs-tokens.md cascade table
+"Show me all neutral primitives"            → 3 (tokens.json color.neutral)
+```
+
+If you're not sure, start at Tier 1.
+
+## Regeneration
+
+```bash
+npm run generate:manifest
+```
+
+This runs:
+
+1. `scripts/generate-ramps.ts` — refreshes `/tokens.json` (DTCG) from anchor definitions.
+2. `.claude/skills/bs-design-md/scripts/emit-design-md.mjs` — projects DTCG into `/DESIGN.md` (hex sRGB downsampled).
+3. `.claude/skills/bs-design-md/scripts/lint.sh` — validates against `@google/design.md`.
+
+Run only when the design system changes — new palette anchor, new component, new typography stack. **Not on every build, not on every prompt.** The cache is the whole point.
+
+`/.context/INDEX.md` is hand-authored and outside the regeneration loop. Update it when categories shift, not when values change.
+
+## Pipeline
+
+```
+scripts/generate-ramps.ts   ──▶   /tokens.json   (Tier 3, DTCG)
+       │                                │
+       │ (CSS / JSON / Figma)          │
+       ▼                                ▼
+generated/                       emit-design-md.mjs   ──▶   /DESIGN.md   (Tier 1)
+                                        │
+                                        ▼
+                                       lint.sh
+```
+
+`generate-ramps.ts` keeps the bespoke OKLCH ramp logic; it does not delegate ramp generation to `tokens.json`. The DTCG output is *additional*, not a replacement. When [Terrazzo](https://terrazzo.app/) is adopted (issue #98), it will consume `/tokens.json` for multi-platform output (CSS / Sass / JS / Tailwind) — `generate-ramps.ts` keeps producing the DTCG anchor; Terrazzo replaces the bespoke CSS / JSON / Figma emitters.
+
+## Discipline
+
+The tier discipline is enforced in three places so it surfaces wherever an agent reaches for tokens:
+
+- `.claude/skills/bs-tokens.md` — "Manifest tier lookup" preamble.
+- `.claude/rules/prism-mcp.md` — "Token Trap discipline" section.
+- `CLAUDE.md` — top-level pointer.
+
+If you find yourself loading the whole token file (or `llms-full.txt`) into context, the answer is at Tier 1 or behind a narrower Tier 3 query.
+
+## Known caveats
+
+- The current `/DESIGN.md` reports 2 contrast warnings (`button` and `button-disabled` against `on-primary`). These are real accessibility flags inherited from the highlight ramp's mid-step luminance. Treat them as a follow-up upstream fix in `generate-ramps.ts`, not a manifest issue.
+- `/DESIGN.md` flattens dimensional combinations into named variants. The orthogonal Sentiment × Emphasis × State × Size × Structure model lives in `concepts-manifest.mdx` and `model/`; DESIGN.md reflects projected output, not source.
+- `/tokens.json` is a build artefact committed to git. Diffs are intentional change records, auditable in PRs.
+
 ### Color Scale
 
 *The 12-step color ramp (50–1000) and the UI role of each step.*

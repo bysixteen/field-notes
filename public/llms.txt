@@ -75,6 +75,7 @@ Multi-dimensional token model, composition rules, naming conventions, and constr
 - [Figma Documentation Rules](/design-system/figma-documentation-rules): Best practices for documenting design tokens and components inside Figma files.
 - [HTML Semantics](/design-system/html-semantics): Rules for choosing native HTML elements and ARIA attributes in design system components.
 - [Token Approach Guide](/design-system): A living methodology for multi-dimensional design token systems.
+- [Manifest Architecture](/design-system/manifest-architecture): Two-tier manifest system that lets agents consume the design system without loading it wholesale on every prompt.
 - [Color Scale](/design-system/model/color-scale): The 12-step color ramp (50–1000) and the UI role of each step.
 - [Density — why it is not a dimension](/design-system/model/density-note): Density was considered as a sixth dimension in the bysixteen model. This note documents why it was not adopted and how Size covers the same use cases.
 - [Emphasis](/design-system/model/emphasis): How loudly a component communicates — the visual weight and intensity of its signal.

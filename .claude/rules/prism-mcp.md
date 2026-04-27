@@ -29,6 +29,17 @@ Use the official Figma MCP only as a fallback if Prism is unavailable in the ses
 - For one-way CSS → Figma sync (codebase is source of truth), use the WebSocket bridge pattern from Neo's `scripts/push-tokens.mjs` as the reference implementation.
 - If Prism is unavailable in a session (server not running, no `FIGMA_PAT`, bridge disconnected), surface that to the user immediately. Do **not** silently fall back to guessing.
 
+### Token Trap discipline
+
+Loading the whole design system into context on every prompt is the **Token Trap** — the largest avoidable cost in an AI design workflow. Apply this discipline whenever you reach for tokens:
+
+1. **Tier 1 first.** `/DESIGN.md` answers most static lookups (semantic colors, typography, spacing, component variants). Read it before anything else.
+2. **Tier 2 to route.** `/.context/INDEX.md` tells you which file or query answers a given category.
+3. **Tier 3 with a filter.** Only call `scan_tokens` when you need the *live* Figma value. Always pass a filter (`nameFilter`, `collectionFilter`, or a specific node) — never call `scan_tokens` unbounded. For static lookups, prefer reading `/tokens.json` directly.
+4. **Never dump.** Do not pull the whole library into context "just in case". If you find yourself doing this, the answer is at Tier 1 or behind a narrower Tier 3 query.
+
+Regenerate the manifest cache only when the design system changes: `npm run generate:manifest`. Full architectural rationale in `content/design-system/manifest-architecture.mdx`.
+
 ### Configuration reference (`.mcp.json`)
 
 ```json

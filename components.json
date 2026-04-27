@@ -1,0 +1,50 @@
+{
+  "button": {
+    "backgroundColor": "{colors.primary}",
+    "textColor": "{colors.on-primary}",
+    "typography": "{typography.label-md}",
+    "rounded": "{rounded.md}",
+    "padding": "{spacing.8} {spacing.16}",
+    "height": "40px"
+  },
+  "button-hover": {
+    "backgroundColor": "{colors.primary-hover}",
+    "textColor": "{colors.on-primary}",
+    "typography": "{typography.label-md}",
+    "rounded": "{rounded.md}",
+    "padding": "{spacing.8} {spacing.16}",
+    "height": "40px"
+  },
+  "button-active": {
+    "backgroundColor": "{colors.primary-active}",
+    "textColor": "{colors.on-primary}",
+    "typography": "{typography.label-md}",
+    "rounded": "{rounded.md}",
+    "padding": "{spacing.8} {spacing.16}",
+    "height": "40px"
+  },
+  "button-disabled": {
+    "backgroundColor": "{colors.primary-disabled}",
+    "textColor": "{colors.on-primary}",
+    "typography": "{typography.label-md}",
+    "rounded": "{rounded.md}",
+    "padding": "{spacing.8} {spacing.16}",
+    "height": "40px"
+  },
+  "input": {
+    "backgroundColor": "{colors.bg}",
+    "textColor": "{colors.fg}",
+    "typography": "{typography.body-sm}",
+    "rounded": "{rounded.md}",
+    "padding": "{spacing.8} {spacing.12}",
+    "height": "40px"
+  },
+  "badge": {
+    "backgroundColor": "{colors.bg-elevated}",
+    "textColor": "{colors.fg-muted}",
+    "typography": "{typography.label-md}",
+    "rounded": "{rounded.full}",
+    "padding": "{spacing.4} {spacing.8}",
+    "height": "24px"
+  }
+}
