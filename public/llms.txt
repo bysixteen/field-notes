@@ -25,6 +25,7 @@ Context engineering, CLAUDE.md playbook, Claude Code setup, workflow architectur
 - [Claude Code Setup](/claude/claude-code-setup): Practical guide for configuring Claude Code on a new project — CLAUDE.md, rules, hooks, and session management.
 - [The CLAUDE.md Playbook](/claude/claude-md-playbook): How to write effective CLAUDE.md files — minimal, human-curated, and evolving.
 - [Context Engineering](/claude/context-engineering): Strategies for curating the optimal set of tokens during LLM inference — a discipline that evolved from prompt engineering.
+- [Dimensional Systems and DESIGN.md](/claude/dimensional-and-design-md): How a dimensional design system projects into the Google DESIGN.md spec, what is preserved, what is sidecarred, and the layered context stack that makes both legible to an agent.
 - [Claude & AI Workflows](/claude): Patterns for working effectively with AI coding agents — from context engineering to workflow architectures.
 - [Research to Validation Pathway](/claude/research-to-validation): A five-step pathway connecting prototypes to source research.
 - [Skills Catalogue](/claude/skills-catalogue): A directory of available Claude skills with descriptions, trigger phrases, and usage guidance.
@@ -75,6 +76,7 @@ Multi-dimensional token model, composition rules, naming conventions, and constr
 - [HTML Semantics](/design-system/html-semantics): Rules for choosing native HTML elements and ARIA attributes in design system components.
 - [Token Approach Guide](/design-system): A living methodology for multi-dimensional design token systems.
 - [Color Scale](/design-system/model/color-scale): The 12-step color ramp (50–1000) and the UI role of each step.
+- [Density — why it is not a dimension](/design-system/model/density-note): Density was considered as a sixth dimension in the bysixteen model. This note documents why it was not adopted and how Size covers the same use cases.
 - [Emphasis](/design-system/model/emphasis): How loudly a component communicates — the visual weight and intensity of its signal.
 - [The Dimensional Model](/design-system/model): Every component is the product of up to five independent, orthogonal dimensions.
 - [Sentiment](/design-system/model/sentiment): What a component communicates — its semantic intent, not its visual appearance.
@@ -86,7 +88,7 @@ Multi-dimensional token model, composition rules, naming conventions, and constr
 - [Naming Conventions](/design-system/naming): How tokens are named across the primitive and semantic layers.
 - [Primitive Naming](/design-system/naming/primitives): The --{category}-{name} pattern for raw token values.
 - [Semantic Naming](/design-system/naming/semantics): The --{element}-{qualifier} pattern for purpose-driven tokens.
-- [PRISM — Figma MCP Bridge](/design-system/prism): Interface contract for PRISM, the bridge between local design-token tooling and Figma via the Model Context Protocol (MCP).
+- [PRISM — Figma MCP Bridge](/design-system/prism): Interface contract for PRISM (prism-figma-mcp v0.2.0), a 71-tool bridge between local design-token tooling and Figma via the Model Context Protocol.
 - [Storybook Documentation Rules](/design-system/storybook-documentation-rules): Best practices for documenting design systems in Storybook with consistent structure and components.
 - [Testing Strategy](/design-system/testing-strategy): A three-layer testing approach for design system components — unit, accessibility, and visual regression.
 - [Token Audit](/design-system/token-audit): How to audit component tokens for cascade integrity, hardcoded values, and structural correctness.
