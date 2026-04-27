@@ -52,6 +52,10 @@ npm run generate:llms    # Regenerate llms.txt and llms-full.txt only
 
 Deployed to GitHub Pages on every push to `main`.
 
+## Acknowledgements
+
+Field Notes builds on work from many people, projects, and design systems. See [`ATTRIBUTION.md`](./ATTRIBUTION.md) for the canonical credits log — the file other bysixteen repos link back to.
+
 ## Contributing
 
 - Content lives in `content/{domain}/` as `.mdx` files
