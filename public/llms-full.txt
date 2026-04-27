@@ -9483,3 +9483,142 @@ Tooling bridges the gap between design decisions and running code. Each tool in 
 All tooling communicates through MCP (Model Context Protocol). Scripts read connection details from `.mcp.json` in the project root and discover available tools at runtime — no hardcoded tool names or file IDs.
 
 See [PRISM interface definition](/design-system/prism) for the connection protocol and payload schemas that all tooling follows.
+
+### Component contract schema
+
+*Canonical schema for per-component contracts — JSON as the machine-readable source of truth, Markdown as the human-readable narrative layer.*
+
+A component contract is the artifact that tells humans, agents, and tooling how a single design-system component is meant to be used. This page settles the format question and defines the canonical schema.
+
+## Decision
+
+Every component ships **two artifacts**, with different roles.
+
+| Artifact | Role | Audience |
+|----------|------|----------|
+| `component.json` | Structured contract — anatomy, dimensions, props, a11y, behavior, doNot, pairedComponents. Machine-readable and compact. | MCP tools, agents, generators |
+| `Component.md` | Narrative layer — when to use, composition examples, edge-case discussion. Human-readable and richer. | Developers, designers |
+
+**JSON is the source of truth.** Markdown is generated from or co-authored alongside the JSON, never the other way around. Field shape is owned by the JSON; prose interpretation is owned by the Markdown.
+
+## Why both, not one
+
+**Token efficiency.** Diana Wolosin's research at Indeed found that serving structured component data as JSON to MCP clients reduces per-query token cost by roughly 80% compared to serving the same content as Markdown. Agents request shape, not paragraphs — and JSON gives them shape directly.
+
+**Audience separation.** Agents need a typed, predictable surface they can pattern-match against. Humans need rationale, examples, and edge cases. A single artifact serving both audiences ends up noisy for tools and thin for readers; splitting them lets each be the best version of itself.
+
+**Single source of truth.** The `.tsx` signature is the ultimate authority on props; `component.json` mirrors it exactly. `Component.md` is written against the JSON. This keeps the docs from drifting into a parallel reality where prose and code disagree.
+
+## The schema
+
+Seven top-level fields. Button is the canonical worked example — its dimensions match the [Component API](/design-system/component-api) reference.
+
+```json
+{
+  "name": "Button",
+  "anatomy": {
+    "parts": ["root", "prefix", "label", "suffix"],
+    "slots": ["leadingIcon", "trailingIcon"]
+  },
+  "dimensions": {
+    "state": ["rest", "hover", "active", "disabled", "resolving", "pending"],
+    "emphasis": ["high", "medium", "low"],
+    "sentiment": ["neutral", "warning", "highlight", "new", "success", "error"],
+    "size": ["xs", "sm", "md", "lg", "xl"]
+  },
+  "props": {
+    "state":       { "type": "ButtonState",     "default": "rest" },
+    "emphasis":    { "type": "ButtonEmphasis",  "default": "high" },
+    "sentiment":   { "type": "ButtonSentiment", "default": "neutral" },
+    "size":        { "type": "ButtonSize",      "default": "md" },
+    "leadingIcon":  { "type": "React.ReactNode", "optional": true },
+    "trailingIcon": { "type": "React.ReactNode", "optional": true },
+    "onClick":      { "type": "(e: React.MouseEvent) => void", "optional": true },
+    "children":     { "type": "React.ReactNode", "required": true }
+  },
+  "a11y": {
+    "primitive": "native <button>",
+    "role": "button",
+    "keyboard": ["Enter activates", "Space activates"],
+    "contrast": "label vs. surface ≥ 4.5:1 across all sentiment × emphasis combinations"
+  },
+  "behavior": {
+    "stateTransitions": [
+      "rest → hover on pointer enter",
+      "hover → active on pointer down",
+      "any → disabled when state='disabled' (suppresses onClick)",
+      "any → resolving when an async action is in flight"
+    ],
+    "focus": "visible focus ring on keyboard focus only (:focus-visible)"
+  },
+  "doNot": [
+    "Pass a `loading` boolean — use state='resolving' instead",
+    "Use `isPrimary`/`isGhost` booleans — emphasis is an enum",
+    "Render a Button without a label or aria-label",
+    "Stack two high-emphasis Buttons in the same action group"
+  ],
+  "pairedComponents": ["IconButton", "ButtonGroup", "Tooltip", "Spinner"]
+}
+```
+
+## Field reference
+
+### `anatomy`
+
+The component's named layer parts and slot positions. `parts` are always rendered; `slots` are content holes consumers fill. Lift the part names directly from the implementation's class names or `data-part` attributes — this is what generators use to wire styling and theming.
+
+### `dimensions`
+
+Which of the orthogonal dimensions the component participates in, with the full enum for each. Reference: [The Dimensional Model](/design-system/model). A component does not need to participate in all dimensions — Badge skips `state` and `emphasis`; Alert keeps only `sentiment`. Omitted dimensions are simply absent from the object.
+
+### `props`
+
+The full prop surface, derived from the `.tsx` signature. The TypeScript type is the single source of truth — see [Component API](/design-system/component-api). Each entry records `type`, `default`, and either `optional: true` or `required: true`. Dimension props always have a default; content/event/slot props may be optional.
+
+### `a11y`
+
+Accessibility commitments the component makes:
+
+- **`primitive`** — the underlying element or library (e.g. `native <button>`, `Radix Dialog`, `Radix Popover`). Critical for agents that need to understand inherited semantics.
+- **`role`** — explicit ARIA role if not implicit from the primitive.
+- **`keyboard`** — the keys the component handles and what they do.
+- **`contrast`** — required contrast ratio guarantees, framed in terms of dimensions so consumers understand the combinatorial scope.
+
+### `behavior`
+
+Runtime behavior that is not captured by props alone:
+
+- **`stateTransitions`** — when and how `state` changes, including async transitions (`resolving`, `pending`).
+- **`focus`** — focus management rules, focus ring strategy, focus trapping (for overlays).
+
+### `doNot`
+
+Anti-patterns specific to this component, phrased as imperatives. These are the mistakes a fresh consumer is most likely to make. Keep the list short and concrete — each entry should map to a real misuse seen in the wild or a [Component API](/design-system/component-api) audit-checklist violation.
+
+### `pairedComponents`
+
+Components this one composes well with. Used by agents to suggest related primitives and by docs to seed example galleries. Name only what genuinely belongs together, not the entire library.
+
+## The Markdown layer
+
+`Component.md` complements the JSON with the things prose does better than fields:
+
+- **When to use / when not to use** — the decision boundary against neighboring components.
+- **Composition examples** — short, end-to-end snippets, not API tables.
+- **Edge cases** — overflow, RTL, async failure, empty states.
+- **Migration notes** — what changed from the previous API and how to upgrade.
+
+Write the Markdown against the JSON: when JSON changes, Markdown is regenerated or revised. The JSON owns shape; the Markdown owns interpretation.
+
+## Authoring workflow
+
+1. **Start from the `.tsx` signature.** The TypeScript types are authoritative for `props`.
+2. **Write or regenerate `component.json`.** Populate all seven fields. Lint against this schema in CI.
+3. **Author `Component.md` against the JSON.** Reference fields by name; do not duplicate prop tables — link to the JSON instead.
+
+## See also
+
+- [Component API](/design-system/component-api) — the four input categories and the audit checklist props must satisfy.
+- [The Dimensional Model](/design-system/model) — the dimensions vocabulary referenced by the `dimensions` field.
+- [PRISM](/design-system/prism) — the MCP bridge that consumes `component.json` payloads.
+- [Testing strategy](/design-system/testing-strategy) — how the contract is verified in unit tests.
