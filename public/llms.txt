@@ -100,3 +100,4 @@ Multi-dimensional token model, composition rules, naming conventions, and constr
 - [Token Transform Pipeline](/design-system/token-transform-pipeline): End-to-end pipeline from designer anchor choices through generation, layering, and output to CSS custom properties.
 - [Figma Sync Scripts](/design-system/tooling/figma-sync): Push and pull design tokens between local tooling and Figma via the PRISM MCP bridge.
 - [Tooling](/design-system/tooling): Scripts, bridges, and automation that connect the design system to external tools.
+- [Component contract schema](/design-system/tools/component-schema): Canonical schema for per-component contracts — JSON as the machine-readable source of truth, Markdown as the human-readable narrative layer.

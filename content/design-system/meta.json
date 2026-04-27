@@ -27,6 +27,7 @@
     "---Documentation Standards---",
     "prism",
     "figma-documentation-rules",
-    "storybook-documentation-rules"
+    "storybook-documentation-rules",
+    "tools/component-schema"
   ]
 }
