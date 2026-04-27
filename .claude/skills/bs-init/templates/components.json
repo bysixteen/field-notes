@@ -11,8 +11,7 @@
       "textColor": "{color.on-primary}",
       "typography": "{typography.label-md}",
       "rounded": "{borderRadius.md}",
-      "padding": "{spacing.8} {spacing.16}",
-      "height": "40px"
+      "padding": "{spacing.8} {spacing.16}"
     }
   },
   "input": {
@@ -27,8 +26,7 @@
       "textColor": "{color.neutral}",
       "typography": "{typography.label-md}",
       "rounded": "{borderRadius.md}",
-      "padding": "{spacing.8} {spacing.16}",
-      "height": "40px"
+      "padding": "{spacing.8} {spacing.16}"
     }
   },
   "badge": {
@@ -54,7 +52,7 @@
       "state": ["rest"]
     },
     "properties": {
-      "backgroundColor": "{color.warning}",
+      "backgroundColor": "{color.primary}",
       "textColor": "{color.on-primary}",
       "typography": "{typography.label-md}",
       "rounded": "{borderRadius.md}",

@@ -8,7 +8,7 @@
 
 import { existsSync, mkdirSync, readdirSync, readFileSync, writeFileSync } from "node:fs";
 import { dirname, join } from "node:path";
-import { fileURLToPath } from "node:url";
+import { fileURLToPath, pathToFileURL } from "node:url";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const TEMPLATES = join(__dirname, "..", "templates");
@@ -50,11 +50,22 @@ function isNonEmpty(dir) {
 
 function parseArgs(argv) {
   const out = {};
+  const takeValue = (flag, i) => {
+    const next = argv[i + 1];
+    if (next === undefined || next.startsWith("--")) {
+      throw new Error(`bs-init: ${flag} requires a value`);
+    }
+    return next;
+  };
   for (let i = 0; i < argv.length; i++) {
     const arg = argv[i];
-    if (arg === "--name") out.name = argv[++i];
-    else if (arg === "--target") out.target = argv[++i];
-    else if (arg === "--force") out.force = true;
+    if (arg === "--name") {
+      out.name = takeValue("--name", i);
+      i++;
+    } else if (arg === "--target") {
+      out.target = takeValue("--target", i);
+      i++;
+    } else if (arg === "--force") out.force = true;
     else if (arg === "--help" || arg === "-h") out.help = true;
     else throw new Error(`bs-init: unknown flag ${arg}`);
   }
@@ -75,7 +86,7 @@ function help() {
   console.log("    --from-dimensional <dir> --out <dir> --name <project-name>");
 }
 
-if (import.meta.url === `file://${process.argv[1]}`) {
+if (import.meta.url === pathToFileURL(process.argv[1]).href) {
   try {
     const args = parseArgs(process.argv.slice(2));
     if (args.help) {

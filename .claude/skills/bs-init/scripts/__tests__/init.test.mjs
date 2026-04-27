@@ -59,7 +59,8 @@ test("bs-init writes the canonical scaffold into a fresh target", () => {
 test("bs-init substitutes {{project_name}} into CLAUDE.md and DESIGN.md", () => {
   const target = makeTempTarget();
   try {
-    runInit(["--name", "blueprint", "--target", target, "--force"]);
+    const result = runInit(["--name", "blueprint", "--target", target, "--force"]);
+    assert.equal(result.status, 0, `init failed: ${result.stderr}`);
     const claude = readFileSync(join(target, "CLAUDE.md"), "utf8");
     const design = readFileSync(join(target, "DESIGN.md"), "utf8");
     assert.match(claude, /^# blueprint$/m, "CLAUDE.md missing project name heading");

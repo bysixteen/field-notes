@@ -74,6 +74,6 @@ The second command must succeed and produce `/tmp/test-project/DESIGN.md` with a
 ## Self-check
 
 Before reporting `bs-init` done:
-1. Re-read `--name` and `--target` from the invocation. Confirm both files were written.
+1. Re-read `--name` and `--target` from the invocation. Confirm all scaffold files were written.
 2. Run the round-trip recipe above; if `bs-design-md --from-dimensional` exits non-zero, the scaffold is broken — surface the error verbatim.
 3. List what wasn't checked: replacing placeholder anchor colours, customising the five-dimensional vocabulary, wiring CI, configuring the toolkit npm-link.
