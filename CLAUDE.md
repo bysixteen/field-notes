@@ -2,6 +2,8 @@
 
 Multi-domain knowledge hub built with Fumadocs (MDX + Next.js).
 
+> **Start here:** read `/INVENTORY.md` for a map of this repo, the lanefour consumer, and how the two relate.
+
 ## Commands
 
 - `npm run dev` — start development server
