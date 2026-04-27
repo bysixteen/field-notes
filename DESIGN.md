@@ -140,6 +140,8 @@ components:
     height: 24px
 ---
 
+<!-- bs-design-md:generated:start -->
+
 ## Overview
 
 field-notes is a design system. The values in this file are the source of truth for an AI agent generating new UI; the prose below explains how to apply them.
@@ -184,3 +186,5 @@ Not every (sentiment × emphasis × size × state) combination is named in this 
 ### Wide-gamut colour
 
 The `colors` block is hex sRGB only because the DESIGN.md spec mandates it. Original OKLCH/Display P3 values live in the sidecar `tokens.json`. When a tool round-trips through DTCG, prefer the sidecar.
+
+<!-- bs-design-md:generated:end -->
