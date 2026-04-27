@@ -1,19 +1,21 @@
 # PRISM — Figma MCP Bridge Interface Definition
 
-Interface contract for PRISM, the bridge between local design-token tooling and Figma via the Model Context Protocol (MCP). This document defines the connection protocol, payload schemas for push/pull operations, and tool discovery requirements.
+Interface contract for PRISM (`bysixteen/prism`, published as `prism-figma-mcp`), the bridge between local design-token tooling and Figma via the Model Context Protocol (MCP). Prism ships 71 tools across 12 categories; this document defines the connection protocol, payload schemas for push/pull operations, and the canonical tool surface used by the sync scripts.
 
-Downstream dependents: Sub-Plan D (Token Transform Pipeline docs), Sub-Plan G (Push/Pull sync scripts).
+Downstream dependents: Sub-Plan D (Token Transform Pipeline docs), Sub-Plan G (Push/Pull sync scripts in `scripts/figma-{push,pull}.sh`).
 
 ---
 
 ## Connection Protocol
 
-PRISM communicates with Figma through an MCP server exposed over one of two transports:
+Prism communicates with Figma through an MCP server exposed over two transports simultaneously:
 
 | Transport | Detail |
 |-----------|--------|
-| **STDIO** | Default. The MCP client spawns the server process and communicates over stdin/stdout. |
-| **Local HTTP** | Optional. Server listens on `http://localhost:7890` (port 7890 by default). |
+| **STDIO** | Default for MCP clients (Claude Code, Claude Desktop). The client spawns the Prism process and communicates over stdin/stdout. |
+| **WebSocket bridge** | `ws://localhost:7890`. Prism's plugin-side bridge — also reachable from local scripts that want to invoke Prism tools without re-spawning the server. |
+
+The shell scripts in `scripts/` use the WebSocket transport so they piggyback on whatever Prism instance is already attached to the operator's open Figma plugin.
 
 ### Configuration
 
@@ -42,57 +44,73 @@ All connection details are read from the `.mcp.json` file located in the project
 
 Key rules:
 - `fileId` is always read from `.mcp.json` at runtime — never embedded in scripts or documentation examples.
-- The server entry under `mcpServers` determines which command to spawn (STDIO) or which URL to connect to (HTTP).
+- `FIGMA_MCP_PORT` controls the WebSocket bridge port; scripts default to `7890` and accept `PRISM_WS_URL` as an override.
+
+---
+
+## Canonical Tool Surface
+
+Prism's tool names are stable. Scripts call them by name — no runtime regex discovery — and abort with the actual error message if a call fails.
+
+| Capability | Tool |
+|------------|------|
+| Connection check | `check_connection` |
+| Set the active file | `set_target_file` |
+| List variable collections (lookup by name) | `get_variable_collections` |
+| Read all variables in a collection | `get_collection_variables` |
+| Audit local + library tokens with bindings | `list_tokens` |
+| Bulk create new variables | `create_variables_batch` |
+| Bulk update existing variables | `update_variables_batch` |
+| Bulk delete variables | `delete_variables_batch` |
+
+Single-variable variants (`create_variable`, `update_variable`, `delete_variable`) exist but the sync scripts always use the batch forms.
 
 ---
 
 ## Push Tokens Payload Schema
 
-Pushes locally-generated token collections into Figma as variables.
-
-**Tool:** discovered at runtime (canonical name: `push_tokens` or equivalent — see [Tool Discovery](#tool-discovery-requirement)).
+Pushes locally-generated token collections into Figma as variables. The push script splits each collection into "new" and "existing" variables (by checking `get_collection_variables`) and routes them to `create_variables_batch` / `update_variables_batch` respectively.
 
 ### Request Payload
 
 ```json
 {
   "fileId": "<from .mcp.json>",
-  "collections": [
-    {
-      "name": "Primitives",
-      "modes": ["Light", "Dark"],
-      "variables": [
-        {
-          "name": "sky-50",
-          "type": "COLOR",
-          "valuesByMode": {
-            "Light": "#f0f9ff",
-            "Dark": "#082f49"
-          }
-        },
-        {
-          "name": "sky-100",
-          "type": "COLOR",
-          "valuesByMode": {
-            "Light": "#e0f2fe",
-            "Dark": "#0c4a6e"
-          }
+  "collection": {
+    "name": "Primitives",
+    "modes": ["Light", "Dark"],
+    "variables": [
+      {
+        "name": "sky-50",
+        "type": "COLOR",
+        "valuesByMode": {
+          "Light": "#f0f9ff",
+          "Dark": "#082f49"
         }
-      ]
-    }
-  ]
+      },
+      {
+        "name": "sky-100",
+        "type": "COLOR",
+        "valuesByMode": {
+          "Light": "#e0f2fe",
+          "Dark": "#0c4a6e"
+        }
+      }
+    ]
+  }
 }
 ```
+
+The script's input file (`generated/figma-variables.json`) wraps one or more collections under a `collections: []` array; the script unwraps and dispatches one batch call per collection.
 
 ### Field Reference
 
 | Field | Type | Description |
 |-------|------|-------------|
 | `fileId` | `string` | Figma file ID — resolved from `.mcp.json` at runtime. |
-| `collections` | `array` | One or more variable collections to push. |
-| `collections[].name` | `string` | Collection name in Figma (e.g., `"Primitives"`, `"Anchors"`). |
-| `collections[].modes` | `string[]` | Mode names the collection supports (e.g., `["Light", "Dark"]`). |
-| `collections[].variables` | `array` | Variables to create or update within the collection. |
+| `collection.name` | `string` | Collection name in Figma (e.g., `"Primitives"`, `"Anchors"`). |
+| `collection.modes` | `string[]` | Mode names the collection supports (e.g., `["Light", "Dark"]`). |
+| `collection.variables` | `array` | Variables to create or update within the collection. |
 | `variables[].name` | `string` | Variable name. Use Radix-style 50–1000 numbering for scales. |
 | `variables[].type` | `string` | Variable type: `"COLOR"`, `"FLOAT"`, `"STRING"`, or `"BOOLEAN"`. |
 | `variables[].valuesByMode` | `object` | Map of mode name to value. Keys must match `modes` array. |
@@ -101,20 +119,19 @@ Pushes locally-generated token collections into Figma as variables.
 
 ## Pull Anchors Payload Schema
 
-Pulls variable values back from Figma — typically anchor tokens set by designers.
+Pulls variable values back from Figma — typically anchor tokens set by designers. The pull script first calls `get_variable_collections` to resolve the collection's id, then `get_collection_variables` to read its variables.
 
-**Tool:** discovered at runtime (canonical name: `pull_variables` or equivalent — see [Tool Discovery](#tool-discovery-requirement)).
+### Request Sequence
 
-### Request Payload
+```jsonc
+// step 1
+{ "tool": "get_variable_collections", "arguments": { "name": "Anchors" } }
 
-```json
-{
-  "fileId": "<from .mcp.json>",
-  "collection": "Anchors"
-}
+// step 2 (collectionId comes from step 1's response)
+{ "tool": "get_collection_variables", "arguments": { "collectionId": "VariableCollectionId:..." } }
 ```
 
-### Response Payload (expected shape)
+### Output Shape (written to `generated/figma-anchors.json`)
 
 ```json
 {
@@ -133,61 +150,7 @@ Pulls variable values back from Figma — typically anchor tokens set by designe
 }
 ```
 
-### Field Reference
-
-| Field | Type | Description |
-|-------|------|-------------|
-| `fileId` | `string` | Figma file ID — resolved from `.mcp.json` at runtime. |
-| `collection` | `string` | Name of the collection to pull (e.g., `"Anchors"`). |
-
-The response shape mirrors the push schema's `collections[]` entry, making round-trip operations straightforward.
-
----
-
-## Tool Discovery Requirement
-
-MCP servers may expose tools under different names depending on version or configuration. Scripts MUST NOT assume fixed tool names. Instead, every script that interacts with PRISM must include a **preflight tool-discovery step**.
-
-### Discovery Protocol
-
-1. **List available tools** before executing any operation:
-   ```bash
-   manus-mcp-cli tool list --server prism
-   ```
-2. **Log the discovered tools** so operators can audit what is available:
-   ```
-   [PRISM] Discovered tools: create_variables, get_variables, set_variable_value, ...
-   ```
-3. **Match against required capabilities** — map canonical operation names to whatever the server exposes.
-
-### Dynamic Tool-Name Mapping
-
-Scripts must maintain a mapping table of canonical operations to discovered tool names. If the MCP server exposes `create_variables` instead of `push_tokens`, the script maps accordingly.
-
-```
-Canonical Operation    → Discovered Tool Name
-─────────────────────────────────────────────
-push_tokens            → (resolved at runtime)
-pull_variables         → (resolved at runtime)
-```
-
-**Implementation pattern (pseudocode):**
-
-```
-tools = mcp.listTools(server: "prism")
-
-PUSH_TOOL = tools.find(name matches /push|create|set.*variable/)
-PULL_TOOL = tools.find(name matches /pull|get.*variable/)
-
-if (!PUSH_TOOL || !PULL_TOOL) {
-  abort("Required tools not found. Available: " + tools.map(t => t.name))
-}
-```
-
-Key rules:
-- Never call a tool by a hardcoded name without first verifying it exists.
-- If a required tool is not found, abort with a clear error listing available tools.
-- Log the resolved mapping at the start of every run for debuggability.
+The output shape mirrors the push request's `collection` block, making round-trip operations straightforward.
 
 ---
 
@@ -195,9 +158,9 @@ Key rules:
 
 | Aspect | Detail |
 |--------|--------|
-| Transport | MCP over STDIO (default) or local HTTP (:7890) |
+| Transport | MCP over STDIO + WebSocket bridge on `ws://localhost:7890` |
 | Configuration | `.mcp.json` in project root |
-| Push | Send token collections with modes and typed values |
-| Pull | Retrieve a named collection's variables and mode values |
-| Tool names | Discovered at runtime — never hardcoded |
+| Push | `create_variables_batch` (new) + `update_variables_batch` (existing) per collection |
+| Pull | `get_variable_collections` → `get_collection_variables` |
+| Tool names | Called directly by name (canonical, stable across Prism versions) |
 | File IDs | Always from `.mcp.json` — never hardcoded |

@@ -1,139 +1,143 @@
 #!/usr/bin/env bash
-set -euo pipefail
+# figma-push.sh — push generated design tokens into Figma via Prism.
+#
+# Prerequisites:
+#   • Prism MCP running and connected to Figma (plugin open, WS bridge on :7890)
+#   • .mcp.json at repo root with figma.fileId set
+#   • jq, node ≥ 22
+#
+# Usage:
+#   ./scripts/figma-push.sh                              # default input: generated/figma-variables.json
+#   ./scripts/figma-push.sh path/to/variables.json
+#   cat variables.json | ./scripts/figma-push.sh
+#   ./scripts/figma-push.sh --dry-run                    # show planned tool calls, send nothing
+#
+# Expected Prism state:
+#   • check_connection returns ok
+#   • set_target_file accepts the figma.fileId from .mcp.json
+#   • Every collection referenced in the input JSON exists in the file
+#
+# Input shape (matches PRISM.md push schema, fileId injected by this script):
+#   { "collections": [ { "name": "Primitives", "modes": ["Light","Dark"],
+#                        "variables": [ { "name", "type", "valuesByMode" } ] } ] }
+#
+# Tools invoked (Prism, by name): check_connection, set_target_file,
+# get_variable_collections, get_collection_variables,
+# create_variables_batch, update_variables_batch.
 
-# figma-push.sh — Push generated JSON tokens to Figma via local MCP.
-# Reads connection config from .mcp.json per PRISM interface definition.
+set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 PROJECT_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
 MCP_CONFIG="$PROJECT_ROOT/.mcp.json"
+DEFAULT_INPUT="$PROJECT_ROOT/generated/figma-variables.json"
+PRISM_CALL="$SCRIPT_DIR/_prism-call.mjs"
 
 DRY_RUN=false
 INPUT_FILE=""
 
-# --- Argument parsing ---
 usage() {
-  echo "Usage: figma-push.sh [--dry-run] [TOKEN_JSON_FILE]"
-  echo ""
-  echo "Push generated token JSON to Figma via MCP."
-  echo ""
-  echo "Options:"
-  echo "  --dry-run   Show preflight checks and payload without sending"
-  echo "  -h, --help  Show this help message"
-  echo ""
-  echo "If TOKEN_JSON_FILE is omitted, reads from stdin."
+  sed -n '/^#!/d; /^[^#]/q; s/^# \{0,1\}//p' "${BASH_SOURCE[0]}"
   exit 0
 }
 
 while [[ $# -gt 0 ]]; do
   case "$1" in
-    --dry-run)  DRY_RUN=true; shift ;;
-    -h|--help)  usage ;;
-    *)          INPUT_FILE="$1"; shift ;;
+    --dry-run) DRY_RUN=true; shift ;;
+    -h|--help) usage ;;
+    --) shift; break ;;
+    -*) echo "[prism] unknown flag: $1" >&2; exit 2 ;;
+    *)  INPUT_FILE="$1"; shift ;;
   esac
 done
 
-# --- Preflight checks ---
-echo "[PRISM] Starting preflight checks..."
+# --- Preflight ---------------------------------------------------------------
+command -v jq   >/dev/null || { echo "[prism] jq not found (brew install jq)"   >&2; exit 1; }
+command -v node >/dev/null || { echo "[prism] node not found (need node ≥ 22)" >&2; exit 1; }
+[[ -f "$MCP_CONFIG"  ]] || { echo "[prism] .mcp.json missing at $MCP_CONFIG" >&2; exit 1; }
+[[ -f "$PRISM_CALL"  ]] || { echo "[prism] helper missing: $PRISM_CALL"      >&2; exit 1; }
 
-# Check jq is available
-if ! command -v jq &>/dev/null; then
-  echo "[PRISM] ERROR: jq is required but not found. Install with: brew install jq" >&2
-  exit 1
-fi
-echo "[PRISM] ✓ jq found"
-
-# Check .mcp.json exists
-if [[ ! -f "$MCP_CONFIG" ]]; then
-  echo "[PRISM] ERROR: .mcp.json not found at $MCP_CONFIG" >&2
-  echo "[PRISM] Create .mcp.json with figma.fileId and mcpServers.figma config." >&2
-  exit 1
-fi
-echo "[PRISM] ✓ .mcp.json found"
-
-# Read fileId from .mcp.json
 FILE_ID=$(jq -r '.figma.fileId // empty' "$MCP_CONFIG")
-if [[ -z "$FILE_ID" ]]; then
-  echo "[PRISM] ERROR: figma.fileId not set in .mcp.json" >&2
-  exit 1
-fi
-echo "[PRISM] ✓ fileId resolved"
+[[ -n "$FILE_ID" ]] || { echo "[prism] figma.fileId not set in .mcp.json" >&2; exit 1; }
 
-# Check manus-mcp-cli is available
-if ! command -v manus-mcp-cli &>/dev/null; then
-  echo "[PRISM] ERROR: manus-mcp-cli is required but not found." >&2
-  exit 1
-fi
-echo "[PRISM] ✓ manus-mcp-cli found"
-
-# --- Tool discovery ---
-echo "[PRISM] Discovering available tools..."
-
-TOOLS_OUTPUT=$(manus-mcp-cli tool list --server figma-mcp 2>&1) || {
-  echo "[PRISM] ERROR: Failed to list tools from figma-mcp server." >&2
-  echo "[PRISM] Is the MCP server running? Check .mcp.json configuration." >&2
-  exit 1
-}
-
-echo "[PRISM] Discovered tools: $TOOLS_OUTPUT"
-
-# Match push tool — look for push, create, or set.*variable patterns
-PUSH_TOOL=$(echo "$TOOLS_OUTPUT" | grep -oE '\b\w*(push_tokens|create_variables|set_variable_value|push_variable)\w*\b' | head -1) || true
-
-if [[ -z "$PUSH_TOOL" ]]; then
-  echo "[PRISM] ERROR: No push-capable tool found." >&2
-  echo "[PRISM] Available tools: $TOOLS_OUTPUT" >&2
-  echo "[PRISM] Expected a tool matching: push_tokens, create_variables, or set_variable_value" >&2
-  exit 1
-fi
-
-echo "[PRISM] Resolved tool mapping:"
-echo "  push_tokens → $PUSH_TOOL"
-
-# --- Read input payload ---
-if [[ -n "$INPUT_FILE" ]]; then
-  if [[ ! -f "$INPUT_FILE" ]]; then
-    echo "[PRISM] ERROR: Token file not found: $INPUT_FILE" >&2
-    exit 1
-  fi
+# --- Input -------------------------------------------------------------------
+if [[ -z "$INPUT_FILE" && ! -t 0 ]]; then
+  PAYLOAD=$(cat)
+elif [[ -z "$INPUT_FILE" ]]; then
+  INPUT_FILE="$DEFAULT_INPUT"
+  [[ -f "$INPUT_FILE" ]] || { echo "[prism] input not found: $INPUT_FILE" >&2; exit 1; }
   PAYLOAD=$(cat "$INPUT_FILE")
 else
-  if [[ -t 0 ]]; then
-    echo "[PRISM] ERROR: No input file specified and stdin is a terminal." >&2
-    echo "[PRISM] Provide a token JSON file or pipe input via stdin." >&2
-    exit 1
+  [[ -f "$INPUT_FILE" ]] || { echo "[prism] input not found: $INPUT_FILE" >&2; exit 1; }
+  PAYLOAD=$(cat "$INPUT_FILE")
+fi
+
+echo "$PAYLOAD" | jq empty >/dev/null 2>&1 || { echo "[prism] input is not valid JSON" >&2; exit 1; }
+
+COLLECTION_COUNT=$(echo "$PAYLOAD" | jq '.collections | length')
+echo "[prism] file=$FILE_ID  collections=$COLLECTION_COUNT  src=${INPUT_FILE:-<stdin>}"
+
+# --- Helper to call a Prism tool --------------------------------------------
+prism_call() {
+  local tool="$1" args_json="$2"
+  if [[ "$DRY_RUN" == true ]]; then
+    {
+      echo "[prism] DRY-RUN tools/call $tool"
+      echo "$args_json" | jq .
+    } >&2
+    return 0
   fi
-  PAYLOAD=$(cat)
-fi
-
-# Validate JSON
-if ! echo "$PAYLOAD" | jq empty 2>/dev/null; then
-  echo "[PRISM] ERROR: Input is not valid JSON." >&2
-  exit 1
-fi
-
-# Inject fileId into payload
-PAYLOAD=$(echo "$PAYLOAD" | jq --arg fid "$FILE_ID" '. + {fileId: $fid}')
-
-echo "[PRISM] Payload prepared ($(echo "$PAYLOAD" | jq '.collections | length') collections)"
-
-# --- Dry run or execute ---
-if [[ "$DRY_RUN" == true ]]; then
-  echo ""
-  echo "[PRISM] DRY RUN — would send the following payload via $PUSH_TOOL:"
-  echo "$PAYLOAD" | jq .
-  echo ""
-  echo "[PRISM] Dry run complete. No data was sent."
-  exit 0
-fi
-
-# Execute push via MCP
-echo "[PRISM] Pushing tokens via $PUSH_TOOL..."
-RESULT=$(manus-mcp-cli tool call --server figma-mcp --tool "$PUSH_TOOL" --input "$PAYLOAD" 2>&1) || {
-  echo "[PRISM] ERROR: Push failed." >&2
-  echo "$RESULT" >&2
-  exit 1
+  jq -n --arg t "$tool" --argjson a "$args_json" '{tool:$t, arguments:$a}' \
+    | node "$PRISM_CALL"
 }
 
-echo "[PRISM] Push complete."
-echo "$RESULT"
+# --- Connection + target file -----------------------------------------------
+prism_call check_connection '{}' >/dev/null
+prism_call set_target_file "$(jq -n --arg id "$FILE_ID" '{fileId:$id}')" >/dev/null
+
+# --- Per-collection partition + batch calls ---------------------------------
+COLLECTION_NAMES=$(echo "$PAYLOAD" | jq -r '.collections[].name')
+
+while IFS= read -r COLLECTION_NAME; do
+  [[ -n "$COLLECTION_NAME" ]] || continue
+  echo "[prism] collection: $COLLECTION_NAME"
+
+  COLLECTION=$(echo "$PAYLOAD" | jq --arg n "$COLLECTION_NAME" '.collections[] | select(.name==$n)')
+
+  if [[ "$DRY_RUN" == true ]]; then
+    EXISTING_NAMES='[]'
+  else
+    LOOKUP=$(prism_call get_variable_collections "$(jq -n --arg n "$COLLECTION_NAME" '{name:$n}')")
+    COLLECTION_ID=$(echo "$LOOKUP" | jq -r '
+      (.. | objects | select(.name? == "'"$COLLECTION_NAME"'") | .id?) // empty' | head -n 1)
+    if [[ -n "$COLLECTION_ID" ]]; then
+      VARS=$(prism_call get_collection_variables \
+        "$(jq -n --arg id "$COLLECTION_ID" '{collectionId:$id}')")
+      EXISTING_NAMES=$(echo "$VARS" | jq '[.. | objects | .name? | select(type=="string")] | unique')
+    else
+      EXISTING_NAMES='[]'
+    fi
+  fi
+
+  TO_CREATE=$(echo "$COLLECTION" | jq --argjson existing "$EXISTING_NAMES" \
+    '{name, modes, variables: (.variables | map(select(.name as $n | ($existing | index($n)) | not)))}')
+  TO_UPDATE=$(echo "$COLLECTION" | jq --argjson existing "$EXISTING_NAMES" \
+    '{name, modes, variables: (.variables | map(select(.name as $n | ($existing | index($n)))))}')
+
+  CREATE_COUNT=$(echo "$TO_CREATE" | jq '.variables | length')
+  UPDATE_COUNT=$(echo "$TO_UPDATE" | jq '.variables | length')
+  echo "[prism]   create=$CREATE_COUNT  update=$UPDATE_COUNT"
+
+  if [[ "$CREATE_COUNT" -gt 0 ]]; then
+    prism_call create_variables_batch \
+      "$(jq -n --arg fid "$FILE_ID" --argjson c "$TO_CREATE" '{fileId:$fid, collection:$c}')" \
+      >/dev/null
+  fi
+  if [[ "$UPDATE_COUNT" -gt 0 ]]; then
+    prism_call update_variables_batch \
+      "$(jq -n --arg fid "$FILE_ID" --argjson c "$TO_UPDATE" '{fileId:$fid, collection:$c}')" \
+      >/dev/null
+  fi
+done <<< "$COLLECTION_NAMES"
+
+echo "[prism] push complete"

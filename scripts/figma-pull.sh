@@ -1,142 +1,122 @@
 #!/usr/bin/env bash
-set -euo pipefail
+# figma-pull.sh — pull anchor variables from Figma via Prism.
+#
+# Prerequisites:
+#   • Prism MCP running and connected to Figma (plugin open, WS bridge on :7890)
+#   • .mcp.json at repo root with figma.fileId set
+#   • jq, node ≥ 22
+#
+# Usage:
+#   ./scripts/figma-pull.sh                  # writes generated/figma-anchors.json
+#   ./scripts/figma-pull.sh --dry-run        # show planned tool calls, fetch nothing
+#   ./scripts/figma-pull.sh --collection X   # override collection name (default: Anchors)
+#
+# Expected Prism state:
+#   • check_connection returns ok
+#   • set_target_file accepts the figma.fileId from .mcp.json
+#   • A variable collection named "Anchors" (or --collection override) exists
+#
+# Output shape (matches PRISM.md pull schema):
+#   { "collection": "Anchors", "modes": [...],
+#     "variables": [ { "name", "type", "valuesByMode" } ] }
+#
+# Tools invoked (Prism, by name): check_connection, set_target_file,
+# get_variable_collections, get_collection_variables.
 
-# figma-pull.sh — Pull anchor colors from Figma via local MCP.
-# Writes exclusively to packages/ui/anchors.json (never .ts files).
-# Reads connection config from .mcp.json per PRISM interface definition.
+set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 PROJECT_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
 MCP_CONFIG="$PROJECT_ROOT/.mcp.json"
-OUTPUT_FILE="$PROJECT_ROOT/packages/ui/anchors.json"
-COLLECTION_NAME="Anchors"
+OUTPUT_FILE="$PROJECT_ROOT/generated/figma-anchors.json"
+PRISM_CALL="$SCRIPT_DIR/_prism-call.mjs"
 
 DRY_RUN=false
+COLLECTION_NAME="Anchors"
 
-# --- Argument parsing ---
 usage() {
-  echo "Usage: figma-pull.sh [--dry-run]"
-  echo ""
-  echo "Pull anchor colors from Figma via MCP."
-  echo "Output is written to packages/ui/anchors.json."
-  echo ""
-  echo "Options:"
-  echo "  --dry-run   Show preflight checks without pulling"
-  echo "  -h, --help  Show this help message"
+  sed -n '/^#!/d; /^[^#]/q; s/^# \{0,1\}//p' "${BASH_SOURCE[0]}"
   exit 0
 }
 
 while [[ $# -gt 0 ]]; do
   case "$1" in
-    --dry-run)  DRY_RUN=true; shift ;;
-    -h|--help)  usage ;;
-    *)
-      echo "Unknown argument: $1" >&2
-      usage
-      ;;
+    --dry-run)    DRY_RUN=true; shift ;;
+    --collection) COLLECTION_NAME="${2:?}"; shift 2 ;;
+    -h|--help)    usage ;;
+    *) echo "[prism] unknown argument: $1" >&2; exit 2 ;;
   esac
 done
 
-# --- Preflight checks ---
-echo "[PRISM] Starting preflight checks..."
+# --- Preflight ---------------------------------------------------------------
+command -v jq   >/dev/null || { echo "[prism] jq not found (brew install jq)"   >&2; exit 1; }
+command -v node >/dev/null || { echo "[prism] node not found (need node ≥ 22)" >&2; exit 1; }
+[[ -f "$MCP_CONFIG"  ]] || { echo "[prism] .mcp.json missing at $MCP_CONFIG" >&2; exit 1; }
+[[ -f "$PRISM_CALL"  ]] || { echo "[prism] helper missing: $PRISM_CALL"      >&2; exit 1; }
 
-# Check jq is available
-if ! command -v jq &>/dev/null; then
-  echo "[PRISM] ERROR: jq is required but not found. Install with: brew install jq" >&2
-  exit 1
-fi
-echo "[PRISM] ✓ jq found"
-
-# Check .mcp.json exists
-if [[ ! -f "$MCP_CONFIG" ]]; then
-  echo "[PRISM] ERROR: .mcp.json not found at $MCP_CONFIG" >&2
-  echo "[PRISM] Create .mcp.json with figma.fileId and mcpServers.figma config." >&2
-  exit 1
-fi
-echo "[PRISM] ✓ .mcp.json found"
-
-# Read fileId from .mcp.json
 FILE_ID=$(jq -r '.figma.fileId // empty' "$MCP_CONFIG")
-if [[ -z "$FILE_ID" ]]; then
-  echo "[PRISM] ERROR: figma.fileId not set in .mcp.json" >&2
-  exit 1
-fi
-echo "[PRISM] ✓ fileId resolved"
+[[ -n "$FILE_ID" ]] || { echo "[prism] figma.fileId not set in .mcp.json" >&2; exit 1; }
 
-# Check manus-mcp-cli is available
-if ! command -v manus-mcp-cli &>/dev/null; then
-  echo "[PRISM] ERROR: manus-mcp-cli is required but not found." >&2
-  exit 1
-fi
-echo "[PRISM] ✓ manus-mcp-cli found"
+echo "[prism] file=$FILE_ID  collection=$COLLECTION_NAME  out=$OUTPUT_FILE"
 
-# --- Tool discovery ---
-echo "[PRISM] Discovering available tools..."
-
-TOOLS_OUTPUT=$(manus-mcp-cli tool list --server figma-mcp 2>&1) || {
-  echo "[PRISM] ERROR: Failed to list tools from figma-mcp server." >&2
-  echo "[PRISM] Is the MCP server running? Check .mcp.json configuration." >&2
-  exit 1
+# --- Helper to call a Prism tool --------------------------------------------
+prism_call() {
+  local tool="$1" args_json="$2"
+  if [[ "$DRY_RUN" == true ]]; then
+    {
+      echo "[prism] DRY-RUN tools/call $tool"
+      echo "$args_json" | jq .
+    } >&2
+    return 0
+  fi
+  jq -n --arg t "$tool" --argjson a "$args_json" '{tool:$t, arguments:$a}' \
+    | node "$PRISM_CALL"
 }
 
-echo "[PRISM] Discovered tools: $TOOLS_OUTPUT"
+# --- Connection + target file -----------------------------------------------
+prism_call check_connection '{}' >/dev/null
+prism_call set_target_file "$(jq -n --arg id "$FILE_ID" '{fileId:$id}')" >/dev/null
 
-# Match pull tool — look for pull, get.*variable patterns
-PULL_TOOL=$(echo "$TOOLS_OUTPUT" | grep -oE '\b\w*(pull_variables|get_variables|get_variable|pull_variable)\w*\b' | head -1) || true
-
-if [[ -z "$PULL_TOOL" ]]; then
-  echo "[PRISM] ERROR: No pull-capable tool found." >&2
-  echo "[PRISM] Available tools: $TOOLS_OUTPUT" >&2
-  echo "[PRISM] Expected a tool matching: pull_variables or get_variables" >&2
-  exit 1
-fi
-
-echo "[PRISM] Resolved tool mapping:"
-echo "  pull_variables → $PULL_TOOL"
-
-# --- Validate Anchors collection ---
-echo "[PRISM] Validating \"$COLLECTION_NAME\" collection exists..."
-
-REQUEST_PAYLOAD=$(jq -n --arg fid "$FILE_ID" --arg col "$COLLECTION_NAME" \
-  '{fileId: $fid, collection: $col}')
-
-# --- Dry run or execute ---
 if [[ "$DRY_RUN" == true ]]; then
-  echo ""
-  echo "[PRISM] DRY RUN — would pull collection with the following request via $PULL_TOOL:"
-  echo "$REQUEST_PAYLOAD" | jq .
-  echo ""
-  echo "[PRISM] Output would be written to: $OUTPUT_FILE"
-  echo "[PRISM] Dry run complete. No data was fetched."
+  prism_call get_variable_collections "$(jq -n --arg n "$COLLECTION_NAME" '{name:$n}')" >/dev/null
+  prism_call get_collection_variables '{"collectionId":"<resolved-at-runtime>"}' >/dev/null
+  echo "[prism] dry run complete; nothing written"
   exit 0
 fi
 
-# Execute pull via MCP
-echo "[PRISM] Pulling $COLLECTION_NAME collection via $PULL_TOOL..."
-RESULT=$(manus-mcp-cli tool call --server figma-mcp --tool "$PULL_TOOL" --input "$REQUEST_PAYLOAD" 2>&1) || {
-  echo "[PRISM] ERROR: Pull failed." >&2
-  echo "$RESULT" >&2
-  exit 1
-}
+# --- Resolve collection id ---------------------------------------------------
+COLLECTIONS=$(prism_call get_variable_collections \
+  "$(jq -n --arg n "$COLLECTION_NAME" '{name:$n}')")
 
-# Validate response is JSON
-if ! echo "$RESULT" | jq empty 2>/dev/null; then
-  echo "[PRISM] ERROR: Response from MCP is not valid JSON." >&2
-  echo "$RESULT" >&2
+COLLECTION_ID=$(echo "$COLLECTIONS" | jq -r --arg n "$COLLECTION_NAME" '
+  (.. | objects | select(.name? == $n) | .id?) // empty' | head -n 1)
+
+if [[ -z "$COLLECTION_ID" ]]; then
+  echo "[prism] collection \"$COLLECTION_NAME\" not found in file $FILE_ID" >&2
+  echo "[prism] response was:" >&2
+  echo "$COLLECTIONS" | jq . >&2
   exit 1
 fi
 
-# Verify the response contains the Anchors collection
-RESPONSE_COLLECTION=$(echo "$RESULT" | jq -r '.collection // empty')
-if [[ "$RESPONSE_COLLECTION" != "$COLLECTION_NAME" ]]; then
-  echo "[PRISM] WARNING: Response collection name \"$RESPONSE_COLLECTION\" does not match expected \"$COLLECTION_NAME\"." >&2
-fi
+# --- Read variables ----------------------------------------------------------
+VARS=$(prism_call get_collection_variables \
+  "$(jq -n --arg id "$COLLECTION_ID" '{collectionId:$id}')")
 
-# Ensure output directory exists
+# Normalise to PRISM.md pull-response shape: {collection, modes, variables}.
+OUTPUT=$(echo "$VARS" | jq --arg n "$COLLECTION_NAME" '
+  {
+    collection: $n,
+    modes: ([.. | objects | .modes? // empty] | add // [] | unique),
+    variables: [
+      .. | objects
+      | select(has("name") and has("valuesByMode"))
+      | { name, type: (.type // "COLOR"), valuesByMode }
+    ]
+  }
+')
+
 mkdir -p "$(dirname "$OUTPUT_FILE")"
+echo "$OUTPUT" | jq . > "$OUTPUT_FILE"
 
-# Write anchors.json
-echo "$RESULT" | jq '.' > "$OUTPUT_FILE"
-
-echo "[PRISM] Pull complete. Anchors written to: $OUTPUT_FILE"
-echo "[PRISM] Variables pulled: $(echo "$RESULT" | jq '.variables | length')"
+VAR_COUNT=$(echo "$OUTPUT" | jq '.variables | length')
+echo "[prism] wrote $VAR_COUNT variables → $OUTPUT_FILE"
