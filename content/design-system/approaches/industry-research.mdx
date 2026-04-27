@@ -1,0 +1,955 @@
+---
+title: Industry Research
+description: How other design systems approach the same problems we solve with the dimensional model — detailed analysis by project, with dates and URLs for future rescanning
+---
+
+## Purpose
+
+This document catalogues how other design systems approach the problems our dimensional model solves. Each entry records the project, approach, date of analysis, and URL so we can rescan periodically to track industry evolution.
+
+Last scanned: **2026-04-20**
+
+---
+
+## Problem 1: Separating What a Component Says from How Loudly It Says It
+
+Our approach: **sentiment** (what) and **emphasis** (how loud) as independent dimensions. Any sentiment works with any emphasis. A warning can be high, medium, or low emphasis without creating new named variants.
+
+Traditional systems: A single `variant` prop couples meaning and visual weight. `Primary` = high emphasis + neutral. `Danger` = high emphasis + warning. Adding a new meaning (like "new") requires creating `New`, `New Outline`, `New Ghost` etc. for every component.
+
+### Braid Design System (SEEK)
+
+| Field | Value |
+|-------|-------|
+| URL | [seek-oss.github.io/braid-design-system](https://seek-oss.github.io/braid-design-system/) |
+| Scanned | 2026-04-20 |
+| Domain | Job platform (SEEK Group, Australia) |
+
+**Approach:** Separates `tone` and `weight` as independent props on components like Button and Text.
+
+- **Tone** (≈ our sentiment): `neutral`, `brandAccent`, `formAccent`, `critical`, `positive`, `caution`, `info`, `promote`, `link`, `secondary`
+- **Weight** (≈ our emphasis): `regular`, `strong`, `weak` (deprecated on Button; replaced by `variant`: `solid`, `ghost`, `soft`, `transparent`)
+
+**How intersections work:** When a tone is purposefully applied, the default variant upgrades to `solid` to maximise impact. Developers override this by explicitly setting variant. No compound variant table needed — the system has a sensible default cascade.
+
+**What they got right:**
+- Tone and weight are fully independent. A `critical` + `ghost` button is valid.
+- `size` is a separate prop (`standard`, `small`), keeping footprint orthogonal to meaning.
+- Additional `bleed` prop manages background extension — another independent concern.
+
+**Where they stop short:**
+- Tone values mix semantic intent (`critical`, `positive`) with visual identity (`brandAccent`, `formAccent`). Our sentiment dimension is purely about communicative intent.
+- No system-wide token resolution. The mapping from tone × weight to CSS happens in React component code, not in a token architecture.
+- No formal emphasis scale in the token layer. Weight is a component prop, not a token dimension.
+
+**What we can learn:**
+- Braid's automatic escalation (applying tone → variant becomes `solid`) is elegant. Our system could adopt a similar default — setting sentiment to non-neutral could default emphasis to `high` unless explicitly overridden.
+- Their `bleed` prop shows that layout concerns (spatial relationship to surroundings) can be an independent dimension too. We might consider this for components that need to "break out" of padding contexts.
+
+---
+
+### nuka-ui — "Why I Separated Variant from Intent"
+
+| Field | Value |
+|-------|-------|
+| URL | [dev.to/ku5ic/why-i-separated-variant-from-intent-in-my-component-api-56k0](https://dev.to/ku5ic/why-i-separated-variant-from-intent-in-my-component-api-56k0) |
+| Scanned | 2026-04-20 |
+| Domain | Open-source component library |
+
+**Approach:** Explicitly separated `variant` (visual weight) from `intent` (semantic meaning).
+
+- **Variant** (≈ our emphasis): `primary`, `secondary`, `outline`, `ghost`, `link`
+- **Intent** (≈ our sentiment): `default`, `danger`, `success`, `warning`
+
+**Key argument:** "There is no inherent relationship between how loud a button is and what it means. Cramming both signals into a single prop forces a false coupling that grows more expensive with every variant you add."
+
+**How intersections work:** Uses CVA's `compoundVariants`. With 5 variants × 4 intents = 20 explicit entries per component. Each entry specifies exact CSS classes.
+
+**What they got right:**
+- Articulates the core insight perfectly: visual weight and semantic meaning are orthogonal axes.
+- TypeScript enforces valid combinations at compile time.
+
+**Where they stop short:**
+- 20 compound variant entries per component is a maintenance burden. Our token resolver handles this at the system level — components don't enumerate intersections.
+- Variant names (`primary`, `secondary`) still carry naming baggage. Our emphasis scale (`high`, `medium`, `low`) is purely about intensity, not hierarchical rank.
+- No token architecture. The separation exists only in props and compound variant CSS, not in a resolution chain.
+
+**What we can learn:**
+- Their trade-off analysis is honest: "steeper learning curve" and "more upfront authoring work." We should acknowledge the same for our dimensional model and ensure the documentation addresses this directly.
+- The observation that some components only need one dimension (Banner uses only `intent`) is important. We should document which dimensions are optional per component.
+
+---
+
+### HeroUI (formerly NextUI)
+
+| Field | Value |
+|-------|-------|
+| URL | [heroui.com/docs/react/getting-started/design-principles](https://heroui.com/docs/react/getting-started/design-principles) |
+| Scanned | 2026-04-20 |
+| Domain | React component library |
+
+**Approach:** Core principle: "Semantic Intent Over Visual Style." Uses `variant` for semantic hierarchy (`primary`, `secondary`, `tertiary`, `danger`), `size` for footprint, and `className` for custom styling.
+
+**What they got right:**
+- Styles are a separate package from logic (`@heroui/styles` vs `@heroui/react`), enabling framework-agnostic styling.
+- Composition over configuration — compound components allow rearranging parts without prop explosion.
+- Progressive disclosure — components work minimally, complexity scales with need.
+
+**Where they stop short:**
+- `variant` still couples intent and visual weight. `primary` implies both "main action" and "solid/prominent."
+- No independent emphasis dimension. You can't have a `primary` at low emphasis without creating a custom variant.
+
+**What we can learn:**
+- Their principle of "Semantic Intent Over Visual Style" is well-articulated and aligns with our approach. We could reference this language in our own documentation.
+- Separation of styles from logic is architecturally sound. Our token chain achieves this at the design system level rather than the package level.
+
+---
+
+## Problem 2: Handling the Combinatorial Explosion
+
+Our approach: ~13 options across all dimensions serve any number of components. Adding a new component doesn't add new dimension values. Adding a new sentiment value makes it immediately available to all components.
+
+Traditional systems: Each new component needs its own set of named variants. 5 components × 6 variants = 30. 50 components × 6 = 300.
+
+### CVA (Class Variance Authority)
+
+| Field | Value |
+|-------|-------|
+| URL | [cva.style/docs](https://cva.style/docs) |
+| Scanned | 2026-04-20 |
+| Domain | CSS utility library |
+
+**Approach:** Defines independent variant dimensions (`intent`, `size`, `disabled`) as separate keys. Compound variants handle specific intersections. Default variants provide fallbacks.
+
+```typescript
+const button = cva(["font-semibold", "border", "rounded"], {
+  variants: {
+    intent: {
+      primary: ["bg-blue-500", "text-white"],
+      secondary: ["bg-white", "text-gray-800"],
+    },
+    size: {
+      small: ["text-sm", "py-1", "px-2"],
+      medium: ["text-base", "py-2", "px-4"],
+    },
+  },
+  compoundVariants: [
+    { intent: "primary", size: "medium", class: "uppercase" },
+  ],
+});
+```
+
+**What they got right:**
+- Clean API for independent dimensions. Each dimension is its own key.
+- Compound variants are explicit — you can see every intersection.
+- Framework-agnostic (works with Tailwind, CSS modules, or plain CSS).
+
+**Where they stop short:**
+- Every component defines its own dimensions independently. No system-wide dimension vocabulary.
+- Compound variants scale linearly: 5 × 4 = 20 entries. Our resolver handles this generically.
+- No token resolution chain. Values are CSS classes, not token references.
+
+---
+
+### Tailwind Variants
+
+| Field | Value |
+|-------|-------|
+| URL | [tailwind-variants.org](https://www.tailwind-variants.org/) |
+| Scanned | 2026-04-20 |
+| Domain | Tailwind CSS utility library |
+
+**Approach:** Same compound variant pattern as CVA, plus **slots** for multi-part components and **responsive variants**.
+
+**Slots** split a component into named parts (root, control, label). Variants apply across all slots simultaneously — changing `size` updates control dimensions and label font size in one declaration.
+
+**What they got right:**
+- Slots are conceptually close to our component slot layer. Each slot gets styled by the active variant combination.
+- Compound slots apply classes to multiple parts at once, reducing duplication.
+- Component composition via `extend` merges classes, slots, variants, and defaults.
+
+**Where they stop short:**
+- Slots are styling containers, not token-resolved. They hold CSS classes, not semantic token references.
+- No system-wide vocabulary. Each component's slot recipe is self-contained.
+
+**What we can learn:**
+- Their slot naming and organisation is clean. We should ensure our component slot tokens follow similarly clear naming.
+- The `extend` composition pattern (inheriting and merging from a base component) is useful for component families.
+
+---
+
+### Panda CSS Slot Recipes
+
+| Field | Value |
+|-------|-------|
+| URL | [panda-css.com/docs/concepts/slot-recipes](https://panda-css.com/docs/concepts/slot-recipes) |
+| Scanned | 2026-04-20 |
+| Domain | CSS-in-JS framework (Chakra UI) |
+
+**Approach:** Multi-part components defined via `sva()`. Slots array declares component parts. Variants apply different styles per slot. Compound variants target specific dimension intersections.
+
+```typescript
+const checkbox = sva({
+  slots: ['root', 'control', 'label'],
+  base: { root: { display: 'flex' }, control: { borderWidth: '1px' } },
+  variants: {
+    size: {
+      sm: { control: { width: '8' }, label: { fontSize: 'sm' } },
+      md: { control: { width: '10' }, label: { fontSize: 'md' } },
+    },
+  },
+});
+```
+
+**What they got right:**
+- Coordinated multi-part styling. Changing size proportionally adjusts all parts.
+- React Context integration via `createStyleContext` enables compound component patterns where slot styles cascade through component tree.
+
+**Where they stop short:**
+- Same as CVA/Tailwind Variants: component-scoped, not system-wide. Each recipe defines its own dimensions.
+- No token layer. Values are style objects or utility classes.
+
+---
+
+## Problem 3: Theme as Environmental Dimension
+
+Our approach: Theme (light/dark) is an **environmental dimension** applied via `data-theme` attribute. Primitives are theme-aware (different OKLCH values per theme). Semantics are theme-unaware (they reference primitives via `var()`). Components never know which theme is active.
+
+### Radix Colors
+
+| Field | Value |
+|-------|-------|
+| URL | [radix-ui.com/colors](https://www.radix-ui.com/colors) |
+| Scanned | 2026-04-20 |
+| Domain | React component primitives |
+
+**Approach:** 12-step color scale where each step has a defined functional purpose:
+
+| Step | Function |
+|------|----------|
+| 1 | App background |
+| 2 | Subtle component backgrounds |
+| 3 | Default UI element backgrounds |
+| 4 | Hovered interactive backgrounds |
+| 5 | Pressed/selected element backgrounds |
+| 6 | Subtle borders on non-interactive components |
+| 7 | Borders on interactive components |
+| 8 | Strong borders, focus rings |
+| 9 | Solid, saturated backgrounds (highest chroma) |
+| 10 | Hover states for step 9 backgrounds |
+| 11 | Low-contrast text |
+| 12 | High-contrast text |
+
+**Dark mode:** Applying `.dark-theme` class swaps all CSS variable values. Step 1 becomes near-black instead of near-white. The functional meaning of each step is preserved — step 1 is always "app background" regardless of theme.
+
+**What they got right:**
+- Primitives ARE semantic by step number. No separate semantic layer needed. Massively reduces token count.
+- Dark mode is genuinely zero-effort for consumers. Switch class and everything works.
+- Alpha variants blend naturally on any background.
+
+**Where they stop short:**
+- No sentiment dimension. All scales are single-hue. To express "warning" vs "positive," you switch to a different scale entirely (red vs green), but there's no formal sentiment vocabulary.
+- Coupling step to function means you can't use step 9 for anything other than "solid background." Less flexible than our semantic layer which allows any primitive to serve any purpose.
+- Scaling beyond light/dark is harder. Adding "high contrast" or "dimmed" means creating a third full set of 12 × N scales.
+
+**What we can learn:**
+- The 12-step functional mapping is an excellent documentation pattern. We should create a similar "what each primitive step is for" guide.
+- Their approach proves that theme-aware primitives work. Our OKLCH generation goes further by ensuring perceptual uniformity across the full ramp.
+
+---
+
+### Cloudflare Design System
+
+| Field | Value |
+|-------|-------|
+| URL | [blog.cloudflare.com/dark-mode](https://blog.cloudflare.com/dark-mode/) |
+| Scanned | 2026-04-20 |
+| Domain | Infrastructure platform |
+
+**Approach:** Ten-hue, ten-luminosity color system. Dark mode via `reverse()` on JavaScript arrays — high luminosity moves to start of scale.
+
+**Outcome:** "Every product built using the Cloudflare Design System now had a dark mode theme built in for free, with no additional work required by teams."
+
+**Problems encountered:**
+- Pure black (#000000) too harsh — switched to off-black (#1D1D1D)
+- Button states (default, focus, hover, active) needed individual auditing
+- Data visualisations, charts, icons needed case-by-case adjustment
+- Scale reversal is "not perfectly symmetrical" — some pairs needed manual tuning
+
+**What we can learn:**
+- Validates the "free dark mode" promise of theme-aware primitives.
+- Shows that naive reversal has edge cases. Our OKLCH ramp generation with separate lightness targets per theme (`LIGHTNESS_TARGETS_LIGHT` vs `LIGHTNESS_TARGETS_DARK`) avoids the symmetry problem by defining independent lightness curves.
+- Off-black is better than pure black. Our dark scheme's step 50 = L:0.12 (not 0.0) already accounts for this.
+
+---
+
+### GitHub Primer Primitives
+
+| Field | Value |
+|-------|-------|
+| URL | [github.com/primer/primitives](https://github.com/primer/primitives) |
+| Scanned | 2026-04-20 |
+| Domain | Developer platform |
+
+**Approach:** Three-layer tokens (base scales → functional tokens → component tokens). Supports 6+ modes: light, dark, dark-dimmed, high-contrast, plus CVD (colour vision deficiency) themes. Override system lets modes inherit from a base and only specify changes.
+
+**Key challenge at scale:** "We had to audit different use cases across all color themes, amounting to hundreds of variations." Over 100 color pairs required validation. Semi-transparent colors produced variable results depending on background context.
+
+**Solution:** Automated CLI-based contrast checking across all tokens/themes. GitHub Actions integration catches violations before production. Feature flags for gradual rollout.
+
+**What we can learn:**
+- Their automated contrast validation is essential at scale. Our `token-audit.mdx` cascade integrity rules should extend to automated CI checks.
+- The override/inheritance model (modes inherit from base, only specify deltas) is efficient. Worth considering if we add modes beyond light/dark.
+- Scaling to 6+ modes is where theme-aware primitives get expensive. Each new mode needs a full set of primitive values. Our approach should document the scaling cost and mitigation strategy.
+
+---
+
+### Open Props
+
+| Field | Value |
+|-------|-------|
+| URL | [open-props.style](https://open-props.style/) |
+| Scanned | 2026-04-20 |
+| Domain | CSS custom property library |
+
+**Approach:** Hybrid. Static colour primitives (e.g., `--blue-5` is always the same hex) alongside adaptive tokens (`--text-1`, `--surface-1`) that swap via `prefers-color-scheme` or explicit selectors.
+
+```css
+:root { --text-1: var(--text-1-light); }
+@media (prefers-color-scheme: dark) {
+  :root { --text-1: var(--text-1-dark); }
+}
+```
+
+**What we can learn:**
+- Their hybrid approach (static primitives + adaptive semantics) is the mainstream pattern. Our approach of making primitives themselves theme-aware is more radical — worth documenting why we chose this and the trade-offs.
+- The naming convention (`--text-1`, `--text-2`, `--surface-1`) is extremely simple. Our naming is more explicit (`--foreground-neutral-rest`) but more verbose. There's a usability trade-off.
+
+---
+
+### Apple Dynamic System Colors
+
+| Field | Value |
+|-------|-------|
+| Scanned | 2026-04-20 |
+| Domain | Platform SDK (iOS/macOS) |
+
+**Approach:** System colors (`UIColor.systemBackground`, `UIColor.label`, `UIColor.systemBlue`) are fully theme-aware at the platform level. Even named colors shift slightly between appearances for optimal contrast.
+
+**Why it works:** Apple controls the full stack (OS + framework + guidelines). No third-party tool dependency.
+
+**What we can learn:**
+- Apple validates that theme-aware primitives scale to millions of apps. The platform provides the resolver (UIKit), not each app.
+- Their approach of slightly shifting named colors per appearance (not just swapping) is sophisticated. Our OKLCH generation could potentially adjust chroma per theme, not just lightness.
+
+---
+
+## Problem 4: Token Layer Architecture
+
+Our approach: Four layers — **Primitive → Semantic → Component Slot → Resolver**. Each layer references only the one below. Bottom-up alias chain ensures theme changes propagate automatically. Cascade integrity rules prevent skipping layers.
+
+### Martin Fowler / Andreas Kutschmann
+
+| Field | Value |
+|-------|-------|
+| URL | [martinfowler.com/articles/design-token-based-ui-architecture.html](https://martinfowler.com/articles/design-token-based-ui-architecture.html) |
+| Scanned | 2026-04-20 |
+| Domain | Software architecture (ThoughtWorks) |
+
+**Approach:** Three layers:
+1. **Option tokens** — raw values ("what styles can be used")
+2. **Decision tokens** — contextual application ("how styles should be applied")
+3. **Component tokens** — UI-specific mapping ("where styles are applied")
+
+**Key recommendation:** Start with two layers; add the third when you need evolution flexibility. Make option tokens private to guide developers toward approved patterns.
+
+**Distribution pipeline:** Check → Build → Test → Publish → Notify. Two patterns: fully automated (main → deploy) or manual approval via staging.
+
+**What we can learn:**
+- Their recommendation to make primitives private aligns with our rule "never use primitives directly in components."
+- The distribution pipeline (check/build/test/publish) maps to our token transform pipeline. We should ensure similar validation gates.
+- They recommend starting simple (2 layers) and adding the third when needed. Our 4-layer model is more complex — we should clearly document when the full 4 layers are necessary vs when simpler architectures suffice.
+
+---
+
+### Frontside — The Context Dilemma
+
+| Field | Value |
+|-------|-------|
+| URL | [frontside.com/blog/2021-01-15-design-tokens-and-components](https://frontside.com/blog/2021-01-15-design-tokens-and-components/) |
+| Scanned | 2026-04-20 |
+| Domain | Software consultancy |
+
+**Approach:** Identified the need for component-scoped local tokens between universal design tokens and component implementations.
+
+**The problem:** Using global semantic tokens like `$dt-disabled` directly in components creates misleading associations. A progress bar's empty background isn't "disabled" — it's just empty. If the global disabled color changes, the progress bar breaks as an unintended side effect.
+
+**The solution:** Component-specific token layers that map global tokens to component semantics:
+```scss
+$dt-form__border: $dt-color__neutral--700;
+$dt-form__border--disabled: $dt-color__neutral--400;
+```
+
+**What we can learn:**
+- This is exactly the argument for our component slot layer. Components should not consume global semantic tokens directly — they need a component-context translation.
+- The progress bar example is a useful teaching case for why the slot layer exists.
+
+---
+
+### Styled System — Design Graph
+
+| Field | Value |
+|-------|-------|
+| URL | [varun.ca/styled-system-revisited](https://varun.ca/styled-system-revisited/) |
+| Scanned | 2026-04-20 |
+| Domain | CSS-in-JS architecture |
+
+**Approach:** Four-part constraint-based system:
+1. **Scales** — subsets of design tokens mapped to specific CSS properties
+2. **Theme** — collection of all scales (maintained in `theme.ts`)
+3. **Variants** — stylistic presets that reference scale values
+4. **Components** — consume scales and variants through props
+
+**What we can learn:**
+- Their four-part model parallels our four layers: Scales ≈ Primitives, Theme ≈ Semantics, Variants ≈ Component Slots, Components ≈ Resolver.
+- The constraint-based philosophy (you can only use scale values, not arbitrary CSS) aligns with our token-only approach.
+- Variants explicitly reference scale values, creating a traceable path from component prop to design token. Our alias chain achieves the same traceability.
+
+---
+
+### Smashing Magazine — Anatomy of Themed Design System Components
+
+| Field | Value |
+|-------|-------|
+| URL | [smashingmagazine.com/2022/12/anatomy-themed-design-system-components](https://www.smashingmagazine.com/2022/12/anatomy-themed-design-system-components/) |
+| Scanned | 2026-04-22 |
+| Domain | Design systems writing |
+
+**Approach:** Describes themed components in terms of layered decisions — base tokens (primitives), semantic tokens (roles), component tokens (bindings). Argues that a component's "theme ability" is determined by how it consumes tokens, not by how many theme variants exist.
+
+**What we can learn:**
+- Direct parallel to our four-layer resolution chain. Validates the architecture as a mainstream pattern for themed systems, not a novel choice.
+- Useful framing: a component is "theme-able" if and only if it consumes semantic tokens. Component tokens bound to primitives fail the theme test.
+
+---
+
+### Christian Moser — Design Tokens Add Semantics and Structure
+
+| Field | Value |
+|-------|-------|
+| URL | [linkedin.com/pulse/design-tokens-adding-semantics-structure-system-christian-moser](https://www.linkedin.com/pulse/design-tokens-adding-semantics-structure-system-christian-moser) |
+| Scanned | 2026-04-22 |
+| Domain | Practitioner (LinkedIn) |
+
+**Approach:** Frames the primitive → semantic → component flow as three distinct responsibilities. Semantics exist to *name a decision*, not to hold a value. Components never reference primitives directly.
+
+**What we can learn:**
+- Reinforces our cascade rules in language suited to non-technical stakeholders. Worth referencing when explaining the layered chain to designers.
+
+---
+
+### Protogeridis — Colour Scales: Primitive, Semantic, Component
+
+| Field | Value |
+|-------|-------|
+| URL | [linkedin.com/posts/protogeridis_i-have-spent-hundreds-of-hours-analyzing...](https://www.linkedin.com/posts/protogeridis_i-have-spent-hundreds-of-hours-analyzing-activity-7363471279464628226-LoAT) | 
+| Scanned | 2026-04-22 |
+| Domain | Practitioner (LinkedIn) |
+
+**Approach:** Hundreds of hours analysing how systems structure their colour scales across the three canonical layers. Concludes that the systems that scale are the ones where each layer has a single responsibility.
+
+**What we can learn:**
+- Independent validation from a practitioner who has surveyed many systems. Reinforces that our architecture is not arbitrary — it's the shape that works at scale.
+
+---
+
+### Iris van Dijk — Tokens as Data Models
+
+| Field | Value |
+|-------|-------|
+| URL | [medium.com/@irisvandijkuiux/stop-treating-design-tokens-as-styles-do-data-modeling-instead-a95f45801102](https://medium.com/@irisvandijkuiux/stop-treating-design-tokens-as-styles-do-data-modeling-instead-a95f45801102) |
+| Scanned | 2026-04-20 |
+| Domain | Design systems theory |
+
+**Approach:** Tokens should be treated as a **data model**, not as renamed CSS variables. A token is "a primary color of X intensity" — the hex code is the value, but the token is the variable that holds the design decision.
+
+**Architecture:** Three tiers:
+1. Global tokens (brand primitives)
+2. Semantic tokens (purpose-driven, e.g., `color.background.button.primary.default`)
+3. Contextual aliasing (semantic → global mapping that changes per theme)
+
+**Key insight:** When dark mode launches, developers don't modify component code — only the aliasing layer changes. The same semantic token resolves to different global values per theme.
+
+**What we can learn:**
+- Her framing of tokens as data models is philosophically aligned with our dimensional model. Dimensions ARE the data model — they describe the structured attributes of a design decision.
+- We should adopt this language in our documentation: "A token is a design decision, not a style."
+
+---
+
+## Problem 5: Code-First Token Generation
+
+Our approach: Designers provide **anchor colours** (hue, chroma, step). Code (`generate-ramps.ts`) produces the full OKLCH ramp algorithmically. Figma is updated downstream via PRISM MCP, not the source of truth.
+
+### Adobe Leonardo
+
+| Field | Value |
+|-------|-------|
+| URL | [leonardocolor.io](https://leonardocolor.io/) |
+| Scanned | 2026-04-20 |
+| Domain | Color generation tool (Adobe) |
+
+**Approach:** Generates color swatches by **target contrast ratios**. Designers specify base colors and target contrast levels. Leonardo produces scales, CSS custom properties, W3C design tokens, and SVG files.
+
+**Recent addition:** `@adobe/leonardo-mcp` — MCP server wrapping `@adobe/leonardo-contrast-colors` for AI-assisted generation.
+
+**What we can learn:**
+- Contrast-ratio-based generation is complementary to our lightness-based approach. We define lightness targets; they define contrast targets. Both produce predictable ramps.
+- Their MCP integration validates our PRISM MCP approach. Code-first generation with AI-assisted tooling is the direction the industry is moving.
+
+---
+
+### Tinte
+
+| Field | Value |
+|-------|-------|
+| URL | [tinte.dev](https://www.tinte.dev/) |
+| Scanned | 2026-04-20 |
+| Domain | Design system infrastructure |
+
+**Approach:** 13 semantic OKLCH tokens (`tx`, `tx_2`, `tx_3`, `pr`, `sc`, `ac_1-3`, `ui`, `ui_2-3`, `bg`, `bg_2`) compile to 30+ CSS variables. Supports 19 export formats including shadcn/ui, VS Code themes, and terminal configs.
+
+**What we can learn:**
+- Proves that a small number of OKLCH source tokens can generate a comprehensive output. Our anchor model is similar but more granular (per-palette anchors vs 13 global semantic tokens).
+- Their multi-format export (19 formats from one source) validates the "one source, many outputs" pipeline.
+
+---
+
+### designtoken.md
+
+| Field | Value |
+|-------|-------|
+| URL | [designtoken.md](https://designtoken.md/) |
+| Scanned | 2026-04-20 |
+| Domain | AI-native token specification |
+
+**Approach:** 150+ line markdown file with structured token tables. 4 colour roles × 10 stops = 40 colour tokens. Light/dark computed automatically. Includes typography, spacing, radius, elevation. Designed for AI coding agents to parse deterministically.
+
+**What we can learn:**
+- The concept of making token specs agent-readable aligns with our CLAUDE.md skills approach. We should ensure our token documentation is structured for machine parsing, not just human reading.
+- Their format (markdown tables) is simpler than our approach but less powerful — no dimensional composition, no resolution chain.
+
+---
+
+### Smashing Magazine — Automating Design Systems
+
+| Field | Value |
+|-------|-------|
+| URL | [smashingmagazine.com/2025/08/automating-design-systems-tips-resources](https://www.smashingmagazine.com/2025/08/automating-design-systems-tips-resources/) |
+| Scanned | 2026-04-22 |
+| Domain | Design systems writing |
+
+**Approach:** Surveys the practical landscape of design system automation in 2025 — token pipelines, code generation, CI validation, design-tool syncing. Frames automation as the foundation that lets a system scale beyond a single team.
+
+**What we can learn:**
+- Validates our direction: `generate-ramps.ts`, PRISM MCP, token-audit rules are the automation foundation the industry has converged on. The shape is mainstream.
+- The article argues automation is "not a luxury, a requirement" at enterprise scale — useful framing when defending time spent on tooling vs. visible features.
+
+---
+
+## Problem 6: Multi-Dimensional Theme Composition
+
+Our approach: Theme, brand, density, and other environmental dimensions compose independently. Changing theme doesn't affect density. Each dimension resolves through its own primitive set.
+
+### Tokens Studio (Pro)
+
+| Field | Value |
+|-------|-------|
+| URL | [docs.tokens.studio/manage-themes/themes-overview](https://docs.tokens.studio/manage-themes/themes-overview) |
+| Scanned | 2026-04-20 |
+| Domain | Figma plugin / token management |
+
+**Approach:** Theme groups (brand, density, colour mode, language) compose as a matrix. Apply one from each group simultaneously. Each group maps to a Figma Variable Collection; each theme within a group maps to a Variable Mode.
+
+**What we can learn:**
+- Their matrix composition model is conceptually identical to our independent dimensions. They call them "theme groups"; we call them "dimensions."
+- The Figma Variable Collection ↔ Theme Group mapping is a useful integration pattern. Our PRISM bridge should maintain similar mappings.
+- Their Pro licence requirement for multi-dimensional themes suggests this is considered advanced functionality, validating the complexity of our approach.
+
+---
+
+### Adobe Spectrum
+
+| Field | Value |
+|-------|-------|
+| URL | [spectrum.adobe.com/page/design-tokens](https://spectrum.adobe.com/page/design-tokens/) |
+| Scanned | 2026-04-20 |
+| Domain | Enterprise design system (Adobe) |
+
+**Approach:** Tokens organised across three independent dimensions:
+1. **Colour theme:** light, dark, darkest
+2. **Platform scale:** medium (desktop), large (mobile/touch)
+3. **Component state:** rest, hover, active, disabled, etc.
+
+Token naming: 3-part hierarchy (context → common unit → clarification). Two sizing approaches: t-shirt (sm/md/lg/xl) with linear 8px increments, and numerical (50/70/100/200+) with non-linear multipliers.
+
+**What we can learn:**
+- Three independent dimensions at an enterprise scale proves the concept works. Our six dimensions go further but the pattern is validated.
+- Their dual sizing strategy (t-shirt for most things, numerical for frequently-reused) is worth considering. Our size dimension uses t-shirt only — numerical could serve dense/repeated contexts better.
+- Flat, non-nested naming is their explicit choice. Our naming is structured but follows similar principles.
+
+---
+
+### SAS Design System
+
+| Field | Value |
+|-------|-------|
+| URL | [medium.com/sas-software-design/...multi-dimensional-future](https://medium.com/sas-software-design/refactoring-design-system-tokens-for-a-multi-dimensional-future-4b42be9a146f) |
+| Scanned | 2026-04-20 |
+| Domain | Analytics software |
+
+**Approach:** Refactored from theme-only to domain-based structure. Added density (standard, compact, comfortable) as independent dimension alongside theme and language.
+
+**Application order:** Theme → Density → Language. Manifest files control composition sequence.
+
+**Challenge:** Typography minimum font-sizes conflicted with density targets. Chinese characters need 16px minimum, making compact mode's 12px impossible. Deferred to percentage-based scaling.
+
+**What we can learn:**
+- Their language dimension is interesting. Locale-specific token overrides applied after density. We haven't considered language as a dimension — worth evaluating for CJK typography.
+- The font-size conflict shows real-world tension between dimensions. Our size dimension should document similar edge cases and constraints.
+- Domain-based organisation (vs theme-only) parallels our shift from named variants to dimensions.
+
+---
+
+### Keegan Edwin — Multi-Dimensional Themes in Tokens Studio
+
+| Field | Value |
+|-------|-------|
+| URL | [linkedin.com/posts/keegan-edwin-774854b1_multi-dimensional-themes...](https://www.linkedin.com/posts/keegan-edwin-774854b1_multi-dimensional-themes-in-tokens-studio-activity-7070036917475573760-ltbE) |
+| Scanned | 2026-04-22 |
+| Domain | Practitioner (LinkedIn) |
+
+**Approach:** Practitioner walkthrough of Tokens Studio's multi-dimensional themes feature. Demonstrates brand × density × colour mode composition in practice.
+
+**What we can learn:**
+- Confirms that multi-dimensional composition is being adopted by real teams, not just documented in theory.
+
+---
+
+### Samantha Gordashko — Theming Design Systems (Smashing Workshop)
+
+| Field | Value |
+|-------|-------|
+| URL | [smashingconf.com/online-workshops/workshops/theming-design-systems-samantha-gordashko](https://smashingconf.com/online-workshops/workshops/theming-design-systems-samantha-gordashko) |
+| Scanned | 2026-04-22 |
+| Domain | Workshop / training (Dec 2025) |
+
+**Approach:** Workshop curriculum explicitly titled around "scalable, multi-dimensional theming." Teaches structuring tokens for composition rather than enumeration.
+
+**What we can learn:**
+- Multi-dimensional theming is now the taught practice, not the edge case. The terminology is converging on what we call dimensions.
+
+---
+
+### IBM Carbon
+
+| Field | Value |
+|-------|-------|
+| URL | [carbondesignsystem.com](https://carbondesignsystem.com/) |
+| Scanned | 2026-04-20 |
+| Domain | Enterprise design system (IBM) |
+
+**Approach:** Four named themes (White, G10, G90, G100). Inline theming allows nesting themes within each other. Compact density via token variants (`body-compact`).
+
+**What we can learn:**
+- Inline theming (nesting themes in the DOM) validates our `data-theme` scoping approach.
+- Named themes (G10, G90) rather than just light/dark suggests there's value in intermediate brightness levels. Our system currently supports only light/dark — could extend.
+- Carbon's use of community-contributed framework implementations (React, Angular, Vue, Svelte) shows how a token-first architecture enables multi-framework support without tight coupling.
+
+---
+
+## Problem 7: Nathan Curtis / EightShapes — Variant Decomposition
+
+| Field | Value |
+|-------|-------|
+| URL | [medium.com/eightshapes-llc/naming-tokens-in-design-systems-9e86c7444676](https://medium.com/eightshapes-llc/naming-tokens-in-design-systems-9e86c7444676) |
+| Additional | [Reimagining a Token Taxonomy](https://medium.com/eightshapes-llc/reimagining-a-token-taxonomy-b033f5f8ba1) |
+| Additional | [Analysis of Variants](https://medium.com/@nathanacurtis/analysis-of-variants-9e440c30b93e) |
+| Scanned | 2026-04-20 |
+| Domain | Design systems consultancy |
+
+**Approach:** CTI+ taxonomy (category → type → item → sub-item). Token names combine modifiers: variant, state, scale, mode. "Analysis of Variants" (Oct 2025) directly discusses decomposing component variants along independent axes.
+
+**Key insight:** "subtle secondary background hover color" could result in hundreds of tokens if all combinations are implemented. The solution is defining things "just as much as not defining things."
+
+**What we can learn:**
+- His taxonomic approach is the analytical foundation our dimensional model builds on. We operationalise what Curtis theorises.
+- The principle of "not defining things" maps to our constraint that only declared concepts manifest values are valid. Undeclared values are flagged, not improvised.
+- His mode modifier (distinguishing values across light/dark) aligns with our environmental dimension approach.
+
+---
+
+## Problem 8: Breakpoints and Responsive Adaptation
+
+Our approach: breakpoints are **reference constants in code**, not tokens in the resolution chain. Responsive adaptation uses CSS mechanisms — `clamp()` for scalar changes, container queries for structural changes, media queries for layout changes. Figma responsive preview uses either component variants (structural) or a thin separate collection (scalar) — never modes on semantic or primitive collections.
+
+The core tension: teams are pressured to show designers every component at every device. The naive answer — adding device modes to every variable collection — creates a "god collection" that kills orthogonality. Hundreds of per-component, per-device entries flatten the size dimension and break the cascade.
+
+### Adobe Spectrum — Platform Scale
+
+| Field | Value |
+|-------|-------|
+| URL | [spectrum.adobe.com/page/platform-scale](https://spectrum.adobe.com/page/platform-scale/) |
+| Scanned | 2026-04-20 |
+| Domain | Enterprise design system (Adobe) |
+
+**Approach:** Two platform scales — `medium` (desktop) and `large` (mobile/touch). Large is 1.25× medium. Every component reads from scale variables; switching scale proportionally adjusts everything.
+
+**Key property:** Platform scale is independent of t-shirt size (S/M/L/XL). "A component with t-shirt sizing is still affected by scale." A `large` scale, `small` size button is larger than a `medium` scale, `small` size button but smaller than a `large` scale, `large` size button.
+
+**What we can learn:**
+- Scale is a global multiplier, not a per-component dimension. Components don't know which scale is active — they reference scale-resolved tokens.
+- The 1.25× ratio is a designed constant, not a measured breakpoint. Touch ergonomics drive it, not viewport width.
+
+---
+
+### Frontend Masters — Building a UI Without Breakpoints
+
+| Field | Value |
+|-------|-------|
+| URL | [frontendmasters.com/blog/building-a-ui-without-breakpoints](https://frontendmasters.com/blog/building-a-ui-without-breakpoints/) |
+| Scanned | 2026-04-20 |
+| Domain | Frontend education |
+
+**Approach:** Modern CSS replaces most breakpoints entirely. `clamp(min, preferred, max)` handles fluid scaling. Container queries handle layout reflow based on the parent's size, not the viewport. Intrinsic layout primitives (flex wrap, grid auto-fit) handle distribution.
+
+**Key argument:** Breakpoints assume components know about the viewport. Container queries let components adapt to their actual context — a sidebar navigation and a main-content navigation can respond differently to their own available width.
+
+**What we can learn:**
+- Breakpoints are the wrong abstraction level. They describe the *viewport*; components need to know about their *container*.
+- `clamp()` collapses three tokens (small, medium, large) into one fluid expression. The values become calculations, not enumerations.
+
+---
+
+### Andrew Hurley — Responsive Tokens
+
+| Field | Value |
+|-------|-------|
+| URL | [medium.com/@hurleymandrew/responsive-tokens-universal-design-systems-e90de50ac00a](https://medium.com/@hurleymandrew/responsive-tokens-universal-design-systems-e90de50ac00a) |
+| Scanned | 2026-04-20 |
+| Domain | Design systems practitioner |
+
+**Approach:** Argues that adding responsive values to theme tokens is "hacky." Recommends a separate responsive collection that overlays theme tokens, not a matrix.
+
+**What we can learn:**
+- Direct validation of our recommendation — responsive concerns belong in a separate thin collection, not bolted onto semantics.
+
+---
+
+### Devōt — Figma Responsive Design
+
+| Field | Value |
+|-------|-------|
+| URL | [devot.team/blog/figma-responsive-design](https://devot.team/blog/figma-responsive-design) | 
+| Scanned | 2026-04-20 |
+| Domain | Agency practitioners |
+
+**Approach:** Hybrid model. Tokens handle scalar changes (padding, font-size). Component variants handle structural changes (horizontal nav → hamburger). Neither tries to do both.
+
+**What we can learn:**
+- The split is the right framing. Ask first: does the component *change shape* at this breakpoint, or does it *scale*? Shape → variant. Scale → token value via scale collection.
+
+---
+
+### Figma Official — Responsive Components
+
+| Field | Value |
+|-------|-------|
+| URL | [help.figma.com/hc/en-us/articles/31242826664983](https://help.figma.com/hc/en-us/articles/31242826664983) |
+| Scanned | 2026-04-20 |
+| Domain | Figma documentation |
+
+**Approach:** Figma's own recommendation for responsive preview: create component variants named per breakpoint (e.g., `Mobile`, `Tablet`, `Desktop`). Figma auto-switches the variant when the parent frame crosses a width threshold.
+
+**What we can learn:**
+- Figma itself recommends variants, not variable modes, for responsive swapping. This is the tool's own guidance — variable collections weren't designed for device modes.
+
+---
+
+### Figma Preview Strategies — Architectural Options
+
+When designers need device previews in Figma, three patterns emerge. Only one avoids the god collection.
+
+**Option A — Component variants per breakpoint.** For components that change *shape* at a breakpoint (nav collapses to hamburger, card stacks vertically). The variant captures structural difference; scalar tokens still flow through the normal chain.
+
+**Option B — Thin responsive collection.** ~10–25 base variables with 2 modes (Touch, Desktop). Size tokens reference scale values. Scale mode switches → size tokens resolve differently → every component scales proportionally. No per-component entries. This is Adobe Spectrum's pattern.
+
+**Option C (recommended) — Hybrid.** Option A for structural, Option B for scalar. Never add device modes to semantic or primitive collections. Never add per-component device entries.
+
+**Anti-pattern — the god collection.** Adding device modes to colour, typography, spacing collections. Or worse: creating per-component device collections (50 components × 5 properties × 2 modes = 500 variables). This flattens the size dimension and makes every change require touching every component.
+
+---
+
+## Problem 9: Size vs Device/Scale Independence
+
+Our approach: **size** is the designer's hierarchical choice per instance (xs–xl). **Scale** (if added) is the environment's adaptation to viewport. They are orthogonal dimensions, not redundant.
+
+The question teams ask when every component has per-device values: "If a button already has desktop and touch values baked in, why does size exist?"
+
+The answer: because size answers a different question. Size asks *how prominent is this button relative to others on the same screen?* A designer choosing between `md` and `lg` is expressing hierarchy. Scale asks *how does every button adapt when a finger is the input instead of a cursor?* A viewport dictates it. Both decisions are real. Collapsing them loses one.
+
+### Adobe Spectrum — Scale × T-Shirt Size
+
+| Field | Value |
+|-------|-------|
+| URL | [spectrum.adobe.com/page/platform-scale](https://spectrum.adobe.com/page/platform-scale/) |
+| Scanned | 2026-04-20 |
+| Domain | Enterprise design system (Adobe) |
+
+**The proof:** Spectrum defines platform scale (medium/large, 1.25× ratio) and t-shirt size (S/M/L/XL) as independent dimensions. Every (scale × size) intersection is valid:
+
+|  | S (small) | M (medium) | L (large) | XL |
+|---|---|---|---|---|
+| **Medium (desktop)** | small on desktop | medium on desktop | large on desktop | XL on desktop |
+| **Large (touch)** | small on touch | medium on touch | large on touch | XL on touch |
+
+Spectrum's documentation explicitly addresses the confusion: "A component with t-shirt sizing is still affected by scale." The same t-shirt size renders at different absolute dimensions at different scales.
+
+**Why it works:**
+- **Size = relative hierarchy.** The designer chose this button to be small because it's a secondary action. That relationship to other buttons on screen is preserved across scales.
+- **Scale = environmental adaptation.** Every component grows proportionally when a finger replaces a cursor. The hierarchy doesn't change; the absolute sizes do.
+
+**What we can learn:**
+- Size and scale are orthogonal. The collapse ("just bake device into each component") loses the hierarchical signal that size carries.
+- A thin Scale collection (~10–25 base variables, 2 modes) multiplies everything proportionally. Size tokens reference scale values. Components reference size tokens, never scale values directly.
+
+---
+
+### The God Collection Anti-Pattern
+
+**Pattern:** Teams under pressure to show every component at every device in Figma create a device collection with per-component entries. Each component has entries for each of its properties at each device.
+
+**The maths:** 50 components × 5 properties (padding, font-size, height, gap, radius) × 2 modes (touch, desktop) = **500 variables**. Every component property value lives in its own cell.
+
+**The failures:**
+1. **Size becomes redundant.** If `button-md-height-desktop` is already defined, why have a `size-md` token at all? The size dimension flattens.
+2. **Changes require 50+ edits.** Changing the base unit (e.g., from 8px to 4px grid) means updating every per-component entry.
+3. **No cascade.** Each entry is a raw value, not an alias. There's no propagation from a base decision to a component.
+4. **Orthogonality breaks.** You can no longer say "change touch scale by 1.25×" — you'd have to edit every entry.
+
+**The fix (thin Scale collection):**
+- ~10–25 base variables: `scale-unit`, `scale-radius-sm`, `scale-font-sm`, `scale-space-sm` etc.
+- 2 modes: Touch, Desktop. Touch values are ~1.25× desktop.
+- Size tokens reference scale: `size-md-padding: var(--scale-space-md)`.
+- Components reference size: `button-padding: var(--size-md-padding)`.
+
+Result: switching scale mode updates ~20 base variables. Every component scales proportionally. No per-component maintenance. Size dimension stays meaningful.
+
+---
+
+## Problem 10: AI-Era Design Systems & Agent Context
+
+Our approach: the design system is built to be **legible to AI agents**. The concepts manifest is the authoritative enumeration of valid dimension values. Skills (CLAUDE.md) provide reasoning patterns. The layered token chain is machine-traceable. PRISM MCP exposes the system to agents as structured data, not screenshots.
+
+The industry is only just starting to name this. The closest public-facing analogue is Southleft's writing on AI-era design systems.
+
+### Southleft — Slot Machine (TJ)
+
+| Field | Value |
+|-------|-------|
+| URL | [southleft.substack.com](https://southleft.substack.com/) |
+| Scanned | 2026-04-22 |
+| Domain | Design systems consultancy (Southleft) |
+
+TJ's writing across several posts articulates the same premise driving our architecture: AI agents need first-class context, not inferred context. The design system should expose its structure in forms agents can read directly.
+
+**DESIGN.md Files: Context, Not Magic.** "DESIGN.md files like they're new. They're not. But they are useful." The post argues that markdown context files give agents project-wide grounding — not as prompt stuffing, but as authoritative reference material. Directly analogous to our `concepts-manifest.mdx` (dimension authority) and per-component `component-principles.mdx` files.
+
+**Figma Console MCP: AI-Powered Design System Management.** Project-wide DS context exposed to AI agents via MCP. The parallel to PRISM MCP is direct — both treat the design system as a typed graph that agents can query, not a visual artifact they interpret.
+
+**Code → Design Isn't the Point. System Parity Is.** The common framing ("code-to-design vs design-to-code") is the wrong axis. What matters is whether code and design stay in parity regardless of direction. Validates our code-first generation approach: the direction of generation is an implementation detail; parity is the requirement.
+
+**Design–Code Drift: Two Ways to Catch It (and Fix It).** Drift detection is a first-class concern, not a one-off audit. Validates our cascade integrity rules and the token-audit tooling — drift should be caught continuously, not at release time.
+
+**"This Is Cute, But It's Not for Enterprise Design Systems."** Argues that enterprise-scale systems need automation foundations, not tooling on top. Our four-layer chain, concepts manifest, and OKLCH generation pipeline are the automation foundations Southleft describes.
+
+**What we can learn:**
+- Agent-context files (DESIGN.md equivalents) may need to exist at more granularities than we currently provide. We have concepts-manifest for dimensions and component-principles for components. A project-level DESIGN.md summarising the system-of-systems could help agents onboard faster.
+- System parity framing is clearer than our "code-first generation" framing. The goal isn't to privilege code; it's to guarantee parity. Worth borrowing the language.
+- Drift detection as a continuous concern — our token-audit rules should be wired into CI as parity checks, not optional validation.
+
+---
+
+## Improvement Opportunities for Our System
+
+Based on this research, areas where we can strengthen our approach:
+
+### 1. Default Emphasis Escalation (from Braid)
+When sentiment is set to a non-neutral value, emphasis could default to `high` unless explicitly overridden. This matches user intent — if you're marking something as `warning`, you probably want it prominent.
+
+### 2. Automated Cascade Validation (from Primer)
+Extend our token-audit cascade integrity rules to run as CI checks. Validate contrast ratios across all themes automatically. Primer found and fixed hundreds of issues this way.
+
+### 3. Document Dimension Optionality (from nuka-ui)
+Not every component needs every dimension. A Banner might only need sentiment + emphasis. An IconButton might only need size + state. Document which dimensions are mandatory vs optional per component pattern.
+
+### 4. Functional Step Guide (from Radix)
+Create a "what each primitive step is for" guide similar to Radix's 12-step mapping. This helps developers choose the right ramp step when defining semantic tokens.
+
+### 5. Agent-Readable Token Format (from designtoken.md)
+Ensure our token documentation is structured for machine parsing — structured tables, consistent format, deterministic patterns. This is already partially achieved via CLAUDE.md skills but could be more explicit.
+
+### 6. Intermediate Theme Levels (from Carbon)
+Consider whether we need intermediate brightness levels beyond light/dark (e.g., dimmed, high-contrast). Document the scaling cost (each mode needs full primitive values) and plan ahead.
+
+### 7. Chroma Adjustment Per Theme (from Apple)
+Apple slightly adjusts even named colours per appearance, not just lightness. Our OKLCH generation could potentially vary chroma per theme for optimal dark-mode vibrancy.
+
+---
+
+## Additional References
+
+Supplementary sources scanned during research — included here for future rescanning rather than cited inline.
+
+### LinkedIn posts
+
+| Author | URL | Scanned | Note |
+|--------|-----|---------|------|
+| Muzaffar Zafar — Design Tokens: Future of Design Systems | [linkedin.com/pulse/design-tokens-future-systems-muzaffar-zafar-1f](https://www.linkedin.com/pulse/design-tokens-future-systems-muzaffar-zafar-1f) | 2026-04-22 | Industry framing of tokens as the evolving foundation |
+| Amy Lee — WTF are Design Tokens? | [linkedin.com/pulse/wtf-design-tokens-amy-lee](https://www.linkedin.com/pulse/wtf-design-tokens-amy-lee) | 2026-04-22 | Accessible introduction for stakeholders new to tokens |
+| Nathan Curtis — EightShapes Specs enhancements | [linkedin.com/posts/nathancurtis_as-i-continue-to-enhance...](https://www.linkedin.com/posts/nathancurtis_as-i-continue-to-enhance-the-eightshapes-activity-7069327448672260097-gmOs) | 2026-04-22 | Complements his existing Medium writing on variant decomposition |
+
+### Workshops and courses
+
+| Source | URL | Scanned |
+|--------|-----|---------|
+| Nathan Curtis — Design Token and UI Component Architecture (Smashing workshop) | [smashingconf.com/.../design-systems-token-component-nathan-curtis](https://smashingconf.com/online-workshops/workshops/design-systems-token-component-nathan-curtis/) | 2026-04-22 |
+| Brad Frost & Ian Frost — Design Tokens Course | [designtokenscourse.com](https://designtokenscourse.com) | 2026-04-22 |
+| Into Design Systems Conference 2026 (March 2026) | [intodesignsystems.com](https://www.intodesignsystems.com/) | 2026-04-22 |
+
+### Podcasts
+
+| Show / Episode | URL | Relevance |
+|----------------|-----|-----------|
+| Design Systems Podcast — Adam Argyle (Google) on tokens | [podcasts.apple.com/.../id1491843793](https://podcasts.apple.com/us/podcast/32-deep-dive-on-tokens-with-adam-argyle-from-google/id1491843793) | Tokens from a browser/CSS authoring perspective |
+| Design Systems Podcast — Garth Braithwaite on Spectrum tokens | [knapsack.cloud/blog-categories/podcast](https://www.knapsack.cloud/blog-categories/podcast) | Spectrum internals from an Adobe engineer |
+| On Theme: Design Systems in Depth | [open.spotify.com/show/4QauaYXHYY4MYThrCa3Iw0](https://open.spotify.com/show/4QauaYXHYY4MYThrCa3Iw0) | Theming focus |
+| Tokens (Damien Senger) | [soundcloud.com/tokens-podcast](https://soundcloud.com/tokens-podcast) | Dedicated tokens podcast |
+| Design System Club | [open.spotify.com/show/59PXbioV6IdMZBoScVDXaD](https://open.spotify.com/show/59PXbioV6IdMZBoScVDXaD) | Multi-platform DS build from scratch |
+
+### Substack newsletters
+
+| Source | URL | Scanned | Note |
+|--------|-----|---------|------|
+| Josh Cusick — Design System Primitives | [joshcusick.substack.com/p/design-system-primitives](https://joshcusick.substack.com/p/design-system-primitives) | 2026-04-22 | Deep dive on the primitives layer |
+| samiamdesigns — A new approach to naming design tokens | [samiamdesigns.substack.com/p/a-new-approach-to-naming-design-tokens](https://samiamdesigns.substack.com/p/a-new-approach-to-naming-design-tokens) | 2026-04-22 | Alternate naming scheme to compare against ours |
+| Design Systems Collective — Shaping Systems for the Year Ahead | [designsystemscollective.substack.com/p/shaping-systems-for-the-year-ahead](https://designsystemscollective.substack.com/p/shaping-systems-for-the-year-ahead) | 2026-04-22 | 2026 strategy and predictions |
+| clipcontent — Design System Breakdown: Button | [clipcontent.substack.com/p/design-system-breakdown-button-22-11-08](https://clipcontent.substack.com/p/design-system-breakdown-button-22-11-08) | 2026-04-22 | Component-level decisions reference |
+| clipcontent — Design System Breakdown: Checkbox & Radio | [clipcontent.substack.com/p/design-system-breakdown-checkbox](https://clipcontent.substack.com/p/design-system-breakdown-checkbox) | 2026-04-22 | Component-level decisions reference |
+| clipcontent — Design System Breakdown: Select | [clipcontent.substack.com/p/design-system-breakdown-select](https://clipcontent.substack.com/p/design-system-breakdown-select) | 2026-04-22 | Component-level decisions reference |
+| clipcontent — A taxonomy for alerts and notifications | [clipcontent.substack.com/p/a-taxonomy-for-alerts-and-notifications](https://clipcontent.substack.com/p/a-taxonomy-for-alerts-and-notifications) | 2026-04-22 | Parallel to our sentiment taxonomy |
+
+### Additional code-first and tooling
+
+| Source | URL | Scanned | Note |
+|--------|-----|---------|------|
+| Smashing Magazine — Integrating Design and Code with Native Design Tokens in Penpot | [smashingmagazine.com/2025/05/integrating-design-code-native-design-tokens-penpot](https://www.smashingmagazine.com/2025/05/integrating-design-code-native-design-tokens-penpot/) | 2026-04-22 | First design tool with native tokens — alternative to Tokens Studio |
