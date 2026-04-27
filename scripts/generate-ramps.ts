@@ -2,7 +2,8 @@
  * generate-ramps.ts
  *
  * Converts anchor colour definitions into complete 12-step primitive ramps.
- * Outputs CSS custom properties, JSON, and Figma variable schemas.
+ * Outputs CSS custom properties, JSON, Figma variable schemas, and a DTCG
+ * tokens.json (W3C Design Tokens Format Module) at the repo root.
  *
  * Algorithm:
  *   1. Parse anchor hex values into OKLCH
@@ -10,7 +11,7 @@
  *   3. Interpolate hue between anchors (shortest-arc)
  *   4. Distribute chroma using a bell-curve (σ = 0.28)
  *   5. Gamut-map results back to sRGB via clampChroma()
- *   6. Emit outputs in three formats
+ *   6. Emit outputs in four formats
  *
  * Dependencies: culori (npm install culori)
  * Run: npx tsx scripts/generate-ramps.ts
@@ -411,6 +412,139 @@ function emitJson(ramps: Ramp[]): object {
   return result;
 }
 
+/**
+ * Emit a DTCG (W3C Design Tokens Format Module) document.
+ *
+ * Layout:
+ *   - color: semantic top-level keys (primary, fg, bg, border, ...)
+ *            plus per-ramp groups (neutral, highlight, positive, ...).
+ *            Each leaf has $type "color" and an OKLCH $value.
+ *            Dark-mode value lives under $extensions.field-notes.modes.dark.
+ *   - typography: minimal stack (heading-lg/md, body-md/sm, label-md).
+ *   - spacing: 4..64 px scale.
+ *   - borderRadius: sm/md/lg/xl/full + alias `rounded` group consumed by
+ *     emit-design-md.mjs (which accepts either key).
+ *
+ * The Tier 1 DESIGN.md downsamples OKLCH to hex sRGB; this file is the
+ * Tier 3 source of truth that preserves wide-gamut values.
+ */
+function oklchString(c: Oklch): string {
+  return `oklch(${c.l.toFixed(4)} ${c.c.toFixed(4)} ${(c.h ?? 0).toFixed(2)})`;
+}
+
+function emitDtcg(ramps: Ramp[]): object {
+  const findColor = (rampName: string, step: RampStep, scheme: "light" | "dark"): Oklch | undefined => {
+    const ramp = ramps.find((r) => r.name === rampName);
+    if (!ramp) return undefined;
+    return (scheme === "light" ? ramp.light : ramp.dark).find((c) => c.step === step)?.oklch;
+  };
+
+  const colorToken = (light: Oklch, dark: Oklch, description?: string): object => ({
+    $type: "color",
+    $value: oklchString(light),
+    ...(description ? { $description: description } : {}),
+    $extensions: {
+      "field-notes.modes": {
+        light: oklchString(light),
+        dark: oklchString(dark),
+      },
+    },
+  });
+
+  const colors: Record<string, unknown> = {};
+
+  // Per-ramp groups (primitives) — never used directly in components.
+  for (const ramp of ramps) {
+    const group: Record<string, object> = {};
+    for (const step of RAMP_STEPS) {
+      const light = findColor(ramp.name, step, "light")!;
+      const dark = findColor(ramp.name, step, "dark")!;
+      group[String(step)] = colorToken(light, dark);
+    }
+    colors[ramp.name] = group;
+  }
+
+  // Semantic top-level tokens. These satisfy the DESIGN.md linter and
+  // give components named handles to alias.
+  const ALIAS = (rampName: string, lightStep: RampStep, darkStep: RampStep, description: string): object => {
+    const light = findColor(rampName, lightStep, "light")!;
+    const dark = findColor(rampName, darkStep, "dark")!;
+    return colorToken(light, dark, description);
+  };
+
+  // Step-pairing convention. The dark ramp mirror-inverts the light ramp's
+  // step→lightness curve: in light, step 50 = lightest and step 1000 = darkest;
+  // in dark, the relationship is reversed. So:
+  //   - Aliases that should ADAPT to mode (bg, fg, border, hover/active/disabled
+  //     interaction states) use the SAME step for both — the ramp itself flips
+  //     the value, and the step number encodes the semantic role.
+  //   - Aliases that should stay VISUALLY FIXED across modes (e.g. on-primary
+  //     stays light text against a mid-saturation primary in both modes) use
+  //     mirrored steps so the same lightness is fetched from each ramp.
+  Object.assign(colors, {
+    primary: ALIAS("highlight", 600, 600, "Primary action — highlight ramp solid step."),
+    "primary-hover": ALIAS("highlight", 700, 700, "Primary action hover state."),
+    "primary-active": ALIAS("highlight", 800, 800, "Primary action active/pressed state."),
+    "primary-disabled": ALIAS("highlight", 300, 300, "Primary action disabled state."),
+    "on-primary": ALIAS("neutral", 50, 1000, "Foreground on primary surfaces."),
+    fg: ALIAS("neutral", 1000, 1000, "Default foreground / body text."),
+    "fg-muted": ALIAS("neutral", 700, 700, "Secondary foreground / supporting text."),
+    bg: ALIAS("neutral", 50, 50, "Default surface."),
+    "bg-elevated": ALIAS("neutral", 100, 100, "Raised surface — cards, panels."),
+    border: ALIAS("neutral", 200, 200, "Default UI border."),
+    danger: ALIAS("danger", 600, 600, "Destructive sentiment."),
+    warning: ALIAS("warning", 600, 600, "Cautionary sentiment."),
+    positive: ALIAS("positive", 600, 600, "Affirmative sentiment."),
+  });
+
+  const typography = {
+    "heading-lg": {
+      $type: "typography",
+      $value: { fontFamily: ["Inter", "sans-serif"], fontSize: "32px", fontWeight: 600, lineHeight: 1.2, letterSpacing: "-0.01em" },
+    },
+    "heading-md": {
+      $type: "typography",
+      $value: { fontFamily: ["Inter", "sans-serif"], fontSize: "24px", fontWeight: 600, lineHeight: 1.3 },
+    },
+    "body-md": {
+      $type: "typography",
+      $value: { fontFamily: ["Inter", "sans-serif"], fontSize: "16px", fontWeight: 400, lineHeight: 1.5 },
+    },
+    "body-sm": {
+      $type: "typography",
+      $value: { fontFamily: ["Inter", "sans-serif"], fontSize: "14px", fontWeight: 400, lineHeight: 1.5 },
+    },
+    "label-md": {
+      $type: "typography",
+      $value: { fontFamily: ["Inter", "sans-serif"], fontSize: "14px", fontWeight: 500, lineHeight: 1.4 },
+    },
+  };
+
+  const spacing = Object.fromEntries(
+    [4, 8, 12, 16, 20, 24, 32, 40, 48, 64].map((n) => [
+      String(n),
+      { $type: "dimension", $value: `${n}px` },
+    ])
+  );
+
+  const borderRadius = {
+    sm: { $type: "dimension", $value: "4px" },
+    md: { $type: "dimension", $value: "8px" },
+    lg: { $type: "dimension", $value: "12px" },
+    xl: { $type: "dimension", $value: "16px" },
+    full: { $type: "dimension", $value: "9999px" },
+  };
+
+  return {
+    $schema: "https://design-tokens.org/community-group/format/",
+    $description: "Field Notes design system — generated by scripts/generate-ramps.ts. Tier 3 source of truth. Edit the script, not this file.",
+    color: colors,
+    typography,
+    spacing,
+    borderRadius,
+  };
+}
+
 function emitFigmaVariables(ramps: Ramp[]): object {
   const collections: object[] = [];
 
@@ -477,9 +611,10 @@ function main(): void {
     console.log("✓ All contrast pairs pass WCAG AA\n");
   }
 
-  // Determine output directory
+  // Determine output directories
   const __dirname = path.dirname(url.fileURLToPath(import.meta.url));
-  const outDir = path.resolve(__dirname, "../generated");
+  const repoRoot = path.resolve(__dirname, "..");
+  const outDir = path.join(repoRoot, "generated");
   fs.mkdirSync(outDir, { recursive: true });
 
   // Emit CSS
@@ -500,6 +635,15 @@ function main(): void {
     "utf8"
   );
   console.log(`✓ Written: generated/figma-variables.json`);
+
+  // Emit DTCG tokens.json at repo root (Tier 3 source of truth)
+  const dtcgOutput = emitDtcg(ramps);
+  fs.writeFileSync(
+    path.join(repoRoot, "tokens.json"),
+    JSON.stringify(dtcgOutput, null, 2) + "\n",
+    "utf8"
+  );
+  console.log(`✓ Written: tokens.json`);
 
   console.log("\nDone.");
 }

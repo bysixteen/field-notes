@@ -7,6 +7,18 @@ Multi-domain knowledge hub built with Fumadocs (MDX + Next.js).
 - `npm run dev` — start development server
 - `npm run build` — static export to `out/` (includes llms.txt generation)
 - `npm run generate:llms` — regenerate llms.txt and llms-full.txt only
+- `npm run generate:ramps` — regenerate colour ramps and `/tokens.json`
+- `npm run generate:manifest` — regenerate `/DESIGN.md` and `/tokens.json` (Token Trap manifest); run only when the design system changes
+
+## Tiered design-system context (Token Trap)
+
+The design system is loaded in tiers to avoid loading the whole token system on every prompt. Read `content/design-system/manifest-architecture.mdx` for the full rationale.
+
+- **Tier 1 — `/DESIGN.md`** — compact, always-loaded system prompt.
+- **Tier 2 — `/.context/INDEX.md`** — routing map; load on demand.
+- **Tier 3 — `/tokens.json`** (or Prism `scan_tokens` with a filter) — full DTCG; query specific tokens, never load whole.
+
+Skills enforce this discipline (`bs-tokens`, `bs-design-md`, `.claude/rules/prism-mcp.md`). Do not dump the token system into context.
 
 ## Structure
 

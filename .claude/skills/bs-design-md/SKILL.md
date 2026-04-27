@@ -61,12 +61,15 @@ When the user has existing dimensional tokens (this repo, or a DTCG `tokens.json
 
 1. **Locate the source.** This repo's tokens live across `content/design-system/token-chain/` (primitives → semantics) and `content/design-system/model/` (the dimensional definitions). For an external project, expect a `tokens.json` in DTCG format.
 2. **Confirm dimensional vocabulary.** Read `content/design-system/model/index.mdx` (or the project's equivalent). Confirm: which sentiments exist, which emphasis levels, which states, which sizes. The five-dimension canonical list is `Sentiment, Emphasis, State, Size, Structure` — if the source defines extras (e.g. `density`), preserve them in the sidecar but note them in `## Do's and Don'ts`.
-3. **Emit.** Run `scripts/emit-design-md.mjs --from-dimensional <source-path> --out <dir>`. The emitter:
+3. **Produce DTCG.** The emitter consumes a DTCG `tokens.json`. In Field Notes, run `npx tsx scripts/generate-ramps.ts` — it now writes `/tokens.json` at repo root alongside the existing CSS / JSON / Figma outputs. For other projects, hand-author or generate a DTCG file directly.
+4. **Emit.** Run `scripts/emit-design-md.mjs --tokens <tokens.json> --components <components.json> --out <dir> [--name <name>]`. The emitter:
    - Downsamples OKLCH to hex sRGB for `DESIGN.md` (keeps OKLCH in the sidecar)
    - Flattens dimensional combinations into named variants (`button-primary`, `button-primary-hover`)
-   - Generates a `## Do's and Don'ts` section from the dimensional rules — read `references/do-and-dont-template.md` for the carrier patterns
-4. **Validate.** Run `scripts/lint.sh <dir>/DESIGN.md`. Errors must be zero. The `contrast-ratio` warnings should be reviewed against the source DS — they often indicate genuine accessibility gaps worth fixing upstream.
-5. **Round-trip check.** Run `npx @google/design.md export --format dtcg <dir>/DESIGN.md` and diff the output against `<dir>/tokens.json`. Every shared token should match. OKLCH-only tokens will appear in the sidecar but not the export — that's expected.
+   - Pass-through copies the input `tokens.json` to `<dir>/tokens.json`
+5. **Validate.** Run `scripts/lint.sh <dir>/DESIGN.md`. Errors must be zero. The `contrast-ratio` warnings should be reviewed against the source DS — they often indicate genuine accessibility gaps worth fixing upstream.
+6. **Round-trip check.** Run `npx @google/design.md export --format dtcg <dir>/DESIGN.md` and diff the output against `<dir>/tokens.json`. Every shared token should match. OKLCH-only tokens will appear in the sidecar but not the export — that's expected.
+
+**Field Notes shortcut:** the entire pipeline is wrapped by `npm run generate:manifest`, which runs steps 3–5 in order. Use that for routine regeneration; this is the Tier 1/3 manifest entry point referenced in `bs-tokens.md` and `.claude/rules/prism-mcp.md`.
 
 ## The Output Contract
 

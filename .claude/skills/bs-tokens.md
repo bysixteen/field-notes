@@ -12,6 +12,20 @@ description: >-
 
 # Design Tokens
 
+## Manifest tier lookup (do this before reaching for the full system)
+
+The token system is loaded in tiers. Loading the whole thing on every prompt is the **Token Trap** — wasted context, wasted money. Always start at Tier 1.
+
+| Tier | File | Use |
+|---|---|---|
+| 1 | `/DESIGN.md` | Compact system prompt. Hex sRGB, named semantic tokens (`primary`, `fg`, `bg`, ...), components. Read first. |
+| 2 | `/.context/INDEX.md` | Routing map. Tells you *where* to look for any category. Load only when Tier 1 doesn't answer. |
+| 3 | `/tokens.json` *or* Prism `scan_tokens` | Full DTCG. Wide-gamut OKLCH preserved. Query a specific token; never load the whole file or call `scan_tokens` unbounded. |
+
+**Forbidden:** dumping the entire token file (or `llms-full.txt`) into context. If you find yourself doing this, the right answer is in Tier 1 or behind a filtered Tier 3 query.
+
+Regenerate the cache only when the design system changes: `npm run generate:manifest`. Full architectural rationale in `content/design-system/manifest-architecture.mdx`.
+
 ## Foundations (read first)
 
 - [DIMENSIONAL-MODEL](_foundations/DIMENSIONAL-MODEL.md)

@@ -4,6 +4,7 @@
     "---Introduction---",
     "index",
     "concepts-manifest",
+    "manifest-architecture",
     "---Core Concepts---",
     "model",
     "token-chain",
