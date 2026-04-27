@@ -6,7 +6,7 @@ The five canonical dimensions are documented in `content/design-system/model/ind
 |-----------|--------|--------------|
 | Sentiment | `neutral`, `warning`, `highlight`, `new`, `positive` | Composition |
 | Emphasis | `high`, `medium`, `low` | Composition |
-| State | `rest`, `hover`, `active`, `selected`, `disabled` | Runtime |
+| State | `rest`, `hover`, `active`, `selected`, `disabled`, `resolving`, `pending` | Runtime |
 | Size | `xs`, `sm`, `md`, `lg`, `xl` | Composition |
 | Structure | (fixed; no variants) | Build |
 
