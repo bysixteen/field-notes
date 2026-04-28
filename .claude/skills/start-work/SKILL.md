@@ -36,3 +36,7 @@ When the user invokes `/start-work`, follow these steps:
 ## 5. No PR
 
 - Do **not** open a pull request. The user will open it manually once coding is complete.
+
+## Self-review
+
+Before declaring done, run the self-review protocol from `_foundations/SELF-REVIEW.md`.
