@@ -270,3 +270,7 @@ FINDINGS:
 | `bs-html` | Keyboard interaction patterns from HTML semantics define keyboard tests |
 
 Test runner is project-dependent (Vitest, Jest, etc.). See your project's design system documentation for the full testing strategy reference.
+
+## Self-review
+
+Before declaring done, run the self-review protocol from `_foundations/SELF-REVIEW.md`.
