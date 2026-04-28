@@ -5,7 +5,7 @@ description: Interface contract for PRISM (prism-figma-mcp v0.2.0), a 71-tool br
 
 Interface contract for PRISM, the bridge between local design-token tooling and Figma via the Model Context Protocol (MCP). PRISM ships 71 tools covering variables, components, exports, and library introspection. Its `scan_tokens` tool resolves variables across linked libraries — the key differentiator vs the official Figma MCP, which surfaces only the variables defined directly in the current file.
 
-This document defines the connection protocol, payload schemas for push/pull operations, and tool discovery requirements.
+This document defines the connection protocol and payload schemas for push/pull operations. Tools are called by canonical name through the `scripts/_prism-call.mjs` helper — there is no runtime tool discovery (see [Figma Sync Scripts](/design-system/tooling/figma-sync) for the helper contract).
 
 ## Connection Protocol
 
@@ -49,7 +49,7 @@ Key rules:
 
 Pushes locally-generated token collections into Figma as variables.
 
-**Tool:** discovered at runtime (canonical name: `push_tokens` or equivalent — see [Tool Discovery](#tool-discovery-requirement)).
+**Tools invoked (Prism, by canonical name):** `check_connection`, `set_target_file`, `get_variable_collections`, `get_collection_variables`, `create_variables_batch`, `update_variables_batch`.
 
 ### Request Payload
 
@@ -100,7 +100,7 @@ Pushes locally-generated token collections into Figma as variables.
 
 Pulls variable values back from Figma — typically anchor tokens set by designers.
 
-**Tool:** discovered at runtime (canonical name: `pull_variables` or equivalent — see [Tool Discovery](#tool-discovery-requirement)).
+**Tools invoked (Prism, by canonical name):** `check_connection`, `set_target_file`, `get_variable_collections`, `get_collection_variables`.
 
 ### Request Payload
 
@@ -139,50 +139,18 @@ Pulls variable values back from Figma — typically anchor tokens set by designe
 
 The response shape mirrors the push schema's `collections[]` entry, making round-trip operations straightforward.
 
-## Tool Discovery Requirement
+## Tool calling
 
-MCP servers may expose tools under different names depending on version or configuration. Scripts MUST NOT assume fixed tool names. Instead, every script that interacts with PRISM must include a **preflight tool-discovery step**.
+Scripts call Prism tools by canonical name through the `scripts/_prism-call.mjs` helper. The helper opens a WebSocket to `ws://localhost:7890` (configured via `FIGMA_MCP_PORT` in `.mcp.json`) and invokes `tools/call` with the named tool. There is no runtime discovery step — if a tool name changes upstream, scripts surface the failure from the helper directly.
 
-### Discovery Protocol
-
-1. **List available tools** before executing any operation:
-   ```bash
-   manus-mcp-cli tool list --server prism
-   ```
-2. **Log the discovered tools** so operators can audit what is available:
-   ```
-   [PRISM] Discovered tools: create_variables, get_variables, set_variable_value, ...
-   ```
-3. **Match against required capabilities** — map canonical operation names to whatever the server exposes.
-
-### Dynamic Tool-Name Mapping
-
-Scripts must maintain a mapping table of canonical operations to discovered tool names. If the MCP server exposes `create_variables` instead of `push_tokens`, the script maps accordingly.
+The standard preamble for every script run is:
 
 ```
-Canonical Operation    → Discovered Tool Name
-─────────────────────────────────────────────
-push_tokens            → (resolved at runtime)
-pull_variables         → (resolved at runtime)
+prism_call check_connection {}
+prism_call set_target_file { "fileId": "<from .mcp.json>" }
 ```
 
-**Implementation pattern (pseudocode):**
-
-```
-tools = mcp.listTools(server: "prism")
-
-PUSH_TOOL = tools.find(name matches /push|create|set.*variable/)
-PULL_TOOL = tools.find(name matches /pull|get.*variable/)
-
-if (!PUSH_TOOL || !PULL_TOOL) {
-  abort("Required tools not found. Available: " + tools.map(t => t.name))
-}
-```
-
-Key rules:
-- Never call a tool by a hardcoded name without first verifying it exists.
-- If a required tool is not found, abort with a clear error listing available tools.
-- Log the resolved mapping at the start of every run for debuggability.
+After the preamble, the script issues operation-specific batched calls (push: `create_variables_batch` and `update_variables_batch` per collection; pull: `get_variable_collections` then `get_collection_variables`). See [Figma Sync Scripts](/design-system/tooling/figma-sync) for the full call sequence and error-handling contract.
 
 ## Summary
 
@@ -192,5 +160,5 @@ Key rules:
 | Configuration | `.mcp.json` in project root |
 | Push | Send token collections with modes and typed values |
 | Pull | Retrieve a named collection's variables and mode values |
-| Tool names | Discovered at runtime — never hardcoded |
+| Tool names | Called by canonical name through `scripts/_prism-call.mjs` |
 | File IDs | Always from `.mcp.json` — never hardcoded |
