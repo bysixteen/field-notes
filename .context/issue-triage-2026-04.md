@@ -76,3 +76,26 @@ The 4 not-actually-closed issues (#49, #104, #119, #120) remain untouched by thi
 ## Next step
 
 Daniel reviews this doc. On approval, Phase 5.2 executes: create the `defer` label once, then run the per-issue `gh` commands per the decisions above.
+
+## Execution log (2026-04-28)
+
+Phase 5.2 executed against `bysixteen/field-notes`. All issues were OPEN before this run; none had the `defer` label.
+
+| # | Disposition | Action | Exit | URL |
+|---|---|---|---|---|
+| label | create | `gh label create defer --description "Triaged as deferred; revisit later" --color FBCA04 --repo bysixteen/field-notes` | 0 | — |
+| 27 | close | `gh issue close 27 --repo bysixteen/field-notes --comment "<verbatim reason>"` | 0 | https://github.com/bysixteen/field-notes/issues/27 |
+| 102 | close | `gh issue close 102 --repo bysixteen/field-notes --comment "<verbatim reason>"` | 0 | https://github.com/bysixteen/field-notes/issues/102 |
+| 108 | close | `gh issue close 108 --repo bysixteen/field-notes --comment "<verbatim reason>"` | 0 | https://github.com/bysixteen/field-notes/issues/108 |
+| 38 | defer (comment) | `gh issue comment 38 --repo bysixteen/field-notes --body "deferred per 2026-04 triage; reason: <verbatim>"` | 0 | https://github.com/bysixteen/field-notes/issues/38#issuecomment-4334959975 |
+| 38 | defer (label) | `gh issue edit 38 --repo bysixteen/field-notes --add-label defer` | 0 | — |
+| 91 | defer (comment) | `gh issue comment 91 --repo bysixteen/field-notes --body "deferred per 2026-04 triage; reason: <verbatim>"` | 0 | https://github.com/bysixteen/field-notes/issues/91#issuecomment-4334960829 |
+| 91 | defer (label) | `gh issue edit 91 --repo bysixteen/field-notes --add-label defer` | 0 | — |
+| 101 | defer (comment) | `gh issue comment 101 --repo bysixteen/field-notes --body "deferred per 2026-04 triage; reason: <verbatim>"` | 0 | https://github.com/bysixteen/field-notes/issues/101#issuecomment-4334961577 |
+| 101 | defer (label) | `gh issue edit 101 --repo bysixteen/field-notes --add-label defer` | 0 | — |
+| 106 | defer (comment) | `gh issue comment 106 --repo bysixteen/field-notes --body "deferred per 2026-04 triage; reason: <verbatim>"` | 0 | https://github.com/bysixteen/field-notes/issues/106#issuecomment-4334962283 |
+| 106 | defer (label) | `gh issue edit 106 --repo bysixteen/field-notes --add-label defer` | 0 | — |
+| 98 | keep | (no action) | — | — |
+| 107 | keep | (no action) | — | — |
+
+All comment/close bodies used the verbatim Reason text from the per-issue sections above. No issues were already in their target state; no commands were skipped.
