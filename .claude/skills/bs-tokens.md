@@ -263,3 +263,7 @@ The FINDINGS section is the most important part of the audit. For every finding,
 | `bs-storybook-docs` | Component docs include a TokenReference story |
 
 See your project's design system documentation for the full token audit, token chain, and token transform pipeline references.
+
+## Self-review
+
+Before declaring done, run the self-review protocol from `_foundations/SELF-REVIEW.md`.
