@@ -322,3 +322,7 @@ NEXT STEPS:
 | `bs-accessibility` | Run after scaffold to verify a11y compliance |
 
 File layout and directory structure are project-configurable. See your project's design system documentation for the full component scaffolding reference.
+
+## Self-review
+
+Before declaring done, run the self-review protocol from `_foundations/SELF-REVIEW.md`.
