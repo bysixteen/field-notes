@@ -4,6 +4,8 @@ Classification of every `.mdx` page under `content/{design-system,claude,platfor
 
 Scope: classification only. Session 6 acts on this list. Methodology: one read per page during planning, plus targeted greps on dimensional-vocabulary lists (sentiment, state, emphasis, size, structure) to surface single-cause-multiple-pages drift.
 
+**Confirmed clean** — emphasis (`high|medium|low`), size (`xs|sm|md|lg|xl`), the 4-point semantic-naming scale (`weaker→weak→standard→strong`), and the "structure never exposed as prop" rule are consistent across all 79 pages. The drift cluster is sentiment + state value lists, plus one structure-prose row in `density-note.mdx`. The design system's core vocabulary didn't rotate — only the sentiment/state lists did. This bounds Session 6's regen scope.
+
 | | Count |
 |---|---|
 | Total pages | 79 |
