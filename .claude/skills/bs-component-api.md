@@ -187,3 +187,7 @@ RECOMMENDED API:
 | `bs-css` | Dimension inputs map to `data-*` attribute selectors in CSS |
 
 See your project's design system documentation for the full component API reference.
+
+## Self-review
+
+Before declaring done, run the self-review protocol from `_foundations/SELF-REVIEW.md`.
