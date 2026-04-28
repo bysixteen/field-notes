@@ -96,8 +96,9 @@ export type { {PascalName}Props };
 ```tsx
 import type { ComponentPropsWithRef } from 'react';
 
+// canonical source: _foundations/DIMENSIONAL-MODEL.md; keep in sync
 type Emphasis = 'high' | 'medium' | 'low';
-type Sentiment = 'neutral' | 'warning' | 'highlight' | 'new' | 'success' | 'error';
+type Sentiment = 'neutral' | 'warning' | 'highlight' | 'new' | 'positive';
 type Size = 'xs' | 'sm' | 'md' | 'lg' | 'xl';
 
 interface {PascalName}Props extends ComponentPropsWithRef<'{element}'> {
@@ -165,11 +166,11 @@ describe('{PascalName}', () => {
 
   it('maps dimension props to data attributes', () => {
     const { container } = render(
-      <{PascalName} emphasis="high" sentiment="error" size="lg">Label</{PascalName}>
+      <{PascalName} emphasis="high" sentiment="positive" size="lg">Label</{PascalName}>
     );
     const el = container.firstChild;
     expect(el).toHaveAttribute('data-emphasis', 'high');
-    expect(el).toHaveAttribute('data-sentiment', 'error');
+    expect(el).toHaveAttribute('data-sentiment', 'positive');
     expect(el).toHaveAttribute('data-size', 'lg');
   });
 
