@@ -140,10 +140,10 @@ Regenerate the manifest only when the design system changes (`npm run generate:m
 
 | Domain | Route | Description | Pages |
 |--------|-------|-------------|-------|
-| Design System | `/design-system` | Token model, composition rules, naming conventions, constraints | 16 |
-| Principles | `/principles` | Core principles, synthesis & validation, journey mapping | 10 |
-| Claude & AI | `/claude` | Context engineering, CLAUDE.md playbook, workflow architectures | 8 |
-| Platform | `/platform` | Architecture patterns, monorepo structure, data and auth | 19 |
+| Design System | `/design-system` | Token model, composition rules, naming conventions, constraints | 49 |
+| Principles | `/principles` | Core principles, synthesis & validation, journey mapping | 8 |
+| Claude & AI | `/claude` | Context engineering, CLAUDE.md playbook, workflow architectures | 10 |
+| Platform | `/platform` | Architecture patterns, monorepo structure, data and auth | 12 |
 
 ## Build & generate commands
 
