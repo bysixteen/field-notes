@@ -234,3 +234,7 @@ Related but not stages:
 - `bs-testing` -- Run after review to verify test coverage matches findings
 - `bs-component-scaffold` -- If component needs full rewrite, scaffold from scratch
 - `bs-storybook-docs` -- Generate docs stories after review passes
+
+## Self-review
+
+Before declaring done, run the self-review protocol from `_foundations/SELF-REVIEW.md`. The protocol applies to the review report this skill produces — confirm the findings match what was actually asked, list assumptions, list what wasn't audited, gate.
