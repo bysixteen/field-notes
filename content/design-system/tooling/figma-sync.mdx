@@ -10,27 +10,33 @@ Two shell scripts synchronise design tokens with Figma through the [PRISM](/desi
 | Script | Direction | Purpose |
 |--------|-----------|---------|
 | `figma-push.sh` | Local → Figma | Push generated token collections into Figma as variables |
-| `figma-pull.sh` | Figma → Local | Pull anchor colors from Figma into `packages/ui/anchors.json` |
+| `figma-pull.sh` | Figma → Local | Pull anchor variables from Figma into `generated/figma-anchors.json` |
 
-Both scripts read connection configuration from `.mcp.json` at the project root and discover MCP tool names at runtime — nothing is hardcoded.
+Both scripts read connection configuration from `.mcp.json` at the project root and call Prism tools by canonical name through the `scripts/_prism-call.mjs` helper. Nothing is hardcoded — `figma.fileId` is resolved at runtime, never embedded in the scripts.
 
 ---
 
 ## Prerequisites
 
 - **jq** — JSON processor (`brew install jq`)
-- **manus-mcp-cli** — MCP client CLI for tool discovery and invocation
-- **.mcp.json** — project-root config file containing Figma file ID and MCP server settings
+- **node ≥ 22** — runs the `_prism-call.mjs` helper
+- **Prism MCP plugin** — running and connected to Figma. The plugin must be open with the WebSocket bridge listening on `ws://localhost:7890`.
+- **`.mcp.json`** — project-root config containing the Prism server entry and the Figma file ID.
 
 ### `.mcp.json` structure
+
+The canonical shape — values are project-specific. See [PRISM](/design-system/prism) for the full configuration reference.
 
 ```jsonc
 {
   "mcpServers": {
-    "figma": {
-      "command": "npx",
-      "args": ["-y", "figma-mcp-server"],
-      "env": { "FIGMA_ACCESS_TOKEN": "<token>" }
+    "prism": {
+      "command": "node",
+      "args": ["/path/to/prism/dist/mcp/index.js"],
+      "env": {
+        "FIGMA_PAT": "<your-personal-access-token>",
+        "FIGMA_MCP_PORT": "7890"
+      }
     }
   },
   "figma": {
@@ -38,6 +44,8 @@ Both scripts read connection configuration from `.mcp.json` at the project root 
   }
 }
 ```
+
+> **v0.3.0+:** Once Prism is published to npm, replace `command`/`args` with `"command": "npx", "args": ["-y", "prism-figma-mcp"]`.
 
 ---
 
@@ -48,19 +56,22 @@ Pushes locally-generated token JSON to Figma as variable collections.
 ### Usage
 
 ```bash
-# Push from a file
-./scripts/figma-push.sh tokens.json
+# Push from the default input file
+./scripts/figma-push.sh                              # uses generated/figma-variables.json
+
+# Push from an explicit file
+./scripts/figma-push.sh path/to/variables.json
 
 # Push from stdin
-cat tokens.json | ./scripts/figma-push.sh
+cat variables.json | ./scripts/figma-push.sh
 
-# Dry run — show preflight checks and payload without sending
-./scripts/figma-push.sh --dry-run tokens.json
+# Dry run — show planned tool calls and payload, send nothing
+./scripts/figma-push.sh --dry-run
 ```
 
 ### Input format
 
-The input JSON must follow the PRISM push payload schema. The script injects `fileId` automatically from `.mcp.json`.
+The input JSON follows the Prism push payload schema. The script injects `fileId` from `.mcp.json` automatically.
 
 ```json
 {
@@ -83,15 +94,21 @@ The input JSON must follow the PRISM push payload schema. The script injects `fi
 }
 ```
 
+### Tools invoked (Prism, by canonical name)
+
+`check_connection`, `set_target_file`, `get_variable_collections`, `get_collection_variables`, `create_variables_batch`, `update_variables_batch`.
+
 ### Preflight checks
 
 Before pushing, the script verifies:
 
 1. `jq` is installed
-2. `.mcp.json` exists and contains `figma.fileId`
-3. `manus-mcp-cli` is available
-4. MCP server is reachable (via tool discovery)
-5. A push-capable tool exists on the server
+2. `node` is on PATH
+3. `.mcp.json` exists at the repo root
+4. `scripts/_prism-call.mjs` helper exists
+5. `.mcp.json` contains `figma.fileId`
+6. Prism `check_connection` returns ok
+7. Prism `set_target_file` accepts the configured `fileId`
 
 If any check fails the script exits with a descriptive error.
 
@@ -99,21 +116,24 @@ If any check fails the script exits with a descriptive error.
 
 ## figma-pull.sh
 
-Pulls anchor color tokens from Figma and writes them to `packages/ui/anchors.json`.
+Pulls anchor variables from Figma and writes them to `generated/figma-anchors.json`.
 
 ### Usage
 
 ```bash
-# Pull anchors from Figma
+# Pull the default "Anchors" collection
 ./scripts/figma-pull.sh
 
-# Dry run — show preflight checks without pulling
+# Override the collection name
+./scripts/figma-pull.sh --collection Primitives
+
+# Dry run — show planned tool calls, fetch nothing
 ./scripts/figma-pull.sh --dry-run
 ```
 
 ### Output
 
-The script writes exclusively to `packages/ui/anchors.json`. It never modifies `.ts` source files. The output follows the PRISM pull response schema:
+The script writes exclusively to `generated/figma-anchors.json`. It never modifies `.ts` source files. The output follows the Prism pull-response shape:
 
 ```json
 {
@@ -132,53 +152,62 @@ The script writes exclusively to `packages/ui/anchors.json`. It never modifies `
 }
 ```
 
+### Tools invoked (Prism, by canonical name)
+
+`check_connection`, `set_target_file`, `get_variable_collections`, `get_collection_variables`.
+
 ### Preflight checks
 
 Before pulling, the script verifies:
 
 1. `jq` is installed
-2. `.mcp.json` exists and contains `figma.fileId`
-3. `manus-mcp-cli` is available
-4. MCP server is reachable (via tool discovery)
-5. A pull-capable tool exists on the server
+2. `node` is on PATH
+3. `.mcp.json` exists at the repo root
+4. `scripts/_prism-call.mjs` helper exists
+5. `.mcp.json` contains `figma.fileId`
+6. Prism `check_connection` returns ok
+7. The named collection (default `Anchors`) exists in the file
 
 ---
 
-## Tool discovery
+## Tool calling
 
-Both scripts follow the PRISM tool discovery protocol. Before executing any operation they run:
+Both scripts call Prism tools by canonical name through the `scripts/_prism-call.mjs` helper — there is no runtime tool discovery. The helper opens a WebSocket to `ws://localhost:7890` (configured via `FIGMA_MCP_PORT` in `.mcp.json`) and invokes `tools/call` with the named tool.
 
-```bash
-manus-mcp-cli tool list --server figma-mcp
+The standard preamble for every script run is:
+
+```
+prism_call check_connection {}
+prism_call set_target_file { "fileId": "<from .mcp.json>" }
 ```
 
-The discovered tools are logged and matched against expected patterns:
+After this preamble, the script issues the operation-specific batched calls (push: `create_variables_batch` and `update_variables_batch` per collection; pull: `get_variable_collections` then `get_collection_variables`).
 
-| Canonical operation | Match patterns |
-|---------------------|----------------|
-| `push_tokens` | `push_tokens`, `create_variables`, `set_variable_value` |
-| `pull_variables` | `pull_variables`, `get_variables`, `get_variable` |
-
-If no matching tool is found the script aborts with the full list of available tools for debugging.
+If the bridge is unreachable, `check_connection` fails first — verify the Prism plugin is open in Figma and the WebSocket bridge is on `ws://localhost:7890`.
 
 ---
 
 ## Error handling
 
-All errors are prefixed with `[PRISM]` for easy identification in logs.
+All errors are prefixed with `[prism]` for easy identification in logs.
 
 | Error | Cause | Resolution |
 |-------|-------|------------|
-| `jq is required but not found` | jq not installed | `brew install jq` |
-| `.mcp.json not found` | Missing config file | Create `.mcp.json` at project root |
-| `figma.fileId not set` | Config missing file ID | Add `figma.fileId` to `.mcp.json` |
-| `Failed to list tools` | MCP server unreachable | Check server is running and `.mcp.json` config |
-| `No push/pull-capable tool found` | Server missing expected tools | Verify MCP server version and capabilities |
-| `Input is not valid JSON` | Malformed token file | Validate input with `jq . tokens.json` |
+| `[prism] jq not found (brew install jq)` | jq not installed | `brew install jq` |
+| `[prism] node not found (need node ≥ 22)` | node not on PATH or version too old | Install node ≥ 22 |
+| `[prism] .mcp.json missing at <path>` | Missing config file | Create `.mcp.json` at project root |
+| `[prism] helper missing: scripts/_prism-call.mjs` | Helper deleted or repo incomplete | Restore from git |
+| `[prism] figma.fileId not set in .mcp.json` | Config missing file ID | Add `figma.fileId` to `.mcp.json` |
+| `[prism] input not found: <path>` | Push input file missing | Create input or use stdin |
+| `[prism] input is not valid JSON` | Malformed input | Validate with `jq . <file>` |
+| `[prism] collection "<name>" not found in file <fileId>` | Pull target missing | Create collection in Figma, or pass `--collection` |
+
+Connection-level failures (`check_connection`) surface from the helper with the underlying WebSocket error — first thing to check is that the Prism plugin is running in the Figma desktop app.
 
 ---
 
 ## See also
 
-- [Token Transform Pipeline](/design-system/token-transform-pipeline) — generates the token JSON that `figma-push.sh` consumes
-- [Token Audit](/design-system/token-audit) — validates token integrity before pushing
+- [PRISM](/design-system/prism) — the bridge contract: connection protocol, payload schemas, and the full 71-tool surface.
+- [Token Transform Pipeline](/design-system/token-transform-pipeline) — generates the token JSON that `figma-push.sh` consumes.
+- [Token Audit](/design-system/token-audit) — validates token integrity before pushing.
