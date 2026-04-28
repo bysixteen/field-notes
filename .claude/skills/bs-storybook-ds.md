@@ -111,3 +111,7 @@ Offer to:
 1. Run the generated stories in Storybook to verify rendering
 2. Create any missing helper components referenced in the output
 3. Generate the equivalent Figma documentation page (when `bs-figma-docs` is available and Prism MCP is connected)
+
+## Self-review
+
+Before declaring done, run the self-review protocol from `_foundations/SELF-REVIEW.md`.

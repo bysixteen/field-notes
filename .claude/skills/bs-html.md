@@ -187,3 +187,7 @@ FINDINGS:
 | `bs-css` | HTML elements determine valid CSS selectors |
 
 See your project's design system documentation for the full HTML semantics reference.
+
+## Self-review
+
+Before declaring done, run the self-review protocol from `_foundations/SELF-REVIEW.md`.

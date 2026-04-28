@@ -205,3 +205,7 @@ Load these from the `references/` directory only when you need them — they are
 ## Example Output
 
 A complete reference pair lives at `assets/example-output/`. Read it when you need a concrete shape to model new outputs against.
+
+## Self-review
+
+Before declaring done, run the self-review protocol from `_foundations/SELF-REVIEW.md`.

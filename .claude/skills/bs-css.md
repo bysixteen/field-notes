@@ -229,3 +229,7 @@ PHYSICAL PROPERTIES FOUND:
 | `bs-html` | HTML semantics determine which selectors are appropriate |
 
 Applies to CSS and SCSS. See your project's design system documentation for the full CSS authoring reference.
+
+## Self-review
+
+Before declaring done, run the self-review protocol from `_foundations/SELF-REVIEW.md`.

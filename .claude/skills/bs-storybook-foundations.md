@@ -261,3 +261,7 @@ These patterns produce inconsistent documentation. Every one has a helper that d
 - [ ] Zero inline `style={{ }}` attributes in story JSX
 - [ ] All imports from `stories/helpers/` resolve
 - [ ] `autodocs` tag and `fullscreen` layout present
+
+## Self-review
+
+Before declaring done, run the self-review protocol from `_foundations/SELF-REVIEW.md`.

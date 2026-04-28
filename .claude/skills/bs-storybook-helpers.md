@@ -152,3 +152,7 @@ When building documentation in Figma (via Prism MCP), each Storybook helper maps
 | `TonalRamp` | No Figma equivalent yet | Build manually with auto-layout frames |
 
 The Figma components follow Uber Base style: simple rounded callouts, tabular colour, no accent bars or decorative elements. Status badges use text properties, not booleans.
+
+## Self-review
+
+Before declaring done, run the self-review protocol from `_foundations/SELF-REVIEW.md`.
