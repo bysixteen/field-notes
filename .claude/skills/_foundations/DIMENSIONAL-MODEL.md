@@ -12,7 +12,7 @@ Canonical source: [`/content/design-system/model/index.mdx`](../../../content/de
 | **Emphasis** | How loudly the component communicates | Composition time | `low`, `medium`, `high` |
 | **Size** | Spatial footprint (height, padding scale, touch target) | Composition time | `xs`, `sm`, `md`, `lg`, `xl` |
 | **Structure** | Fixed anatomical shape (radius, fixed gaps, font-family) | Build time | Component-defined |
-| **State** | Interactive surface changes | Runtime only | `default`, `hover`, `active`, `focus`, `selected`, `disabled`, `resolving` |
+| **State** | Interactive surface changes | Runtime only | `rest`, `hover`, `active`, `selected`, `disabled`, `resolving`, `pending` |
 
 ## Color vs structural split
 
