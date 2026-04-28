@@ -149,3 +149,7 @@ Use real component imports, not mocked HTML. This demonstrates how tokens cascad
 - [ ] No hardcoded colour/spacing values
 - [ ] Zero inline style attributes
 - [ ] Autodocs tag present
+
+## Self-review
+
+Before declaring done, run the self-review protocol from `_foundations/SELF-REVIEW.md`.
