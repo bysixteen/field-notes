@@ -13,7 +13,9 @@ Semantic tokens are **purpose-driven aliases**. They describe *what* a value mea
 
 **Elements:** `page`, `foreground`, `background`, `border`, `overlay`, `space`, `radii`, `sizes`
 
-**States:** `rest`, `hover`, `active`, `inverted`, `disabled`
+**States:** `rest`, `hover`, `active`, `selected`, `disabled` (token-naming subset of the canonical [State dimension](/design-system/model/state) — token names typically use the user-facing surface states; `resolving` and `pending` are valid canonical values rarely needed as a final naming segment)
+
+> The visual "inverted" treatment — light-on-dark vs dark-on-light — is achieved through the **theme** layer (e.g. dark mode), not as a State value. State describes *interactive condition*; theme describes *surface direction*.
 
 ## Emphasis Scale in Naming
 
