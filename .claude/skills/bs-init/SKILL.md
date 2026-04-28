@@ -71,9 +71,11 @@ The second command must succeed and produce `/tmp/test-project/DESIGN.md` with a
 - `.claude/rules/` and `.claude/commands/` scaffolding. Cross-repo rules live in field-notes; consumers reference them via the `field-notes-toolkit` plugin install path rather than receiving a copy.
 - Prism MCP `.mcp.json` setup. Configure separately per `content/design-system/prism.mdx`.
 
-## Self-check
+## Self-review
 
-Before reporting `bs-init` done:
+Before declaring done, run the self-review protocol from `_foundations/SELF-REVIEW.md`.
+
+bs-init-specific checks before reporting done:
 1. Re-read `--name` and `--target` from the invocation. Confirm all scaffold files were written.
 2. Run the round-trip recipe above; if `bs-design-md --from-dimensional` exits non-zero, the scaffold is broken — surface the error verbatim.
 3. List what wasn't checked: replacing placeholder anchor colours, customising the five-dimensional vocabulary, wiring CI, configuring the toolkit npm-link.
