@@ -35,11 +35,13 @@ description: >-
 
 ## Dimension Decision Matrix
 
-| Question | Yes --> Dimension | Modes |
-|----------|-------------------|-------|
-| Interactive? | `state` + `emphasis` | state: rest/hover/active/selected/disabled/resolving; emphasis: high/medium/low |
-| Conveys meaning? | `sentiment` | neutral/warning/highlight/new/success/error |
-| Has size variants? | `size` | xs/sm/md/lg/xl |
+| Question | Yes --> Dimension |
+|----------|-------------------|
+| Interactive? | `state` + `emphasis` |
+| Conveys meaning? | `sentiment` |
+| Has size variants? | `size` |
+
+For canonical value lists per dimension, see [`_foundations/DIMENSIONAL-MODEL.md`](_foundations/DIMENSIONAL-MODEL.md).
 
 ## Size Scale Reference
 
