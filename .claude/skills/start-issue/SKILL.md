@@ -37,3 +37,7 @@ When the user invokes `/start-issue`, follow these steps:
 
 - Open the PR against `main`.
 - If the `/coderabbit:review` command is available, run it after creating the PR.
+
+## Self-review
+
+Before declaring done, run the self-review protocol from `_foundations/SELF-REVIEW.md`.
