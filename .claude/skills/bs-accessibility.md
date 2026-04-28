@@ -195,3 +195,7 @@ NEXT STEPS:
 | `bs-component-api` | State dimension (disabled, resolving) must map correctly to aria attributes |
 
 See your project's design system documentation for the full accessibility audit reference.
+
+## Self-review
+
+Before declaring done, run the self-review protocol from `_foundations/SELF-REVIEW.md`.
