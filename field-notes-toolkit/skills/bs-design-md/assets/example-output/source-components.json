@@ -1,0 +1,80 @@
+{
+  "button": {
+    "backgroundColor": "{colors.primary}",
+    "textColor": "{colors.on-primary}",
+    "typography": "{typography.label-md}",
+    "rounded": "{rounded.md}",
+    "padding": "{spacing.sm} {spacing.md}",
+    "height": "40px"
+  },
+  "button-hover": {
+    "backgroundColor": "{colors.primary-hover}",
+    "textColor": "{colors.on-primary}",
+    "typography": "{typography.label-md}",
+    "rounded": "{rounded.md}",
+    "padding": "{spacing.sm} {spacing.md}",
+    "height": "40px"
+  },
+  "button-active": {
+    "backgroundColor": "{colors.primary-active}",
+    "textColor": "{colors.on-primary}",
+    "typography": "{typography.label-md}",
+    "rounded": "{rounded.md}",
+    "padding": "{spacing.sm} {spacing.md}",
+    "height": "40px"
+  },
+  "button-disabled": {
+    "backgroundColor": "{colors.primary-disabled}",
+    "textColor": "{colors.on-primary}",
+    "typography": "{typography.label-md}",
+    "rounded": "{rounded.md}",
+    "padding": "{spacing.sm} {spacing.md}",
+    "height": "40px"
+  },
+  "button-warning": {
+    "backgroundColor": "{colors.warning}",
+    "textColor": "{colors.on-warning}",
+    "typography": "{typography.label-md}",
+    "rounded": "{rounded.md}",
+    "padding": "{spacing.sm} {spacing.md}",
+    "height": "40px"
+  },
+  "button-warning-hover": {
+    "backgroundColor": "{colors.warning-hover}",
+    "textColor": "{colors.on-warning}",
+    "typography": "{typography.label-md}",
+    "rounded": "{rounded.md}",
+    "padding": "{spacing.sm} {spacing.md}",
+    "height": "40px"
+  },
+  "button-sm": {
+    "backgroundColor": "{colors.primary}",
+    "textColor": "{colors.on-primary}",
+    "typography": "{typography.body-sm}",
+    "rounded": "{rounded.md}",
+    "padding": "{spacing.xs} {spacing.sm}",
+    "height": "32px"
+  },
+  "button-lg": {
+    "backgroundColor": "{colors.primary}",
+    "textColor": "{colors.on-primary}",
+    "typography": "{typography.body-md}",
+    "rounded": "{rounded.md}",
+    "padding": "{spacing.md} {spacing.lg}",
+    "height": "48px"
+  },
+  "input": {
+    "backgroundColor": "{colors.surface}",
+    "textColor": "{colors.fg}",
+    "typography": "{typography.body-md}",
+    "rounded": "{rounded.md}",
+    "padding": "{spacing.sm} {spacing.md}",
+    "height": "40px"
+  },
+  "card": {
+    "backgroundColor": "{colors.surface-elevated}",
+    "textColor": "{colors.fg}",
+    "rounded": "{rounded.lg}",
+    "padding": "{spacing.lg}"
+  }
+}

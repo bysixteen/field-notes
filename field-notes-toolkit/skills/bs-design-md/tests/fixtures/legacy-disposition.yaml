@@ -1,0 +1,20 @@
+version: 1
+sections:
+  - heading: "## Overview"
+    disposition: g
+  - heading: "## Colors"
+    disposition: g
+  - heading: "## Typography"
+    disposition: g
+  - heading: "## The Five Dimensions"
+    disposition: p
+  - heading: "## Spacing"
+    disposition: g
+  - heading: "## Component Size Scale"
+    disposition: p
+  - heading: "## Identity"
+    disposition: p
+  - heading: "## Aesthetic direction"
+    disposition: p
+  - heading: "## Stale Section"
+    disposition: s

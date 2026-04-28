@@ -1,0 +1,22 @@
+{
+  "name": "field-notes-toolkit",
+  "version": "0.1.0",
+  "description": "The bysixteen design-system toolkit, sliced from the field-notes reference repo.",
+  "type": "module",
+  "files": [
+    ".claude-plugin/",
+    "skills/",
+    "scripts/",
+    "README.md"
+  ],
+  "scripts": {
+    "emit-design-md": "node scripts/emit-design-md.mjs"
+  },
+  "author": "Daniel Cork <daniel@bysixteen.co.uk>",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/bysixteen/field-notes",
+    "directory": "field-notes-toolkit"
+  }
+}
