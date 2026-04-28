@@ -43,3 +43,11 @@ Four domains: `design-system`, `principles`, `claude`, `platform`. Each has its 
 
 Static site on GitHub Pages. Push to `main` triggers deploy.
 Live at: `https://bysixteen.github.io/field-notes/`
+
+## Orchestration docs (workspace-level, not tracked here)
+
+ROADMAP.md, FIX-MISSING-ELEMENTS.md, PHASE-6-EXECUTION-CONTRACTS.md
+live one level above this worktree (workspace parent), NOT in this repo.
+Intentional — orchestration scratch that evolves fast, doesn't need team consensus.
+If a prompt references one of these and the path isn't in your worktree,
+look at the workspace parent.
