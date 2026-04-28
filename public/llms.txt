@@ -28,7 +28,7 @@ Context engineering, CLAUDE.md playbook, Claude Code setup, workflow architectur
 - [Dimensional Systems and DESIGN.md](/claude/dimensional-and-design-md): How a dimensional design system projects into the Google DESIGN.md spec, what is preserved, what is sidecarred, and the layered context stack that makes both legible to an agent.
 - [Claude & AI Workflows](/claude): Patterns for working effectively with AI coding agents — from context engineering to workflow architectures.
 - [Research to Validation Pathway](/claude/research-to-validation): A five-step pathway connecting prototypes to source research.
-- [Skills Catalogue](/claude/skills-catalogue): A directory of available Claude skills with descriptions, trigger phrases, and usage guidance.
+- [Skills Catalogue](/claude/skills-catalogue): A directory of available skills in the field-notes toolkit — bs-* design-system skills, bs-init bootstrap, and the start-issue / start-work workflow skills.
 - [Skill-Based Automation](/claude/skills-patterns): Patterns for creating reusable Claude skills to automate repetitive workflows.
 - [Workflow Architectures](/claude/workflow-architectures): Survey of proven Claude workflow patterns — from simple skill invocation to multi-agent orchestration.
 
