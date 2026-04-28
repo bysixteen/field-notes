@@ -28,6 +28,7 @@
     "typescript": "^5.9.3"
   },
   "devDependencies": {
+    "@types/culori": "^4.0.1",
     "tsx": "^4.19.3"
   }
 }
