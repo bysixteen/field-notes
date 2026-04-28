@@ -5,6 +5,18 @@ description: Begin work on a GitHub issue in the field-notes repo. Creates a bra
 
 # Start Issue — Field Notes
 
+## Inputs
+
+- A GitHub issue number (the user passes this when invoking `/start-issue <n>`). The issue must exist and be readable via `gh issue view <n>`.
+- A clean working tree on `main` (no uncommitted changes).
+
+## Output
+
+- A new branch off `main` using one of the allowed prefixes (`feat/`, `fix/`, `docs/`, `refactor/`, `chore/`).
+- One or more Conventional Commits implementing the change.
+- A passing `npm run build`.
+- A pull request opened against `main` referencing the issue.
+
 When the user invokes `/start-issue`, follow these steps:
 
 ## 1. Understand the issue

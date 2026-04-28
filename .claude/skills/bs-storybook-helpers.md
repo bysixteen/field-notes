@@ -15,6 +15,17 @@ description: >-
 
 - [DIMENSIONAL-MODEL](_foundations/DIMENSIONAL-MODEL.md)
 
+## Inputs
+
+- A documentation page or section that needs to be authored (typically by `bs-storybook-ds`, `bs-storybook-foundations`, or `bs-storybook-docs`).
+- The visual pattern needed (swatch, ramp, token table, callout, anatomy, do/don't, etc.).
+- For Figma documentation pages: the helper-to-Figma-component mapping below.
+
+## Output
+
+- The catalogue itself: a lookup answering "which helper renders this pattern, with which props". No files are written by this skill — it is a reference loaded by the orchestrators above.
+- Callers consume the catalogue to produce `.stories.tsx` files in `stories/` that import from `stories/helpers/` and (where applicable) the matching `.documentation/` Figma component.
+
 These components live in `stories/helpers/` and are the **only** way to build documentation pages. Do not write inline styles or create local presentation components. Every visual pattern has a helper.
 
 ## Page Structure

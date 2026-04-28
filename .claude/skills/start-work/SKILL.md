@@ -5,6 +5,19 @@ description: Start a working session in the field-notes repo. Writes a work brie
 
 # Start Work — Field Notes
 
+## Inputs
+
+- A free-form description of the work (no GitHub issue required — that is the difference vs `/start-issue`).
+- A clean working tree on `main` (no uncommitted changes).
+
+## Output
+
+- `.context/work-brief.md` containing **What**, **Why**, and **Scope** sections (1–3 sentences each).
+- A new branch off `main` using one of the allowed prefixes (`feat/`, `fix/`, `docs/`, `refactor/`, `chore/`).
+- One or more Conventional Commits implementing the change.
+- A passing `npm run build`.
+- **No** pull request — the user opens it manually once coding is complete.
+
 When the user invokes `/start-work`, follow these steps:
 
 ## 1. Write a work brief

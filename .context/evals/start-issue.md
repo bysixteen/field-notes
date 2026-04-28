@@ -1,8 +1,8 @@
 # eval: start-issue
 
 - **Path:** `.claude/skills/start-issue/SKILL.md`
-- **Total:** 5 / 8
-- **Verdict:** Adequate
+- **Total:** 8 / 8
+- **Verdict:** Strong
 
 ## Rubric
 
@@ -10,13 +10,12 @@
 | --- | --- | --- |
 | frontmatter | 2 / 2 | name + description present (160 char description) |
 | trigger | 2 / 2 | trigger + 1 reinforcer (skip/example) |
-| output | 1 / 2 | one passing output mention |
-| inputs | 0 / 2 | body never names required inputs |
+| output | 2 / 2 | explicit output / deliverables section |
+| inputs | 2 / 2 | explicit input / preconditions section |
 
 ## Recommendations
 
-- Add an explicit Output / Deliverables section naming the artefacts the skill produces.
-- Add an explicit Inputs / Preconditions section naming what the skill expects from the caller.
+- No rubric-level improvements; behavioural eval (API-driven) would be needed for deeper signal.
 
 ---
 
