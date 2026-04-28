@@ -36,9 +36,9 @@ Button is the reference point. Every other component API is derived by asking: w
 ### Types
 
 ```tsx
-type ButtonState     = 'rest' | 'hover' | 'active' | 'disabled' | 'resolving' | 'pending';
+type ButtonState     = 'rest' | 'hover' | 'active' | 'selected' | 'disabled' | 'resolving' | 'pending';
 type ButtonEmphasis  = 'high' | 'medium' | 'low';
-type ButtonSentiment = 'neutral' | 'warning' | 'highlight' | 'new' | 'success' | 'error';
+type ButtonSentiment = 'neutral' | 'warning' | 'highlight' | 'new' | 'positive';
 type ButtonSize      = 'xs' | 'sm' | 'md' | 'lg' | 'xl';
 ```
 
@@ -97,7 +97,7 @@ Use these exact values. Do not invent synonyms.
 |---|---|---|
 | `state` | `rest` `hover` `active` `selected` `disabled` `resolving` `pending` | Component is interactive |
 | `emphasis` | `high` `medium` `low` | Multiple visual weights exist |
-| `sentiment` | `neutral` `warning` `highlight` `new` `success` `error` | Conveys communicative meaning |
+| `sentiment` | `neutral` `warning` `highlight` `new` `positive` | Conveys communicative meaning |
 | `size` | `xs` `sm` `md` `lg` `xl` | Has size variants |
 | `structure` | *(no input — always applied)* | Never expose as a prop |
 

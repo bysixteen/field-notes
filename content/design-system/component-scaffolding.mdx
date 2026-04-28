@@ -23,9 +23,9 @@ Create a types file with union types for each dimension:
 
 ```tsx
 // button.types.ts
-export type ButtonState     = 'rest' | 'hover' | 'active' | 'disabled' | 'resolving';
+export type ButtonState     = 'rest' | 'hover' | 'active' | 'selected' | 'disabled' | 'resolving' | 'pending';
 export type ButtonEmphasis  = 'high' | 'medium' | 'low';
-export type ButtonSentiment = 'neutral' | 'warning' | 'highlight' | 'new' | 'success' | 'error';
+export type ButtonSentiment = 'neutral' | 'warning' | 'highlight' | 'new' | 'positive';
 export type ButtonSize      = 'xs' | 'sm' | 'md' | 'lg' | 'xl';
 ```
 

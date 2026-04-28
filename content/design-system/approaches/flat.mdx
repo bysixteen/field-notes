@@ -18,8 +18,8 @@ One layer. CSS custom properties with meaningful names:
 :root {
   --button-bg-rest: #3b82f6;
   --button-bg-hover: #2563eb;
-  --input-border-focus: #3b82f6;
-  --input-border-error: #ef4444;
+  --input-border-active: #3b82f6;
+  --input-border-pending: #f59e0b;
 }
 ```
 
@@ -31,7 +31,7 @@ One layer. CSS custom properties with meaningful names:
 |---------|----------|
 | component | button, input, card, alert, modal |
 | part | bg, border, text, shadow, height, padding-x, font-size, radius |
-| state | rest, hover, focus, active, disabled, error |
+| state | rest, hover, active, selected, disabled, resolving, pending |
 
 Sizes use a suffix: `--input-height-sm`, `--input-height-md`, `--input-height-lg`
 

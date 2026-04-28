@@ -1585,172 +1585,205 @@ Synthesized documents are living artifacts. As research evolves — new user int
 
 ### Skills Catalogue
 
-*A directory of available Claude skills with descriptions, trigger phrases, and usage guidance.*
+*A directory of available skills in the field-notes toolkit — bs-* design-system skills, bs-init bootstrap, and the start-issue / start-work workflow skills.*
 
 Skills are reusable instruction sets that Claude follows for specific workflows. Instead of re-explaining the same process each conversation, you invoke a skill and the agent follows a tested, consistent playbook.
 
-For how skills work and how to create them, see [Skill-Based Automation](/claude/skills-patterns).
+This page catalogues the **field-notes toolkit** — the skills bundled in `dist/field-notes-toolkit.plugin`. For how skills work in general and how to create them, see [Skill-Based Automation](/claude/skills-patterns).
+
+For agent context, see also [DESIGN.md and the Dimensional Model](/claude/dimensional-and-design-md).
 
 ## Quick Start
 
+## The `_foundations/` layer
+
+Every `bs-*` skill leans on a shared mental-model layer in `.claude/skills/_foundations/`. Five files:
+
+- **`DESIGN-INTENT.md`** — what the toolkit is for and the assumptions every skill is built on.
+- **`DIMENSIONAL-MODEL.md`** — the Sentiment × Emphasis × Size × Structure × State vocabulary, the canonical value lists, and the decision order.
+- **`TOKEN-ARCHITECTURE.md`** — the four-layer cascade (primitive → semantic → component → variant) and how aliases flow through it.
+- **`QUALITY-GATES.md`** — severity model and verdict logic shared by `bs-review`, `bs-accessibility`, and the audit skills.
+- **`SELF-REVIEW.md`** — the four-step protocol every skill calls before declaring done (re-read brief → list assumptions → list what wasn't checked → green-light gate).
+
+If a skill references "the dimensional model" or "the cascade", it points here.
+
 ## Available Skills
 
-### start-issue
+### Specification
+
+#### bs-design-md
+
+**Invoke:** `/bs-design-md` | **Status:** Available
+
+Projects a project's tokens and components into the spec-compliant Google `DESIGN.md` format with paired DTCG `tokens.json` sidecar. The closer for the design loop — three modes:
+
+- **Extract mode** — point at a live site URL, get a `DESIGN.md` plus DTCG `tokens.json`. Bootstraps a new product from a reference.
+- **Project mode** (`--tokens` + `--components`) — take an existing DTCG `tokens.json` plus a hand-authored `components.json`, emit the spec-compliant pair.
+- **Dimensional mode** (`--from-dimensional <root>`) — walk the consumer's `tokens.json`, `components.json` (with `applies_to`), and the five model MDX files, then synthesise the flat per-variant components block.
+
+Outputs include preservation markers (`<!-- bs-design-md:generated:start --> … :end -->`) so consumer-authored prose below `:end` survives regenerations.
+
+`bs-design` is a one-line redirect stub to this skill.
+
+---
+
+#### bs-tokens
+
+**Invoke:** `/bs-tokens` | **Status:** Available
+
+Consume, audit, and reason about design tokens. Covers severity tiers (S0–S3), DTCG conformance, alias-chain integrity, and the Token Trap discipline (never load whole token system into context — query specific tokens via the manifest).
+
+---
+
+### Bootstrap
+
+#### bs-init
+
+**Invoke:** `bs-init <name> <dir>` | **Status:** Available
+
+Scaffolds a fresh project's canonical four-piece context stack so it can immediately consume `bs-design-md --from-dimensional`:
+
+| Artefact | Purpose |
+|----------|---------|
+| `tokens.json` | DTCG 2025.10 token source. Six placeholder anchor colours. Replace with real values. |
+| `components.json` | Five canonical primitives (`button`, `input`, `badge`, `alert`, `card`) declared with `applies_to: all`. |
+| `content/design-system/model/{sentiment,emphasis,size,state,structure}.mdx` | The five-dimensional vocabulary, each with `dimensional_values: { default, values }` frontmatter. |
+| `CLAUDE.md` | Starter system-prompt pointing at the field-notes toolkit and `llms.txt`. |
+| `DESIGN.md` | Empty preservation markers ready for the first `bs-design-md` emit. |
+
+After `bs-init`, run `bs-design-md --from-dimensional <root>` against the same directory and the scaffold produces a valid `DESIGN.md`.
+
+---
+
+### Component creation
+
+#### bs-component-api
+
+**Invoke:** `/bs-component-api` | **Status:** Available
+
+Defines a component's consumer-facing contract — props, types, defaults, slots. Enforces the four-input categories rule (Dimension / Content / Slot / Event), the enums-not-booleans rule, the every-input-has-a-default rule, and the dimension-not-visual naming rule.
+
+Audit checklist included for existing component APIs.
+
+---
+
+#### bs-component-scaffold
+
+**Invoke:** `/bs-component-scaffold` | **Status:** Available
+
+Generates the standard six files from a `bs-component-api` output: `component.tsx`, `component.types.ts`, `component.css` (or `.scss`), `component.stories.tsx`, `component.test.tsx`, `index.ts`.
+
+---
+
+#### bs-css
+
+**Invoke:** `/bs-css` | **Status:** Available
+
+Audits component CSS against the token system. Flags hardcoded values, broken alias chains, missing state coverage, and wrong cascade direction.
+
+---
+
+#### bs-html
+
+**Invoke:** `/bs-html` | **Status:** Available
+
+Decides element semantics and ARIA for a component. Maps component types to the correct HTML primitive, role, and key ARIA attributes (`button` / `link` / `dialog` / `tab` / `progressbar` / etc.).
+
+---
+
+### Review
+
+#### bs-review
+
+**Invoke:** `/bs-review` | **Status:** Available
+
+Orchestrates a six-stage scored component review across `bs-component-api`, `bs-react-patterns`, `bs-html`, `bs-accessibility`, `bs-tokens`, and `bs-css`. Produces a structured findings file with severities and a verdict (ship / fix / block).
+
+---
+
+#### bs-accessibility
+
+**Invoke:** `/bs-accessibility` | **Status:** Available
+
+WCAG 2.2 AA audit framework structured around the bracket model (B1 Display / B2 Interactive / B3 Form / B4 Composite / B5 Data / B6 Overlay). Returns a checklist of violations with severities and remediation notes.
+
+---
+
+#### bs-react-patterns
+
+**Invoke:** `/bs-react-patterns` | **Status:** Available
+
+Reviews component code against modern React idioms — hook rules, prop drilling, render-time vs effect-time work, suspense boundaries, ref forwarding.
+
+---
+
+#### bs-testing
+
+**Invoke:** `/bs-testing` | **Status:** Available
+
+The unit + accessibility + visual-regression triad. Provides templates for `@testing-library/react` unit tests, `jest-axe` / `@axe-core/playwright` automation, and Storybook+Playwright snapshot loops.
+
+---
+
+### Storybook documentation
+
+#### bs-storybook-ds
+
+**Invoke:** `/bs-storybook-ds` | **Status:** Available
+
+Orchestrates a complete Storybook design-system documentation pass — calls `bs-storybook-foundations` then `bs-storybook-docs` for each component, using `bs-storybook-helpers` patterns throughout.
+
+---
+
+#### bs-storybook-foundations
+
+**Invoke:** `/bs-storybook-foundations` | **Status:** Available
+
+Documents primitives (colours, typography, spacing, radius, shadows) on Storybook foundation pages.
+
+---
+
+#### bs-storybook-docs
+
+**Invoke:** `/bs-storybook-docs` | **Status:** Available
+
+Documents an individual component on a Storybook docs page — anatomy, prop table, do/don't, usage examples, all dimension permutations.
+
+---
+
+#### bs-storybook-helpers
+
+**Invoke:** `/bs-storybook-helpers` | **Status:** Available
+
+The catalogue of helper components used across `bs-storybook-foundations` and `bs-storybook-docs`: `DocPage`, `TokenTable`, `Swatch`, `PropsTable`, `Anatomy`, `DoAndDont`, etc.
+
+---
+
+### Workflow
+
+#### start-issue
 
 **Invoke:** `/start-issue` | **Status:** Available
 
-Bootstraps work on an existing GitHub issue. Creates a correctly named branch, sets up commit conventions, and establishes the PR workflow.
+Bootstraps work on an existing GitHub issue. Creates a correctly named branch, plans the approach, implements changes, verifies the build, and opens a PR against `main`.
 
-**When to use it:** When you have a GitHub issue number and want to start coding.
-
-**What it asks you:** The issue number or URL.
-
-**What it produces:**
-- A branch with the correct prefix (`feat/`, `fix/`, `chore/`, etc.)
-- Commit messages following Conventional Commits format
-- A PR workflow with automated review first, then manual review
+**What it asks you:** the issue number or URL.
 
 ---
 
-### start-work
+#### start-work
 
 **Invoke:** `/start-work` | **Status:** Available
 
-Begins a new piece of work that does not have an existing GitHub issue. Captures context as a written brief, sets up the branch, and guides commits.
+Begins a new piece of work that does not have an existing GitHub issue. Captures context as a written brief, sets up the branch, and guides commits — does NOT open a PR.
 
-**When to use it:** When starting from scratch — a new feature idea, a refactor, an experiment — without a formal issue.
-
-**What it asks you:** What you are trying to accomplish, the scope, and any constraints.
-
-**What it produces:**
-- A context brief documenting the work
-- A correctly named branch
-- Guided commit workflow
+**What it asks you:** what you are trying to accomplish, the scope, and any constraints.
 
 ---
 
-### add-domain
+## Installing skills
 
-**Invoke:** `/add-domain` | **Status:** Available
-
-Adds a new content domain to Field Notes following the full setup checklist.
-
-**When to use it:** When the knowledge base needs a new top-level section (e.g., a new discipline or topic area).
-
-**What it asks you:** The domain name and description.
-
-**What it produces:**
-- Source configuration in `source.config.ts`
-- Loader in `lib/source.ts`
-- Route files (`layout.tsx`, `page.tsx`)
-- Navigation link
-- Content directory with `meta.json` and `index.mdx`
-- Domain entry in the llms.txt generation script
-
----
-
-### add-page
-
-**Invoke:** `/add-page` | **Status:** Available
-
-Adds a new page to an existing Field Notes domain.
-
-**When to use it:** When you want to add a new topic page to an existing domain.
-
-**What it asks you:** The domain, page title, and description.
-
-**What it produces:**
-- An `.mdx` file with correct frontmatter
-- Updated `meta.json` with the new page entry
-- Regenerated `llms.txt` and `llms-full.txt`
-
----
-
-### review-uplift
-
-**Invoke:** `/review-uplift` | **Status:** Available
-
-Fetches all GitHub issues labelled `review-finding` for a specific component, groups fixes by file, sequences them respecting dependencies, and applies all changes in a single branch.
-
-**When to use it:** After a design system review has generated findings that need to be resolved.
-
-**What it asks you:** The component name.
-
-**What it produces:**
-- A branch with all fixes applied
-- Commits grouped logically by file
-- A PR ready for review
-
----
-
-### skill-creator
-
-**Invoke:** `/skill-creator` | **Status:** Available
-
-Creates new skills, modifies existing skills, runs evaluations to test them, and benchmarks performance.
-
-**When to use it:** When you need to encode a new workflow as a reusable skill, improve an existing skill, or verify a skill works correctly.
-
-**What it asks you:** What the skill should do, or which existing skill to modify.
-
-**What it produces:**
-- A `SKILL.md` file with name, description, triggers, and instructions
-- Evaluation results if testing was requested
-- Performance benchmarks if optimisation was requested
-
----
-
-### new-project
-
-**Invoke:** `/new-project` | **Status:** Planned
-
-Bootstraps a complete project from an empty directory to a running CI pipeline. Walks through an interview phase to gather decisions, then executes scaffolding phases.
-
-**When to use it:** When starting a brand new project — creating the repo, setting up the monorepo, wiring the first app.
-
-**What it will ask you:**
-- Project name and scope
-- Package manager preference
-- Framework choice
-- Monorepo vs single-repo
-- External services needed
-- Design system scope
-- Whether a Figma project is needed
-
-**What it will produce:**
-- A fully scaffolded repository following [Bootstrap Commands](/platform/bootstrap-commands)
-- CLAUDE.md and AI context configured
-- CI pipeline ready
-- Living documents initialised
-
----
-
-### new-figma-project
-
-**Invoke:** `/new-figma-project` | **Status:** Planned
-
-Scaffolds a Figma design system file with standard pages, token collections, and documentation structure using Figma MCP tools.
-
-**When to use it:** When setting up a new Figma file for a design system, whether as part of a new project or adding design tooling to an existing one.
-
-**What it will ask you:**
-- Project name
-- Color palette or brand color
-- Typography (heading and body font families)
-- Breakpoint targets and root font sizes
-- Component scope
-
-**What it will produce:**
-- Standard documentation pages (Cover, Color, Typography, Spacing, Border Radius, Components)
-- Token collections (3 primitive + 3 semantic)
-- Reusable documentation components (Header, Token Row, Section Header)
-- Variable-bound swatches on all token pages
-
-## Installing Skills
-
-Skills live at `~/.claude/skills/{skill-name}/SKILL.md`. To use a skill:
-
-Skills are portable — you can copy a skill directory between machines or share it with teammates. The skill's `SKILL.md` contains everything the agent needs.
+Skills ship in two distribution paths, mirroring the toolkit shape:
 
 ## See Also
 
@@ -4321,8 +4354,8 @@ One layer. CSS custom properties with meaningful names:
 :root {
   --button-bg-rest: #3b82f6;
   --button-bg-hover: #2563eb;
-  --input-border-focus: #3b82f6;
-  --input-border-error: #ef4444;
+  --input-border-active: #3b82f6;
+  --input-border-pending: #f59e0b;
 }
 ```
 
@@ -4334,7 +4367,7 @@ One layer. CSS custom properties with meaningful names:
 |---------|----------|
 | component | button, input, card, alert, modal |
 | part | bg, border, text, shadow, height, padding-x, font-size, radius |
-| state | rest, hover, focus, active, disabled, error |
+| state | rest, hover, active, selected, disabled, resolving, pending |
 
 Sizes use a suffix: `--input-height-sm`, `--input-height-md`, `--input-height-lg`
 
@@ -5871,9 +5904,9 @@ Button is the reference point. Every other component API is derived by asking: w
 ### Types
 
 ```tsx
-type ButtonState     = 'rest' | 'hover' | 'active' | 'disabled' | 'resolving' | 'pending';
+type ButtonState     = 'rest' | 'hover' | 'active' | 'selected' | 'disabled' | 'resolving' | 'pending';
 type ButtonEmphasis  = 'high' | 'medium' | 'low';
-type ButtonSentiment = 'neutral' | 'warning' | 'highlight' | 'new' | 'success' | 'error';
+type ButtonSentiment = 'neutral' | 'warning' | 'highlight' | 'new' | 'positive';
 type ButtonSize      = 'xs' | 'sm' | 'md' | 'lg' | 'xl';
 ```
 
@@ -5932,7 +5965,7 @@ Use these exact values. Do not invent synonyms.
 |---|---|---|
 | `state` | `rest` `hover` `active` `selected` `disabled` `resolving` `pending` | Component is interactive |
 | `emphasis` | `high` `medium` `low` | Multiple visual weights exist |
-| `sentiment` | `neutral` `warning` `highlight` `new` `success` `error` | Conveys communicative meaning |
+| `sentiment` | `neutral` `warning` `highlight` `new` `positive` | Conveys communicative meaning |
 | `size` | `xs` `sm` `md` `lg` `xl` | Has size variants |
 | `structure` | *(no input — always applied)* | Never expose as a prop |
 
@@ -6049,9 +6082,9 @@ Create a types file with union types for each dimension:
 
 ```tsx
 // button.types.ts
-export type ButtonState     = 'rest' | 'hover' | 'active' | 'disabled' | 'resolving';
+export type ButtonState     = 'rest' | 'hover' | 'active' | 'selected' | 'disabled' | 'resolving' | 'pending';
 export type ButtonEmphasis  = 'high' | 'medium' | 'low';
-export type ButtonSentiment = 'neutral' | 'warning' | 'highlight' | 'new' | 'success' | 'error';
+export type ButtonSentiment = 'neutral' | 'warning' | 'highlight' | 'new' | 'positive';
 export type ButtonSize      = 'xs' | 'sm' | 'md' | 'lg' | 'xl';
 ```
 
@@ -7048,9 +7081,9 @@ Each dimension gets its own variable collection. This keeps the collection list 
 ### Mode Naming
 
 Mode names use the exact vocabulary from the [Component API](/design-system/component-api):
-- Sentiment modes: `neutral`, `warning`, `highlight`, `new`, `success`, `error`
+- Sentiment modes: `neutral`, `warning`, `highlight`, `new`, `positive`
 - Emphasis modes: `high`, `medium`, `low`
-- State modes: `rest`, `hover`, `active`, `disabled`, `resolving`
+- State modes: `rest`, `hover`, `active`, `selected`, `disabled`, `resolving`, `pending`
 - Size modes: `xs`, `sm`, `md`, `lg`, `xl`
 
 ### Cascade Direction
@@ -7470,8 +7503,8 @@ The canonical five dimensions are:
 | Sentiment | Communicative intent (`neutral`, `highlight`, `positive`, `warning`, `new`) |
 | Emphasis | Visual weight (`low`, `medium`, `high`) |
 | Size | Spatial footprint — also covers compact layouts via smaller values |
-| Structure | Visual form (`filled`, `outlined`, `ghost`) |
-| State | Interaction state (`default`, `hover`, `active`, `disabled`, `loading`) |
+| Structure | Component-specific anatomy (e.g. `standard`, `text`); never exposed as a runtime prop |
+| State | Interaction state (`rest`, `hover`, `active`, `selected`, `disabled`, `resolving`, `pending`) |
 
 ## Cross-references
 
@@ -7779,7 +7812,7 @@ Common structure modes include:
 
 | Value | Meaning |
 |-------|---------|
-| `Mode 1` | Default structural layout |
+| `standard` | Default structural layout |
 | `text` | Text-only variant (no icon, no badge) |
 
 ## When Decided
@@ -8771,7 +8804,7 @@ Visual regression testing catches unintended visual changes by comparing screens
 
 ```tsx
 
-const SENTIMENTS = ['neutral', 'warning', 'highlight', 'success', 'error'];
+const SENTIMENTS = ['neutral', 'warning', 'highlight', 'new', 'positive'];
 const EMPHASES = ['high', 'medium', 'low'];
 
 for (const sentiment of SENTIMENTS) {
@@ -9204,7 +9237,9 @@ Semantic tokens are **purpose-driven aliases**. They describe *what* a value mea
 
 **Elements:** `page`, `foreground`, `background`, `border`, `overlay`, `space`, `radii`, `sizes`
 
-**States:** `rest`, `hover`, `active`, `inverted`, `disabled`
+**States:** `rest`, `hover`, `active`, `selected`, `disabled` (token-naming subset of the canonical [State dimension](/design-system/model/state) — token names typically use the user-facing surface states; `resolving` and `pending` are valid canonical values rarely needed as a final naming segment)
+
+> The visual "inverted" treatment — light-on-dark vs dark-on-light — is achieved through the **theme** layer (e.g. dark mode), not as a State value. State describes *interactive condition*; theme describes *surface direction*.
 
 ## Emphasis Scale in Naming
 
@@ -9392,27 +9427,33 @@ Two shell scripts synchronise design tokens with Figma through the [PRISM](/desi
 | Script | Direction | Purpose |
 |--------|-----------|---------|
 | `figma-push.sh` | Local → Figma | Push generated token collections into Figma as variables |
-| `figma-pull.sh` | Figma → Local | Pull anchor colors from Figma into `packages/ui/anchors.json` |
+| `figma-pull.sh` | Figma → Local | Pull anchor variables from Figma into `generated/figma-anchors.json` |
 
-Both scripts read connection configuration from `.mcp.json` at the project root and discover MCP tool names at runtime — nothing is hardcoded.
+Both scripts read connection configuration from `.mcp.json` at the project root and call Prism tools by canonical name through the `scripts/_prism-call.mjs` helper. Nothing is hardcoded — `figma.fileId` is resolved at runtime, never embedded in the scripts.
 
 ---
 
 ## Prerequisites
 
 - **jq** — JSON processor (`brew install jq`)
-- **manus-mcp-cli** — MCP client CLI for tool discovery and invocation
-- **.mcp.json** — project-root config file containing Figma file ID and MCP server settings
+- **node ≥ 22** — runs the `_prism-call.mjs` helper
+- **Prism MCP plugin** — running and connected to Figma. The plugin must be open with the WebSocket bridge listening on `ws://localhost:7890`.
+- **`.mcp.json`** — project-root config containing the Prism server entry and the Figma file ID.
 
 ### `.mcp.json` structure
+
+The canonical shape — values are project-specific. See [PRISM](/design-system/prism) for the full configuration reference.
 
 ```jsonc
 {
   "mcpServers": {
-    "figma": {
-      "command": "npx",
-      "args": ["-y", "figma-mcp-server"],
-      "env": { "FIGMA_ACCESS_TOKEN": "<token>" }
+    "prism": {
+      "command": "node",
+      "args": ["/path/to/prism/dist/mcp/index.js"],
+      "env": {
+        "FIGMA_PAT": "<your-personal-access-token>",
+        "FIGMA_MCP_PORT": "7890"
+      }
     }
   },
   "figma": {
@@ -9420,6 +9461,8 @@ Both scripts read connection configuration from `.mcp.json` at the project root 
   }
 }
 ```
+
+> **v0.3.0+:** Once Prism is published to npm, replace `command`/`args` with `"command": "npx", "args": ["-y", "prism-figma-mcp"]`.
 
 ---
 
@@ -9430,19 +9473,22 @@ Pushes locally-generated token JSON to Figma as variable collections.
 ### Usage
 
 ```bash
-# Push from a file
-./scripts/figma-push.sh tokens.json
+# Push from the default input file
+./scripts/figma-push.sh                              # uses generated/figma-variables.json
+
+# Push from an explicit file
+./scripts/figma-push.sh path/to/variables.json
 
 # Push from stdin
-cat tokens.json | ./scripts/figma-push.sh
+cat variables.json | ./scripts/figma-push.sh
 
-# Dry run — show preflight checks and payload without sending
-./scripts/figma-push.sh --dry-run tokens.json
+# Dry run — show planned tool calls and payload, send nothing
+./scripts/figma-push.sh --dry-run
 ```
 
 ### Input format
 
-The input JSON must follow the PRISM push payload schema. The script injects `fileId` automatically from `.mcp.json`.
+The input JSON follows the Prism push payload schema. The script injects `fileId` from `.mcp.json` automatically.
 
 ```json
 {
@@ -9465,15 +9511,21 @@ The input JSON must follow the PRISM push payload schema. The script injects `fi
 }
 ```
 
+### Tools invoked (Prism, by canonical name)
+
+`check_connection`, `set_target_file`, `get_variable_collections`, `get_collection_variables`, `create_variables_batch`, `update_variables_batch`.
+
 ### Preflight checks
 
 Before pushing, the script verifies:
 
 1. `jq` is installed
-2. `.mcp.json` exists and contains `figma.fileId`
-3. `manus-mcp-cli` is available
-4. MCP server is reachable (via tool discovery)
-5. A push-capable tool exists on the server
+2. `node` is on PATH
+3. `.mcp.json` exists at the repo root
+4. `scripts/_prism-call.mjs` helper exists
+5. `.mcp.json` contains `figma.fileId`
+6. Prism `check_connection` returns ok
+7. Prism `set_target_file` accepts the configured `fileId`
 
 If any check fails the script exits with a descriptive error.
 
@@ -9481,21 +9533,24 @@ If any check fails the script exits with a descriptive error.
 
 ## figma-pull.sh
 
-Pulls anchor color tokens from Figma and writes them to `packages/ui/anchors.json`.
+Pulls anchor variables from Figma and writes them to `generated/figma-anchors.json`.
 
 ### Usage
 
 ```bash
-# Pull anchors from Figma
+# Pull the default "Anchors" collection
 ./scripts/figma-pull.sh
 
-# Dry run — show preflight checks without pulling
+# Override the collection name
+./scripts/figma-pull.sh --collection Primitives
+
+# Dry run — show planned tool calls, fetch nothing
 ./scripts/figma-pull.sh --dry-run
 ```
 
 ### Output
 
-The script writes exclusively to `packages/ui/anchors.json`. It never modifies `.ts` source files. The output follows the PRISM pull response schema:
+The script writes exclusively to `generated/figma-anchors.json`. It never modifies `.ts` source files. The output follows the Prism pull-response shape:
 
 ```json
 {
@@ -9514,56 +9569,65 @@ The script writes exclusively to `packages/ui/anchors.json`. It never modifies `
 }
 ```
 
+### Tools invoked (Prism, by canonical name)
+
+`check_connection`, `set_target_file`, `get_variable_collections`, `get_collection_variables`.
+
 ### Preflight checks
 
 Before pulling, the script verifies:
 
 1. `jq` is installed
-2. `.mcp.json` exists and contains `figma.fileId`
-3. `manus-mcp-cli` is available
-4. MCP server is reachable (via tool discovery)
-5. A pull-capable tool exists on the server
+2. `node` is on PATH
+3. `.mcp.json` exists at the repo root
+4. `scripts/_prism-call.mjs` helper exists
+5. `.mcp.json` contains `figma.fileId`
+6. Prism `check_connection` returns ok
+7. The named collection (default `Anchors`) exists in the file
 
 ---
 
-## Tool discovery
+## Tool calling
 
-Both scripts follow the PRISM tool discovery protocol. Before executing any operation they run:
+Both scripts call Prism tools by canonical name through the `scripts/_prism-call.mjs` helper — there is no runtime tool discovery. The helper opens a WebSocket to `ws://localhost:7890` (configured via `FIGMA_MCP_PORT` in `.mcp.json`) and invokes `tools/call` with the named tool.
 
-```bash
-manus-mcp-cli tool list --server figma-mcp
+The standard preamble for every script run is:
+
+```
+prism_call check_connection {}
+prism_call set_target_file { "fileId": "<from .mcp.json>" }
 ```
 
-The discovered tools are logged and matched against expected patterns:
+After this preamble, the script issues the operation-specific batched calls (push: `create_variables_batch` and `update_variables_batch` per collection; pull: `get_variable_collections` then `get_collection_variables`).
 
-| Canonical operation | Match patterns |
-|---------------------|----------------|
-| `push_tokens` | `push_tokens`, `create_variables`, `set_variable_value` |
-| `pull_variables` | `pull_variables`, `get_variables`, `get_variable` |
-
-If no matching tool is found the script aborts with the full list of available tools for debugging.
+If the bridge is unreachable, `check_connection` fails first — verify the Prism plugin is open in Figma and the WebSocket bridge is on `ws://localhost:7890`.
 
 ---
 
 ## Error handling
 
-All errors are prefixed with `[PRISM]` for easy identification in logs.
+All errors are prefixed with `[prism]` for easy identification in logs.
 
 | Error | Cause | Resolution |
 |-------|-------|------------|
-| `jq is required but not found` | jq not installed | `brew install jq` |
-| `.mcp.json not found` | Missing config file | Create `.mcp.json` at project root |
-| `figma.fileId not set` | Config missing file ID | Add `figma.fileId` to `.mcp.json` |
-| `Failed to list tools` | MCP server unreachable | Check server is running and `.mcp.json` config |
-| `No push/pull-capable tool found` | Server missing expected tools | Verify MCP server version and capabilities |
-| `Input is not valid JSON` | Malformed token file | Validate input with `jq . tokens.json` |
+| `[prism] jq not found (brew install jq)` | jq not installed | `brew install jq` |
+| `[prism] node not found (need node ≥ 22)` | node not on PATH or version too old | Install node ≥ 22 |
+| `[prism] .mcp.json missing at <path>` | Missing config file | Create `.mcp.json` at project root |
+| `[prism] helper missing: scripts/_prism-call.mjs` | Helper deleted or repo incomplete | Restore from git |
+| `[prism] figma.fileId not set in .mcp.json` | Config missing file ID | Add `figma.fileId` to `.mcp.json` |
+| `[prism] input not found: <path>` | Push input file missing | Create input or use stdin |
+| `[prism] input is not valid JSON` | Malformed input | Validate with `jq . <file>` |
+| `[prism] collection "<name>" not found in file <fileId>` | Pull target missing | Create collection in Figma, or pass `--collection` |
+
+Connection-level failures (`check_connection`) surface from the helper with the underlying WebSocket error — first thing to check is that the Prism plugin is running in the Figma desktop app.
 
 ---
 
 ## See also
 
-- [Token Transform Pipeline](/design-system/token-transform-pipeline) — generates the token JSON that `figma-push.sh` consumes
-- [Token Audit](/design-system/token-audit) — validates token integrity before pushing
+- [PRISM](/design-system/prism) — the bridge contract: connection protocol, payload schemas, and the full 71-tool surface.
+- [Token Transform Pipeline](/design-system/token-transform-pipeline) — generates the token JSON that `figma-push.sh` consumes.
+- [Token Audit](/design-system/token-audit) — validates token integrity before pushing.
 
 ### Tooling
 
@@ -9620,9 +9684,9 @@ Seven top-level fields. Button is the canonical worked example — its dimension
     "slots": ["leadingIcon", "trailingIcon"]
   },
   "dimensions": {
-    "state": ["rest", "hover", "active", "disabled", "resolving", "pending"],
+    "state": ["rest", "hover", "active", "selected", "disabled", "resolving", "pending"],
     "emphasis": ["high", "medium", "low"],
-    "sentiment": ["neutral", "warning", "highlight", "new", "success", "error"],
+    "sentiment": ["neutral", "warning", "highlight", "new", "positive"],
     "size": ["xs", "sm", "md", "lg", "xl"]
   },
   "props": {

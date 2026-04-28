@@ -1,212 +1,238 @@
 ---
 title: Skills Catalogue
-description: A directory of available Claude skills with descriptions, trigger phrases, and usage guidance.
+description: A directory of available skills in the field-notes toolkit — bs-* design-system skills, bs-init bootstrap, and the start-issue / start-work workflow skills.
 ---
 
 Skills are reusable instruction sets that Claude follows for specific workflows. Instead of re-explaining the same process each conversation, you invoke a skill and the agent follows a tested, consistent playbook.
 
-For how skills work and how to create them, see [Skill-Based Automation](/claude/skills-patterns).
+This page catalogues the **field-notes toolkit** — the skills bundled in `dist/field-notes-toolkit.plugin`. For how skills work in general and how to create them, see [Skill-Based Automation](/claude/skills-patterns).
+
+For agent context, see also [DESIGN.md and the Dimensional Model](/claude/dimensional-and-design-md).
 
 ## Quick Start
 
 <Cards>
-  <Card title="start-issue" description="Pick up a GitHub issue with correct branching and conventions" href="#start-issue" />
-  <Card title="start-work" description="Begin new work that has no existing issue" href="#start-work" />
-  <Card title="add-domain" description="Add a new domain to Field Notes" href="#add-domain" />
-  <Card title="add-page" description="Add a new page to a Field Notes domain" href="#add-page" />
-  <Card title="review-uplift" description="Apply fixes for all review findings on a component" href="#review-uplift" />
-  <Card title="skill-creator" description="Create, edit, or evaluate skills" href="#skill-creator" />
-  <Card title="new-project" description="Bootstrap an entire project from scratch" href="#new-project" />
-  <Card title="new-figma-project" description="Scaffold a Figma design system file" href="#new-figma-project" />
+  <Card title="bs-init" description="Scaffold a new project's canonical context stack" href="#bs-init" />
+  <Card title="bs-design-md" description="Project tokens + components into a Google DESIGN.md spec" href="#bs-design-md" />
+  <Card title="bs-component-api" description="Define a component's input shape (props, types, defaults)" href="#bs-component-api" />
+  <Card title="bs-component-scaffold" description="Generate React/CSS/Stories/Tests boilerplate from an API" href="#bs-component-scaffold" />
+  <Card title="bs-review" description="Six-stage scored component review" href="#bs-review" />
+  <Card title="start-issue" description="Begin work on a GitHub issue with branch + plan + PR" href="#start-issue" />
+  <Card title="start-work" description="Begin work that has no existing issue (brief + branch only)" href="#start-work" />
 </Cards>
+
+## The `_foundations/` layer
+
+Every `bs-*` skill leans on a shared mental-model layer in `.claude/skills/_foundations/`. Five files:
+
+- **`DESIGN-INTENT.md`** — what the toolkit is for and the assumptions every skill is built on.
+- **`DIMENSIONAL-MODEL.md`** — the Sentiment × Emphasis × Size × Structure × State vocabulary, the canonical value lists, and the decision order.
+- **`TOKEN-ARCHITECTURE.md`** — the four-layer cascade (primitive → semantic → component → variant) and how aliases flow through it.
+- **`QUALITY-GATES.md`** — severity model and verdict logic shared by `bs-review`, `bs-accessibility`, and the audit skills.
+- **`SELF-REVIEW.md`** — the four-step protocol every skill calls before declaring done (re-read brief → list assumptions → list what wasn't checked → green-light gate).
+
+If a skill references "the dimensional model" or "the cascade", it points here.
 
 ## Available Skills
 
-### start-issue
+### Specification
+
+#### bs-design-md
+
+**Invoke:** `/bs-design-md` | **Status:** Available
+
+Projects a project's tokens and components into the spec-compliant Google `DESIGN.md` format with paired DTCG `tokens.json` sidecar. The closer for the design loop — three modes:
+
+- **Extract mode** — point at a live site URL, get a `DESIGN.md` plus DTCG `tokens.json`. Bootstraps a new product from a reference.
+- **Project mode** (`--tokens` + `--components`) — take an existing DTCG `tokens.json` plus a hand-authored `components.json`, emit the spec-compliant pair.
+- **Dimensional mode** (`--from-dimensional <root>`) — walk the consumer's `tokens.json`, `components.json` (with `applies_to`), and the five model MDX files, then synthesise the flat per-variant components block.
+
+Outputs include preservation markers (`<!-- bs-design-md:generated:start --> … :end -->`) so consumer-authored prose below `:end` survives regenerations.
+
+`bs-design` is a one-line redirect stub to this skill.
+
+---
+
+#### bs-tokens
+
+**Invoke:** `/bs-tokens` | **Status:** Available
+
+Consume, audit, and reason about design tokens. Covers severity tiers (S0–S3), DTCG conformance, alias-chain integrity, and the Token Trap discipline (never load whole token system into context — query specific tokens via the manifest).
+
+---
+
+### Bootstrap
+
+#### bs-init
+
+**Invoke:** `bs-init <name> <dir>` | **Status:** Available
+
+Scaffolds a fresh project's canonical four-piece context stack so it can immediately consume `bs-design-md --from-dimensional`:
+
+| Artefact | Purpose |
+|----------|---------|
+| `tokens.json` | DTCG 2025.10 token source. Six placeholder anchor colours. Replace with real values. |
+| `components.json` | Five canonical primitives (`button`, `input`, `badge`, `alert`, `card`) declared with `applies_to: all`. |
+| `content/design-system/model/{sentiment,emphasis,size,state,structure}.mdx` | The five-dimensional vocabulary, each with `dimensional_values: { default, values }` frontmatter. |
+| `CLAUDE.md` | Starter system-prompt pointing at the field-notes toolkit and `llms.txt`. |
+| `DESIGN.md` | Empty preservation markers ready for the first `bs-design-md` emit. |
+
+After `bs-init`, run `bs-design-md --from-dimensional <root>` against the same directory and the scaffold produces a valid `DESIGN.md`.
+
+---
+
+### Component creation
+
+#### bs-component-api
+
+**Invoke:** `/bs-component-api` | **Status:** Available
+
+Defines a component's consumer-facing contract — props, types, defaults, slots. Enforces the four-input categories rule (Dimension / Content / Slot / Event), the enums-not-booleans rule, the every-input-has-a-default rule, and the dimension-not-visual naming rule.
+
+Audit checklist included for existing component APIs.
+
+---
+
+#### bs-component-scaffold
+
+**Invoke:** `/bs-component-scaffold` | **Status:** Available
+
+Generates the standard six files from a `bs-component-api` output: `component.tsx`, `component.types.ts`, `component.css` (or `.scss`), `component.stories.tsx`, `component.test.tsx`, `index.ts`.
+
+---
+
+#### bs-css
+
+**Invoke:** `/bs-css` | **Status:** Available
+
+Audits component CSS against the token system. Flags hardcoded values, broken alias chains, missing state coverage, and wrong cascade direction.
+
+---
+
+#### bs-html
+
+**Invoke:** `/bs-html` | **Status:** Available
+
+Decides element semantics and ARIA for a component. Maps component types to the correct HTML primitive, role, and key ARIA attributes (`button` / `link` / `dialog` / `tab` / `progressbar` / etc.).
+
+---
+
+### Review
+
+#### bs-review
+
+**Invoke:** `/bs-review` | **Status:** Available
+
+Orchestrates a six-stage scored component review across `bs-component-api`, `bs-react-patterns`, `bs-html`, `bs-accessibility`, `bs-tokens`, and `bs-css`. Produces a structured findings file with severities and a verdict (ship / fix / block).
+
+---
+
+#### bs-accessibility
+
+**Invoke:** `/bs-accessibility` | **Status:** Available
+
+WCAG 2.2 AA audit framework structured around the bracket model (B1 Display / B2 Interactive / B3 Form / B4 Composite / B5 Data / B6 Overlay). Returns a checklist of violations with severities and remediation notes.
+
+---
+
+#### bs-react-patterns
+
+**Invoke:** `/bs-react-patterns` | **Status:** Available
+
+Reviews component code against modern React idioms — hook rules, prop drilling, render-time vs effect-time work, suspense boundaries, ref forwarding.
+
+---
+
+#### bs-testing
+
+**Invoke:** `/bs-testing` | **Status:** Available
+
+The unit + accessibility + visual-regression triad. Provides templates for `@testing-library/react` unit tests, `jest-axe` / `@axe-core/playwright` automation, and Storybook+Playwright snapshot loops.
+
+---
+
+### Storybook documentation
+
+#### bs-storybook-ds
+
+**Invoke:** `/bs-storybook-ds` | **Status:** Available
+
+Orchestrates a complete Storybook design-system documentation pass — calls `bs-storybook-foundations` then `bs-storybook-docs` for each component, using `bs-storybook-helpers` patterns throughout.
+
+---
+
+#### bs-storybook-foundations
+
+**Invoke:** `/bs-storybook-foundations` | **Status:** Available
+
+Documents primitives (colours, typography, spacing, radius, shadows) on Storybook foundation pages.
+
+---
+
+#### bs-storybook-docs
+
+**Invoke:** `/bs-storybook-docs` | **Status:** Available
+
+Documents an individual component on a Storybook docs page — anatomy, prop table, do/don't, usage examples, all dimension permutations.
+
+---
+
+#### bs-storybook-helpers
+
+**Invoke:** `/bs-storybook-helpers` | **Status:** Available
+
+The catalogue of helper components used across `bs-storybook-foundations` and `bs-storybook-docs`: `DocPage`, `TokenTable`, `Swatch`, `PropsTable`, `Anatomy`, `DoAndDont`, etc.
+
+---
+
+### Workflow
+
+#### start-issue
 
 **Invoke:** `/start-issue` | **Status:** Available
 
-Bootstraps work on an existing GitHub issue. Creates a correctly named branch, sets up commit conventions, and establishes the PR workflow.
+Bootstraps work on an existing GitHub issue. Creates a correctly named branch, plans the approach, implements changes, verifies the build, and opens a PR against `main`.
 
-**When to use it:** When you have a GitHub issue number and want to start coding.
-
-**What it asks you:** The issue number or URL.
-
-**What it produces:**
-- A branch with the correct prefix (`feat/`, `fix/`, `chore/`, etc.)
-- Commit messages following Conventional Commits format
-- A PR workflow with automated review first, then manual review
+**What it asks you:** the issue number or URL.
 
 ---
 
-### start-work
+#### start-work
 
 **Invoke:** `/start-work` | **Status:** Available
 
-Begins a new piece of work that does not have an existing GitHub issue. Captures context as a written brief, sets up the branch, and guides commits.
+Begins a new piece of work that does not have an existing GitHub issue. Captures context as a written brief, sets up the branch, and guides commits — does NOT open a PR.
 
-**When to use it:** When starting from scratch — a new feature idea, a refactor, an experiment — without a formal issue.
-
-**What it asks you:** What you are trying to accomplish, the scope, and any constraints.
-
-**What it produces:**
-- A context brief documenting the work
-- A correctly named branch
-- Guided commit workflow
+**What it asks you:** what you are trying to accomplish, the scope, and any constraints.
 
 ---
 
-### add-domain
+## Installing skills
 
-**Invoke:** `/add-domain` | **Status:** Available
-
-Adds a new content domain to Field Notes following the full setup checklist.
-
-**When to use it:** When the knowledge base needs a new top-level section (e.g., a new discipline or topic area).
-
-**What it asks you:** The domain name and description.
-
-**What it produces:**
-- Source configuration in `source.config.ts`
-- Loader in `lib/source.ts`
-- Route files (`layout.tsx`, `page.tsx`)
-- Navigation link
-- Content directory with `meta.json` and `index.mdx`
-- Domain entry in the llms.txt generation script
-
----
-
-### add-page
-
-**Invoke:** `/add-page` | **Status:** Available
-
-Adds a new page to an existing Field Notes domain.
-
-**When to use it:** When you want to add a new topic page to an existing domain.
-
-**What it asks you:** The domain, page title, and description.
-
-**What it produces:**
-- An `.mdx` file with correct frontmatter
-- Updated `meta.json` with the new page entry
-- Regenerated `llms.txt` and `llms-full.txt`
-
----
-
-### review-uplift
-
-**Invoke:** `/review-uplift` | **Status:** Available
-
-Fetches all GitHub issues labelled `review-finding` for a specific component, groups fixes by file, sequences them respecting dependencies, and applies all changes in a single branch.
-
-**When to use it:** After a design system review has generated findings that need to be resolved.
-
-**What it asks you:** The component name.
-
-**What it produces:**
-- A branch with all fixes applied
-- Commits grouped logically by file
-- A PR ready for review
-
----
-
-### skill-creator
-
-**Invoke:** `/skill-creator` | **Status:** Available
-
-Creates new skills, modifies existing skills, runs evaluations to test them, and benchmarks performance.
-
-**When to use it:** When you need to encode a new workflow as a reusable skill, improve an existing skill, or verify a skill works correctly.
-
-**What it asks you:** What the skill should do, or which existing skill to modify.
-
-**What it produces:**
-- A `SKILL.md` file with name, description, triggers, and instructions
-- Evaluation results if testing was requested
-- Performance benchmarks if optimisation was requested
-
----
-
-### new-project
-
-**Invoke:** `/new-project` | **Status:** Planned
-
-<Callout type="warn">
-This skill is planned but not yet available. See [Bootstrap Commands](/platform/bootstrap-commands) for the manual sequence.
-</Callout>
-
-Bootstraps a complete project from an empty directory to a running CI pipeline. Walks through an interview phase to gather decisions, then executes scaffolding phases.
-
-**When to use it:** When starting a brand new project — creating the repo, setting up the monorepo, wiring the first app.
-
-**What it will ask you:**
-- Project name and scope
-- Package manager preference
-- Framework choice
-- Monorepo vs single-repo
-- External services needed
-- Design system scope
-- Whether a Figma project is needed
-
-**What it will produce:**
-- A fully scaffolded repository following [Bootstrap Commands](/platform/bootstrap-commands)
-- CLAUDE.md and AI context configured
-- CI pipeline ready
-- Living documents initialised
-
----
-
-### new-figma-project
-
-**Invoke:** `/new-figma-project` | **Status:** Planned
-
-<Callout type="warn">
-This skill is planned but not yet available. See [Figma Documentation Rules](/design-system/figma-documentation-rules) for the manual conventions.
-</Callout>
-
-Scaffolds a Figma design system file with standard pages, token collections, and documentation structure using Figma MCP tools.
-
-**When to use it:** When setting up a new Figma file for a design system, whether as part of a new project or adding design tooling to an existing one.
-
-**What it will ask you:**
-- Project name
-- Color palette or brand color
-- Typography (heading and body font families)
-- Breakpoint targets and root font sizes
-- Component scope
-
-**What it will produce:**
-- Standard documentation pages (Cover, Color, Typography, Spacing, Border Radius, Components)
-- Token collections (3 primitive + 3 semantic)
-- Reusable documentation components (Header, Token Row, Section Header)
-- Variable-bound swatches on all token pages
-
-## Installing Skills
-
-Skills live at `~/.claude/skills/{skill-name}/SKILL.md`. To use a skill:
+Skills ship in two distribution paths, mirroring the toolkit shape:
 
 <Steps>
 
-### Ensure the skill directory exists
+### Plugin installation (recommended)
 
-Check that `~/.claude/skills/{skill-name}/SKILL.md` is present with valid content.
+The `dist/field-notes-toolkit.plugin` artefact bundles every `bs-*` skill, the `_foundations/` layer, and the `start-issue` / `start-work` workflow skills. When installed as a Claude Code plugin, skills live under `.claude/skills/{skill-name}/SKILL.md` inside the plugin directory.
+
+Build the plugin: `node scripts/pack-plugin.mjs` — outputs `dist/field-notes-toolkit.plugin`.
+
+### Direct copy
+
+For a project not using the plugin format, copy the relevant skill directories from `.claude/skills/` directly into the consumer's `.claude/skills/`. The `_foundations/` directory must travel with any `bs-*` skill — the skills resolve cross-references against it.
 
 ### Invoke the skill
 
-Type `/{skill-name}` in a Claude Code conversation.
-
-### Follow the prompts
-
-The agent reads the skill file and follows its instructions, asking you questions as needed.
+Type `/{skill-name}` in a Claude Code conversation. The agent reads the skill file, opens any `_foundations/` references, and follows the playbook.
 
 </Steps>
-
-Skills are portable — you can copy a skill directory between machines or share it with teammates. The skill's `SKILL.md` contains everything the agent needs.
 
 ## See Also
 
 <Cards>
   <Card title="Skill-Based Automation" description="How skills work, when to create them, and structural best practices" href="/claude/skills-patterns" />
   <Card title="Workflow Architectures" description="How skills compose with agents and commands" href="/claude/workflow-architectures" />
-  <Card title="Claude Code Setup" description="Setting up the AI agent environment" href="/claude/claude-code-setup" />
+  <Card title="DESIGN.md and the Dimensional Model" description="The bs-design-md projection model and the dimensional vocabulary" href="/claude/dimensional-and-design-md" />
 </Cards>
