@@ -53,6 +53,19 @@ Pipeline scripts under `scripts/`:
 - `figma-pull.sh` / `figma-push.sh` — Prism MCP bridge (WebSocket on `localhost:7890`). Pull retrieves anchor variables out of Figma; push sends generated tokens in.
 - `_prism-call.mjs` — internal Prism call helper used by `figma-pull.sh` / `figma-push.sh`.
 
+### Script duplication
+
+These four files currently exist as byte-identical copies in both `scripts/` (repo root) and `field-notes-toolkit/scripts/`:
+
+- `generate-ramps.ts`
+- `figma-pull.sh`
+- `figma-push.sh`
+- `_prism-call.mjs`
+
+Root `scripts/` is canonical: `scripts/pack-plugin.mjs` (lines 45–50) packages these files from root into the plugin artefact, and root `package.json` invokes `tsx scripts/generate-ramps.ts` from root. The toolkit copies are unused duplicates kept temporarily so the working tree matches the historical layout.
+
+The follow-up issue [#188](https://github.com/bysixteen/field-notes/issues/188) will collapse the duplication by deleting the `field-notes-toolkit/scripts/` copies.
+
 ## What's *not* in this plugin
 
 The slice is deliberately tight. Excluded:
