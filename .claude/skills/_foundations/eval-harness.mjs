@@ -28,11 +28,11 @@ const SKILLS_DIR = join(REPO_ROOT, '.claude', 'skills');
 const EVALS_DIR = join(REPO_ROOT, '.context', 'evals');
 
 const IN_SCOPE = [
-  'fn-accessibility', 'fn-component-api', 'fn-component-scaffold',
-  'fn-css', 'fn-design-md', 'fn-html', 'fn-init', 'fn-react-patterns',
-  'fn-review', 'fn-storybook-docs', 'fn-storybook-ds',
-  'fn-storybook-foundations', 'fn-storybook-helpers', 'fn-testing',
-  'fn-tokens', 'start-issue', 'start-work',
+  'fn-accessibility', 'fn-component-api', 'fn-component-contract',
+  'fn-component-scaffold', 'fn-css', 'fn-design-md', 'fn-html',
+  'fn-init', 'fn-react-patterns', 'fn-review', 'fn-storybook-docs',
+  'fn-storybook-ds', 'fn-storybook-foundations', 'fn-storybook-helpers',
+  'fn-testing', 'fn-tokens', 'start-issue', 'start-work',
 ];
 const ALIASES = { 'fn-design': 'fn-design-md' };
 
