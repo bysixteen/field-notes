@@ -50,7 +50,31 @@ Flags:
 - `--name <name>` — project name; substituted into `{{project_name}}` placeholders in `CLAUDE.md` and `DESIGN.md`.
 - `--target <dir>` — directory to write into. Created if it doesn't exist.
 - `--force` — required if `<dir>` is non-empty. Without it, `fn-init` refuses to overwrite.
+- `--prompt` — walk through the question set interactively (see below).
+- `--primary-color <hex>` / `--font-family <name>` / `--default-theme <light|dark>` / `--surface-count <single|pair>` — pre-fill answers; valid in non-prompt mode too.
 - `--help` / `-h` — usage.
+
+## Interactive mode (`--prompt`)
+
+```sh
+node .claude/skills/fn-init/scripts/init.mjs --prompt --target <dir>
+```
+
+`--prompt` walks the user through five questions and substitutes the answers into the scaffold:
+
+| Question | Default | Substitutes into |
+|----------|---------|------------------|
+| Project name | basename of `--target` | `{{project_name}}` in `CLAUDE.md`, `DESIGN.md` |
+| Primary anchor colour (hex) | `#0066cc` | `{{primary_color}}` → `color.primary` in `tokens.json` |
+| Typeface | `Inter` | `{{font_family}}` → `typography.label-md.fontFamily` in `tokens.json` |
+| Default theme (light/dark) | `light` | `{{default_theme}}` in `CLAUDE.md` |
+| Surfaces (single/pair) | `single` | `{{surface_count}}` in `CLAUDE.md` |
+
+Behaviour:
+- **Pre-fill composability** — any answer passed via flag (e.g. `--name`, `--primary-color`) is used directly and skipped during prompting. Pass nothing to be asked all five.
+- **Validation** — hex colour, theme, and surface answers are validated with regex/enum checks; invalid inputs trigger a re-prompt with a clear message. No transformation beyond lower-casing theme/surface answers.
+- **Non-interactive stdin fails fast** — if `--prompt` is invoked without an interactive TTY, `fn-init` exits non-zero with a clear error. There is no silent default fallback.
+- **Zero dependencies** — uses `node:readline`. No third-party prompt library.
 
 ## Round-trip verification
 

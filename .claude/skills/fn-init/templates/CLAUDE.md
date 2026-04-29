@@ -17,6 +17,13 @@ The bysixteen design-system toolkit ships as the [`field-notes-toolkit`](https:/
 
 `llms.txt` and `llms-full.txt` (when published alongside this project) provide an agent-readable index of the documentation. Start with `llms.txt`; fetch specific pages on demand.
 
+## Project defaults
+
+Captured at scaffold time:
+
+- **Default theme**: {{default_theme}}
+- **Surfaces**: {{surface_count}}
+
 ## Regenerating DESIGN.md
 
 ```sh

@@ -8,12 +8,37 @@ import { spawnSync } from "node:child_process";
 import { mkdtempSync, rmSync, readFileSync, existsSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { dirname, join } from "node:path";
+import { Writable } from "node:stream";
 import { fileURLToPath } from "node:url";
+
+import { init, promptForAnswers } from "../init.mjs";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const SKILL_ROOT = join(__dirname, "..", "..");
 const INIT = join(SKILL_ROOT, "scripts", "init.mjs");
 const EMIT = join(SKILL_ROOT, "..", "fn-design-md", "scripts", "emit-design-md.mjs");
+
+function makeAsk(lines) {
+  let i = 0;
+  return async () => {
+    if (i >= lines.length) {
+      throw new Error(`makeAsk: ran out of mocked answers after ${i}`);
+    }
+    return lines[i++];
+  };
+}
+
+function makeStdout() {
+  const chunks = [];
+  const writable = new Writable({
+    write(chunk, _enc, done) {
+      chunks.push(chunk.toString("utf8"));
+      done();
+    },
+  });
+  writable.captured = () => chunks.join("");
+  return writable;
+}
 
 const REQUIRED_FILES = [
   "tokens.json",
@@ -136,4 +161,149 @@ test("fn-init requires --name and --target", () => {
   const noTarget = runInit(["--name", "x"]);
   assert.notEqual(noTarget.status, 0);
   assert.match(noTarget.stderr, /--target is required/);
+});
+
+test("--prompt: walks the question set with mocked input", async () => {
+  const stdout = makeStdout();
+  const answers = await promptForAnswers({
+    ask: makeAsk(["blueprint", "#abcdef", "Figtree", "dark", "pair"]),
+    output: stdout,
+    target: "/tmp/should-not-matter",
+  });
+  assert.deepEqual(answers, {
+    project_name: "blueprint",
+    primary_color: "#abcdef",
+    font_family: "Figtree",
+    default_theme: "dark",
+    surface_count: "pair",
+  });
+});
+
+test("--prompt: empty input falls through to defaults (project name from target basename)", async () => {
+  const stdout = makeStdout();
+  const answers = await promptForAnswers({
+    ask: makeAsk(["", "", "", "", ""]),
+    output: stdout,
+    target: "/tmp/blueprint",
+  });
+  assert.equal(answers.project_name, "blueprint");
+  assert.equal(answers.primary_color, "#0066cc");
+  assert.equal(answers.font_family, "Inter");
+  assert.equal(answers.default_theme, "light");
+  assert.equal(answers.surface_count, "single");
+});
+
+test("--prompt: rejects bad hex, then accepts a valid retry", async () => {
+  const stdout = makeStdout();
+  const answers = await promptForAnswers({
+    ask: makeAsk([
+      "blueprint",
+      "not-a-hex",
+      "#zzz",
+      "#abc",
+      "Inter",
+      "light",
+      "single",
+    ]),
+    output: stdout,
+    target: "/tmp/blueprint",
+  });
+  assert.equal(answers.primary_color, "#abc");
+  assert.match(stdout.captured(), /Must be a hex colour/);
+});
+
+test("--prompt: rejects invalid theme, then accepts a valid retry", async () => {
+  const stdout = makeStdout();
+  const answers = await promptForAnswers({
+    ask: makeAsk(["blueprint", "#abc", "Inter", "neon", "DARK", "single"]),
+    output: stdout,
+    target: "/tmp/blueprint",
+  });
+  assert.equal(answers.default_theme, "dark");
+  assert.match(stdout.captured(), /Must be 'light' or 'dark'/);
+});
+
+test("--prompt: presets are honoured without prompting", async () => {
+  const stdout = makeStdout();
+  const ask = makeAsk(["#abcdef", "Inter", "dark", "pair"]);
+  const answers = await promptForAnswers({
+    ask,
+    output: stdout,
+    target: "/tmp/ignored",
+    presets: { project_name: "preset-name" },
+  });
+  assert.equal(answers.project_name, "preset-name");
+  assert.equal(answers.primary_color, "#abcdef");
+});
+
+test("--prompt: invalid preset surfaces a clear error", async () => {
+  const stdout = makeStdout();
+  await assert.rejects(
+    () =>
+      promptForAnswers({
+        ask: makeAsk([]),
+        output: stdout,
+        target: "/tmp/blueprint",
+        presets: { primary_color: "not-a-hex" },
+      }),
+    /invalid value for --primary-color/
+  );
+});
+
+test("--prompt: non-TTY stdin exits with a clear error", () => {
+  const target = makeTempTarget();
+  try {
+    const result = spawnSync("node", [INIT, "--prompt", "--target", target, "--force"], {
+      encoding: "utf8",
+      stdio: ["pipe", "pipe", "pipe"],
+    });
+    assert.notEqual(result.status, 0);
+    assert.match(result.stderr, /requires an interactive TTY/);
+  } finally {
+    rmSync(target, { recursive: true, force: true });
+  }
+});
+
+test("prompt answers substitute into tokens.json and CLAUDE.md", () => {
+  const target = makeTempTarget();
+  try {
+    init({
+      name: "preset",
+      target,
+      force: true,
+      vars: {
+        primary_color: "#aabbcc",
+        font_family: "Figtree",
+        default_theme: "dark",
+        surface_count: "pair",
+      },
+    });
+    const tokens = readFileSync(join(target, "tokens.json"), "utf8");
+    const claude = readFileSync(join(target, "CLAUDE.md"), "utf8");
+    assert.match(tokens, /"\$value": "#aabbcc"/);
+    assert.match(tokens, /"fontFamily": "Figtree"/);
+    assert.match(claude, /\*\*Default theme\*\*: dark/);
+    assert.match(claude, /\*\*Surfaces\*\*: pair/);
+    assert.doesNotMatch(tokens, /\{\{primary_color\}\}/);
+    assert.doesNotMatch(tokens, /\{\{font_family\}\}/);
+    assert.doesNotMatch(claude, /\{\{default_theme\}\}/);
+    assert.doesNotMatch(claude, /\{\{surface_count\}\}/);
+  } finally {
+    rmSync(target, { recursive: true, force: true });
+  }
+});
+
+test("non-prompt mode without pre-fill flags fills sensible defaults", () => {
+  const target = makeTempTarget();
+  try {
+    init({ name: "defaults-test", target, force: true });
+    const tokens = readFileSync(join(target, "tokens.json"), "utf8");
+    const claude = readFileSync(join(target, "CLAUDE.md"), "utf8");
+    assert.match(tokens, /"\$value": "#0066cc"/);
+    assert.match(tokens, /"fontFamily": "Inter"/);
+    assert.match(claude, /\*\*Default theme\*\*: light/);
+    assert.match(claude, /\*\*Surfaces\*\*: single/);
+  } finally {
+    rmSync(target, { recursive: true, force: true });
+  }
 });
