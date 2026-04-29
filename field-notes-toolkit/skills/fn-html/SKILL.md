@@ -14,7 +14,7 @@ description: >-
 
 ## Foundations (read first)
 
-- [QUALITY-GATES](_foundations/QUALITY-GATES.md)
+- [QUALITY-GATES](../_foundations/QUALITY-GATES.md)
 
 Native HTML elements first. ARIA only when no native element fits.
 

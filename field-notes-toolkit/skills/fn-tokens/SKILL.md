@@ -28,9 +28,9 @@ Regenerate the cache only when the design system changes: `npm run generate:mani
 
 ## Foundations (read first)
 
-- [DIMENSIONAL-MODEL](_foundations/DIMENSIONAL-MODEL.md)
-- [TOKEN-ARCHITECTURE](_foundations/TOKEN-ARCHITECTURE.md)
-- [QUALITY-GATES](_foundations/QUALITY-GATES.md)
+- [DIMENSIONAL-MODEL](../_foundations/DIMENSIONAL-MODEL.md)
+- [TOKEN-ARCHITECTURE](../_foundations/TOKEN-ARCHITECTURE.md)
+- [QUALITY-GATES](../_foundations/QUALITY-GATES.md)
 
 ## Two Concerns
 

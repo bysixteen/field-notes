@@ -14,8 +14,8 @@ description: >-
 
 ## Foundations (read first)
 
-- [TOKEN-ARCHITECTURE](_foundations/TOKEN-ARCHITECTURE.md)
-- [QUALITY-GATES](_foundations/QUALITY-GATES.md)
+- [TOKEN-ARCHITECTURE](../_foundations/TOKEN-ARCHITECTURE.md)
+- [QUALITY-GATES](../_foundations/QUALITY-GATES.md)
 
 ## The Seven Non-Negotiables
 

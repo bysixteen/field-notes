@@ -14,8 +14,8 @@ description: >-
 
 ## Foundations (read first)
 
-- [DIMENSIONAL-MODEL](_foundations/DIMENSIONAL-MODEL.md)
-- [QUALITY-GATES](_foundations/QUALITY-GATES.md)
+- [DIMENSIONAL-MODEL](../_foundations/DIMENSIONAL-MODEL.md)
+- [QUALITY-GATES](../_foundations/QUALITY-GATES.md)
 
 Define the consumer-facing contract of a design system component: every input it accepts, how it is typed, named, defaulted, and slotted.
 

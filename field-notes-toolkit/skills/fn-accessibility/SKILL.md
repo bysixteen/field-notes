@@ -14,8 +14,8 @@ description: >-
 
 ## Foundations (read first)
 
-- [DESIGN-INTENT](_foundations/DESIGN-INTENT.md)
-- [QUALITY-GATES](_foundations/QUALITY-GATES.md)
+- [DESIGN-INTENT](../_foundations/DESIGN-INTENT.md)
+- [QUALITY-GATES](../_foundations/QUALITY-GATES.md)
 
 ## Bracket Classification Matrix
 
