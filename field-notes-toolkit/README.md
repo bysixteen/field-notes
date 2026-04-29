@@ -8,30 +8,30 @@ A Claude plugin sliced from the [bysixteen/field-notes](https://github.com/bysix
 
 ### Skills
 
-The 15 design-system skills (`bs-*`), grouped by purpose:
+The 15 design-system skills (`fn-*`), grouped by purpose:
 
 **Specification**
-- `bs-design-md` — project tokens + components into the Google `DESIGN.md` spec format (with `--from-dimensional` mode for projecting a Sentiment × Emphasis × Size × Structure × State system into the flat `DESIGN.md` namespace; preservation markers; `migrate` subcommand for legacy files).
-- `bs-design` — alias of `bs-design-md`.
-- `bs-tokens` — consume, audit, and reason about design tokens.
+- `fn-design-md` — project tokens + components into the Google `DESIGN.md` spec format (with `--from-dimensional` mode for projecting a Sentiment × Emphasis × Size × Structure × State system into the flat `DESIGN.md` namespace; preservation markers; `migrate` subcommand for legacy files).
+- `fn-design` — alias of `fn-design-md`.
+- `fn-tokens` — consume, audit, and reason about design tokens.
 
 **Component creation**
-- `bs-component-api` — define the input shape (props, types, defaults).
-- `bs-component-scaffold` — generate React/CSS/Stories/Tests boilerplate from that API.
-- `bs-css` — write and audit component CSS against the token system.
-- `bs-html` — element semantics and ARIA.
+- `fn-component-api` — define the input shape (props, types, defaults).
+- `fn-component-scaffold` — generate React/CSS/Stories/Tests boilerplate from that API.
+- `fn-css` — write and audit component CSS against the token system.
+- `fn-html` — element semantics and ARIA.
 
 **Review**
-- `bs-review` — orchestrate a six-stage review (component-api, react-patterns, html, accessibility, tokens, css) with a scored report.
-- `bs-accessibility` — WCAG 2.2 AA audit.
-- `bs-react-patterns` — modern React idioms.
-- `bs-testing` — unit + a11y + visual-regression triad.
+- `fn-review` — orchestrate a six-stage review (component-api, react-patterns, html, accessibility, tokens, css) with a scored report.
+- `fn-accessibility` — WCAG 2.2 AA audit.
+- `fn-react-patterns` — modern React idioms.
+- `fn-testing` — unit + a11y + visual-regression triad.
 
 **Storybook docs**
-- `bs-storybook-ds` — orchestrator.
-- `bs-storybook-foundations` — primitive docs (colour, type, spacing).
-- `bs-storybook-docs` — per-component docs.
-- `bs-storybook-helpers` — DocPage, TokenTable, Swatch, etc.
+- `fn-storybook-ds` — orchestrator.
+- `fn-storybook-foundations` — primitive docs (colour, type, spacing).
+- `fn-storybook-docs` — per-component docs.
+- `fn-storybook-helpers` — DocPage, TokenTable, Swatch, etc.
 
 The two workflow skills:
 
@@ -83,11 +83,11 @@ This puts the toolkit at `node_modules/field-notes-toolkit/`, exposing the canon
 node node_modules/field-notes-toolkit/scripts/emit-design-md.mjs --from-dimensional ./ --out ./
 ```
 
-`scripts/emit-design-md.mjs` is a thin shim that delegates to the canonical CLI inside `skills/bs-design-md/scripts/`.
+`scripts/emit-design-md.mjs` is a thin shim that delegates to the canonical CLI inside `skills/fn-design-md/scripts/`.
 
 ## Using
 
-After install, every `bs-*` skill, `start-issue`, and `start-work` are available in your Claude session. Reference `_foundations/` from your project's `CLAUDE.md` so the dimensional model and token architecture load as shared context.
+After install, every `fn-*` skill, `start-issue`, and `start-work` are available in your Claude session. Reference `_foundations/` from your project's `CLAUDE.md` so the dimensional model and token architecture load as shared context.
 
 ## Source
 

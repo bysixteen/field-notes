@@ -146,9 +146,9 @@ A single `{component}.docs.stories.tsx` file containing:
 ## Relationship to Other Skills
 
 - **`generate-figma-documentation`** — generates the Figma-side docs; this skill generates the Storybook-side. Both should document the same component API and tokens.
-- **`bs-component-scaffold`** — scaffolds the component files this skill reads from. The scaffold generates a basic `.stories.tsx`; this skill generates the comprehensive documentation story.
-- **`bs-tokens`** — the token cascade rules inform which tokens appear in the token map and how they're categorised.
-- **`bs-accessibility`** — the bracket classification (B1–B6) determines which accessibility guidance appears in the usage section.
+- **`fn-component-scaffold`** — scaffolds the component files this skill reads from. The scaffold generates a basic `.stories.tsx`; this skill generates the comprehensive documentation story.
+- **`fn-tokens`** — the token cascade rules inform which tokens appear in the token map and how they're categorised.
+- **`fn-accessibility`** — the bracket classification (B1–B6) determines which accessibility guidance appears in the usage section.
 
 ## Verification
 

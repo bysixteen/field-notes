@@ -1308,7 +1308,7 @@ Across all techniques, the goal is the same: find the smallest set of high-signa
 
 The Google [DESIGN.md spec](https://github.com/google-labs-code/design.md) (April 2026) is the first credible attempt at a portable, agent-readable design system context format. It is also intentionally narrow — flat colour, hex sRGB only, no dimensional vocabulary, no patterns, no states. A dimensional design system cannot be expressed in DESIGN.md without loss.
 
-This page documents the lossy projection from a dimensional system into DESIGN.md, the DTCG `tokens.json` sidecar that recovers what DESIGN.md cannot carry, and the layered CLAUDE.md / AGENTS.md / DESIGN.md / tokens.json stack that makes the whole system legible to an external agent. The pattern is implemented in the [`bs-design-md`](/claude/skills-catalogue) skill.
+This page documents the lossy projection from a dimensional system into DESIGN.md, the DTCG `tokens.json` sidecar that recovers what DESIGN.md cannot carry, and the layered CLAUDE.md / AGENTS.md / DESIGN.md / tokens.json stack that makes the whole system legible to an external agent. The pattern is implemented in the [`fn-design-md`](/claude/skills-catalogue) skill.
 
 ## Why DESIGN.md Cannot Carry a Dimensional System
 
@@ -1408,7 +1408,7 @@ In any of these cases, emit the DTCG sidecar only and skip the DESIGN.md.
 
 ## Verifying the Projection
 
-Treat the linter as a release gate. From the [`bs-design-md` skill](/claude/skills-catalogue):
+Treat the linter as a release gate. From the [`fn-design-md` skill](/claude/skills-catalogue):
 
 - **Errors must be zero.** `broken-ref` and malformed colours block the file from being usable.
 - **`missing-primary`, `missing-typography`, `missing-sections`** — must be zero. Warnings in the linter, but indicate an incomplete file.
@@ -1585,7 +1585,7 @@ Synthesized documents are living artifacts. As research evolves — new user int
 
 ### Skills Catalogue
 
-*A directory of available skills in the field-notes toolkit — bs-* design-system skills, bs-init bootstrap, and the start-issue / start-work workflow skills.*
+*A directory of available skills in the field-notes toolkit — fn-* design-system skills, fn-init bootstrap, and the start-issue / start-work workflow skills.*
 
 Skills are reusable instruction sets that Claude follows for specific workflows. Instead of re-explaining the same process each conversation, you invoke a skill and the agent follows a tested, consistent playbook.
 
@@ -1597,12 +1597,12 @@ For agent context, see also [DESIGN.md and the Dimensional Model](/claude/dimens
 
 ## The `_foundations/` layer
 
-Every `bs-*` skill leans on a shared mental-model layer in `.claude/skills/_foundations/`. Five files:
+Every `fn-*` skill leans on a shared mental-model layer in `.claude/skills/_foundations/`. Five files:
 
 - **`DESIGN-INTENT.md`** — what the toolkit is for and the assumptions every skill is built on.
 - **`DIMENSIONAL-MODEL.md`** — the Sentiment × Emphasis × Size × Structure × State vocabulary, the canonical value lists, and the decision order.
 - **`TOKEN-ARCHITECTURE.md`** — the four-layer cascade (primitive → semantic → component → variant) and how aliases flow through it.
-- **`QUALITY-GATES.md`** — severity model and verdict logic shared by `bs-review`, `bs-accessibility`, and the audit skills.
+- **`QUALITY-GATES.md`** — severity model and verdict logic shared by `fn-review`, `fn-accessibility`, and the audit skills.
 - **`SELF-REVIEW.md`** — the four-step protocol every skill calls before declaring done (re-read brief → list assumptions → list what wasn't checked → green-light gate).
 
 If a skill references "the dimensional model" or "the cascade", it points here.
@@ -1611,9 +1611,9 @@ If a skill references "the dimensional model" or "the cascade", it points here.
 
 ### Specification
 
-#### bs-design-md
+#### fn-design-md
 
-**Invoke:** `/bs-design-md` | **Status:** Available
+**Invoke:** `/fn-design-md` | **Status:** Available
 
 Projects a project's tokens and components into the spec-compliant Google `DESIGN.md` format with paired DTCG `tokens.json` sidecar. The closer for the design loop — three modes:
 
@@ -1621,15 +1621,15 @@ Projects a project's tokens and components into the spec-compliant Google `DESIG
 - **Project mode** (`--tokens` + `--components`) — take an existing DTCG `tokens.json` plus a hand-authored `components.json`, emit the spec-compliant pair.
 - **Dimensional mode** (`--from-dimensional <root>`) — walk the consumer's `tokens.json`, `components.json` (with `applies_to`), and the five model MDX files, then synthesise the flat per-variant components block.
 
-Outputs include preservation markers (`<!-- bs-design-md:generated:start --> … :end -->`) so consumer-authored prose below `:end` survives regenerations.
+Outputs include preservation markers (`<!-- fn-design-md:generated:start --> … :end -->`) so consumer-authored prose below `:end` survives regenerations.
 
-`bs-design` is a one-line redirect stub to this skill.
+`fn-design` is a one-line redirect stub to this skill.
 
 ---
 
-#### bs-tokens
+#### fn-tokens
 
-**Invoke:** `/bs-tokens` | **Status:** Available
+**Invoke:** `/fn-tokens` | **Status:** Available
 
 Consume, audit, and reason about design tokens. Covers severity tiers (S0–S3), DTCG conformance, alias-chain integrity, and the Token Trap discipline (never load whole token system into context — query specific tokens via the manifest).
 
@@ -1637,11 +1637,11 @@ Consume, audit, and reason about design tokens. Covers severity tiers (S0–S3),
 
 ### Bootstrap
 
-#### bs-init
+#### fn-init
 
-**Invoke:** `bs-init <name> <dir>` | **Status:** Available
+**Invoke:** `fn-init <name> <dir>` | **Status:** Available
 
-Scaffolds a fresh project's canonical four-piece context stack so it can immediately consume `bs-design-md --from-dimensional`:
+Scaffolds a fresh project's canonical four-piece context stack so it can immediately consume `fn-design-md --from-dimensional`:
 
 | Artefact | Purpose |
 |----------|---------|
@@ -1649,17 +1649,17 @@ Scaffolds a fresh project's canonical four-piece context stack so it can immedia
 | `components.json` | Five canonical primitives (`button`, `input`, `badge`, `alert`, `card`) declared with `applies_to: all`. |
 | `content/design-system/model/{sentiment,emphasis,size,state,structure}.mdx` | The five-dimensional vocabulary, each with `dimensional_values: { default, values }` frontmatter. |
 | `CLAUDE.md` | Starter system-prompt pointing at the field-notes toolkit and `llms.txt`. |
-| `DESIGN.md` | Empty preservation markers ready for the first `bs-design-md` emit. |
+| `DESIGN.md` | Empty preservation markers ready for the first `fn-design-md` emit. |
 
-After `bs-init`, run `bs-design-md --from-dimensional <root>` against the same directory and the scaffold produces a valid `DESIGN.md`.
+After `fn-init`, run `fn-design-md --from-dimensional <root>` against the same directory and the scaffold produces a valid `DESIGN.md`.
 
 ---
 
 ### Component creation
 
-#### bs-component-api
+#### fn-component-api
 
-**Invoke:** `/bs-component-api` | **Status:** Available
+**Invoke:** `/fn-component-api` | **Status:** Available
 
 Defines a component's consumer-facing contract — props, types, defaults, slots. Enforces the four-input categories rule (Dimension / Content / Slot / Event), the enums-not-booleans rule, the every-input-has-a-default rule, and the dimension-not-visual naming rule.
 
@@ -1667,25 +1667,25 @@ Audit checklist included for existing component APIs.
 
 ---
 
-#### bs-component-scaffold
+#### fn-component-scaffold
 
-**Invoke:** `/bs-component-scaffold` | **Status:** Available
+**Invoke:** `/fn-component-scaffold` | **Status:** Available
 
-Generates the standard six files from a `bs-component-api` output: `component.tsx`, `component.types.ts`, `component.css` (or `.scss`), `component.stories.tsx`, `component.test.tsx`, `index.ts`.
+Generates the standard six files from a `fn-component-api` output: `component.tsx`, `component.types.ts`, `component.css` (or `.scss`), `component.stories.tsx`, `component.test.tsx`, `index.ts`.
 
 ---
 
-#### bs-css
+#### fn-css
 
-**Invoke:** `/bs-css` | **Status:** Available
+**Invoke:** `/fn-css` | **Status:** Available
 
 Audits component CSS against the token system. Flags hardcoded values, broken alias chains, missing state coverage, and wrong cascade direction.
 
 ---
 
-#### bs-html
+#### fn-html
 
-**Invoke:** `/bs-html` | **Status:** Available
+**Invoke:** `/fn-html` | **Status:** Available
 
 Decides element semantics and ARIA for a component. Maps component types to the correct HTML primitive, role, and key ARIA attributes (`button` / `link` / `dialog` / `tab` / `progressbar` / etc.).
 
@@ -1693,33 +1693,33 @@ Decides element semantics and ARIA for a component. Maps component types to the 
 
 ### Review
 
-#### bs-review
+#### fn-review
 
-**Invoke:** `/bs-review` | **Status:** Available
+**Invoke:** `/fn-review` | **Status:** Available
 
-Orchestrates a six-stage scored component review across `bs-component-api`, `bs-react-patterns`, `bs-html`, `bs-accessibility`, `bs-tokens`, and `bs-css`. Produces a structured findings file with severities and a verdict (ship / fix / block).
+Orchestrates a six-stage scored component review across `fn-component-api`, `fn-react-patterns`, `fn-html`, `fn-accessibility`, `fn-tokens`, and `fn-css`. Produces a structured findings file with severities and a verdict (ship / fix / block).
 
 ---
 
-#### bs-accessibility
+#### fn-accessibility
 
-**Invoke:** `/bs-accessibility` | **Status:** Available
+**Invoke:** `/fn-accessibility` | **Status:** Available
 
 WCAG 2.2 AA audit framework structured around the bracket model (B1 Display / B2 Interactive / B3 Form / B4 Composite / B5 Data / B6 Overlay). Returns a checklist of violations with severities and remediation notes.
 
 ---
 
-#### bs-react-patterns
+#### fn-react-patterns
 
-**Invoke:** `/bs-react-patterns` | **Status:** Available
+**Invoke:** `/fn-react-patterns` | **Status:** Available
 
 Reviews component code against modern React idioms — hook rules, prop drilling, render-time vs effect-time work, suspense boundaries, ref forwarding.
 
 ---
 
-#### bs-testing
+#### fn-testing
 
-**Invoke:** `/bs-testing` | **Status:** Available
+**Invoke:** `/fn-testing` | **Status:** Available
 
 The unit + accessibility + visual-regression triad. Provides templates for `@testing-library/react` unit tests, `jest-axe` / `@axe-core/playwright` automation, and Storybook+Playwright snapshot loops.
 
@@ -1727,35 +1727,35 @@ The unit + accessibility + visual-regression triad. Provides templates for `@tes
 
 ### Storybook documentation
 
-#### bs-storybook-ds
+#### fn-storybook-ds
 
-**Invoke:** `/bs-storybook-ds` | **Status:** Available
+**Invoke:** `/fn-storybook-ds` | **Status:** Available
 
-Orchestrates a complete Storybook design-system documentation pass — calls `bs-storybook-foundations` then `bs-storybook-docs` for each component, using `bs-storybook-helpers` patterns throughout.
+Orchestrates a complete Storybook design-system documentation pass — calls `fn-storybook-foundations` then `fn-storybook-docs` for each component, using `fn-storybook-helpers` patterns throughout.
 
 ---
 
-#### bs-storybook-foundations
+#### fn-storybook-foundations
 
-**Invoke:** `/bs-storybook-foundations` | **Status:** Available
+**Invoke:** `/fn-storybook-foundations` | **Status:** Available
 
 Documents primitives (colours, typography, spacing, radius, shadows) on Storybook foundation pages.
 
 ---
 
-#### bs-storybook-docs
+#### fn-storybook-docs
 
-**Invoke:** `/bs-storybook-docs` | **Status:** Available
+**Invoke:** `/fn-storybook-docs` | **Status:** Available
 
 Documents an individual component on a Storybook docs page — anatomy, prop table, do/don't, usage examples, all dimension permutations.
 
 ---
 
-#### bs-storybook-helpers
+#### fn-storybook-helpers
 
-**Invoke:** `/bs-storybook-helpers` | **Status:** Available
+**Invoke:** `/fn-storybook-helpers` | **Status:** Available
 
-The catalogue of helper components used across `bs-storybook-foundations` and `bs-storybook-docs`: `DocPage`, `TokenTable`, `Swatch`, `PropsTable`, `Anatomy`, `DoAndDont`, etc.
+The catalogue of helper components used across `fn-storybook-foundations` and `fn-storybook-docs`: `DocPage`, `TokenTable`, `Swatch`, `PropsTable`, `Anatomy`, `DoAndDont`, etc.
 
 ---
 
@@ -7357,7 +7357,7 @@ Question                                    → Tier
 "What's the dark-mode value for fg?"        → 3 (tokens.json $extensions)
 "What sentiments exist?"                    → 2 → concepts-manifest.mdx
 "What's the live Figma value of bg-hover?"  → 3 (scan_tokens with nameFilter)
-"Which token does button-hover alias?"      → 2 → bs-tokens.md cascade table
+"Which token does button-hover alias?"      → 2 → fn-tokens.md cascade table
 "Show me all neutral primitives"            → 3 (tokens.json color.neutral)
 ```
 
@@ -7372,8 +7372,8 @@ npm run generate:manifest
 This runs:
 
 1. `scripts/generate-ramps.ts` — refreshes `/tokens.json` (DTCG) from anchor definitions.
-2. `.claude/skills/bs-design-md/scripts/emit-design-md.mjs` — projects DTCG into `/DESIGN.md` (hex sRGB downsampled).
-3. `.claude/skills/bs-design-md/scripts/lint.sh` — validates against `@google/design.md`.
+2. `.claude/skills/fn-design-md/scripts/emit-design-md.mjs` — projects DTCG into `/DESIGN.md` (hex sRGB downsampled).
+3. `.claude/skills/fn-design-md/scripts/lint.sh` — validates against `@google/design.md`.
 
 Run only when the design system changes — new palette anchor, new component, new typography stack. **Not on every build, not on every prompt.** The cache is the whole point.
 
@@ -7398,7 +7398,7 @@ generated/                       emit-design-md.mjs   ──▶   /DESIGN.md   (
 
 The tier discipline is enforced in three places so it surfaces wherever an agent reaches for tokens:
 
-- `.claude/skills/bs-tokens.md` — "Manifest tier lookup" preamble.
+- `.claude/skills/fn-tokens.md` — "Manifest tier lookup" preamble.
 - `.claude/rules/prism-mcp.md` — "Token Trap discipline" section.
 - `CLAUDE.md` — top-level pointer.
 

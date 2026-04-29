@@ -140,7 +140,7 @@ components:
     height: 24px
 ---
 
-<!-- bs-design-md:generated:start -->
+<!-- fn-design-md:generated:start -->
 
 ## Overview
 
@@ -187,4 +187,4 @@ Not every (sentiment × emphasis × size × state) combination is named in this 
 
 The `colors` block is hex sRGB only because the DESIGN.md spec mandates it. Original OKLCH/Display P3 values live in the sidecar `tokens.json`. When a tool round-trips through DTCG, prefer the sidecar.
 
-<!-- bs-design-md:generated:end -->
+<!-- fn-design-md:generated:end -->

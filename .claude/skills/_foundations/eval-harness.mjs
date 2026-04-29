@@ -28,13 +28,13 @@ const SKILLS_DIR = join(REPO_ROOT, '.claude', 'skills');
 const EVALS_DIR = join(REPO_ROOT, '.context', 'evals');
 
 const IN_SCOPE = [
-  'bs-accessibility', 'bs-component-api', 'bs-component-scaffold',
-  'bs-css', 'bs-design-md', 'bs-html', 'bs-init', 'bs-react-patterns',
-  'bs-review', 'bs-storybook-docs', 'bs-storybook-ds',
-  'bs-storybook-foundations', 'bs-storybook-helpers', 'bs-testing',
-  'bs-tokens', 'start-issue', 'start-work',
+  'fn-accessibility', 'fn-component-api', 'fn-component-scaffold',
+  'fn-css', 'fn-design-md', 'fn-html', 'fn-init', 'fn-react-patterns',
+  'fn-review', 'fn-storybook-docs', 'fn-storybook-ds',
+  'fn-storybook-foundations', 'fn-storybook-helpers', 'fn-testing',
+  'fn-tokens', 'start-issue', 'start-work',
 ];
-const ALIASES = { 'bs-design': 'bs-design-md' };
+const ALIASES = { 'fn-design': 'fn-design-md' };
 
 // ─── frontmatter parser (minimal, handles `key: value` and `key: >- multi-line`) ───
 
@@ -224,7 +224,7 @@ function aliasNote(alias, target) {
 // ─── self-check ───
 
 const STUB_STRONG = `---
-name: bs-test-stub-strong
+name: fn-test-stub-strong
 description: Use this skill when authoring a test fixture that exercises every rubric axis at full strength. Trigger when the user says "stub strong" or "rubric self-check"; skip if the test harness is not loaded.
 ---
 
@@ -244,7 +244,7 @@ Use this when the harness needs an exemplar of a fully-specified SKILL.md — fo
 `;
 
 const STUB_WEAK = `---
-name: bs-test-stub-weak
+name: fn-test-stub-weak
 description: short
 ---
 
@@ -278,7 +278,7 @@ function selfCheck() {
   assert.deepEqual(ranked.map((r) => r.name), ['alpha', 'mango', 'zebra'], 'tiebreak: alphabetical');
 
   // round-trip the strong stub through the report renderer
-  const report = renderReport('bs-test-stub-strong', '/tmp/strong.md', strong);
+  const report = renderReport('fn-test-stub-strong', '/tmp/strong.md', strong);
   assert.match(report, /Total:\*\* 8 \/ 8/, 'report renders total');
   assert.match(report, /Verdict:\*\* Strong/, 'report renders verdict');
 

@@ -45,7 +45,7 @@ Question                                    → Tier
 "What's the dark-mode value for fg?"        → 3 (tokens.json $extensions)
 "What sentiments exist?"                    → 2 → concepts-manifest.mdx
 "What's the live Figma value of bg-hover?"  → 3 (scan_tokens with nameFilter)
-"Which token does button-hover alias?"      → 2 → bs-tokens.md cascade table
+"Which token does button-hover alias?"      → 2 → fn-tokens.md cascade table
 "Show me all neutral primitives"            → 3 (tokens.json color.neutral)
 ```
 
@@ -60,8 +60,8 @@ npm run generate:manifest
 This runs:
 
 1. `scripts/generate-ramps.ts` — refreshes `/tokens.json` (DTCG) from anchor definitions.
-2. `.claude/skills/bs-design-md/scripts/emit-design-md.mjs` — projects DTCG into `/DESIGN.md` (hex sRGB downsampled).
-3. `.claude/skills/bs-design-md/scripts/lint.sh` — validates against `@google/design.md`.
+2. `.claude/skills/fn-design-md/scripts/emit-design-md.mjs` — projects DTCG into `/DESIGN.md` (hex sRGB downsampled).
+3. `.claude/skills/fn-design-md/scripts/lint.sh` — validates against `@google/design.md`.
 
 Run only when the design system changes — new palette anchor, new component, new typography stack. **Not on every build, not on every prompt.** The cache is the whole point.
 
@@ -86,7 +86,7 @@ generated/                       emit-design-md.mjs   ──▶   /DESIGN.md   (
 
 The tier discipline is enforced in three places so it surfaces wherever an agent reaches for tokens:
 
-- `.claude/skills/bs-tokens.md` — "Manifest tier lookup" preamble.
+- `.claude/skills/fn-tokens.md` — "Manifest tier lookup" preamble.
 - `.claude/rules/prism-mcp.md` — "Token Trap discipline" section.
 - `CLAUDE.md` — top-level pointer.
 

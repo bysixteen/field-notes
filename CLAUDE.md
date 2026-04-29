@@ -20,7 +20,7 @@ The design system is loaded in tiers to avoid loading the whole token system on 
 - **Tier 2 — `/.context/INDEX.md`** — routing map; load on demand.
 - **Tier 3 — `/tokens.json`** (or Prism `scan_tokens` with a filter) — full DTCG; query specific tokens, never load whole.
 
-Skills enforce this discipline (`bs-tokens`, `bs-design-md`, `.claude/rules/prism-mcp.md`). Do not dump the token system into context.
+Skills enforce this discipline (`fn-tokens`, `fn-design-md`, `.claude/rules/prism-mcp.md`). Do not dump the token system into context.
 
 ## Structure
 

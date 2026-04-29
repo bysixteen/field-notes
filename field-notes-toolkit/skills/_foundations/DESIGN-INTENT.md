@@ -2,7 +2,7 @@
 
 Some projects ship a `DESIGN.md` (Google design.md spec) that captures the project's stated intent — brand voice, sentiment vocabulary, component inventory, do's and don'ts. When it exists, **every skill reads it before applying its specialist lens**. The project's stated intent overrides general defaults from the other foundation files.
 
-Canonical source: [`bs-design-md/SKILL.md`](../bs-design-md/SKILL.md). That skill generates and validates `DESIGN.md`. This file describes how other skills consume it.
+Canonical source: [`fn-design-md/SKILL.md`](../fn-design-md/SKILL.md). That skill generates and validates `DESIGN.md`. This file describes how other skills consume it.
 
 ## Where to look for DESIGN.md
 
@@ -38,7 +38,7 @@ When they disagree, `tokens.json` wins. If a skill needs precise colour values f
 
 If the project has no `DESIGN.md`:
 
-- A skill must not invent one mid-task. Producing a `DESIGN.md` is the job of `bs-design-md`.
+- A skill must not invent one mid-task. Producing a `DESIGN.md` is the job of `fn-design-md`.
 - The skill applies general dimensional defaults from this directory.
 - The skill notes the absence in any output that depends on intent (e.g., a component review that can't check sentiment alignment because no sentiment vocabulary is captured).
 

@@ -42,7 +42,7 @@
   ],
   "exclude": [
     "node_modules",
-    "bs-storybook-docs-workspace",
+    "fn-storybook-docs-workspace",
     "skills",
     "scripts"
   ]

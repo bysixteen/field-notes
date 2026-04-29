@@ -24,7 +24,7 @@ This repo ships in two shapes. They cover different needs; you usually want both
 
 | Path | What it is | When to reach for it |
 |------|------------|----------------------|
-| **`field-notes-toolkit.plugin`** (the plugin) | A Claude Code plugin built from `dist/field-notes-toolkit.plugin`. Bundles the 15 `bs-*` skills, the shared `_foundations/` docs, the `start-issue` / `start-work` workflow skills, and the token-pipeline scripts. | When you're *doing* design-system work — scaffolding a new project, building a component, regenerating tokens, running a review. |
+| **`field-notes-toolkit.plugin`** (the plugin) | A Claude Code plugin built from `dist/field-notes-toolkit.plugin`. Bundles the 15 `fn-*` skills, the shared `_foundations/` docs, the `start-issue` / `start-work` workflow skills, and the token-pipeline scripts. | When you're *doing* design-system work — scaffolding a new project, building a component, regenerating tokens, running a review. |
 | **The Fumadocs reference site** at [bysixteen.github.io/field-notes](https://bysixteen.github.io/field-notes/) | A static site generated from `content/{domain}/*.mdx`. Agent-consumable via `llms.txt`. | When you're *looking up* a pattern, principle, or rationale — the durable reference an agent reads through `llms.txt`. |
 
 Reach for the plugin to *do*, the site to *look up*.
@@ -46,22 +46,22 @@ Two machine-readable files are generated on every build:
 
 The plugin bundles three layers under `.claude/skills/`.
 
-**`_foundations/`** — the shared mental model every `bs-*` skill leans on. Five files: `DESIGN-INTENT.md`, `DIMENSIONAL-MODEL.md` (the Sentiment × Emphasis × Size × Structure × State vocabulary), `TOKEN-ARCHITECTURE.md` (the four-layer cascade), `QUALITY-GATES.md` (severity model and verdict logic), `README.md`. If a skill references "the dimensional model" or "the cascade", it points here.
+**`_foundations/`** — the shared mental model every `fn-*` skill leans on. Five files: `DESIGN-INTENT.md`, `DIMENSIONAL-MODEL.md` (the Sentiment × Emphasis × Size × Structure × State vocabulary), `TOKEN-ARCHITECTURE.md` (the four-layer cascade), `QUALITY-GATES.md` (severity model and verdict logic), `README.md`. If a skill references "the dimensional model" or "the cascade", it points here.
 
-**`bs-*` skills** — 15 entries (`bs-design` is a one-line redirect stub to `bs-design-md`; functionally 14 distinct skills). Grouped by purpose:
+**`fn-*` skills** — 15 entries (`fn-design` is a one-line redirect stub to `fn-design-md`; functionally 14 distinct skills). Grouped by purpose:
 
-- **Specification.** `bs-design-md` projects tokens + components into the Google `DESIGN.md` spec. `bs-tokens` covers consuming, auditing, and reasoning about design tokens.
-- **Bootstrap.** `bs-init` scaffolds a fresh project's canonical context stack (see *Quickstart* below).
-- **Component creation.** `bs-component-api` defines the input shape (props, types, defaults). `bs-component-scaffold` generates React/CSS/Stories/Tests boilerplate from that API. `bs-css` audits component CSS against the token system. `bs-html` decides element semantics and ARIA.
-- **Review.** `bs-review` orchestrates a six-stage scored review (component-api, react-patterns, html, accessibility, tokens, css). `bs-accessibility` is the WCAG 2.2 AA audit. `bs-react-patterns` reviews modern React idioms. `bs-testing` covers the unit + a11y + visual-regression triad.
-- **Storybook docs.** `bs-storybook-ds` orchestrates. `bs-storybook-foundations` documents primitives. `bs-storybook-docs` documents individual components. `bs-storybook-helpers` is the catalogue of helper components (DocPage, TokenTable, Swatch, etc.).
+- **Specification.** `fn-design-md` projects tokens + components into the Google `DESIGN.md` spec. `fn-tokens` covers consuming, auditing, and reasoning about design tokens.
+- **Bootstrap.** `fn-init` scaffolds a fresh project's canonical context stack (see *Quickstart* below).
+- **Component creation.** `fn-component-api` defines the input shape (props, types, defaults). `fn-component-scaffold` generates React/CSS/Stories/Tests boilerplate from that API. `fn-css` audits component CSS against the token system. `fn-html` decides element semantics and ARIA.
+- **Review.** `fn-review` orchestrates a six-stage scored review (component-api, react-patterns, html, accessibility, tokens, css). `fn-accessibility` is the WCAG 2.2 AA audit. `fn-react-patterns` reviews modern React idioms. `fn-testing` covers the unit + a11y + visual-regression triad.
+- **Storybook docs.** `fn-storybook-ds` orchestrates. `fn-storybook-foundations` documents primitives. `fn-storybook-docs` documents individual components. `fn-storybook-helpers` is the catalogue of helper components (DocPage, TokenTable, Swatch, etc.).
 
 **Workflow skills.** `start-issue` (branch + plan + implement + verify + PR for a GitHub issue) and `start-work` (work brief + branch, no PR).
 
 **Token-pipeline scripts** under `scripts/`:
 
 - `generate-ramps.ts` — the token producer. Anchor colours → 12-step OKLCH ramps → CSS custom properties, JSON, Figma variable schemas, and DTCG `tokens.json` at repo root.
-- `generate-manifest.mjs` — the orchestrator. Calls `generate-ramps.ts`, then the `bs-design-md` emitter, then the lint. This is the closed regenerate loop.
+- `generate-manifest.mjs` — the orchestrator. Calls `generate-ramps.ts`, then the `fn-design-md` emitter, then the lint. This is the closed regenerate loop.
 - `figma-push.sh` / `figma-pull.sh` — one-way Figma sync via the Prism MCP bridge (`ws://localhost:7890`). Push sends generated tokens into Figma; pull retrieves anchor variables out.
 - `generate-llms-txt.mjs` — produces `llms.txt` and `llms-full.txt` from MDX content.
 - `pack-plugin.mjs` — builds the plugin artefact at `dist/field-notes-toolkit.plugin`.
@@ -69,10 +69,10 @@ The plugin bundles three layers under `.claude/skills/`.
 ## Quickstart for a new project
 
 ```sh
-node .claude/skills/bs-init/scripts/init.mjs --name <project-name> --target <dir>
+node .claude/skills/fn-init/scripts/init.mjs --name <project-name> --target <dir>
 ```
 
-`bs-init` scaffolds the canonical four-piece context stack a downstream project needs to consume `bs-design-md --from-dimensional`:
+`fn-init` scaffolds the canonical four-piece context stack a downstream project needs to consume `fn-design-md --from-dimensional`:
 
 | Artefact | Purpose |
 |----------|---------|
@@ -80,13 +80,13 @@ node .claude/skills/bs-init/scripts/init.mjs --name <project-name> --target <dir
 | `components.json` | Five canonical primitives (`button`, `input`, `badge`, `alert`, `card`) declared with `applies_to: all`, so every dimensional combination expands. |
 | `content/design-system/model/{sentiment,emphasis,size,state,structure}.mdx` | The five-dimensional vocabulary, each with a `dimensional_values: { default, values }` frontmatter block. `structure.mdx` carries `informational: true` so its values don't appear in variant names. |
 | `CLAUDE.md` | Starter system-prompt pointing at the field-notes toolkit, the four-layer context stack, and `llms.txt`. |
-| `DESIGN.md` | Empty preservation markers in place (`<!-- bs-design-md:generated:start -->` … `<!-- bs-design-md:generated:end -->`) so the first `bs-design-md` run fills the generated portion and any prose written after the `:end` marker survives regenerations. |
+| `DESIGN.md` | Empty preservation markers in place (`<!-- fn-design-md:generated:start -->` … `<!-- fn-design-md:generated:end -->`) so the first `fn-design-md` run fills the generated portion and any prose written after the `:end` marker survives regenerations. |
 
-Round-trip: after `bs-init`, run `bs-design-md --from-dimensional <root>` against the same directory and the scaffold immediately produces a valid `DESIGN.md`. Replace placeholder anchor colours, prose, and the model-MDX value lists with the real vocabulary before treating the scaffold as canonical.
+Round-trip: after `fn-init`, run `fn-design-md --from-dimensional <root>` against the same directory and the scaffold immediately produces a valid `DESIGN.md`. Replace placeholder anchor colours, prose, and the model-MDX value lists with the real vocabulary before treating the scaffold as canonical.
 
 ## Closing the design loop
 
-`bs-design-md` has three modes; the new one is the closer:
+`fn-design-md` has three modes; the new one is the closer:
 
 - **Extract mode** — point at a live site URL, get a `DESIGN.md` plus DTCG `tokens.json` sidecar. Bootstraps a new product from a reference.
 - **Project mode** (`--tokens` + `--components`) — take an existing DTCG `tokens.json` plus a hand-authored `components.json`, emit the spec-compliant pair.
@@ -101,11 +101,11 @@ Outputs from any mode wrap the generated prose in stable HTML-comment markers so
 <frontmatter>           <- replaced wholesale on every emit
 ---
 
-<!-- bs-design-md:generated:start -->
+<!-- fn-design-md:generated:start -->
 ## Overview
 ... generated prose ...
 ## Do's and Don'ts
-<!-- bs-design-md:generated:end -->
+<!-- fn-design-md:generated:end -->
 
 ## Identity              <- consumer-authored prose lives below :end
 ## Aesthetic direction
@@ -113,7 +113,7 @@ Outputs from any mode wrap the generated prose in stable HTML-comment markers so
 
 Two rules govern the markers:
 
-- **Prose-only preservation** — anything below `<!-- bs-design-md:generated:end -->` is preserved verbatim across regenerations. Use this region for project-specific narrative (Identity, Aesthetic direction, Surfaces, etc.).
+- **Prose-only preservation** — anything below `<!-- fn-design-md:generated:end -->` is preserved verbatim across regenerations. Use this region for project-specific narrative (Identity, Aesthetic direction, Surfaces, etc.).
 - **Frontmatter is wholesale-replaced** — the YAML at the top is re-derived on every emit. Hand-edits to keys *inside* will be overwritten without warning. Project metadata that must survive goes in a `## Metadata` (or any name) section below `:end`.
 
 ### `migrate` — one-time legacy adoption

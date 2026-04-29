@@ -46,7 +46,7 @@ if (!existsSync(componentsPath)) {
 
 console.log("\n→ regenerating /DESIGN.md (Tier 1)");
 run("node", [
-  ".claude/skills/bs-design-md/scripts/emit-design-md.mjs",
+  ".claude/skills/fn-design-md/scripts/emit-design-md.mjs",
   "--tokens", "tokens.json",
   "--components", "components.json",
   "--out", ".",
@@ -54,6 +54,6 @@ run("node", [
 ]);
 
 console.log("\n→ linting /DESIGN.md");
-run("bash", [".claude/skills/bs-design-md/scripts/lint.sh", "DESIGN.md"]);
+run("bash", [".claude/skills/fn-design-md/scripts/lint.sh", "DESIGN.md"]);
 
 console.log("\n✓ manifest regenerated. Tier 2 routing map at /.context/INDEX.md is hand-authored.");
