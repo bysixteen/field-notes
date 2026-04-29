@@ -1,0 +1,172 @@
+{
+  "metadata": {
+    "skill_name": "fn-tokens",
+    "skill_path": "/Users/danielcork/conductor/workspaces/field-notes/nagoya-v1/.claude/skills/fn-tokens.md",
+    "executor_model": "claude-opus-4-6",
+    "analyzer_model": "claude-opus-4-6",
+    "timestamp": "2026-03-30T16:00:00Z",
+    "evals_run": [1, 2, 3, 4],
+    "runs_per_configuration": 1
+  },
+  "runs": [
+    {
+      "eval_id": 1,
+      "eval_name": "hardcoded-audit",
+      "configuration": "with_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 10,
+        "failed": 0,
+        "total": 10,
+        "time_seconds": 55.0,
+        "tokens": 21930,
+        "tool_calls": 0,
+        "errors": 0
+      }
+    },
+    {
+      "eval_id": 1,
+      "eval_name": "hardcoded-audit",
+      "configuration": "without_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 0.2,
+        "passed": 2,
+        "failed": 8,
+        "total": 10,
+        "time_seconds": 50.3,
+        "tokens": 17436,
+        "tool_calls": 0,
+        "errors": 0
+      }
+    },
+    {
+      "eval_id": 2,
+      "eval_name": "cascade-audit",
+      "configuration": "with_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 10,
+        "failed": 0,
+        "total": 10,
+        "time_seconds": 60.6,
+        "tokens": 22024,
+        "tool_calls": 0,
+        "errors": 0
+      }
+    },
+    {
+      "eval_id": 2,
+      "eval_name": "cascade-audit",
+      "configuration": "without_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 0.1,
+        "passed": 1,
+        "failed": 9,
+        "total": 10,
+        "time_seconds": 82.1,
+        "tokens": 19206,
+        "tool_calls": 0,
+        "errors": 0
+      }
+    },
+    {
+      "eval_id": 3,
+      "eval_name": "token-usage",
+      "configuration": "with_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 0.875,
+        "passed": 7,
+        "failed": 1,
+        "total": 8,
+        "time_seconds": 58.2,
+        "tokens": 24580,
+        "tool_calls": 0,
+        "errors": 0
+      }
+    },
+    {
+      "eval_id": 3,
+      "eval_name": "token-usage",
+      "configuration": "without_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 0.5,
+        "passed": 4,
+        "failed": 4,
+        "total": 8,
+        "time_seconds": 56.2,
+        "tokens": 20110,
+        "tool_calls": 0,
+        "errors": 0
+      }
+    },
+    {
+      "eval_id": 4,
+      "eval_name": "edge-case-keywords",
+      "configuration": "with_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 8,
+        "failed": 0,
+        "total": 8,
+        "time_seconds": 61.1,
+        "tokens": 21490,
+        "tool_calls": 0,
+        "errors": 0
+      }
+    },
+    {
+      "eval_id": 4,
+      "eval_name": "edge-case-keywords",
+      "configuration": "without_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 0.75,
+        "passed": 6,
+        "failed": 2,
+        "total": 8,
+        "time_seconds": 37.2,
+        "tokens": 16882,
+        "tool_calls": 0,
+        "errors": 0
+      }
+    }
+  ],
+  "summary": {
+    "with_skill": {
+      "mean_pass_rate": 0.969,
+      "stddev_pass_rate": 0.054,
+      "mean_time_seconds": 58.7,
+      "mean_tokens": 22506,
+      "total_runs": 4
+    },
+    "without_skill": {
+      "mean_pass_rate": 0.388,
+      "stddev_pass_rate": 0.275,
+      "mean_time_seconds": 56.5,
+      "mean_tokens": 18409,
+      "total_runs": 4
+    },
+    "delta": {
+      "pass_rate": 0.581,
+      "time_seconds": 2.2,
+      "tokens": 4097
+    }
+  },
+  "analyst_notes": [
+    "Eval 2 (cascade-audit) improved from 50% to 100% with-skill — the targeted skill edits to the Color Cascade section and output template were highly effective. This was the primary improvement target from iteration-1.",
+    "Eval 2 without-skill dropped from 40% to 10%, suggesting iteration-1's without-skill result may have been an outlier. The 90% delta on cascade-audit is the strongest differentiator across all evals.",
+    "Eval 1 (hardcoded-audit) remains stable at 100% with-skill vs 20% without — consistent across both iterations, confirming this is a reliable skill contribution.",
+    "Eval 3 (token-usage) with-skill held at 87.5% — the single failing assertion ('decision tree reference') may not be worth pursuing as the response is already practical and complete.",
+    "Eval 4 (edge-case-keywords) stable at 100% with-skill vs 75% without across both iterations.",
+    "Overall with-skill pass rate improved from 84.4% (iteration-1) to 96.9% (iteration-2), a +12.5% lift from two targeted edits.",
+    "Delta (with - without) widened from +35% to +58.1%, driven primarily by the cascade-audit improvements.",
+    "Token overhead is modest: with-skill uses ~22% more tokens on average, with negligible time difference (+2.2s)."
+  ]
+}

@@ -20,7 +20,7 @@ Tier 2 routing map for the Field Notes design system. **Lightweight by design**:
 | Spacing | `/DESIGN.md` `spacing:` block | `/tokens.json` `spacing` | `content/design-system/token-chain/primitives.mdx` |
 | Rounded / radius | `/DESIGN.md` `rounded:` block | `/tokens.json` `borderRadius` | `content/design-system/token-chain/primitives.mdx` |
 | Sentiment / emphasis / state / size | `content/design-system/concepts-manifest.mdx` | model definitions in `content/design-system/model/` | `content/design-system/token-chain/component-slots.mdx` |
-| Cascade rules | `.claude/skills/_foundations/TOKEN-ARCHITECTURE.md` | n/a | `.claude/skills/bs-tokens.md` |
+| Cascade rules | `.claude/skills/_foundations/TOKEN-ARCHITECTURE.md` | n/a | `.claude/skills/fn-tokens.md` |
 
 ## Querying live tokens
 
@@ -45,4 +45,4 @@ Do **not** run on every prompt or every build — the cache is the whole point.
 
 - `content/design-system/manifest-architecture.mdx` — full architectural rationale.
 - `.claude/rules/prism-mcp.md` — Token Trap discipline for `scan_tokens`.
-- `.claude/skills/bs-tokens.md` — Tier discipline applied to skill workflows.
+- `.claude/skills/fn-tokens.md` — Tier discipline applied to skill workflows.

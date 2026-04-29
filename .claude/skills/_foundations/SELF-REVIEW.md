@@ -11,12 +11,12 @@ Run as the final step of every skill, before declaring output done. Catches the 
 
 Keep it short. Three to five lines per step is enough.
 
-## Worked example (hypothetical `bs-component-scaffold` output)
+## Worked example (hypothetical `fn-component-scaffold` output)
 
 > **Brief:** scaffold a `Button` component for a consumer project.
 > **Assumptions:** React + CSS modules per repo convention; placed in `src/components/button/`; default variant `primary`; no Storybook story (out of scope per brief).
-> **Not checked:** didn't run `bs-accessibility` against the scaffold; didn't verify the import path resolves in the consumer app; didn't confirm `button` isn't already taken in the components directory.
-> **Gate:** ready to declare done — user can run `bs-accessibility` and confirm the directory is free before importing.
+> **Not checked:** didn't run `fn-accessibility` against the scaffold; didn't verify the import path resolves in the consumer app; didn't confirm `button` isn't already taken in the components directory.
+> **Gate:** ready to declare done — user can run `fn-accessibility` and confirm the directory is free before importing.
 
 ## When to halt instead
 

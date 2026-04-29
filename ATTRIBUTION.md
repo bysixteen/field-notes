@@ -75,7 +75,7 @@ The canon draws on patterns from the following systems. Each is cited inline in 
 
 Work that originated in field-notes and is referenced from other bysixteen repos:
 
-- `bs-design-md` skill and four-layer **CLAUDE.md / DESIGN.md / tokens.json / Component.md** context stack — [PR #116](https://github.com/bysixteen/field-notes/pull/116). Authored by [@bysixteen](https://github.com/bysixteen).
+- `fn-design-md` skill and four-layer **CLAUDE.md / DESIGN.md / tokens.json / Component.md** context stack — [PR #116](https://github.com/bysixteen/field-notes/pull/116). Authored by [@bysixteen](https://github.com/bysixteen).
 
 ---
 

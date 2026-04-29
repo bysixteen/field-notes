@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 // Pack the field-notes toolkit into a Claude plugin zip.
-// Slice rules: ROADMAP Phase 2.1 — bs-* skills, _foundations/, start-issue/,
-// start-work/, bs-init/, plus the token-pipeline + Figma sync scripts.
+// Slice rules: ROADMAP Phase 2.1 — fn-* skills, _foundations/, start-issue/,
+// start-work/, fn-init/, plus the token-pipeline + Figma sync scripts.
 // Output: ../dist/field-notes-toolkit.plugin (workspace-level dist/, outside the worktree).
 
 import { execSync } from 'node:child_process';
@@ -19,28 +19,28 @@ const stagingDir = join(distDir, '.staging-toolkit');
 const SKILLS_INCLUDE = [
   'README.md',
   '_foundations',
-  'bs-accessibility.md',
-  'bs-component-api.md',
-  'bs-component-scaffold.md',
-  'bs-css.md',
-  'bs-html.md',
-  'bs-react-patterns.md',
-  'bs-review.md',
-  'bs-storybook-docs.md',
-  'bs-storybook-ds.md',
-  'bs-storybook-foundations.md',
-  'bs-storybook-helpers.md',
-  'bs-testing.md',
-  'bs-tokens.md',
-  'bs-design',
-  'bs-design-md',
-  'bs-init',
+  'fn-accessibility.md',
+  'fn-component-api.md',
+  'fn-component-scaffold.md',
+  'fn-css.md',
+  'fn-html.md',
+  'fn-react-patterns.md',
+  'fn-review.md',
+  'fn-storybook-docs.md',
+  'fn-storybook-ds.md',
+  'fn-storybook-foundations.md',
+  'fn-storybook-helpers.md',
+  'fn-testing.md',
+  'fn-tokens.md',
+  'fn-design',
+  'fn-design-md',
+  'fn-init',
   'start-issue',
   'start-work',
 ];
 
-// bs-design-md.skill (a packaged .skill zip) is intentionally excluded — its
-// contents are already covered by the bs-design-md/ directory above.
+// fn-design-md.skill (a packaged .skill zip) is intentionally excluded — its
+// contents are already covered by the fn-design-md/ directory above.
 
 const SCRIPTS_INCLUDE = [
   'generate-ramps.ts',
@@ -89,7 +89,7 @@ const list = execSync(`unzip -l "${outputPath}"`, { encoding: 'utf8' });
 const count = (pattern) => list.split('\n').filter((l) => l.includes(pattern)).length;
 
 console.log(`packed: ${outputPath}`);
-console.log(`  bs-init entries:      ${count('skills/bs-init/')}`);
+console.log(`  fn-init entries:      ${count('skills/fn-init/')}`);
 console.log(`  _foundations entries: ${count('skills/_foundations/')}`);
-console.log(`  bs-design-md entries: ${count('skills/bs-design-md/')}`);
+console.log(`  fn-design-md entries: ${count('skills/fn-design-md/')}`);
 console.log(`  scripts entries:      ${count('scripts/')}`);

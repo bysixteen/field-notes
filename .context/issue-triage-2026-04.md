@@ -26,9 +26,9 @@ Open issues in the candidate list below: 9.
 - Reason: Daniel's own reopen comment 2026-04-27 10:16 BST states "remains scoped for future consideration even though no immediate action" — textbook defer.
 - Labels (if keep/defer): keep `explore:review`
 
-### #91 — feat: bs-spec — Design System Spec Pipeline (Code → Figma documentation bridge)
+### #91 — feat: fn-spec — Design System Spec Pipeline (Code → Figma documentation bridge)
 - Decision: defer
-- Reason: Multi-phase scope (Phase 0 doc components + Phase 1 foundations + Phase 2 components + Phase 3 evals, ~25 tasks). Natural successor to the `bs-design-md` bundle pattern that shipped via PR #116 yesterday, but not next-30d work. Revisit after the bundle pattern stabilises.
+- Reason: Multi-phase scope (Phase 0 doc components + Phase 1 foundations + Phase 2 components + Phase 3 evals, ~25 tasks). Natural successor to the `fn-design-md` bundle pattern that shipped via PR #116 yesterday, but not next-30d work. Revisit after the bundle pattern stabilises.
 - Labels (if keep/defer): keep `enhancement`
 
 ### #98 — Adopt Terrazzo for token output pipeline
@@ -53,7 +53,7 @@ Open issues in the candidate list below: 9.
 
 ### #107 — Create reusable prompt collection
 - Decision: keep
-- Reason: Daniel refined scope 2026-04-26 20:03 BST after PR #116 shipped: "(1) document the bundle pattern so other skills can follow it, (2) identify which existing bs-* skills would benefit from being converted to the full bundle format." Clear next action; aligned with active work.
+- Reason: Daniel refined scope 2026-04-26 20:03 BST after PR #116 shipped: "(1) document the bundle pattern so other skills can follow it, (2) identify which existing fn-* skills would benefit from being converted to the full bundle format." Clear next action; aligned with active work.
 - Labels (if keep/defer): —
 
 ### #108 — Investigate Layout.design for compliance/audit capabilities

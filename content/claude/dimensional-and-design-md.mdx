@@ -5,7 +5,7 @@ description: "How a dimensional design system projects into the Google DESIGN.md
 
 The Google [DESIGN.md spec](https://github.com/google-labs-code/design.md) (April 2026) is the first credible attempt at a portable, agent-readable design system context format. It is also intentionally narrow — flat colour, hex sRGB only, no dimensional vocabulary, no patterns, no states. A dimensional design system cannot be expressed in DESIGN.md without loss.
 
-This page documents the lossy projection from a dimensional system into DESIGN.md, the DTCG `tokens.json` sidecar that recovers what DESIGN.md cannot carry, and the layered CLAUDE.md / AGENTS.md / DESIGN.md / tokens.json stack that makes the whole system legible to an external agent. The pattern is implemented in the [`bs-design-md`](/claude/skills-catalogue) skill.
+This page documents the lossy projection from a dimensional system into DESIGN.md, the DTCG `tokens.json` sidecar that recovers what DESIGN.md cannot carry, and the layered CLAUDE.md / AGENTS.md / DESIGN.md / tokens.json stack that makes the whole system legible to an external agent. The pattern is implemented in the [`fn-design-md`](/claude/skills-catalogue) skill.
 
 ## Why DESIGN.md Cannot Carry a Dimensional System
 
@@ -105,7 +105,7 @@ In any of these cases, emit the DTCG sidecar only and skip the DESIGN.md.
 
 ## Verifying the Projection
 
-Treat the linter as a release gate. From the [`bs-design-md` skill](/claude/skills-catalogue):
+Treat the linter as a release gate. From the [`fn-design-md` skill](/claude/skills-catalogue):
 
 - **Errors must be zero.** `broken-ref` and malformed colours block the file from being usable.
 - **`missing-primary`, `missing-typography`, `missing-sections`** — must be zero. Warnings in the linter, but indicate an incomplete file.

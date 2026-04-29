@@ -12,7 +12,7 @@ None of the 5 active issues score HIGH on stability. Field-notes is already at "
 | --- | --- | --- | --- | --- | --- |
 | 143 | eval: start-issue — bottom 3 from #49 baseline | LOW | SMALL | independent | **DO NEXT (bundled)** — highest leverage of the 3 eval issues; this is the primary per-session skill |
 | 144 | eval: start-work — bottom 3 from #49 baseline | LOW | SMALL | independent | **DO NEXT (bundled)** — paired sibling to #143; same mechanical fix |
-| 142 | eval: bs-storybook-helpers — bottom 3 from #49 baseline | LOW | SMALL | independent | **DO NEXT (bundled)** — same mechanical fix as #143/#144 |
+| 142 | eval: fn-storybook-helpers — bottom 3 from #49 baseline | LOW | SMALL | independent | **DO NEXT (bundled)** — same mechanical fix as #143/#144 |
 | 98  | Adopt Terrazzo for token output pipeline | LOW¹ | LARGE | depends on a real second consumer needing DTCG features the bridge lacks | **DEFER** — refactor of a working pipeline, not a stability fix |
 | 107 | Create reusable prompt collection | LOW | MEDIUM | independent; speculative | **CLOSE — won't-do** — no concrete workflow gap names a specific prompt that should exist |
 
@@ -20,7 +20,7 @@ None of the 5 active issues score HIGH on stability. Field-notes is already at "
 
 ## Recommended execution order
 
-1. **#142 + #143 + #144 — eval trio, ONE bundled PR.** Add Output / Inputs sections to each of `bs-storybook-helpers.md`, `start-issue/SKILL.md`, `start-work/SKILL.md`. SMALL across three files; closes all three issues in one coherent edit.
+1. **#142 + #143 + #144 — eval trio, ONE bundled PR.** Add Output / Inputs sections to each of `fn-storybook-helpers.md`, `start-issue/SKILL.md`, `start-work/SKILL.md`. SMALL across three files; closes all three issues in one coherent edit.
 
    Rationale: The discipline through this arc has been "don't bundle UNRELATED work." These three are the same fix shape (add Output/Inputs sections), all from #49's baseline, all polish-not-stability. Three near-identical micro-PRs is audit-trail overhead for trivial gain. Bundle. PR #161 set the precedent for "cleanup batch" PRs that close multiple related issues with one coherent edit.
 

@@ -8,7 +8,7 @@ A plain-prose map of what you've built across the field-notes workspace. Read on
 
 ## The repo and its worktrees
 
-**field-notes** is your reference project — a project-agnostic knowledge base and a toolkit of skills. The live worktree is whichever Conductor session spawned this checkout — identify via `pwd`. Older worktrees in the workspace folder are dead; ignore them. (Canonical-worktree pointer was retired 2026-04-28; live-by-current-cwd is the rule.) `karachi-v1/` is the archived predecessor that lives alongside it; it has its own git history and its own skill copies, plus evaluation workspaces (`bs-storybook-docs-workspace`, `bs-tokens-workspace`) used to benchmark the skills before they were promoted forward. Treat karachi-v1 as a museum: useful for tracing how things evolved, not where to make changes.
+**field-notes** is your reference project — a project-agnostic knowledge base and a toolkit of skills. The live worktree is whichever Conductor session spawned this checkout — identify via `pwd`. Older worktrees in the workspace folder are dead; ignore them. (Canonical-worktree pointer was retired 2026-04-28; live-by-current-cwd is the rule.) `karachi-v1/` is the archived predecessor that lives alongside it; it has its own git history and its own skill copies, plus evaluation workspaces (`fn-storybook-docs-workspace`, `fn-tokens-workspace`) used to benchmark the skills before they were promoted forward. Treat karachi-v1 as a museum: useful for tracing how things evolved, not where to make changes.
 
 **Worktree convention.** Conductor creates a fresh worktree per task; the live one is whichever Conductor session spawned the current checkout (identify via `pwd`). Older worktrees move to `/Users/danielcork/conductor/archived-contexts/field-notes/<name>/` once their work has merged — those archived directories preserve the worktree's `.context/` state but not the full source tree. When auditing field-notes, work from the cwd; treat anything in `archived-contexts/` as historical reference only.
 
@@ -20,15 +20,15 @@ Skills live under `.claude/skills/`. There are three layers:
 
 The **`_foundations/` layer** is the shared mental model every other skill leans on. Five files: `DESIGN-INTENT.md` (what `DESIGN.md` is for), `DIMENSIONAL-MODEL.md` (the Sentiment × Emphasis × Size × Structure × State vocabulary), `TOKEN-ARCHITECTURE.md` (the four-layer cascade), `QUALITY-GATES.md` (severity model and verdict logic), `README.md`. If a skill references "the dimensional model" or "the cascade", it's pointing here.
 
-The **`bs-*` skills** are the design-system toolkit, all project-agnostic, all consumed by consumer projects via that consumer's `CLAUDE.md`. Grouped by purpose:
+The **`fn-*` skills** are the design-system toolkit, all project-agnostic, all consumed by consumer projects via that consumer's `CLAUDE.md`. Grouped by purpose:
 
-*Specification.* `bs-design-md` projects tokens + components into the Google `DESIGN.md` spec format (the skill we've been planning around — currently fully working in `--tokens`/`--components` mode; `--from-dimensional` is the open work). `bs-tokens` covers everything to do with consuming, auditing, and reasoning about design tokens.
+*Specification.* `fn-design-md` projects tokens + components into the Google `DESIGN.md` spec format (the skill we've been planning around — currently fully working in `--tokens`/`--components` mode; `--from-dimensional` is the open work). `fn-tokens` covers everything to do with consuming, auditing, and reasoning about design tokens.
 
-*Component creation.* `bs-component-api` defines the input shape (props, types, defaults). `bs-component-scaffold` generates the actual React/CSS/Stories/Tests boilerplate from that API. `bs-css` covers writing and auditing component CSS against the token system. `bs-html` decides element semantics and ARIA.
+*Component creation.* `fn-component-api` defines the input shape (props, types, defaults). `fn-component-scaffold` generates the actual React/CSS/Stories/Tests boilerplate from that API. `fn-css` covers writing and auditing component CSS against the token system. `fn-html` decides element semantics and ARIA.
 
-*Review.* `bs-review` orchestrates a six-stage review (component-api, react-patterns, html, accessibility, tokens, css) and produces a scored report. `bs-accessibility` is the WCAG 2.2 AA audit. `bs-react-patterns` reviews modern React idioms. `bs-testing` covers the unit + a11y + visual-regression test triad.
+*Review.* `fn-review` orchestrates a six-stage review (component-api, react-patterns, html, accessibility, tokens, css) and produces a scored report. `fn-accessibility` is the WCAG 2.2 AA audit. `fn-react-patterns` reviews modern React idioms. `fn-testing` covers the unit + a11y + visual-regression test triad.
 
-*Storybook docs.* `bs-storybook-ds` is the orchestrator. `bs-storybook-foundations` documents primitives (colour, type, spacing). `bs-storybook-docs` documents individual components. `bs-storybook-helpers` is the catalogue of helper components (DocPage, TokenTable, Swatch, etc.) used to build those pages.
+*Storybook docs.* `fn-storybook-ds` is the orchestrator. `fn-storybook-foundations` documents primitives (colour, type, spacing). `fn-storybook-docs` documents individual components. `fn-storybook-helpers` is the catalogue of helper components (DocPage, TokenTable, Swatch, etc.) used to build those pages.
 
 The **workflow skills** are `start-work` (work brief + branch, no PR) and `start-issue` (branch + plan + implement + verify + PR for a GitHub issue).
 
@@ -40,7 +40,7 @@ Several scripts under `scripts/` that matter:
 
 `generate-ramps.ts` is the token producer. It takes anchor colour definitions and produces complete 12-step OKLCH ramps, then emits CSS custom properties, JSON, Figma variable schemas, and a DTCG `tokens.json` at the repo root.
 
-`generate-manifest.mjs` is the orchestrator that wraps everything. It calls `generate-ramps.ts` to produce `tokens.json`, then calls `bs-design-md`'s emitter to produce `DESIGN.md`, then runs the lint. This is the closed loop for field-notes itself. Today it requires a hand-authored `components.json`; the bs-design-md `--from-dimensional` work would replace that requirement.
+`generate-manifest.mjs` is the orchestrator that wraps everything. It calls `generate-ramps.ts` to produce `tokens.json`, then calls `fn-design-md`'s emitter to produce `DESIGN.md`, then runs the lint. This is the closed loop for field-notes itself. Today it requires a hand-authored `components.json`; the fn-design-md `--from-dimensional` work would replace that requirement.
 
 `figma-push.sh` / `figma-pull.sh` connect to Prism (a Figma MCP bridge running on `ws://localhost:7890`). Push sends generated tokens into Figma; pull retrieves anchor variables out of Figma. Prerequisite: Prism MCP running and `.mcp.json` configured. This is the Figma sync layer.
 
@@ -68,9 +68,9 @@ The repo is itself a Fumadocs (MDX + Next.js 15) site. Four content domains, eac
 
 ## How consumer projects use the toolkit
 
-field-notes produces *the toolkit*. Consumer projects *use* the toolkit. The connection is one-way: a consumer's `CLAUDE.md` references the bs-* skills as installed dependencies (via the field-notes path); changes to the skills happen in field-notes and propagate when the consumer pulls.
+field-notes produces *the toolkit*. Consumer projects *use* the toolkit. The connection is one-way: a consumer's `CLAUDE.md` references the fn-* skills as installed dependencies (via the field-notes path); changes to the skills happen in field-notes and propagate when the consumer pulls.
 
-`bs-design-md` is the bridge artefact. When a consumer wires `tokens:emit:design` to invoke the skill, the design-system loop closes, ensuring the consumer's `DESIGN.md` stays in sync with its `tokens.json`.
+`fn-design-md` is the bridge artefact. When a consumer wires `tokens:emit:design` to invoke the skill, the design-system loop closes, ensuring the consumer's `DESIGN.md` stays in sync with its `tokens.json`.
 
 ---
 
@@ -80,7 +80,7 @@ The dimensional model: `.claude/skills/_foundations/DIMENSIONAL-MODEL.md`.
 
 How tokens cascade: `.claude/skills/_foundations/TOKEN-ARCHITECTURE.md` (line 48 has the canonical chain).
 
-How `DESIGN.md` should be shaped: `DESIGN.md` (the reference) and `.claude/skills/bs-design-md/SKILL.md` (the contract).
+How `DESIGN.md` should be shaped: `DESIGN.md` (the reference) and `.claude/skills/fn-design-md/SKILL.md` (the contract).
 
 Status of work in flight: GitHub Issues (`bysixteen/field-notes`) for the toolkit.
 

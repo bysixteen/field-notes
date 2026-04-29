@@ -1,8 +1,8 @@
 # Quality Gates — foundations
 
-Every audit-style skill (`bs-component-api`, `bs-react-patterns`, `bs-html`, `bs-accessibility`, `bs-tokens`, `bs-css`, and the `bs-review` orchestrator) emits findings using the same severity model and the same output schema. This file defines both.
+Every audit-style skill (`fn-component-api`, `fn-react-patterns`, `fn-html`, `fn-accessibility`, `fn-tokens`, `fn-css`, and the `fn-review` orchestrator) emits findings using the same severity model and the same output schema. This file defines both.
 
-Canonical source: [`bs-review.md`](../bs-review.md). This file summarises the parts every skill needs to share.
+Canonical source: [`fn-review.md`](../fn-review.md). This file summarises the parts every skill needs to share.
 
 ## Severity model
 
@@ -31,11 +31,11 @@ Aggregate severity counts across all stages, then:
 | **MINOR IMPROVEMENTS** | No BLOCKING; one or more SERIOUS |
 | **UP TO STANDARD** | No BLOCKING and no SERIOUS |
 
-Verdict drives merge action. `bs-review` produces the final consolidated verdict; individual skills report counts only.
+Verdict drives merge action. `fn-review` produces the final consolidated verdict; individual skills report counts only.
 
 ## Findings schema
 
-Every audit skill emits findings in this exact shape. The `bs-review` orchestrator consumes the schema directly — there is one contract, not one per skill.
+Every audit skill emits findings in this exact shape. The `fn-review` orchestrator consumes the schema directly — there is one contract, not one per skill.
 
 ```
 ## Findings
