@@ -1,5 +1,5 @@
 // Integration test for the `migrate` subcommand: non-interactive run against
-// the lanefour-shape legacy fixture; validates the generated/preserved/skipped
+// a legacy fixture; validates the generated/preserved/skipped
 // dispositions; running migrate again is a no-op.
 
 import { test } from "node:test";

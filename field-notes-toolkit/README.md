@@ -73,7 +73,7 @@ The plugin works two ways:
 # in field-notes-toolkit/
 npm link
 
-# in the consumer project (e.g. lanefour/gwangju-v3)
+# in the consumer project
 npm link field-notes-toolkit
 ```
 

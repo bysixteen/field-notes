@@ -16,7 +16,7 @@
 
 Design engineering knowledge, distilled — and the toolkit that produces it.
 
-> Start with [`INVENTORY.md`](./INVENTORY.md) for a plain-prose orientation map of this repo, the lanefour consumer, and how the two relate.
+> Start with [`INVENTORY.md`](./INVENTORY.md) for a plain-prose orientation map of this repo and how the toolkit is structured.
 
 ## Two distribution paths
 

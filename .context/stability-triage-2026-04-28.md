@@ -1,6 +1,6 @@
 # Stability triage — 2026-04-28
 
-Triage of the 5 actively-open issues in `bysixteen/field-notes` against the goal "as stable and ready as possible before moving to Bolton Metro / Phase 3 lanefour calibration." The 4 `defer`-labelled issues (#38, #91, #101, #106) are out of scope for this pass; they stay parked.
+Triage of the 5 actively-open issues in `bysixteen/field-notes` against the goal "as stable and ready as possible before moving to Bolton Metro / Phase 3 consumer calibration." The 4 `defer`-labelled issues (#38, #91, #101, #106) are out of scope for this pass; they stay parked.
 
 ## Honest finding
 
@@ -30,7 +30,7 @@ None of the 5 active issues score HIGH on stability. Field-notes is already at "
 
 ## Items recommended to defer or close-won't-do
 
-- **#98 — Adopt Terrazzo (DEFER, do not close).** The existing pipeline is working; the issue is a refactor of a working system, not a fix for instability. Recommend adding the `defer` label with a comment: "deferred pending a second consumer (Bolton Metro or other) requiring DTCG features the existing custom bridge doesn't provide. Phase 3 is lanefour calibration; that doesn't change the token pipeline's needs."
+- **#98 — Adopt Terrazzo (DEFER, do not close).** The existing pipeline is working; the issue is a refactor of a working system, not a fix for instability. Recommend adding the `defer` label with a comment: "deferred pending a second consumer (Bolton Metro or other) requiring DTCG features the existing custom bridge doesn't provide. Phase 3 is consumer calibration; that doesn't change the token pipeline's needs."
 
 - **#107 — Reusable prompt collection (CLOSE — won't-do).** No part of the current toolkit fails without this. The seven proposed prompts read as speculative — no caller is waiting on `create-spacing-scale.md`. Close as won't-do; reopen if a real trigger surfaces.
 
