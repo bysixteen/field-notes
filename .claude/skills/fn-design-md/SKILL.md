@@ -27,10 +27,33 @@ description: >-
 This skill orchestrates three workflows that converge on the same emitter:
 
 - **Extract mode** — point at a live site URL, get a usable `DESIGN.md` plus DTCG `tokens.json` sidecar. Used to bootstrap a new product from a reference site.
-- **Project mode (`--tokens` + `--components`)** — take an existing DTCG `tokens.json` plus a hand-authored `components.json`, emit a spec-compliant `DESIGN.md`. Used when the consumer hand-curates the components list.
-- **Dimensional mode (`--from-dimensional <root>`)** — walk the consumer's `tokens.json` + `components.json` (with `applies_to`) + the five model MDX islands, and synthesise the flat per-variant `components` block via the cap policy in `references/dimensional-mapping.md`. Used when the consumer wants the matrix derived from the dimensional vocabulary.
+- **Project mode (`--tokens` + `--components`)** — take an existing DTCG `tokens.json` plus a `components.json` thin index, emit a spec-compliant `DESIGN.md`. The thin index records each primitive's contract sidecar path, Radix base, and CSS custom-property namespace; per-component token wiring is derived from the namespace × `tokens.json` lookup. Used when the consumer hand-curates the components list.
+- **Dimensional mode (`--from-dimensional <root>`)** — walk the consumer's `tokens.json` + `components.json` thin index + each component's `<Component>.contract.md` sidecar (`## Dimension encoding` section) + the five model MDX islands, and synthesise the flat per-variant `components` block via the cap policy in `references/dimensional-mapping.md`. Used when the consumer wants the matrix derived from the dimensional vocabulary.
 
 All three modes share the same output contract.
+
+### `components.json` — thin index
+
+`components.json` is a registry of design-system primitives, not a wiring table. Each entry records where the component's contract sidecar lives, which Radix primitive (if any) it composes, and which CSS custom-property namespace it owns:
+
+```json
+{
+  "button": {
+    "contract": "packages/design-system/src/components/Button/Button.contract.md",
+    "radixBase": "@radix-ui/react-slot",
+    "tokenNamespace": "button"
+  },
+  "input": {
+    "contract": "packages/design-system/src/components/Input/Input.contract.md",
+    "radixBase": null,
+    "tokenNamespace": "input"
+  }
+}
+```
+
+Token-slot wiring (`backgroundColor`, `textColor`, `padding`, etc.) lives in the component's `.contract.md` sidecar under `## Token bindings`, not here. Dimensional applicability (`applies_to`) lives in the same sidecar's `## Dimension encoding` section. State variants (`button-hover`, `button-disabled`, …) are runtime conditions, not top-level entries — they are derived by the cap policy from each component's `## Dimension encoding`.
+
+> **Transitional state.** The thin-index shape is canonical from #170 forward. The current emitter (`scripts/emit-design-md.mjs`) and dimensional walker (`scripts/lib/dimensional-walker.mjs`) still read the legacy shape (flat `{ backgroundColor, … }` for project mode; `{ applies_to, properties }` for dimensional mode). Reconciliation — teaching the emitter to derive token wiring from `tokenNamespace` × `tokens.json` and to read `applies_to` from each contract sidecar — is the follow-up issue. Until then, regenerating `DESIGN.md` from a thin-index `components.json` will fail; treat the documented shape here as the input contract that `--components` and `--from-dimensional` will accept once the emitter is reconciled.
 
 > **Aliases.** This skill is also reachable as `fn-design`. The canonical path is `fn-design-md/SKILL.md`; a one-line redirect lives at `fn-design/SKILL.md`. See `.claude/skills/README.md` for the full skill index.
 
@@ -78,25 +101,24 @@ When the user has existing dimensional tokens (this repo, or a DTCG `tokens.json
 
 When the consumer's design system is fully expressed through the dimensional vocabulary (sentiment, emphasis, size, state) and they want the components matrix derived rather than hand-curated:
 
-1. **Confirm prerequisites.** The project root must contain `tokens.json`, `components.json` (in the `applies_to` shape — see `references/dimensional-mapping.md`), and the five model MDX files at `content/design-system/model/{sentiment,emphasis,size,state,structure}.mdx`, each carrying a `dimensional_values: { default, values }` frontmatter key. The walker fails fast with an actionable error naming any missing file or key.
-2. **Author `components.json` with `applies_to`.** Each primitive declares its applicable dimensions:
-   ```json
-   "tooltip": {
-     "applies_to": {
-       "sentiment": ["neutral"],
-       "emphasis": ["medium"],
-       "size": ["sm", "md"],
-       "state": ["rest", "hover"]
-     },
-     "properties": { "backgroundColor": "{color.primary}" }
-   }
+1. **Confirm prerequisites.** The project root must contain `tokens.json`, `components.json` (thin index — see *`components.json` — thin index* above), one `<Component>.contract.md` sidecar per registered component (carrying the `## Dimension encoding` and `## Token bindings` sections per `content/design-system/tools/component-schema.mdx`), and the five model MDX files at `content/design-system/model/{sentiment,emphasis,size,state,structure}.mdx`, each carrying a `dimensional_values: { default, values }` frontmatter key. The walker fails fast with an actionable error naming any missing file or key.
+2. **Each primitive declares its applicable dimensions in its contract sidecar.** From `Button.contract.md`:
+   ```markdown
+   ## Dimension encoding
+
+   | Dimension | data-* attribute | Values | Default |
+   |-----------|------------------|--------|---------|
+   | sentiment | data-sentiment | neutral, warning, highlight | neutral |
+   | emphasis | data-emphasis | high, medium, low | high |
+   | state | data-state | rest, hover, active, disabled | rest |
+   | size | data-size | sm, md, lg | md |
    ```
-   Use `"all"` to mean "every value from the dimension's frontmatter".
+   The walker reads each row to derive the equivalent of the legacy `applies_to` map. A component whose `Values` column for a dimension equals that dimension's full vocabulary (from the model MDX) is treated as `"all"` for that dimension.
 3. **Emit.** Run `scripts/emit-design-md.mjs --from-dimensional <root> --out <dir> [--name <name>]`. The mode is mutually exclusive with `--tokens` / `--components`. The emitter prints a discovered-vocabulary summary (sentiments, emphasis, sizes, states, components → variants) before writing.
-4. **The cap policy.** For each component, the cap policy in `references/dimensional-mapping.md` produces a tractable variant set (≈25–35 per `applies_to: all` primitive, fewer for tighter `applies_to` matrices). Variant names drop any segment that equals its dimension's `default` — so `(neutral, high, md, rest)` becomes `button`, and `(warning, high, md, rest)` becomes `button-warning`.
+4. **The cap policy.** For each component, the cap policy in `references/dimensional-mapping.md` produces a tractable variant set (≈25–35 per fully-applicable primitive, fewer for tighter dimension matrices). Variant names drop any segment that equals its dimension's `default` — so `(neutral, high, md, rest)` becomes `button`, and `(warning, high, md, rest)` becomes `button-warning`.
 5. **Validate.** Same as project mode — `scripts/lint.sh <dir>/DESIGN.md`.
 
-**Property projection in v1.** Each variant inherits its parent's `properties` verbatim. Token references inside those properties (e.g. `{color.primary}`) are resolved by the existing emit pipeline. Per-variant cascade substitution — where `button-warning` resolves `{color.surface}` against `color.warning` — is a future refinement and not yet implemented.
+**Property projection in v1.** Each variant inherits its parent's `## Token bindings` resolutions verbatim. Token references inside those bindings (e.g. `{color.primary}`) are resolved by the existing emit pipeline. Per-variant cascade substitution — where `button-warning` resolves `{color.surface}` against `color.warning` — is a future refinement and not yet implemented.
 
 ## Preserving custom prose
 
