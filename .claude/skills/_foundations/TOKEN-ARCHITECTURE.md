@@ -33,7 +33,7 @@ Tokens resolve through four named layers. Each layer aliases exactly the layer b
 
 Detail: [`/content/design-system/token-chain/`](../../../content/design-system/token-chain/) (one mdx per layer).
 
-## Color cascade (bottom-up)
+## Color cascade
 
 ```
 Semantic Color (global)
