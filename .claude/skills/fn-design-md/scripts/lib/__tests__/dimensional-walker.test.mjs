@@ -130,3 +130,87 @@ test("migrateAndValidateComponents preserves author key order", () => {
   const out = migrateAndValidateComponents(raw, vocab);
   assert.deepEqual(Object.keys(out), ["z", "a"]);
 });
+
+test("thin-index entry: applies_to is parsed from contract sidecar, properties from tokens namespace", () => {
+  const components = JSON.stringify({
+    button: {
+      contract: "components/Button.contract.md",
+      radixBase: null,
+      tokenNamespace: "button",
+    },
+  });
+  const tokens = JSON.stringify({
+    color: { primary: { $value: "#FF0000" } },
+    button: {
+      backgroundColor: { $value: "{colors.primary}" },
+      textColor: { $value: "#FFFFFF" },
+    },
+  });
+  const sidecar = `# Button
+
+## Dimension encoding
+
+| Dimension | data-* attribute | Values | Default |
+|-----------|------------------|--------|---------|
+| sentiment | data-sentiment | neutral, warning | neutral |
+| size | data-size | sm, md | md |
+`;
+  const { root, files } = fixtureFiles({
+    "/proj/components.json": components,
+    "/proj/tokens.json": tokens,
+    "/proj/components/Button.contract.md": sidecar,
+  });
+  const result = walkDimensionalSource(root, { readFileSync: makeFs(files).readFileSync });
+  assert.deepEqual(result.components.button.applies_to.sentiment, ["neutral", "warning"]);
+  assert.deepEqual(result.components.button.applies_to.size, ["sm", "md"]);
+  // omitted dimensions inherit "all" — matches legacy flat-shape default
+  assert.deepEqual(result.components.button.applies_to.emphasis, FIXTURE_MODEL.emphasis.values);
+  assert.deepEqual(result.components.button.properties, {
+    backgroundColor: "{colors.primary}",
+    textColor: "#FFFFFF",
+  });
+});
+
+test("thin-index entry: missing contract sidecar falls back to applies_to: all", () => {
+  const components = JSON.stringify({
+    badge: {
+      contract: "components/Missing.contract.md",
+      radixBase: null,
+      tokenNamespace: "badge",
+    },
+  });
+  const tokens = JSON.stringify({
+    color: { primary: { $value: "#000" } },
+    badge: { backgroundColor: { $value: "#EEE" } },
+  });
+  const { root, files } = fixtureFiles({
+    "/proj/components.json": components,
+    "/proj/tokens.json": tokens,
+  });
+  const result = walkDimensionalSource(root, { readFileSync: makeFs(files).readFileSync });
+  assert.deepEqual(result.components.badge.applies_to.sentiment, FIXTURE_MODEL.sentiment.values);
+  assert.deepEqual(result.components.badge.properties, { backgroundColor: "#EEE" });
+});
+
+test("thin-index entry: missing tokenNamespace yields empty properties without throwing", () => {
+  const components = JSON.stringify({
+    card: {
+      contract: "components/Card.contract.md",
+      radixBase: null,
+      tokenNamespace: "card",
+    },
+  });
+  const sidecar = `## Dimension encoding
+
+| Dimension | data-* attribute | Values | Default |
+|-----------|------------------|--------|---------|
+| size | data-size | sm, md | md |
+`;
+  const { root, files } = fixtureFiles({
+    "/proj/components.json": components,
+    "/proj/components/Card.contract.md": sidecar,
+  });
+  const result = walkDimensionalSource(root, { readFileSync: makeFs(files).readFileSync });
+  assert.deepEqual(result.components.card.applies_to.size, ["sm", "md"]);
+  assert.deepEqual(result.components.card.properties, {});
+});

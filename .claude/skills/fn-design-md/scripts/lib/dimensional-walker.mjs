@@ -25,6 +25,11 @@
 import { readFileSync as nodeReadFileSync } from "node:fs";
 import { join } from "node:path";
 import { extractDimensionalValues } from "./frontmatter.mjs";
+import {
+  isThinIndexEntry,
+  lookupNamespaceTokens,
+  parseDimensionEncoding,
+} from "./thin-index.mjs";
 
 const DIMENSIONS = ["sentiment", "emphasis", "size", "state", "structure"];
 
@@ -68,15 +73,40 @@ export function walkDimensionalSource(root, options = {}) {
     if (extracted.informational) structuralInformational[dim] = true;
   }
 
-  const components = migrateAndValidateComponents(componentsRaw, vocab, componentsPath);
+  const components = migrateAndValidateComponents(componentsRaw, vocab, {
+    sourceLabel: componentsPath,
+    rootDir: root,
+    tokens,
+    readFileSync,
+  });
 
   return { tokens, components, vocab, defaults, structuralInformational };
 }
 
-// Accepts either the legacy flat shape or the new `applies_to`/`properties` shape
-// and returns the new shape with `applies_to: "all"` expanded to vocab arrays.
-// Mutates nothing; returns a fresh object preserving author key order.
-export function migrateAndValidateComponents(componentsRaw, vocab, sourceLabel = "<components.json>") {
+// Accepts the legacy flat shape, the migrated `applies_to`/`properties` shape,
+// or the thin-index shape (`contract` / `radixBase` / `tokenNamespace`) and
+// returns a uniform `{ applies_to, properties }` per component, with
+// `applies_to: "all"` expanded to vocab arrays.
+//
+// Thin-index resolution:
+//   - applies_to: parsed from the contract sidecar's `## Dimension encoding`
+//     table when the sidecar exists; otherwise inferred as `applies_to: all`
+//     (matching the legacy fallback).
+//   - properties: derived from `tokens[tokenNamespace]`; an empty object when
+//     the namespace is absent.
+//
+// The third argument can be a legacy `sourceLabel` string (preserved so the
+// existing caller signature still works) or an options bag.
+export function migrateAndValidateComponents(componentsRaw, vocab, optionsOrLabel) {
+  const options =
+    typeof optionsOrLabel === "string"
+      ? { sourceLabel: optionsOrLabel }
+      : (optionsOrLabel ?? {});
+  const sourceLabel = options.sourceLabel ?? "<components.json>";
+  const rootDir = options.rootDir ?? null;
+  const tokens = options.tokens ?? null;
+  const readFileSync = options.readFileSync ?? nodeReadFileSync;
+
   const out = {};
   for (const [name, raw] of Object.entries(componentsRaw)) {
     if (!raw || typeof raw !== "object") {
@@ -86,7 +116,17 @@ export function migrateAndValidateComponents(componentsRaw, vocab, sourceLabel =
     let applies_to;
     let properties;
 
-    if ("applies_to" in raw && "properties" in raw) {
+    if (isThinIndexEntry(raw)) {
+      applies_to = readAppliesToFromContract({
+        entry: raw,
+        rootDir,
+        readFileSync,
+        vocab,
+        componentName: name,
+        sourceLabel,
+      }) ?? { sentiment: "all", emphasis: "all", size: "all", state: "all" };
+      properties = lookupNamespaceTokens(tokens, raw.tokenNamespace);
+    } else if ("applies_to" in raw && "properties" in raw) {
       applies_to = raw.applies_to;
       properties = raw.properties;
     } else if ("applies_to" in raw && !("properties" in raw)) {
@@ -105,6 +145,22 @@ export function migrateAndValidateComponents(componentsRaw, vocab, sourceLabel =
     };
   }
   return out;
+}
+
+function readAppliesToFromContract({ entry, rootDir, readFileSync, vocab, componentName, sourceLabel }) {
+  if (!entry.contract || !rootDir) return null;
+  const contractPath = join(rootDir, entry.contract);
+  let content;
+  try {
+    content = readFileSync(contractPath, "utf8");
+  } catch (err) {
+    if (err && err.code === "ENOENT") return null;
+    throw new Error(
+      `${sourceLabel}: component '${componentName}' contract sidecar at ${contractPath} could not be read: ${err.message}`
+    );
+  }
+  const parsed = parseDimensionEncoding(content, vocab);
+  return parsed;
 }
 
 function resolveAppliesTo(applies_to, vocab, componentName, sourceLabel) {

@@ -49,6 +49,7 @@ import { flattenComponentMatrix } from "./lib/cascade.mjs";
 import { loadTemplate } from "./lib/template.mjs";
 import { getRenderer } from "./lib/sections.mjs";
 import { loadForbiddenTerms, scanForbidden, formatHalt } from "./lib/redact.mjs";
+import { isThinIndexEntry, lookupNamespaceTokens } from "./lib/thin-index.mjs";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const SKILL_ROOT = resolve(__dirname, "..");
@@ -374,11 +375,21 @@ const VALID_COMPONENT_PROPS = new Set([
   "width",
 ]);
 
-function projectComponents(comps) {
+// Resolve each component's wiring map. Thin-index entries (those carrying
+// `contract` / `radixBase` / `tokenNamespace`) have their wiring derived from
+// `tokens.json[tokenNamespace]`; legacy flat entries are projected as-is.
+//
+// Dimensional mode passes properties already resolved by the walker — those
+// arrive here without thin-index keys, so they take the legacy branch.
+function projectComponents(comps, tokens) {
   const out = {};
-  for (const [name, props] of Object.entries(comps)) {
+  for (const [name, raw] of Object.entries(comps)) {
+    const props = isThinIndexEntry(raw)
+      ? lookupNamespaceTokens(tokens, raw.tokenNamespace)
+      : raw;
+
     const entry = {};
-    for (const [k, v] of Object.entries(props)) {
+    for (const [k, v] of Object.entries(props ?? {})) {
       if (!VALID_COMPONENT_PROPS.has(k)) {
         console.warn(`warn: component "${name}" has unsupported property "${k}" — dropped`);
         continue;
@@ -413,7 +424,7 @@ if (Object.keys(projectedColors).length) frontmatter.colors = projectedColors;
 if (Object.keys(projectedTypography).length) frontmatter.typography = projectedTypography;
 if (Object.keys(projectedRounded).length) frontmatter.rounded = projectedRounded;
 if (Object.keys(projectedSpacing).length) frontmatter.spacing = projectedSpacing;
-const projectedComponents = projectComponents(components);
+const projectedComponents = projectComponents(components, tokens);
 if (Object.keys(projectedComponents).length) frontmatter.components = projectedComponents;
 
 const yamlBody = yamlMap(frontmatter);
