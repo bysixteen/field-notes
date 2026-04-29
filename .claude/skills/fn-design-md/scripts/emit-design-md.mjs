@@ -374,16 +374,41 @@ const VALID_COMPONENT_PROPS = new Set([
   "width",
 ]);
 
+// Thin-index entries (introduced in #170/#178) carry build-time wiring
+// fields (`contract`, `radixBase`, `tokenNamespace`) plus an optional
+// `properties` map for the DESIGN.md emitter. We extract `properties`
+// when present and ignore the wiring fields silently. Legacy flat
+// entries — where the property map is the entry itself — keep working
+// unchanged.
+const THIN_INDEX_FIELDS = new Set(["contract", "radixBase", "tokenNamespace"]);
+
+function isThinIndexEntry(entry) {
+  if (!entry || typeof entry !== "object") return false;
+  for (const k of THIN_INDEX_FIELDS) {
+    if (k in entry) return true;
+  }
+  return false;
+}
+
 function projectComponents(comps) {
   const out = {};
-  for (const [name, props] of Object.entries(comps)) {
+  for (const [name, raw] of Object.entries(comps)) {
+    const thin = isThinIndexEntry(raw);
+    const props = thin && raw.properties ? raw.properties : raw;
     const entry = {};
     for (const [k, v] of Object.entries(props)) {
+      if (THIN_INDEX_FIELDS.has(k)) continue;
+      if (k === "properties") continue;
       if (!VALID_COMPONENT_PROPS.has(k)) {
         console.warn(`warn: component "${name}" has unsupported property "${k}" — dropped`);
         continue;
       }
       entry[k] = v;
+    }
+    if (thin && !raw.properties) {
+      console.warn(
+        `warn: component "${name}" is a thin-index entry without a \`properties\` block — emitting empty body. Add a \`properties\` map to components.json or switch to --from-dimensional.`
+      );
     }
     out[name] = entry;
   }
