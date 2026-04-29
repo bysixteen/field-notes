@@ -1,26 +1,26 @@
 {
   "button": {
-    "contract": "packages/design-system/src/components/Button/Button.contract.md",
+    "contract": "content/design-system/components/button.contract.md",
     "radixBase": "@radix-ui/react-slot",
     "tokenNamespace": "button"
   },
   "input": {
-    "contract": "packages/design-system/src/components/Input/Input.contract.md",
+    "contract": "content/design-system/components/input.contract.md",
     "radixBase": null,
     "tokenNamespace": "input"
   },
   "badge": {
-    "contract": "packages/design-system/src/components/Badge/Badge.contract.md",
+    "contract": "content/design-system/components/badge.contract.md",
     "radixBase": null,
     "tokenNamespace": "badge"
   },
   "alert": {
-    "contract": "packages/design-system/src/components/Alert/Alert.contract.md",
+    "contract": "content/design-system/components/alert.contract.md",
     "radixBase": null,
     "tokenNamespace": "alert"
   },
   "card": {
-    "contract": "packages/design-system/src/components/Card/Card.contract.md",
+    "contract": "content/design-system/components/card.contract.md",
     "radixBase": null,
     "tokenNamespace": "card"
   }

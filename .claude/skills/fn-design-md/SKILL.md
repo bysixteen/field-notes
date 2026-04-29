@@ -51,9 +51,7 @@ All three modes share the same output contract and accept the same `--template <
 }
 ```
 
-Token-slot wiring (`backgroundColor`, `textColor`, `padding`, etc.) lives in the component's `.contract.md` sidecar under `## Token bindings`, not here. Dimensional applicability (`applies_to`) lives in the same sidecar's `## Dimension encoding` section. State variants (`button-hover`, `button-disabled`, …) are runtime conditions, not top-level entries — they are derived by the cap policy from each component's `## Dimension encoding`.
-
-> **Transitional state.** The thin-index shape is canonical from #170 forward. The current emitter (`scripts/emit-design-md.mjs`) and dimensional walker (`scripts/lib/dimensional-walker.mjs`) still read the legacy shape (flat `{ backgroundColor, … }` for project mode; `{ applies_to, properties }` for dimensional mode). Reconciliation — teaching the emitter to derive token wiring from `tokenNamespace` × `tokens.json` and to read `applies_to` from each contract sidecar — is the follow-up issue. Until then, regenerating `DESIGN.md` from a thin-index `components.json` will fail; treat the documented shape here as the input contract that `--components` and `--from-dimensional` will accept once the emitter is reconciled.
+Token-slot wiring (`backgroundColor`, `textColor`, `padding`, etc.) is derived at emit time by looking up `tokens.json[tokenNamespace]` — see *Project Mode* below for the resolution rule. Dimensional applicability (`applies_to`) lives in the same sidecar's `## Dimension encoding` section. State variants (`button-hover`, `button-disabled`, …) are runtime conditions, not top-level entries — they are derived by the cap policy from each component's `## Dimension encoding`.
 
 > **Aliases.** This skill is also reachable as `fn-design`. The canonical path is `fn-design-md/SKILL.md`; a one-line redirect lives at `fn-design/SKILL.md`. See `.claude/skills/README.md` for the full skill index.
 
