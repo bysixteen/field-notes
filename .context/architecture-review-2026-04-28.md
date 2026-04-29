@@ -114,9 +114,9 @@ This dissolves both Phase 6 PR1 (no `behaviorContract` in `components.json`) and
 
 ## Section 6 — Open decisions (judgment-not-evidence)
 
-1. **Required vs. Recommended Sections:** The core shape proposes 4 sections (Props, Dimension encoding, Token bindings, Usage rules). Decide if `## A11y` and `## Behavior` should be required sections for every component, or recommended sections added only when applicable. The new canonical shape cannot ship until this resolves.
+1. **Required vs. Recommended Sections — RESOLVED.** `## A11y` and `## Behavior` are **recommended, not required.** Add when the component has a Radix base, focus management, or non-trivial keyboard interaction. Static-display primitives do not carry these sections. Coverage lives in Storybook a11y tests and `bs-accessibility` audits, not in the sidecar by default. The empirical signal is 14 shipped contracts that omitted both sections without producing a11y regressions — codify the practice rather than retrofit.
 
-2. **Generator vs. guided template for `fn-component-contract`:** A specialist-agents pipeline could autonomously generate these contracts. Alternatively, a simpler approach where Claude Code fills in a template conversationally when scaffolding a new component may be more robust and less prone to hallucination. Multi-pass review still applies; autonomous generation may not. Resolve before building the skill (→ issue #169 has this flagged).
+2. **Generator vs. guided template for `fn-component-contract` — RESOLVED.** **Guided template first.** Ship 5+ hand-authored contracts. Then assess what is repetitive enough to warrant a generator and what is judgment-laden enough that a generator would hallucinate. Promote to generator only if the repetitive surface is real. The JSON-first decision in `component-schema.mdx` did not survive contact with practice (#166 exists because of it); the conservative move is correct here. (→ issue #169 updated)
 
 3. **Sidecar location:** Alongside the `.tsx` (colocated) vs. a parallel `contracts/` folder (cleaner separation, breaks colocation). Lean toward colocated but worth a confirm.
 
