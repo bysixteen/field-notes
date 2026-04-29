@@ -5,7 +5,6 @@ out/
 .env
 .env.local
 # Dev artifacts
-/skills/
 fn-storybook-docs-workspace/
 
 # AI context — track plans and rules, ignore ephemeral/binary
