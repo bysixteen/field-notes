@@ -63,6 +63,26 @@ node .claude/skills/fn-design-md/scripts/emit-design-md.mjs --from-dimensional /
 
 The second command must succeed and produce `/tmp/test-project/DESIGN.md` with a `## Components` section listing variants for all five primitives. The repeatable round-trip is exercised by `scripts/__tests__/init.test.mjs`.
 
+## Regenerating ramps
+
+The scaffold's `tokens.json` carries flat anchor colours (e.g. `color.primary`, `color.neutral`), not pre-computed 12-step OKLCH ramps. Most starter projects only need the anchors — replace the placeholders with hand-picked palettes and ship.
+
+If a project does want algorithmic ramps, the field-notes ramp generator is `scripts/generate-ramps.ts`. Inside the field-notes monorepo:
+
+```sh
+npm run generate:ramps
+```
+
+In a project that installed the toolkit as a Claude plugin, the script ships under the plugin's `scripts/` directory; invoke it directly:
+
+```sh
+npx tsx <plugin-root>/scripts/generate-ramps.ts
+```
+
+The script reads anchor definitions from a hand-edited `PALETTES` array at the top of the file and writes a 12-step DTCG `tokens.json` to its working directory. Edit the array to match the project before running.
+
+Ramp regeneration is intentionally decoupled from `fn-init`: the scaffold stays self-contained and runs without a toolkit dependency at init time. Pull ramps in only when the project actually needs them.
+
 ## Idempotency rules
 
 - A non-empty `--target` is refused unless `--force` is passed. This protects an existing project from accidental overwrite.
