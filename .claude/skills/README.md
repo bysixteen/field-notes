@@ -10,6 +10,7 @@ One-line summaries pulled from each skill's `description` frontmatter. For full 
 |---|---|
 | [fn-accessibility](./fn-accessibility.md) | Run a scored WCAG 2.2 AA accessibility audit on a design system component. |
 | [fn-component-api](./fn-component-api.md) | Define, name, type, and default component inputs for a design system. |
+| [fn-component-contract](./fn-component-contract/SKILL.md) | Generate or refresh a `<Component>.contract.md` sidecar from `.tsx` + `tokens.json` + `DESIGN.md`. |
 | [fn-component-scaffold](./fn-component-scaffold.md) | Scaffold a new design system component with full boilerplate. |
 | [fn-css](./fn-css.md) | Write, review, and audit CSS/SCSS for design system components. |
 | [fn-design-md](./fn-design-md/SKILL.md) | Generate, validate, or update a `DESIGN.md` from tokens + components or by projecting a 5-D dimensional system. |

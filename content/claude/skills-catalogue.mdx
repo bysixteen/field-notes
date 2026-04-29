@@ -93,6 +93,16 @@ Audit checklist included for existing component APIs.
 
 ---
 
+#### fn-component-contract
+
+**Invoke:** `/fn-component-contract` | **Status:** Available
+
+Generates or refreshes a per-component `.contract.md` sidecar — the four-section Markdown contract ratified in `component-schema.mdx`. Reads the component's `.tsx`, the project's `tokens.json`, and `DESIGN.md`; populates `## Props`, `## Dimension encoding`, `## Token bindings`, and `## Usage rules`. Optional `## A11y` and `## Behavior` sections are added only when their trigger conditions fire.
+
+Guided template — Claude fills each section conversationally and the human reviewer hand-finishes. No automated generator yet; promote to a script only after 5+ contracts ship by hand.
+
+---
+
 #### fn-component-scaffold
 
 **Invoke:** `/fn-component-scaffold` | **Status:** Available
