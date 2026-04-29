@@ -1,41 +1,40 @@
 #!/usr/bin/env node
-// emit-design-md.mjs — project a DTCG tokens.json into a Google DESIGN.md
-// plus a passthrough DTCG sidecar.
+// emit-design-md.mjs — project a DTCG tokens.json into DESIGN.md plus a
+// passthrough DTCG sidecar, driven by a section template.
 //
 // Usage:
-//   emit-design-md.mjs --tokens <path> --components <path> --out <dir> [--name <name>]
+//   emit-design-md.mjs --tokens <path> --components <path> --out <dir>
+//                      [--name <name>] [--template <path>] [--init]
+//   emit-design-md.mjs --from-dimensional <root> --out <dir>
+//                      [--name <name>] [--template <path>] [--init]
+//   emit-design-md.mjs migrate --in <path> [--non-interactive --disposition <yaml>]
 //
-// Inputs:
-//   --tokens      path to a DTCG tokens.json (Format Module 2025.10 shape).
-//                 Recognised top-level groups: color, typography, spacing,
-//                 borderRadius, dimension. Other groups are passed through to
-//                 the sidecar but not emitted to DESIGN.md.
-//   --components  path to a JSON file mapping component name to property map.
-//                 Property keys must be from the DESIGN.md spec:
-//                 backgroundColor, textColor, typography, rounded, padding,
-//                 size, height, width. Values can be hex strings or
-//                 {token.path} references.
-//   --out         output directory. Will contain DESIGN.md and tokens.json.
-//   --name        product/brand name for the YAML name field. Defaults to
-//                 the basename of --out.
+// Template (default: references/templates/google-spec.yaml):
+//   A YAML file naming the sections to emit, their headings, and whether
+//   each is `generated` (regenerated every run) or `preserved` (seeded once
+//   from `placeholder`, then kept verbatim across regenerates). Optional
+//   `redactions.forbidden_terms_path` halts the emit if the rendered prose
+//   contains any of the listed terms — used by consumers who must keep
+//   inspiration-source names out of the public DESIGN.md.
 //
 // Lossy projection:
 //   - OKLCH, Display P3, and rgba() colours are converted to closest hex sRGB
-//     for DESIGN.md. The original values are preserved in the sidecar.
-//   - Anything in the input that DESIGN.md cannot model (motion, elevation,
-//     borders, theme variants) is preserved in the sidecar only.
-//
-// The OKLCH → sRGB conversion is inline (no deps) and clips out-of-gamut
-// colours. For round-trip preservation, always use the sidecar.
+//     for DESIGN.md. Original values stay in the sidecar tokens.json.
+//   - Anything DESIGN.md cannot model (motion, elevation, borders, theme
+//     variants) is preserved in the sidecar only.
 
 import { readFileSync, writeFileSync, renameSync, mkdirSync, existsSync } from "node:fs";
 import { basename, resolve, join, dirname } from "node:path";
+import { fileURLToPath } from "node:url";
 import { createInterface } from "node:readline";
 import {
   classifyExistingFile,
   composeFresh,
   composeWithMerge,
   decideWriteAction,
+  extractPreservedBody,
+  extractLegacySuffix,
+  FILE_STATE,
 } from "./lib/preserve.mjs";
 import {
   splitDesignMd,
@@ -47,6 +46,13 @@ import {
 } from "./lib/migrate.mjs";
 import { walkDimensionalSource } from "./lib/dimensional-walker.mjs";
 import { flattenComponentMatrix } from "./lib/cascade.mjs";
+import { loadTemplate } from "./lib/template.mjs";
+import { getRenderer } from "./lib/sections.mjs";
+import { loadForbiddenTerms, scanForbidden, formatHalt } from "./lib/redact.mjs";
+
+const __dirname = dirname(fileURLToPath(import.meta.url));
+const SKILL_ROOT = resolve(__dirname, "..");
+const DEFAULT_TEMPLATE = join(SKILL_ROOT, "references", "templates", "google-spec.yaml");
 
 // ─── arg parsing ────────────────────────────────────────────────────────────
 
@@ -71,8 +77,6 @@ for (let i = 0; i < argv.length; i++) {
 }
 
 // ─── migrate subcommand ────────────────────────────────────────────────────
-// Wraps an existing hand-authored DESIGN.md in preservation markers based on
-// per-section disposition. One-time path for consumers adopting the skill.
 
 if (subcommand === "migrate") {
   await runMigrate({
@@ -82,11 +86,6 @@ if (subcommand === "migrate") {
   });
   process.exit(0);
 }
-
-// --from-dimensional <root>  ⟷  --tokens/--components are mutually exclusive
-// modes. The dimensional mode walks tokens.json + components.json + the five
-// model MDX islands and synthesises a flat per-variant components map via
-// the cap policy in references/dimensional-mapping.md.
 
 if (!args.out) {
   console.error("missing required --out");
@@ -123,10 +122,15 @@ if (args["from-dimensional"]) {
 const outDir = resolve(args.out);
 const name = args.name ?? basename(outDir);
 
-// Expand a walker's `{name: {applies_to, properties}}` map into a flat
-// `{variantName: properties}` map by running each component through the cap
-// policy. Each variant inherits its parent's `properties` verbatim — token
-// references in those properties are resolved by the existing emit pipeline.
+const templatePath = args.template ? resolve(args.template) : DEFAULT_TEMPLATE;
+let template;
+try {
+  template = loadTemplate(templatePath);
+} catch (err) {
+  console.error(`✗ template: ${err.message}`);
+  process.exit(65);
+}
+
 function expandComponentsToVariants(walked) {
   const flat = {};
   for (const [component, def] of Object.entries(walked.components)) {
@@ -156,14 +160,10 @@ if (!existsSync(outDir)) mkdirSync(outDir, { recursive: true });
 
 // ─── colour conversion ──────────────────────────────────────────────────────
 
-// Parse a CSS colour string into linear-light sRGB triple [0..1].
-// Supports: #RGB, #RRGGBB, #RRGGBBAA (alpha dropped), rgb()/rgba(),
-// oklch(L C h), oklab(L a b). Returns null on parse failure.
 function parseColor(s) {
   if (typeof s !== "string") return null;
   s = s.trim();
 
-  // Hex
   if (s.startsWith("#")) {
     let hex = s.slice(1);
     if (hex.length === 3) hex = hex.split("").map((c) => c + c).join("");
@@ -175,7 +175,6 @@ function parseColor(s) {
     return [srgbToLinear(r), srgbToLinear(g), srgbToLinear(b)];
   }
 
-  // rgb() / rgba()
   let m = s.match(/^rgba?\(([^)]+)\)$/i);
   if (m) {
     const parts = m[1].split(/[,/\s]+/).filter(Boolean).slice(0, 3);
@@ -187,7 +186,6 @@ function parseColor(s) {
     return [srgbToLinear(r), srgbToLinear(g), srgbToLinear(b)];
   }
 
-  // oklch(L C h)
   m = s.match(/^oklch\(([^)]+)\)$/i);
   if (m) {
     const parts = m[1].split(/[,/\s]+/).filter(Boolean);
@@ -199,7 +197,6 @@ function parseColor(s) {
     return oklchToLinearSrgb(L, C, h);
   }
 
-  // oklab(L a b)
   m = s.match(/^oklab\(([^)]+)\)$/i);
   if (m) {
     const parts = m[1].split(/[,/\s]+/).filter(Boolean);
@@ -222,7 +219,6 @@ function linearToSrgb(c) {
   return c <= 0.0031308 ? 12.92 * c : 1.055 * Math.pow(c, 1 / 2.4) - 0.055;
 }
 
-// OKLab → linear sRGB (Björn Ottosson's matrix)
 function oklabToLinearSrgb(L, a, b) {
   const l_ = L + 0.3963377774 * a + 0.2158037573 * b;
   const m_ = L - 0.1055613458 * a - 0.0638541728 * b;
@@ -246,7 +242,6 @@ function clip01(c) {
   return Math.max(0, Math.min(1, c));
 }
 
-// Render a parsed linear-sRGB triple to #RRGGBB. Out-of-gamut clips.
 function toHex(rgb) {
   if (!rgb) return null;
   const hex = rgb
@@ -264,9 +259,6 @@ function colourToHex(s) {
 
 // ─── DTCG walker ────────────────────────────────────────────────────────────
 
-// Walk a DTCG tree, calling visit(path, node) for every leaf token (a node with
-// $value). Group containers are walked recursively; metadata keys ($schema,
-// $description, etc.) are skipped.
 function walkTokens(node, path, visit) {
   if (node && typeof node === "object" && "$value" in node) {
     visit(path, node);
@@ -320,7 +312,7 @@ function projectTypography(group) {
   return out;
 }
 
-function projectScale(group, kind) {
+function projectScale(group) {
   if (!group) return {};
   const flat = flattenTokens(group);
   const out = {};
@@ -350,7 +342,6 @@ function kebab(path) {
 function yamlScalar(v) {
   if (typeof v === "number") return String(v);
   if (typeof v === "string") {
-    // Quote if it contains special chars or starts with # or {
     if (/^[#{]/.test(v) || /[:#@`]/.test(v)) return `"${v.replace(/"/g, '\\"')}"`;
     return v;
   }
@@ -399,68 +390,14 @@ function projectComponents(comps) {
   return out;
 }
 
-// ─── prose sections ─────────────────────────────────────────────────────────
-
-function proseSections(name, frontmatter) {
-  const colorCount = Object.keys(frontmatter.colors ?? {}).length;
-  const compCount = Object.keys(frontmatter.components ?? {}).length;
-  return `
-## Overview
-
-${name} is a design system. The values in this file are the source of truth for an AI agent generating new UI; the prose below explains how to apply them.
-
-## Colors
-
-This system defines ${colorCount} colour tokens. The hex values in the YAML frontmatter are sRGB approximations — for wide-gamut OKLCH originals, see the sidecar \`tokens.json\`.
-
-## Typography
-
-Typography tokens map intent (heading, body, label) to specific font, size, weight, and leading. Use the named tokens; do not author one-off values.
-
-## Components
-
-${compCount} component primitives are defined. Variants are sibling keys with related names (e.g. \`button\`, \`button-hover\`). Composition follows: Sentiment → Emphasis → Size → Structure → State.
-
-## Do's and Don'ts
-
-### Composition Model
-
-Every component is the product of up to five independent dimensions: **Sentiment, Emphasis, Size, Structure, State**. Each is orthogonal — it does not conflict with any other dimension.
-
-- Sentiment: what the component communicates (\`neutral\`, \`warning\`, \`highlight\`, \`new\`, \`positive\`)
-- Emphasis: how loudly it communicates (\`high\`, \`medium\`, \`low\`)
-- Size: physical footprint (\`xs\`, \`sm\`, \`md\`, \`lg\`, \`xl\`)
-- Structure: fixed anatomical dimensions (radius, gap, internal padding)
-- State: interactive condition (\`rest\`, \`hover\`, \`active\`, \`selected\`, \`disabled\`)
-
-**Decision order:** Sentiment → Emphasis → Size → Structure → State. State is never a composition decision — it's a runtime response.
-
-### Cascade and Interpolation
-
-Not every (sentiment × emphasis × size × state) combination is named in this file. When a combination isn't named, find the closest named variant by swapping one dimension at a time toward the default. The colour cascade resolves bottom-up: **State → Emphasis → Sentiment → Semantic Color**.
-
-### Anti-patterns
-
-- Don't apply sentiment colour to non-component surfaces.
-- Don't override state colours per component — state shifts come from the cascade.
-- Don't use a primitive token directly in a component; always reference the semantic layer.
-- Don't combine multiple high-emphasis components on the same surface.
-
-### Wide-gamut colour
-
-The \`colors\` block is hex sRGB only because the DESIGN.md spec mandates it. Original OKLCH/Display P3 values live in the sidecar \`tokens.json\`. When a tool round-trips through DTCG, prefer the sidecar.
-`.trim();
-}
-
 // ─── main ───────────────────────────────────────────────────────────────────
 
 const projectedColors = projectColors(tokens.color ?? tokens.colors);
 const projectedTypography = projectTypography(tokens.typography);
-const projectedSpacing = projectScale(tokens.spacing, "spacing");
-const projectedRounded = projectScale(tokens.borderRadius ?? tokens.rounded, "rounded");
+const projectedSpacing = projectScale(tokens.spacing);
+const projectedRounded = projectScale(tokens.borderRadius ?? tokens.rounded);
 
 if (!projectedColors.primary) {
-  // pick a reasonable default if there's any colour at all
   const first = Object.entries(projectedColors)[0];
   if (first) {
     projectedColors.primary = first[1];
@@ -481,7 +418,6 @@ if (Object.keys(projectedComponents).length) frontmatter.components = projectedC
 
 const yamlBody = yamlMap(frontmatter);
 const frontmatterBlock = `---\n${yamlBody}---`;
-const generatedProse = proseSections(name, frontmatter);
 
 const designPath = join(outDir, "DESIGN.md");
 const sidecarPath = join(outDir, "tokens.json");
@@ -492,10 +428,22 @@ const fileState = classifyExistingFile(existingContents);
 let designMd;
 try {
   const decision = decideWriteAction({ state: fileState, init: flags.has("init"), designPath });
+  const resolvedSections = resolveSections({
+    template,
+    name,
+    frontmatter,
+    existingContents,
+    isMerge: decision.action === "merge",
+    isLegacy: fileState === FILE_STATE.HAS_LEGACY_MARKERS,
+  });
+  enforceRedactions({ template, sections: resolvedSections });
   if (decision.action === "write-fresh") {
-    designMd = composeFresh({ frontmatterBlock, generatedProse });
+    designMd = composeFresh({ frontmatterBlock, sections: resolvedSections });
   } else {
-    designMd = composeWithMerge({ existingContents, frontmatterBlock, generatedProse });
+    const legacySuffix = fileState === FILE_STATE.HAS_LEGACY_MARKERS
+      ? extractLegacySuffix(existingContents)
+      : "";
+    designMd = composeWithMerge({ frontmatterBlock, sections: resolvedSections, legacySuffix });
   }
 } catch (err) {
   console.error(`✗ ${err.message}`);
@@ -505,14 +453,52 @@ try {
 writeFileSync(designPath, designMd);
 writeFileSync(sidecarPath, JSON.stringify(tokens, null, 2));
 
-console.log(`✓ wrote ${designPath}`);
+console.log(`✓ wrote ${designPath} (profile: ${template.profile_name})`);
 console.log(`✓ wrote ${sidecarPath}`);
 console.log(`  colors:     ${Object.keys(projectedColors).length}`);
 console.log(`  typography: ${Object.keys(projectedTypography).length}`);
 console.log(`  spacing:    ${Object.keys(projectedSpacing).length}`);
 console.log(`  rounded:    ${Object.keys(projectedRounded).length}`);
 console.log(`  components: ${Object.keys(projectedComponents).length}`);
-console.log(`\nnext: lint with scripts/lint.sh ${designPath}`);
+console.log(`\nnext: lint with scripts/lint.sh ${designPath} (google-spec) or scripts/lint-template.mjs ${designPath} ${templatePath}`);
+
+// ─── helpers ────────────────────────────────────────────────────────────────
+
+// Resolve the template's section list into concrete `{ id, heading, body }`
+// records ready for the renderer. Generated sections invoke their renderer;
+// preserved sections take their body from existing per-section markers if
+// present, fall back to the template placeholder, else leave empty.
+function resolveSections({ template, name, frontmatter, existingContents, isMerge, isLegacy }) {
+  return template.sections.map((s) => {
+    if (s.disposition === "generated") {
+      const renderer = getRenderer(s.source);
+      return { id: s.id, heading: s.heading, body: renderer(name, frontmatter) };
+    }
+    // preserved
+    let body = "";
+    if (isMerge && !isLegacy && existingContents) {
+      const extracted = extractPreservedBody(existingContents, s.id);
+      if (extracted !== null) body = extracted;
+      else if (s.placeholder) body = s.placeholder.trim();
+    } else if (s.placeholder) {
+      body = s.placeholder.trim();
+    }
+    return { id: s.id, heading: s.heading, body };
+  });
+}
+
+// Run the redaction pass against every rendered section. Halts (throws) on
+// the first hit with a useful, copy-pasteable error pointing at the section
+// and line. The caller catches the throw and exits non-zero.
+function enforceRedactions({ template, sections }) {
+  if (!template.redactions?.forbidden_terms_path) return;
+  const terms = loadForbiddenTerms(template.redactions.forbidden_terms_path);
+  if (terms.length === 0) return;
+  for (const s of sections) {
+    const hits = scanForbidden(`## ${s.heading}\n\n${s.body}`, terms);
+    if (hits.length) throw new Error(formatHalt({ sectionId: s.id, hits }));
+  }
+}
 
 // ─── migrate runner ─────────────────────────────────────────────────────────
 
@@ -568,7 +554,6 @@ async function runMigrate({ inPath, nonInteractive, dispositionPath }) {
     }
   }
 
-  // Atomic write: temp file in the same directory + rename.
   const tmp = join(dirname(absIn), `.${basename(absIn)}.migrate.tmp`);
   writeFileSync(tmp, migrated);
   renameSync(tmp, absIn);

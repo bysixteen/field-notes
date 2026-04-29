@@ -1,8 +1,13 @@
-# Extended sections — what consumers append below `:end`
+# Extended sections — what consumers add to a `DESIGN.md`
 
-The Google `DESIGN.md` spec covers `Overview`, `Colors`, `Typography`, `Components`, and `Do's and Don'ts`. These are the boilerplate sections the emitter generates inside the marker block. The spec does **not** cover the full surface a consumer needs to brief a designer or an agent on a specific product — that surface lives in hand-authored prose appended below `<!-- fn-design-md:generated:end -->`.
+The Google `DESIGN.md` spec covers `Overview`, `Colors`, `Typography`, `Components`, and `Do's and Don'ts`. These are the boilerplate sections the default `google-spec` profile generates. The spec does **not** cover the full surface a consumer needs to brief a designer or an agent on a specific product — that surface lives in hand-authored prose.
 
-This file names the prose conventions that consumers commonly add and explains why the emitter is designed to leave that space alone.
+There are two ways to add that prose under the current emitter:
+
+1. **Append below the last template section.** The emitter never touches anything after the final per-section end marker, so consumers can drop free-form `## Sections` at the bottom and they survive every regenerate. This is the historical pattern (the legacy single-block emitter put generated content in one block at the top and consumer prose below `:end`).
+2. **Author a custom template** that names the consumer's sections directly. Mark each as `disposition: preserved` (with optional `placeholder` seed) and the emitter will keep its content verbatim across regenerates while still leaving the per-section markers in place. See `references/profiles.md` for the template schema and `references/templates/dimensional-prose.yaml` for a worked example covering Identity / Surfaces / Layout / Content fundamentals / Anti-patterns as first-class preserved sections.
+
+This file names the prose conventions that consumers commonly use and explains why the emitter is designed to leave that space alone.
 
 ## Where consumer prose lives
 
