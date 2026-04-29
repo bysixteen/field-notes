@@ -65,7 +65,7 @@ The slice is deliberately tight. Excluded:
 
 The plugin works two ways:
 
-**As a Claude plugin** (skills + workflows). Until this is published to a marketplace, install from the packed `.plugin` artefact at `/Users/danielcork/conductor/workspaces/field-notes/dist/field-notes-toolkit.plugin`.
+**As a Claude plugin** (skills + workflows). Until this is published to a marketplace, build the artefact with `node scripts/pack-plugin.mjs` (run from the repo root) and install from the resulting `.plugin` artefact in `dist/`.
 
 **As an npm package** (so the pipeline scripts are reachable from a consumer project's `node_modules/`). Until this is published to npm, link locally:
 
