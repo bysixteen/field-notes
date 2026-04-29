@@ -1,139 +1,158 @@
 ---
 title: Component contract schema
-description: Canonical schema for per-component contracts — JSON as the machine-readable source of truth, Markdown as the human-readable narrative layer.
+description: Canonical schema for per-component contracts — a single Markdown sidecar colocated with the component, with four required sections and two recommended sections gated by trigger conditions.
 ---
 
 A component contract is the artifact that tells humans, agents, and tooling how a single design-system component is meant to be used. This page settles the format question and defines the canonical schema.
 
 ## Decision
 
-Every component ships **two artifacts**, with different roles.
+Every component ships **one artifact**: a Markdown sidecar.
 
-| Artifact | Role | Audience |
-|----------|------|----------|
-| `component.json` | Structured contract — anatomy, dimensions, props, a11y, behavior, doNot, pairedComponents. Machine-readable and compact. | MCP tools, agents, generators |
-| `Component.md` | Narrative layer — when to use, composition examples, edge-case discussion. Human-readable and richer. | Developers, designers |
+| File | Location | Authority |
+|------|----------|-----------|
+| `<Component>.contract.md` | Colocated with `<Component>.tsx` | Canonical. Hand-authored when scaffolding; updated when the component evolves. |
 
-**JSON is the source of truth.** Markdown is generated from or co-authored alongside the JSON, never the other way around. Field shape is owned by the JSON; prose interpretation is owned by the Markdown.
+There is no JSON sibling. Markdown is the source of truth.
 
-## Why both, not one
+## Why one Markdown sidecar
 
-**Token efficiency.** Diana Wolosin's research at Indeed found that serving structured component data as JSON to MCP clients reduces per-query token cost by roughly 80% compared to serving the same content as Markdown. Agents request shape, not paragraphs — and JSON gives them shape directly.
+**Colocation over centralization.** The contract lives next to the code it describes. A reviewer reading a PR sees the contract change in the same diff as the implementation change. A central registry (one big JSON file at the repo root) drifts from the code it nominally describes within weeks of contact with practice.
 
-**Audience separation.** Agents need a typed, predictable surface they can pattern-match against. Humans need rationale, examples, and edge cases. A single artifact serving both audiences ends up noisy for tools and thin for readers; splitting them lets each be the best version of itself.
+**Markdown over JSON.** A project-agnostic framework has to optimise for the most common operations: reading, reviewing in PRs, hand-editing during scaffolding. Markdown wins all three. Agents parse Markdown well enough — the headings and tables in this schema are predictable enough to pattern-match against. The token-efficiency argument for JSON only matters when the contract is large and read repeatedly by agents in tight loops; for per-component contracts (4–7 sections, read on demand), it does not pay back the friction it imposes on humans.
 
-**Single source of truth.** The `.tsx` signature is the ultimate authority on props; `component.json` mirrors it exactly. `Component.md` is written against the JSON. This keeps the docs from drifting into a parallel reality where prose and code disagree.
+**One artifact, not two.** A two-file shape (JSON + narrative Markdown) creates a synchronisation problem. Either the JSON drifts from the prose, or the prose drifts from the JSON, or both drift from the `.tsx`. Collapsing to one file removes the problem entirely. The `.tsx` signature stays the ultimate authority on props; the contract mirrors it.
 
-## The schema
+## Required sections
 
-Seven top-level fields. Button is the canonical worked example — its dimensions match the [Component API](/design-system/component-api) reference.
+Every contract has these four sections. They cover the essential job: tell humans and agents what the component is and how to wire it.
 
-```json
-{
-  "name": "Button",
-  "anatomy": {
-    "parts": ["root", "prefix", "label", "suffix"],
-    "slots": ["leadingIcon", "trailingIcon"]
-  },
-  "dimensions": {
-    "state": ["rest", "hover", "active", "selected", "disabled", "resolving", "pending"],
-    "emphasis": ["high", "medium", "low"],
-    "sentiment": ["neutral", "warning", "highlight", "new", "positive"],
-    "size": ["xs", "sm", "md", "lg", "xl"]
-  },
-  "props": {
-    "state":       { "type": "ButtonState",     "default": "rest" },
-    "emphasis":    { "type": "ButtonEmphasis",  "default": "high" },
-    "sentiment":   { "type": "ButtonSentiment", "default": "neutral" },
-    "size":        { "type": "ButtonSize",      "default": "md" },
-    "leadingIcon":  { "type": "React.ReactNode", "optional": true },
-    "trailingIcon": { "type": "React.ReactNode", "optional": true },
-    "onClick":      { "type": "(e: React.MouseEvent) => void", "optional": true },
-    "children":     { "type": "React.ReactNode", "required": true }
-  },
-  "a11y": {
-    "primitive": "native <button>",
-    "role": "button",
-    "keyboard": ["Enter activates", "Space activates"],
-    "contrast": "label vs. surface ≥ 4.5:1 across all sentiment × emphasis combinations"
-  },
-  "behavior": {
-    "stateTransitions": [
-      "rest → hover on pointer enter",
-      "hover → active on pointer down",
-      "any → disabled when state='disabled' (suppresses onClick)",
-      "any → resolving when an async action is in flight"
-    ],
-    "focus": "visible focus ring on keyboard focus only (:focus-visible)"
-  },
-  "doNot": [
-    "Pass a `loading` boolean — use state='resolving' instead",
-    "Use `isPrimary`/`isGhost` booleans — emphasis is an enum",
-    "Render a Button without a label or aria-label",
-    "Stack two high-emphasis Buttons in the same action group"
-  ],
-  "pairedComponents": ["IconButton", "ButtonGroup", "Tooltip", "Spinner"]
-}
+### `## Props`
+
+Markdown table: prop / type / default / notes. Lift names and types directly from the `.tsx` signature — the TypeScript types are authoritative. Each row records the prop name, its type, default value (if any), and a short note (optional, required, or a one-line clarification).
+
+```md
+## Props
+
+| Prop | Type | Default | Notes |
+|------|------|---------|-------|
+| state | ButtonState | rest | rest \| hover \| active \| selected \| disabled \| resolving \| pending |
+| emphasis | ButtonEmphasis | high | high \| medium \| low |
+| sentiment | ButtonSentiment | neutral | neutral \| warning \| highlight \| new \| positive |
+| size | ButtonSize | md | xs \| sm \| md \| lg \| xl |
+| leadingIcon | React.ReactNode | — | optional |
+| trailingIcon | React.ReactNode | — | optional |
+| onClick | (e: React.MouseEvent) => void | — | optional |
+| children | React.ReactNode | — | required |
 ```
 
-## Field reference
+### `## Dimension encoding`
 
-### `anatomy`
+Markdown table: dimension / `data-*` attribute / values / default. Documents how the component projects the [Dimensional Model](/design-system/model) onto DOM attributes. CSS selectors target these attributes; this table is the contract between the prop API and the styling layer.
 
-The component's named layer parts and slot positions. `parts` are always rendered; `slots` are content holes consumers fill. Lift the part names directly from the implementation's class names or `data-part` attributes — this is what generators use to wire styling and theming.
+```md
+## Dimension encoding
 
-### `dimensions`
+| Dimension | data-* attribute | Values | Default |
+|-----------|------------------|--------|---------|
+| state | data-state | rest, hover, active, selected, disabled, resolving, pending | rest |
+| emphasis | data-emphasis | high, medium, low | high |
+| sentiment | data-sentiment | neutral, warning, highlight, new, positive | neutral |
+| size | data-size | xs, sm, md, lg, xl | md |
+```
 
-Which of the orthogonal dimensions the component participates in, with the full enum for each. Reference: [The Dimensional Model](/design-system/model). A component does not need to participate in all dimensions — Badge skips `state` and `emphasis`; Alert keeps only `sentiment`. Omitted dimensions are simply absent from the object.
+A component does not need to participate in every dimension. Badge skips `state` and `emphasis`; Alert keeps only `sentiment`. Omit rows for dimensions the component does not use.
 
-### `props`
+### `## Token bindings`
 
-The full prop surface, derived from the `.tsx` signature. The TypeScript type is the single source of truth — see [Component API](/design-system/component-api). Each entry records `type`, `default`, and either `optional: true` or `required: true`. Dimension props always have a default; content/event/slot props may be optional.
+Bullet list of `--var-name → semantic role`. Records which CSS custom properties the component reads, paired with the role each plays in the component's visual surface. This is the contract between the component and the [token chain](/design-system/token-chain).
 
-### `a11y`
+```md
+## Token bindings
 
-Accessibility commitments the component makes:
+- `--button-bg` → background fill
+- `--button-fg` → label and icon colour
+- `--button-border` → border colour at every emphasis level
+- `--button-radius` → corner radius
+- `--button-padding-x` → horizontal inset
+- `--button-padding-y` → vertical inset
+- `--button-height` → resolved height per size step
+```
 
-- **`primitive`** — the underlying element or library (e.g. `native <button>`, `Radix Dialog`, `Radix Popover`). Critical for agents that need to understand inherited semantics.
-- **`role`** — explicit ARIA role if not implicit from the primitive.
-- **`keyboard`** — the keys the component handles and what they do.
-- **`contrast`** — required contrast ratio guarantees, framed in terms of dimensions so consumers understand the combinatorial scope.
+Use semantic role names, not hex values or token paths. The role names map to the [DESIGN.md surface vocabulary](/design-system/manifest-architecture).
 
-### `behavior`
+### `## Usage rules`
 
-Runtime behavior that is not captured by props alone:
+Prose: when to use, anti-patterns, primitive base. Three short paragraphs are usually enough.
 
-- **`stateTransitions`** — when and how `state` changes, including async transitions (`resolving`, `pending`).
-- **`focus`** — focus management rules, focus ring strategy, focus trapping (for overlays).
+- **When to use.** The decision boundary against neighbouring components — what makes this primitive the right pick over its siblings.
+- **Anti-patterns.** Three to five concrete misuses, phrased as imperatives ("do not pass a `loading` boolean — use `state='resolving'` instead"). Keep the list short; each entry should map to a real misuse seen in the wild.
+- **Primitive base.** The underlying element or library — `native <button>`, `Radix Dialog`, `Radix Popover`. Critical for understanding inherited semantics.
 
-### `doNot`
+```md
+## Usage rules
 
-Anti-patterns specific to this component, phrased as imperatives. These are the mistakes a fresh consumer is most likely to make. Keep the list short and concrete — each entry should map to a real misuse seen in the wild or a [Component API](/design-system/component-api) audit-checklist violation.
+Use Button for actions that change application state. For navigation between pages or routes, use Link. For toggle-style controls, use ToggleGroup.
 
-### `pairedComponents`
+Do not pass a `loading` boolean — use `state='resolving'` instead. Do not introduce `isPrimary` / `isGhost` booleans — emphasis is an enum. Do not render a Button without a label or aria-label. Do not stack two high-emphasis Buttons in the same action group.
 
-Components this one composes well with. Used by agents to suggest related primitives and by docs to seed example galleries. Name only what genuinely belongs together, not the entire library.
+Built on the native `<button>` element. Inherits implicit role, keyboard activation (Enter, Space), and form-association behaviour.
+```
 
-## The Markdown layer
+## Recommended sections
 
-`Component.md` complements the JSON with the things prose does better than fields:
+Add these only when the component warrants them. They are not required for every component.
 
-- **When to use / when not to use** — the decision boundary against neighboring components.
-- **Composition examples** — short, end-to-end snippets, not API tables.
-- **Edge cases** — overflow, RTL, async failure, empty states.
-- **Migration notes** — what changed from the previous API and how to upgrade.
+### `## A11y`
 
-Write the Markdown against the JSON: when JSON changes, Markdown is regenerated or revised. The JSON owns shape; the Markdown owns interpretation.
+Keyboard interactions, ARIA roles, screen-reader behaviour.
 
-## Authoring workflow
+**Add when:** the component has a Radix base, manages focus, or implements non-trivial keyboard interaction (arrow-key navigation, Escape-to-dismiss, type-ahead).
 
-1. **Start from the `.tsx` signature.** The TypeScript types are authoritative for `props`.
-2. **Write or regenerate `component.json`.** Populate all seven fields. Lint against this schema in CI.
-3. **Author `Component.md` against the JSON.** Reference fields by name; do not duplicate prop tables — link to the JSON instead.
+**Skip when:** the component is a static-display primitive (Badge, Card, Avatar) whose accessibility is fully covered by the underlying element. Coverage in those cases lives in Storybook a11y tests and the project's accessibility audit pipeline — not in the contract.
+
+### `## Behavior`
+
+State transitions, focus management, async behaviour.
+
+**Add when:** the component manages internal state (open/closed, hover-with-delay, resolving with optimistic UI), traps focus, or has async transitions worth pinning down.
+
+**Skip when:** the component is stateless and its rendering is fully determined by its props.
+
+The trigger for A11y and Behavior is the same: there is interactive complexity that prop documentation alone cannot capture. If the component is a primitive that renders, the contract is fully described by the four required sections.
+
+## Deferred section
+
+Add per-component only when real drift surfaces — not as a default.
+
+### `## Execution rules`
+
+Vocabulary for strict component behaviour: `layoutEffect`, `allowedMechanisms`, `forbiddenMechanisms`, `paddingCompensation`, `interactivity`, `widthBehaviour`, `heightBehaviour`. Captures the constraints that govern *how* a component is implemented, not just *what* it does.
+
+**Add when:** a real drift case has surfaced in review or production — a component is being reimplemented in a way that violates an unwritten constraint, and the contract needs to make that constraint enforceable.
+
+Until then, do not preemptively add this section. Foundation-level defaults for execution rules stay parked until enough component-level contracts exist to extract meaningful patterns.
+
+## Authority and authoring workflow
+
+1. **Start from the `.tsx` signature.** The TypeScript types are authoritative for `## Props`.
+2. **Hand-author the contract when scaffolding.** A new component ships its `.contract.md` on day one — this is the moment when the API and intent are clearest.
+3. **Update the contract when the component evolves.** Every PR that changes the prop surface, dimension encoding, or token bindings updates the contract in the same commit.
+4. **Reviewers read the contract first.** When the contract diff and the implementation diff sit side by side in a PR, drift is caught at the moment it would otherwise enter the codebase.
+
+## Why JSON-first was wrong
+
+This page previously specified a 7-field JSON canonical (`name`, `anatomy`, `dimensions`, `props`, `a11y`, `behavior`, `doNot`, `pairedComponents`) with Markdown as a generated narrative layer. That decision is deprecated.
+
+**What changed:** zero components were ever authored against the JSON-first shape. In practice, contracts that *do* exist in consumer projects are hand-authored Markdown — and they ship without the synchronisation overhead a two-file shape would have imposed. The JSON-first decision did not survive contact with practice.
+
+**The token-efficiency argument did not pay back its cost.** The original justification was that agents read structured data more cheaply as JSON than as Markdown. True in the limit; not true at the scale of per-component contracts (4–7 sections, read on demand) where the human-authoring cost dominates. Removing the JSON sibling removes the synchronisation problem and costs nothing meaningful at parse time.
+
+**The two-file shape was the real friction.** Even if JSON had been the better machine surface, maintaining a JSON sibling alongside a Markdown narrative meant every contract change happened in two places. One source of truth, in the format humans review most easily, is the right primitive.
 
 ## See also
 
 - [Component API](/design-system/component-api) — the four input categories and the audit checklist props must satisfy.
-- [The Dimensional Model](/design-system/model) — the dimensions vocabulary referenced by the `dimensions` field.
-- [PRISM](/design-system/prism) — the MCP bridge that consumes `component.json` payloads.
-- [Testing strategy](/design-system/testing-strategy) — how the contract is verified in unit tests.
+- [The Dimensional Model](/design-system/model) — the dimensions vocabulary referenced by `## Dimension encoding`.
+- [Token chain](/design-system/token-chain) — the cascade `## Token bindings` consumes.
+- [Testing strategy](/design-system/testing-strategy) — how the contract is verified in unit and accessibility tests.
