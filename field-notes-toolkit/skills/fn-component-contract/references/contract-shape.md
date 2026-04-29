@@ -46,5 +46,5 @@ Vocabulary: `layoutEffect`, `allowedMechanisms`, `forbiddenMechanisms`, `padding
 ## See also
 
 - [`component-schema.mdx`](../../../../content/design-system/tools/component-schema.mdx) — full canonical schema with worked examples.
-- [`fn-component-api`](../../fn-component-api.md) — the four input categories the contract documents.
-- [`fn-component-scaffold`](../../fn-component-scaffold.md) — the file manifest the contract sits alongside.
+- [`fn-component-api`](../../fn-component-api/SKILL.md) — the four input categories the contract documents.
+- [`fn-component-scaffold`](../../fn-component-scaffold/SKILL.md) — the file manifest the contract sits alongside.
