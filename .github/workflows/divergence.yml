@@ -1,0 +1,22 @@
+# Divergence guard for fn-design-md scripts trees. See docs/audits/2026-04-29.md §R1. Deleted by the §R1 migration PR once field-notes-toolkit/skills/fn-design-md/scripts/ becomes a generated artifact and divergence is structurally impossible.
+name: Divergence guard
+
+on:
+  pull_request:
+    branches: [main]
+
+jobs:
+  diff-trees:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Compare .claude/ and toolkit fn-design-md/scripts trees
+        run: |
+          if ! diff -r \
+              .claude/skills/fn-design-md/scripts/ \
+              field-notes-toolkit/skills/fn-design-md/scripts/; then
+            echo ""
+            echo "::error::fn-design-md/scripts/ trees diverged. Either sync the change to both or land the §R1 migration."
+            exit 1
+          fi
