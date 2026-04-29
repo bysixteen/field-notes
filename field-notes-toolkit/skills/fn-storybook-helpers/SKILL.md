@@ -13,7 +13,7 @@ description: >-
 
 ## Foundations (read first)
 
-- [DIMENSIONAL-MODEL](_foundations/DIMENSIONAL-MODEL.md)
+- [DIMENSIONAL-MODEL](../_foundations/DIMENSIONAL-MODEL.md)
 
 These components live in `stories/helpers/` and are the **only** way to build documentation pages. Do not write inline styles or create local presentation components. Every visual pattern has a helper.
 

@@ -13,8 +13,8 @@ description: >-
 
 ## Foundations (read first)
 
-- [DESIGN-INTENT](_foundations/DESIGN-INTENT.md)
-- [DIMENSIONAL-MODEL](_foundations/DIMENSIONAL-MODEL.md)
+- [DESIGN-INTENT](../_foundations/DESIGN-INTENT.md)
+- [DIMENSIONAL-MODEL](../_foundations/DIMENSIONAL-MODEL.md)
 
 Generate a `{component}.docs.stories.tsx` from the component's source files.
 

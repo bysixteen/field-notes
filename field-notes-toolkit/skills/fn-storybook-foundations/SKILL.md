@@ -15,8 +15,8 @@ description: >-
 
 ## Foundations (read first)
 
-- [DIMENSIONAL-MODEL](_foundations/DIMENSIONAL-MODEL.md)
-- [TOKEN-ARCHITECTURE](_foundations/TOKEN-ARCHITECTURE.md)
+- [DIMENSIONAL-MODEL](../_foundations/DIMENSIONAL-MODEL.md)
+- [TOKEN-ARCHITECTURE](../_foundations/TOKEN-ARCHITECTURE.md)
 
 Generate `{foundation}.docs.stories.tsx` files from CSS token files.
 

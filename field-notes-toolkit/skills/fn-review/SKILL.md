@@ -14,10 +14,10 @@ description: >-
 
 ## Foundations (read first)
 
-- [DESIGN-INTENT](_foundations/DESIGN-INTENT.md)
-- [DIMENSIONAL-MODEL](_foundations/DIMENSIONAL-MODEL.md)
-- [TOKEN-ARCHITECTURE](_foundations/TOKEN-ARCHITECTURE.md)
-- [QUALITY-GATES](_foundations/QUALITY-GATES.md)
+- [DESIGN-INTENT](../_foundations/DESIGN-INTENT.md)
+- [DIMENSIONAL-MODEL](../_foundations/DIMENSIONAL-MODEL.md)
+- [TOKEN-ARCHITECTURE](../_foundations/TOKEN-ARCHITECTURE.md)
+- [QUALITY-GATES](../_foundations/QUALITY-GATES.md)
 
 Run all 6 review stages in sequence. Each stage has a dedicated skill -- this orchestrator ensures they run in the right order and produces a consolidated verdict.
 

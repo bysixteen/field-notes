@@ -14,7 +14,7 @@ description: >-
 
 ## Foundations (read first)
 
-- [QUALITY-GATES](_foundations/QUALITY-GATES.md)
+- [QUALITY-GATES](../_foundations/QUALITY-GATES.md)
 
 ## Priority Rules
 

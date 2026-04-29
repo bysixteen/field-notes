@@ -13,7 +13,7 @@ description: >-
 
 ## Foundations (read first)
 
-- [DIMENSIONAL-MODEL](_foundations/DIMENSIONAL-MODEL.md)
+- [DIMENSIONAL-MODEL](../_foundations/DIMENSIONAL-MODEL.md)
 
 Generate uSpec-quality documentation for design system components and foundations. This skill orchestrates sub-skills and enforces consistent page structure across all documentation output.
 
