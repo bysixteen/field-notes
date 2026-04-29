@@ -2,7 +2,7 @@
 
 Every audit-style skill (`fn-component-api`, `fn-react-patterns`, `fn-html`, `fn-accessibility`, `fn-tokens`, `fn-css`, and the `fn-review` orchestrator) emits findings using the same severity model and the same output schema. This file defines both.
 
-Canonical source: [`fn-review.md`](../fn-review.md). This file summarises the parts every skill needs to share.
+Canonical source: [`fn-review/SKILL.md`](../fn-review/SKILL.md). This file summarises the parts every skill needs to share.
 
 ## Severity model
 

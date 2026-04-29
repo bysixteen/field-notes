@@ -2,7 +2,7 @@
 
 Tokens encode the dimensional model in CSS custom properties. Skills that touch tokens (consume them, audit them, generate them) reason against the structure on this page.
 
-Canonical sources: [`fn-tokens.md`](../fn-tokens.md), [`/content/design-system/token-chain/`](../../../content/design-system/token-chain/). This file summarises; those are authoritative.
+Canonical sources: [`fn-tokens/SKILL.md`](../fn-tokens/SKILL.md), [`/content/design-system/token-chain/`](../../../content/design-system/token-chain/). This file summarises; those are authoritative.
 
 ## The mixing desk
 

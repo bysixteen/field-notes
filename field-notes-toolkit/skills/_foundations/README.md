@@ -9,8 +9,8 @@ These files are **terse, stable, and project-agnostic**. They summarise canonica
 | File | What it anchors | Canonical source |
 |---|---|---|
 | [DIMENSIONAL-MODEL.md](DIMENSIONAL-MODEL.md) | The 5 dimensions, vocabulary, decision order | [`/content/design-system/model/`](../../../content/design-system/model/) |
-| [TOKEN-ARCHITECTURE.md](TOKEN-ARCHITECTURE.md) | Mixing desk, 4-layer chain, color cascade | [`fn-tokens.md`](../fn-tokens.md), [`/content/design-system/token-chain/`](../../../content/design-system/token-chain/) |
-| [QUALITY-GATES.md](QUALITY-GATES.md) | Severity model, verdict logic, findings schema | [`fn-review.md`](../fn-review.md) |
+| [TOKEN-ARCHITECTURE.md](TOKEN-ARCHITECTURE.md) | Mixing desk, 4-layer chain, color cascade | [`fn-tokens/SKILL.md`](../fn-tokens/SKILL.md), [`/content/design-system/token-chain/`](../../../content/design-system/token-chain/) |
+| [QUALITY-GATES.md](QUALITY-GATES.md) | Severity model, verdict logic, findings schema | [`fn-review/SKILL.md`](../fn-review/SKILL.md) |
 | [DESIGN-INTENT.md](DESIGN-INTENT.md) | Project DESIGN.md and how skills align with it | [`fn-design-md/SKILL.md`](../fn-design-md/SKILL.md) |
 
 ## Read order
