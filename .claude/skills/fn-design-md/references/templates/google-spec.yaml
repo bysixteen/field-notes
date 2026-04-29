@@ -1,0 +1,35 @@
+# google-spec.yaml — default emit profile.
+#
+# Reproduces the historical Google DESIGN.md spec layout. This is the profile
+# the emitter loads when no --template flag is passed. Sections are all
+# generated; consumer-authored prose lives below the last section in the
+# regenerate flow's "legacy suffix" slot (preserved across regenerates for
+# backward compatibility with files migrated from the single-block marker era).
+
+profile_name: google-spec
+
+sections:
+  - id: overview
+    heading: Overview
+    disposition: generated
+    source: overview
+
+  - id: colors
+    heading: Colors
+    disposition: generated
+    source: colors
+
+  - id: typography
+    heading: Typography
+    disposition: generated
+    source: typography
+
+  - id: components
+    heading: Components
+    disposition: generated
+    source: components
+
+  - id: dos-and-donts
+    heading: "Do's and Don'ts"
+    disposition: generated
+    source: dos-and-donts

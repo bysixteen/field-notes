@@ -1,0 +1,64 @@
+# dimensional-prose.yaml — alternative profile for products that document
+# their visual moves in their own vocabulary alongside generated token tables.
+#
+# Generated sections (Type, Colour) are replaced wholesale on every emit.
+# Preserved sections (Identity, Surfaces, Layout, Content fundamentals,
+# Anti-patterns) are seeded with a one-line placeholder on first emit and
+# preserved verbatim across regenerates — the consumer hand-authors their
+# real content between the per-section markers.
+#
+# Custom-vocabulary profiles like this one OPT OUT of the @google/design.md
+# linter (which mandates the spec section names: Overview, Colors,
+# Typography, Components, Do's and Don'ts). Use scripts/lint-template.mjs
+# instead — it validates section ordering, marker integrity, and runs the
+# redaction pass.
+
+profile_name: dimensional-prose
+
+sections:
+  - id: identity
+    heading: Identity
+    disposition: preserved
+    placeholder: |
+      One paragraph describing what makes this product feel like itself — the brand archetype, voice, and the thing a designer can write to once they understand the tokens.
+
+  - id: type
+    heading: Type
+    disposition: generated
+    source: typography
+
+  - id: colour
+    heading: Colour
+    disposition: generated
+    source: colors
+
+  - id: surfaces
+    heading: Surfaces
+    disposition: preserved
+    placeholder: |
+      The surface hierarchy: which background tokens apply where, elevation rules, and where panels sit on top of base surfaces.
+
+  - id: layout
+    heading: Layout
+    disposition: preserved
+    placeholder: |
+      Grid commitments, container widths, and breakpoints expressed as intent rather than just numbers.
+
+  - id: content-fundamentals
+    heading: Content fundamentals
+    disposition: preserved
+    placeholder: |
+      Tone of voice, capitalisation rules, terminology decisions, and what the product calls the things it shows.
+
+  - id: anti-patterns
+    heading: Anti-patterns
+    disposition: preserved
+    placeholder: |
+      Patterns this product explicitly rejects, and the reason behind each rejection so the rule can be reapplied to new situations.
+
+# Optional: enforce a forbidden-terms list (e.g. inspiration sources whose
+# names must not leak into the public DESIGN.md). Path is resolved relative
+# to this template file when not absolute.
+#
+# redactions:
+#   forbidden_terms_path: ../inspiration-sources.txt

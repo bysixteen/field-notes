@@ -103,27 +103,6 @@ components:
     rounded: "{rounded.md}"
     padding: "{spacing.8} {spacing.16}"
     height: 40px
-  button-hover:
-    backgroundColor: "{colors.primary-hover}"
-    textColor: "{colors.on-primary}"
-    typography: "{typography.label-md}"
-    rounded: "{rounded.md}"
-    padding: "{spacing.8} {spacing.16}"
-    height: 40px
-  button-active:
-    backgroundColor: "{colors.primary-active}"
-    textColor: "{colors.on-primary}"
-    typography: "{typography.label-md}"
-    rounded: "{rounded.md}"
-    padding: "{spacing.8} {spacing.16}"
-    height: 40px
-  button-disabled:
-    backgroundColor: "{colors.primary-disabled}"
-    textColor: "{colors.on-primary}"
-    typography: "{typography.label-md}"
-    rounded: "{rounded.md}"
-    padding: "{spacing.8} {spacing.16}"
-    height: 40px
   input:
     backgroundColor: "{colors.bg}"
     textColor: "{colors.fg}"
@@ -138,26 +117,45 @@ components:
     rounded: "{rounded.full}"
     padding: "{spacing.4} {spacing.8}"
     height: 24px
+  alert:
+    backgroundColor: "{colors.bg-elevated}"
+    textColor: "{colors.fg}"
+    typography: "{typography.body-md}"
+    rounded: "{rounded.md}"
+    padding: "{spacing.12} {spacing.16}"
+  card:
+    backgroundColor: "{colors.bg}"
+    textColor: "{colors.fg}"
+    typography: "{typography.body-md}"
+    rounded: "{rounded.lg}"
+    padding: "{spacing.16} {spacing.16}"
 ---
 
-<!-- fn-design-md:generated:start -->
-
+<!-- fn-design-md:section:overview:start -->
 ## Overview
 
 field-notes is a design system. The values in this file are the source of truth for an AI agent generating new UI; the prose below explains how to apply them.
+<!-- fn-design-md:section:overview:end -->
 
+<!-- fn-design-md:section:colors:start -->
 ## Colors
 
 This system defines 49 colour tokens. The hex values in the YAML frontmatter are sRGB approximations — for wide-gamut OKLCH originals, see the sidecar `tokens.json`.
+<!-- fn-design-md:section:colors:end -->
 
+<!-- fn-design-md:section:typography:start -->
 ## Typography
 
 Typography tokens map intent (heading, body, label) to specific font, size, weight, and leading. Use the named tokens; do not author one-off values.
+<!-- fn-design-md:section:typography:end -->
 
+<!-- fn-design-md:section:components:start -->
 ## Components
 
-6 component primitives are defined. Variants are sibling keys with related names (e.g. `button`, `button-hover`). Composition follows: Sentiment → Emphasis → Size → Structure → State.
+5 component primitives are defined. Variants are sibling keys with related names (e.g. `button`, `button-hover`). Composition follows: Sentiment → Emphasis → Size → Structure → State.
+<!-- fn-design-md:section:components:end -->
 
+<!-- fn-design-md:section:dos-and-donts:start -->
 ## Do's and Don'ts
 
 ### Composition Model
@@ -186,5 +184,4 @@ Not every (sentiment × emphasis × size × state) combination is named in this 
 ### Wide-gamut colour
 
 The `colors` block is hex sRGB only because the DESIGN.md spec mandates it. Original OKLCH/Display P3 values live in the sidecar `tokens.json`. When a tool round-trips through DTCG, prefer the sidecar.
-
-<!-- fn-design-md:generated:end -->
+<!-- fn-design-md:section:dos-and-donts:end -->

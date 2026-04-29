@@ -30,7 +30,7 @@ This skill orchestrates three workflows that converge on the same emitter:
 - **Project mode (`--tokens` + `--components`)** — take an existing DTCG `tokens.json` plus a `components.json` thin index, emit a spec-compliant `DESIGN.md`. The thin index records each primitive's contract sidecar path, Radix base, and CSS custom-property namespace; per-component token wiring is derived from the namespace × `tokens.json` lookup. Used when the consumer hand-curates the components list.
 - **Dimensional mode (`--from-dimensional <root>`)** — walk the consumer's `tokens.json` + `components.json` thin index + each component's `<Component>.contract.md` sidecar (`## Dimension encoding` section) + the five model MDX islands, and synthesise the flat per-variant `components` block via the cap policy in `references/dimensional-mapping.md`. Used when the consumer wants the matrix derived from the dimensional vocabulary.
 
-All three modes share the same output contract.
+All three modes share the same output contract and accept the same `--template <path>` flag for choosing between the default Google-spec profile and consumer-specific profiles. See `references/profiles.md` for the schema.
 
 ### `components.json` — thin index
 
@@ -122,24 +122,27 @@ When the consumer's design system is fully expressed through the dimensional voc
 
 ## Preserving custom prose
 
-The emitter wraps the generated prose in stable HTML-comment markers so consumer-authored sections survive regeneration:
+The emitter wraps **each section** in its own start/end marker pair so consumer-authored prose can interleave with generated prose under any template ordering:
 
 ```
 ---
 <frontmatter>           <- replaced wholesale on every emit
 ---
 
-<!-- fn-design-md:generated:start -->
-## Overview
-... generated prose ...
-## Do's and Don'ts
-<!-- fn-design-md:generated:end -->
+<!-- fn-design-md:section:identity:start -->
+## Identity
+... preserved prose (kept verbatim across regenerates) ...
+<!-- fn-design-md:section:identity:end -->
 
-## Identity              <- consumer-authored prose lives below :end
-## Aesthetic direction
+<!-- fn-design-md:section:type:start -->
+## Type
+... generated content (replaced wholesale every emit) ...
+<!-- fn-design-md:section:type:end -->
 ```
 
-**Frontmatter is fully derived; do not hand-edit.** The YAML frontmatter is replaced on every emit. If you need project metadata that survives regeneration, put it below `:end` in a `## Metadata` (or any name you choose) section. Hand-edits to keys *inside* the frontmatter will be overwritten without warning. This is intentional — see `references/extended-sections.md` for the rationale.
+Generated sections are replaced wholesale on every emit; preserved sections keep whatever sits between their markers (seeded once from the template's `placeholder` on first emit). The legacy single-block markers (`fn-design-md:generated:start/end`) from earlier versions are still recognised on read — the next emit migrates them to per-section markers and preserves any prose that lived below the legacy `:end` as a one-shot suffix.
+
+**Frontmatter is fully derived; do not hand-edit.** The YAML frontmatter is replaced on every emit. If you need project metadata that survives regeneration, add a preserved section to the template (or use the suffix slot below the last template section). Hand-edits to keys *inside* the frontmatter will be overwritten without warning. This is intentional — see `references/extended-sections.md` for the rationale.
 
 The emitter classifies the existing file before writing:
 
@@ -219,10 +222,13 @@ Treat the linter output as a release gate:
 Load these from the `references/` directory only when you need them — they are not in your default context:
 
 - `google-spec-summary.md` — every field of the YAML frontmatter, the component schema, and what the spec explicitly forbids. Read first when authoring the emitter or debugging a `broken-ref` error.
+- `profiles.md` — the `--template` schema, the renderer registry, the redaction format, and the linter trade-off. Read when authoring or consuming a non-default profile.
 - `dimensional-mapping.md` — how Sentiment × Emphasis × State × Size × Structure flatten into DESIGN.md's flat component naming convention. Read in extract mode (assigning roles) or project mode (generating variant names).
 - `do-and-dont-template.md` — carrier patterns for the rules the schema can't encode (cascade rules, dimensional independence, when to use which sentiment). Read when generating the `## Do's and Don'ts` section.
 - `lossy-projection.md` — what is preserved between dimensional source → DESIGN.md → DTCG sidecar. Read when explaining trade-offs to the user, or when something looks wrong in a round-trip.
-- `extended-sections.md` — the project-agnostic prose conventions consumers commonly append below `:end` (Identity, Aesthetic direction, Surfaces, Layout, Content fundamentals), and the rationale for the frontmatter clobber footgun. Read when advising consumers on where to put hand-authored prose.
+- `extended-sections.md` — the project-agnostic prose conventions consumers commonly add (Identity, Aesthetic direction, Surfaces, Layout, Content fundamentals), and the rationale for the frontmatter clobber footgun. Read when advising consumers on where to put hand-authored prose.
+- `templates/google-spec.yaml` — the default profile (Google-spec layout: Overview / Colors / Typography / Components / Do's and Don'ts).
+- `templates/dimensional-prose.yaml` — alternative profile (Identity / Type / Colour / Surfaces / Layout / Content fundamentals / Anti-patterns) for products that document their visual moves in their own vocabulary alongside generated token tables.
 
 ## Example Output
 
