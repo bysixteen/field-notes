@@ -120,7 +120,7 @@ This dissolves both Phase 6 PR1 (no `behaviorContract` in `components.json`) and
 
 1. **A11y/Behavior gate (hard gate — not just a question):** Verify with lanefour authors why `## A11y` and `## Behavior` sections are absent from all 14 existing contracts. Outcomes: (a) intentionally omitted → recommended shape stays at 4 sections; (b) not yet added → A11y and Behavior become recommended (not required) sections. The new canonical shape cannot ship until this gate resolves.
 
-2. **Generator vs. guided template for `fn-component-contract`:** Lanefour's contracts are hand-authored and that worked. The simpler shape — Claude Code fills in a template conversationally when scaffolding a new component — may be the right call. Multi-pass review still applies; autonomous generation may not. Resolve before building the skill (→ issue #169 has this flagged).
+2. **Generator vs. guided template for `fn-component-contract`:** Lanefour's contracts are hand-authored and that worked. Guisard's specialist-agents pipeline solved Figma extraction; lanefour-shape inputs (.tsx + tokens + DESIGN.md) don't require parallel-specialist reasoning. The simpler shape — Claude Code fills in a template conversationally when scaffolding a new component — may be the right call. Multi-pass review still applies; autonomous generation may not. Resolve before building the skill (→ issue #169 has this flagged).
 
 3. **Sidecar location:** Alongside the `.tsx` (lanefour's choice) vs. a parallel `contracts/` folder (cleaner separation, breaks colocation). Lean toward lanefour's choice but worth a one-line confirm.
 
