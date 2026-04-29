@@ -25,6 +25,11 @@ const REQUIRED_FILES = [
   "content/design-system/model/size.mdx",
   "content/design-system/model/state.mdx",
   "content/design-system/model/structure.mdx",
+  "content/design-system/components/button.contract.md",
+  "content/design-system/components/input.contract.md",
+  "content/design-system/components/badge.contract.md",
+  "content/design-system/components/alert.contract.md",
+  "content/design-system/components/card.contract.md",
 ];
 
 function makeTempTarget() {
@@ -84,19 +89,25 @@ test("fn-init scaffold round-trips through fn-design-md --from-dimensional", () 
       0,
       `emit failed (status=${emitResult.status}): ${emitResult.stderr}`
     );
+    assert.match(
+      emitResult.stdout,
+      /components:\s+5\s+→\s+51\s+variants/,
+      "expected scaffold to expand to 5 components / 51 variants"
+    );
 
     const design = readFileSync(join(target, "DESIGN.md"), "utf8");
-    assert.match(design, /## Components/, "DESIGN.md missing Components section");
-    assert.match(design, /button/, "DESIGN.md missing button variants");
+    assert.match(design, /^---\nversion: alpha\n/, "DESIGN.md missing google-spec frontmatter");
+    assert.match(design, /^components:$/m, "DESIGN.md missing components block");
+    assert.match(design, /^\s+button:$/m, "DESIGN.md missing button entry");
     assert.match(
       design,
-      /<!-- fn-design-md:generated:start -->/,
-      "DESIGN.md missing generated start marker"
+      /<!-- fn-design-md:section:dos-and-donts:end -->/,
+      "DESIGN.md missing dos-and-donts section end marker"
     );
     assert.match(
       design,
-      /<!-- fn-design-md:generated:end -->/,
-      "DESIGN.md missing generated end marker"
+      /^## Notes$/m,
+      "DESIGN.md preserved-content section did not survive emit"
     );
   } finally {
     rmSync(target, { recursive: true, force: true });

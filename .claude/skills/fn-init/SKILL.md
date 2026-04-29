@@ -3,14 +3,17 @@ name: fn-init
 description: >-
   Use when bootstrapping a new project from scratch with the canonical bysixteen
   design-system context stack. Scaffolds a target directory with `tokens.json`
-  (DTCG 2025.10 with placeholder anchor colours), `components.json` (canonical
-  primitives — button, input, badge, alert, card — with `applies_to: all`), the
-  five model MDX files at `content/design-system/model/{sentiment,emphasis,size,
-  state,structure}.mdx` carrying `dimensional_values` frontmatter, a starter
-  `CLAUDE.md` referencing the toolkit and `llms.txt`, and a starter `DESIGN.md`
-  with empty preservation markers in place. The output is the exact shape
-  `fn-design-md --from-dimensional` expects, so a freshly bootstrapped project
-  can immediately regenerate a valid `DESIGN.md`.
+  (DTCG 2025.10 with placeholder anchor colours and per-component token groups),
+  `components.json` (thin-index registry of canonical primitives — button,
+  input, badge, alert, card — pointing at per-component `.contract.md`
+  sidecars), starter `.contract.md` sidecars under
+  `content/design-system/components/`, the five model MDX files at
+  `content/design-system/model/{sentiment,emphasis,size,state,structure}.mdx`
+  carrying `dimensional_values` frontmatter, a starter `CLAUDE.md` referencing
+  the toolkit and `llms.txt`, and a starter `DESIGN.md` with empty preservation
+  markers in place. The output is the exact shape `fn-design-md
+  --from-dimensional` expects, so a freshly bootstrapped project can
+  immediately regenerate a valid `DESIGN.md`.
 ---
 
 # fn-init — bootstrap canonical context stack
@@ -28,8 +31,9 @@ needs to consume `fn-design-md --from-dimensional`:
 
 | Artefact | Purpose |
 |----------|---------|
-| `tokens.json` | DTCG 2025.10 token source. Placeholder anchor colours (primary, neutral, warning, danger, positive, on-primary). Replace with real values. |
-| `components.json` | Five canonical primitives (`button`, `input`, `badge`, `alert`, `card`) with `applies_to: all` so every dimensional combination expands. |
+| `tokens.json` | DTCG 2025.10 token source. Placeholder anchor colours (primary, neutral, warning, danger, positive, on-primary) plus per-component token groups (`button`, `input`, `badge`, `alert`, `card`) so each component's `tokenNamespace` lookup resolves. Replace with real values. |
+| `components.json` | Thin-index registry — five canonical primitives (`button`, `input`, `badge`, `alert`, `card`), each pointing at a `.contract.md` sidecar via `contract`, plus `radixBase` and `tokenNamespace`. No `applies_to` or `properties` inline; the walker reads `applies_to` from each sidecar's `## Dimension encoding` table. |
+| `content/design-system/components/<name>.contract.md` | Starter sidecars (one per primitive) populated per `fn-component-contract`'s schema — `## Props`, `## Dimension encoding`, `## Token bindings`, `## Usage rules`. Replace placeholder content with project-specific rules. |
 | `content/design-system/model/{sentiment,emphasis,size,state,structure}.mdx` | The five-dimensional vocabulary, each with a `dimensional_values: { default, values }` frontmatter block. `structure.mdx` carries `informational: true` so its values don't appear in variant names. |
 | `CLAUDE.md` | Starter system-prompt that points at the field-notes toolkit, the four-layer context stack rationale, and `llms.txt` for agent-readable docs. |
 | `DESIGN.md` | Empty preservation markers in place (`<!-- fn-design-md:generated:start -->` ... `<!-- fn-design-md:generated:end -->`) so the first `fn-design-md` run fills the generated portion and any prose written after the `:end` marker is preserved across regenerations. |
