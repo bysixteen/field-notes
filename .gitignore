@@ -8,9 +8,7 @@ out/
 fn-storybook-docs-workspace/
 fn-tokens-workspace/
 
-# AI context — track plans and rules, ignore ephemeral/binary
-.context/notes.md
-.context/todos.md
+# AI context — track operational sub-docs, ignore ephemeral
 .context/attachments/
 
 # Generated ramp outputs
