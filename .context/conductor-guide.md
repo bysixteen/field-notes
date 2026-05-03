@@ -8,12 +8,11 @@ How to use Conductor and the surrounding toolchain to their full extent on this 
 |---|---|---|
 | **Conductor** | Parallel worktree manager | Independent worktrees off the same repo; independent agent sessions per worktree; review PRs from one while another is working |
 | **Claude Code** | Per-worktree agent | Autonomous work-and-PR loop; full repo context per session |
-| **GitHub Issues** | Master plan + sub-issue tracking | Native sub-issue wiring (#218 master + #219–#223 phase sub-issues) |
+| **GitHub Issues** | Canonical plan + structure | Master plan **#218** with native sub-issue wiring to phase sub-issues **#219–#223** — source of truth for architecture, scope, and success criteria |
 | **GitHub PRs** | Review surface, merge gate | One PR per agent task; review before merge |
 | **`gh` CLI** | Issue/PR ops from terminal | Used by Claude Code for `gh issue create`, `gh pr create`, status checks |
 | **`/start-issue` skill** | Per-issue work scaffolding | Loads issue context into agent at session start |
 | **`.context/` artefacts** | Cross-session memory | `spike-findings.md`, `ia-draft.md`, `cutover-runbook.md`, this file. Survives between sessions; agents read at startup |
-| **GitHub issues** | Canonical plan | Master plan **#218** + phase sub-issues **#219–#223** — source of truth for architecture, scope, and success criteria |
 | **pnpm workspaces** | Package isolation | Each package edits independently; workspace protocol resolves cross-package deps; `pnpm install <path>` for CLI consumer testing |
 | **Biome** | Single-tool format/lint | Same root `biome.json` works in every worktree; one binary across packages |
 | **vitest** | Test runner | Browser mode for lib browser-safety verification; same test config in every package |
