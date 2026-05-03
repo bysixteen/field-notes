@@ -4,7 +4,10 @@
   "version": "0.0.0",
   "scripts": {
     "build": "pnpm --filter docs build",
-    "dev": "pnpm --filter docs dev"
+    "dev": "pnpm --filter docs dev",
+    "generate:llms": "pnpm --filter docs generate:llms",
+    "generate:ramps": "pnpm --filter docs generate:ramps",
+    "generate:manifest": "pnpm --filter docs generate:manifest"
   },
   "packageManager": "pnpm@10.32.1"
 }
