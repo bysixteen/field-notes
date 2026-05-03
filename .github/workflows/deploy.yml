@@ -14,8 +14,14 @@ concurrency:
   group: pages
   cancel-in-progress: false
 
+# Disabled during the Phase 0 → Phase 3 dark window.
+# The repo is mid-cutover from a single Next.js app at root to a pnpm workspace
+# with apps/docs/ + packages/{lib,cli,skills}. This workflow's npm ci + npm run
+# build no longer match the new structure. Phase 3 (#221) re-enables it and
+# repaths against apps/docs/out/ with pnpm.
 jobs:
   build:
+    if: false
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -37,6 +43,7 @@ jobs:
           path: out
 
   deploy:
+    if: false
     needs: build
     runs-on: ubuntu-latest
     environment:
