@@ -2,7 +2,7 @@
 
 **Master plan:** #218
 **For:** the focused cutover session that closes Phase 0 and starts the GitHub Pages deploy-dark window.
-**Source of truth:** the brief in `.claude/plans/here-is-some-more-hidden-gosling.md` (Cutover sequencing section). This runbook is the operational checklist.
+**Source of truth:** master plan #218 (architecture, scope, success criteria). This runbook is the operational checklist for the cutover commit.
 
 ---
 
@@ -22,8 +22,7 @@ Transforms the repo from "single Next.js app at root" → "pnpm workspace with `
 ## Pre-flight (do before opening the editor)
 
 - [ ] **`git status` clean.** No uncommitted Phase 0 work in flight. If `.context/spike-findings.md`, `.context/ia-draft.md`, or `.context/cutover-runbook.md` are uncommitted, commit them first as a separate "docs(plan): ..." commit so the cutover commit is purely structural.
-- [ ] **Brief reads as expected.** `.claude/plans/here-is-some-more-hidden-gosling.md` reflects Learn/Build labels and concrete `#219`–`#223` issue numbers. (Already true as of 2026-05-03.)
-- [ ] **Master plan #218 checklist is up to date.** All Phase 0 items checked except cutover.
+- [ ] **Master plan #218 checklist is up to date.** All Phase 0 items checked except cutover. Sub-issues #219–#223 reference Learn/Build labels and the architecture decisions land here.
 - [ ] **Snapshot the current working build.** From the live repo root: `pnpm install && pnpm build` (or `npm install && npm run build`). Confirm `out/` produces successfully. Note the page count + total size — this is the comparison point for post-cutover.
 - [ ] **Decide upfront: `.github/workflows/` disposition.** Two options:
   - **Option A — disable in the cutover commit.** Comment out the `on:` triggers or add `if: false` to the deploy job, so the workflow does nothing during the dark window. Cleanest.
@@ -127,7 +126,6 @@ against apps/docs/out/.
 
 Spike findings: .context/spike-findings.md
 IA draft: .context/ia-draft.md
-Brief: .claude/plans/here-is-some-more-hidden-gosling.md (local)
 
 Refs #218
 ```
@@ -139,7 +137,7 @@ Refs #218
 - [ ] Open PR, merge to main (or push direct to main if that matches the repo's convention).
 - [ ] Verify the disabled workflow doesn't run on push.
 - [ ] Update master plan #218 checklist: cutover ✅.
-- [ ] Update brief's "Phase 0 status" line: "all complete; cutover landed YYYY-MM-DD."
+- [ ] Update master plan #218: tick the cutover checkbox; comment with the merged commit SHA.
 - [ ] Phase 1 begins next: `/start-issue #219`.
 
 ---
@@ -161,4 +159,4 @@ The cutover is structural surgery — better to abort and re-attempt than to pus
 
 - The dark window starts here. From cutover commit through Phase 3 close, `bysixteen.github.io/field-notes/` returns 404 or stale content. Acceptable; no production users.
 - The R1 spike already validated that this configuration builds. The spike workspace was at `/tmp/fn-spikes/` and produced 82 pages, 196.7 kB gzipped initial JS for `/studio`, etc. This commit replicates that configuration in the live repo.
-- `field-notes-toolkit/` (nested at the live repo root currently) is reference material — does NOT move into `apps/docs/`. Future Phase 5 work decides whether its content carries forward into `packages/skills/` (per the skills-content provenance bend in the brief).
+- `field-notes-toolkit/` (nested at the live repo root currently) is reference material — does NOT move into `apps/docs/`. Future Phase 5 work decides whether its content carries forward into `packages/skills/` (per the skills-content provenance bend in #223).

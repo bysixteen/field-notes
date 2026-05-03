@@ -1,4 +1,4 @@
-# Conductor Playbook — Field Notes
+# Conductor Guide — Field Notes
 
 How to use Conductor and the surrounding toolchain to their full extent on this project. Living document; update when tooling shifts or the workflow surfaces friction.
 
@@ -11,9 +11,9 @@ How to use Conductor and the surrounding toolchain to their full extent on this 
 | **GitHub Issues** | Master plan + sub-issue tracking | Native sub-issue wiring (#218 master + #219–#223 phase sub-issues) |
 | **GitHub PRs** | Review surface, merge gate | One PR per agent task; review before merge |
 | **`gh` CLI** | Issue/PR ops from terminal | Used by Claude Code for `gh issue create`, `gh pr create`, status checks |
-| **`/start-issue` skill** | Per-issue work scaffolding | Loads brief + issue context into agent at session start |
+| **`/start-issue` skill** | Per-issue work scaffolding | Loads issue context into agent at session start |
 | **`.context/` artefacts** | Cross-session memory | `spike-findings.md`, `ia-draft.md`, `cutover-runbook.md`, this file. Survives between sessions; agents read at startup |
-| **The brief** | Canonical plan | `outputs/field-notes-reframe.md` — source of truth for design decisions |
+| **GitHub issues** | Canonical plan | Master plan **#218** + phase sub-issues **#219–#223** — source of truth for architecture, scope, and success criteria |
 | **pnpm workspaces** | Package isolation | Each package edits independently; workspace protocol resolves cross-package deps; `pnpm install <path>` for CLI consumer testing |
 | **Biome** | Single-tool format/lint | Same root `biome.json` works in every worktree; one binary across packages |
 | **vitest** | Test runner | Browser mode for lib browser-safety verification; same test config in every package |
@@ -23,7 +23,7 @@ How to use Conductor and the surrounding toolchain to their full extent on this 
 | **culori** | OKLCH math | Deep-imports for bundle weight |
 | **Radix UI + shadcn/ui** | `/studio` controls | Headless behaviour primitives + copy-paste starter pattern |
 
-When a new tool enters the workflow, add a row above and note the specific capability being leveraged. The brief stays canonical for design decisions; this table stays canonical for tool-shape decisions.
+When a new tool enters the workflow, add a row above and note the specific capability being leveraged. Issue bodies (#218 + #219–#223) stay canonical for design decisions; this table stays canonical for tool-shape decisions.
 
 ---
 
@@ -169,7 +169,7 @@ For each Conductor worktree:
 
 1. Fork from current `main` in Conductor → name per the convention above.
 2. Open the agent in the new worktree.
-3. Agent reads `outputs/field-notes-reframe.md` (or wherever the brief lives post-cutover) for context.
+3. Agent reads master plan #218 + relevant phase sub-issue (#219–#223) for context.
 4. Agent reads `.context/spike-findings.md`, `.context/ia-draft.md`, this file as needed.
 5. Agent runs `/start-issue <issue-number>` to load the sub-issue's specific scope.
 6. Agent works → opens PR → you review → merge.
@@ -177,7 +177,7 @@ For each Conductor worktree:
 
 ---
 
-## What this playbook doesn't cover
+## What this guide doesn't cover
 
 - **Hotfixes.** If something breaks on `main` mid-Phase 3, all worktrees rebase to pick it up. Hotfix gets its own short-lived worktree (`hotfix/<thing>`), lands fast, others rebase.
 - **Spike work.** Phase 0 spikes already ran. Future spikes that come up mid-execution get their own worktree (`spike/<thing>`) and don't merge to main — findings go to `.context/`.
